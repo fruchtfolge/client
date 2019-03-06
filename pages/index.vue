@@ -1,38 +1,68 @@
 <template>
-<div class="main">
-  <div v-if="loading" class="blur loading">
-    <div class="spinner-container">
-      <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-      <h2 style="text-align: center;">Daten werden geladen ... <br> Der Vorgang kann einige Minuten in Anspruch nehmen</h2>      
-    </div>
-  </div>
-  <div v-else>
-    <img id="background" class="background" src="~assets/img/background.jpeg" alt="background" />
-    <div class="flip-container" id="login" v-bind:class="{ flip: showRegister }">
-      <div class="flipper">
-        <div class="login">
-          <p>ANBAUPLANUNG OPTIMIEREN</p>
-          <input v-model="email" id="email" class="email" placeholder="E-Mail" name="email" autofocus="autofocus" />
-          <input v-model="password" class="password" @keyup.enter="login" placeholder="Passwort" type="password" name="password" id="password" />
-          <button type="button" class="login-button" @click="login" id="login-button">ANMELDEN</button>
-          <a class="forgot" href="index.html">Passwort vergessen?</a>
+  <div class="main">
+    <div v-if="loading" class="blur loading">
+      <div class="spinner-container">
+        <div class="lds-spinner">
+          <div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div />
         </div>
-        <div class="registrierung">
-          <p>JETZT KOSTENLOS ANMELDEN</p>
-          <input v-model="address" id="address" class="address" placeholder="Strasse u. Hausnr. (Betrieb)" />
-          <input v-model="postcode" id="postcode" class="postcode" placeholder="PLZ" />
-          <input v-model="email" id="email2" class="email2" placeholder="E-Mail Adresse" />
-          <input v-model="password" id='password2' class="password2" placeholder="Passwort" type="password" />
-          <input v-model="confirmPassword" id="confirmPassword" class="repeat-password" @keyup.enter="signup" placeholder="Passwort wiederholen" type="password" />
-          <input class="checkbox" type="checkbox" />
-          <input v-model="dsgvoAccepted" type="checkbox" id="c2" name="cc" />
-          <label for="c2" class="label-login" style="margin-top: 100px;"><span></span>Ich akzeptiere die Nutzungsbedingungen der Universität Bonn.</label>
-          <button type="button" class="register-button" id="signup" @click="signup">REGISTRIEREN</button>
+        <h2 style="text-align: center;">
+          Daten werden geladen ... <br> Der Vorgang kann einige Minuten in Anspruch nehmen
+        </h2>
+      </div>
+    </div>
+    <div v-else>
+      <img id="background" class="background" src="~assets/img/background.jpeg" alt="background">
+      <div id="login" class="flip-container" :class="{ flip: showRegister }">
+        <div class="flipper">
+          <div class="login">
+            <p>ANBAUPLANUNG OPTIMIEREN</p>
+            <input
+              id="email"
+              v-model="email"
+              class="email"
+              placeholder="E-Mail"
+              name="email"
+              autofocus="autofocus"
+            >
+            <input
+              v-model="password"
+              id="password"
+              class="password"
+              placeholder="Passwort"
+              type="password"
+              name="password"
+              @keyup.enter="login"
+            >
+            <button id="login-button" type="button" class="login-button" @click="login">
+              ANMELDEN
+            </button>
+            <a class="forgot" href="index.html">Passwort vergessen?</a>
+          </div>
+          <div class="registrierung">
+            <p>JETZT KOSTENLOS ANMELDEN</p>
+            <input id="address" v-model="address" class="address" placeholder="Strasse u. Hausnr. (Betrieb)">
+            <input id="postcode" v-model="postcode" class="postcode" placeholder="PLZ">
+            <input id="email2" v-model="email" class="email2" placeholder="E-Mail Adresse">
+            <input id="password2" v-model="password" class="password2" placeholder="Passwort" type="password">
+            <input
+              id="confirmPassword"
+              v-model="confirmPassword"
+              class="repeat-password"
+              placeholder="Passwort wiederholen"
+              type="password"
+              @keyup.enter="signup"
+            >
+            <input class="checkbox" type="checkbox">
+            <input id="c2" v-model="dsgvoAccepted" type="checkbox" name="cc">
+            <label for="c2" class="label-login" style="margin-top: 100px;"><span />Ich akzeptiere die Nutzungsbedingungen der Universität Bonn.</label>
+            <button id="signup" type="button" class="register-button" @click="signup">
+              REGISTRIEREN
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -66,7 +96,8 @@ export default {
     },
     noDSGVO: {
       title: 'NUTZUNGSBEDINGUNG',
-      message: 'Für die Nutzung der Anwendung müssen Sie den Nutzungsbedingungen zustimmen.',
+      message:
+        'Für die Nutzung der Anwendung müssen Sie den Nutzungsbedingungen zustimmen.',
       type: 'error'
     },
     notMatching: {
@@ -81,16 +112,25 @@ export default {
     },
     success: {
       title: 'WILLKOMMEN',
-      message: 'Schön, dass Sie wieder da sind! Bitte haben Sie einen Augeblick geduld, während Ihre Daten synchronisiert werden.',
+      message:
+        'Schön, dass Sie wieder da sind! Bitte haben Sie einen Augeblick geduld, während Ihre Daten synchronisiert werden.',
       type: 'success'
     }
   },
   methods: {
     flip() {
-      return this.showRegister ? this.showRegister = false : this.showRegister = true
+      return this.showRegister
+        ? (this.showRegister = false)
+        : (this.showRegister = true)
     },
     checkSignup() {
-      if (!this.address || !this.email || !this.postcode || !this.password || !this.confirmPassword) {
+      if (
+        !this.address ||
+        !this.email ||
+        !this.postcode ||
+        !this.password ||
+        !this.confirmPassword
+      ) {
         this.incomplete()
         return false
       } else if (!this.dsgvoAccepted) {
@@ -127,12 +167,15 @@ export default {
       }
       return settings
     },
-    async handleSuccess(auth,signup) {
+    async handleSuccess(auth, signup) {
       let settings
       let data
       const date = new Date()
       try {
-        this.$axios.setHeader('Authorization','Bearer ' + auth.token + ':' + auth.password)
+        this.$axios.setHeader(
+          'Authorization',
+          'Bearer ' + auth.token + ':' + auth.password
+        )
         this.loading = true
         // remove passwords after signup
         this.password = ''
@@ -142,61 +185,69 @@ export default {
         // get settings object and store auth
 
         // do a one way replication
-        this.$db.replicate.from(auth.userDBs.userdb).on('complete', async (info) => {
-          console.log(info);
-          const settings = await this.getSettings(date)
-          const { data } = await this.$axios.post('http://localhost:3001/auth/userDoc', {
-            username: auth.user_id
-          })
-          settings.street = data.address
-          settings.postcode = data.postcode
-          settings.city = data.city
-          settings.home = data.home
-          settings.timestamp = date.toISOString()
-          settings.state_district = data.state_district
-          settings.auth = auth
+        this.$db.replicate
+          .from(auth.userDBs.userdb)
+          .on('complete', async info => {
+            console.log(info)
+            const settings = await this.getSettings(date)
+            const { data } = await this.$axios.post(
+              'http://localhost:3001/auth/userDoc',
+              {
+                username: auth.user_id
+              }
+            )
+            settings.street = data.address
+            settings.postcode = data.postcode
+            settings.city = data.city
+            settings.home = data.home
+            settings.timestamp = date.toISOString()
+            settings.state_district = data.state_district
+            settings.auth = auth
 
-          await this.$db.put(settings)
-          // start syncing
-          this.$store.sync = this.$db.sync(settings.auth.userDBs.userdb, {
-            live: true,
-            retry: true
+            await this.$db.put(settings)
+            // start syncing
+            this.$store.sync = this.$db.sync(settings.auth.userDBs.userdb, {
+              live: true,
+              retry: true
+            })
+            // this.loading = false
+            // this.clicked = false
+            if (signup) {
+              return $nuxt.$router.replace({ path: '/settings' })
+            }
+            return $nuxt.$router.replace({ path: '/maps' })
           })
-          // this.loading = false
-          // this.clicked = false
-          if (signup) {
-            return $nuxt.$router.replace({path: '/settings'})
-          }
-          return $nuxt.$router.replace({path: '/maps'})
-        })
-      } catch(e) {
+      } catch (e) {
         this.loading = false
         this.clicked = false
-        this.loginError({message: "Fehler beim Verbindungsaufbau."})
+        this.loginError({ message: 'Fehler beim Verbindungsaufbau.' })
         console.error(e)
       }
     },
     async signup() {
       if (this.clicked) return
       this.clicked = true
-      
+
       try {
         if (!this.checkSignup()) return
 
-        const { data } = await this.$axios.post('http://localhost:3001/auth/register', {
-          email: this.email,
-          password: this.password,
-          confirmPassword: this.confirmPassword,
-          address: this.address,
-          postcode: this.postcode
-        })
-        await this.handleSuccess(data,true)
+        const { data } = await this.$axios.post(
+          'http://localhost:3001/auth/register',
+          {
+            email: this.email,
+            password: this.password,
+            confirmPassword: this.confirmPassword,
+            address: this.address,
+            postcode: this.postcode
+          }
+        )
+        await this.handleSuccess(data, true)
       } catch (e) {
         this.clicked = false
         if (e.response && e.response.status === 401) {
-          this.loginError({message: e.response.data.message})
+          this.loginError({ message: e.response.data.message })
         } else {
-          this.loginError({message: "Fehler beim Verbindungsaufbau."})
+          this.loginError({ message: 'Fehler beim Verbindungsaufbau.' })
           console.error(e)
         }
       }
@@ -204,20 +255,23 @@ export default {
     async login() {
       if (this.clicked) return
       this.clicked = true
-      
+
       try {
         if (!this.checkLogin()) return
-        const { data } = await this.$axios.post('http://localhost:3001/auth/login', {
-          username: this.email,
-          password: this.password
-        })
+        const { data } = await this.$axios.post(
+          'http://localhost:3001/auth/login',
+          {
+            username: this.email,
+            password: this.password
+          }
+        )
         this.handleSuccess(data)
       } catch (e) {
         this.clicked = false
         if (e.response && e.response.status === 401) {
-          this.loginError({message: e.response.data.message})
+          this.loginError({ message: e.response.data.message })
         } else {
-          this.loginError({message: "Fehler beim Verbindungsaufbau."})
+          this.loginError({ message: 'Fehler beim Verbindungsaufbau.' })
           console.error(e)
         }
       }
@@ -273,7 +327,7 @@ export default {
 }
 
 .registrieren-oben:hover {
-  background-color: rgba(0, 0, 0, 0.05)
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 div.flip-container {
@@ -380,7 +434,7 @@ div.flip-container {
   height: 33px;
   border-style: solid;
   border-width: 1px;
-  border-color: #CCCCCC;
+  border-color: #cccccc;
   background-color: transparent;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.1em;
@@ -400,7 +454,7 @@ div.flip-container {
   height: 33px;
   border-style: solid;
   border-width: 1px;
-  border-color: #CCCCCC;
+  border-color: #cccccc;
   background-color: transparent;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.1em;
@@ -420,7 +474,7 @@ div.flip-container {
   height: 33px;
   border-style: solid;
   border-width: 1px;
-  border-color: #CCCCCC;
+  border-color: #cccccc;
   background-color: transparent;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.1em;
@@ -440,7 +494,7 @@ div.flip-container {
   height: 33px;
   border-style: solid;
   border-width: 1px;
-  border-color: #CCCCCC;
+  border-color: #cccccc;
   background-color: transparent;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.1em;
@@ -460,7 +514,7 @@ div.flip-container {
   height: 33px;
   border-style: dashed;
   border-width: 1px;
-  border-color: #CCCCCC;
+  border-color: #cccccc;
   background-color: #f5f5f5;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   text-align: center;
@@ -481,7 +535,7 @@ div.flip-container {
   height: 33px;
   border-style: solid;
   border-width: 1px;
-  border-color: #CCCCCC;
+  border-color: #cccccc;
   background-color: transparent;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.1em;
@@ -501,7 +555,7 @@ div.flip-container {
   margin-left: -116.5px;
   border-style: solid;
   border-width: 1px;
-  border-color: #CCCCCC;
+  border-color: #cccccc;
   background-color: transparent;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.1em;
@@ -521,7 +575,7 @@ div.flip-container {
   margin-left: -116.5px;
   border-style: solid;
   border-width: 1px;
-  border-color: #CCCCCC;
+  border-color: #cccccc;
   background-color: transparent;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.1em;
@@ -541,7 +595,7 @@ div.flip-container {
   margin-left: -116.5px;
   border-style: solid;
   border-width: 1px;
-  border-color: #CCCCCC;
+  border-color: #cccccc;
   background-color: transparent;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.1em;
@@ -551,13 +605,13 @@ div.flip-container {
   border-radius: 0 !important;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   display: none;
 }
 
-input[type="checkbox"]+label span {
+input[type='checkbox'] + label span {
   background: white;
-  border: 1px solid #CCCCCC;
+  border: 1px solid #cccccc;
   margin: -1px 12px 0 0;
   border-radius: 0 !important;
   display: inline-block;
@@ -567,7 +621,7 @@ input[type="checkbox"]+label span {
   cursor: pointer;
 }
 
-input[type="checkbox"]:checked+label span {
+input[type='checkbox']:checked + label span {
   background: grey;
   outline: 2px solid white;
   outline-offset: -3px;

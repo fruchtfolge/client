@@ -1,7 +1,7 @@
 export default class Constraint {
   constructor(properties) {
-    this.type = 'constraint',
-    this.year = properties.year,
+    this.type = 'constraint'
+    this.year = properties.year
     this.scenario = properties.scenario
 
     this.crop1 = properties.crop1

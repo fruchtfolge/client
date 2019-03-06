@@ -4,8 +4,8 @@ export default class Setting {
     this.type = 'settings'
     this.zidId = ''
     this.zidPass = ''
-    this.curYear = settings.curYear,
-    this.curScenario = settings.curScenario,
+    this.curYear = settings.curYear
+    this.curScenario = settings.curScenario
     this.street = ''
     this.postcode = ''
     this.city = ''

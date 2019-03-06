@@ -1,25 +1,33 @@
 <template>
   <div>
-    <addCrop v-if="addCrop" v-on:closeAddCrop="addCrop = false"/>
-    <cropsSidebar v-on:showAddCrop="addCrop = true" v-on:changeCrop="changeCrop" :crops="crops" :selectedCrop="selectedCrop"/>
+    <addCrop v-if="addCrop" @closeAddCrop="addCrop = false" />
+    <cropsSidebar :crops="crops" :selected-crop="selectedCrop" @showAddCrop="addCrop = true" @changeCrop="changeCrop" />
     <div v-if="crops && crops.length > 0">
-      <div v-for="(crop, i) in crops" :key='i' v-if="isSelected(crop)" >
-        <cropLabour :crop="crop"/>
+      <div v-for="(crop, i) in crops" v-if="isSelected(crop)" :key="i">
+        <cropLabour :crop="crop" />
       </div>
     </div>
-    <div style="text-align: center; margin-top: 100px; width: calc(100% - 275px);" v-else>
+    <div v-else style="text-align: center; margin-top: 100px; width: calc(100% - 275px);">
       <h3>Noch keine Kulturen für das ausgewähle Planungsjahr und Szenario vorhanden.</h3>
       <h3>
-      Sie können neue Kulturen durch klicken auf den 'Hinzufügen'-Button in der rechten Seitenleiste hinzufügen.
-      <br>
-      Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.</h3>
-      <button @click="importPrev" style="margin-left: 20px;">IMPORTIEREN</button>
+        Sie können neue Kulturen durch klicken auf den 'Hinzufügen'-Button in der rechten Seitenleiste hinzufügen.
+        <br>
+        Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
+      </h3>
+      <button style="margin-left: 20px;" @click="importPrev">
+        IMPORTIEREN
+      </button>
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  components: {
+    cropLabour: () => import('~/components/crop_labour.vue'),
+    addCrop: () => import('~/components/add_crop.vue'),
+    cropsSidebar: () => import('~/components/crops_sidebar.vue')
+  },
   data() {
     return {
       crops: null,
@@ -51,11 +59,6 @@ export default {
       this.waiting = true
       this.$bus.$emit('importPrevYear')
     }
-  },
-  components: {
-    cropLabour: () => import('~/components/crop_labour.vue'),
-    addCrop: () => import('~/components/add_crop.vue'),
-    cropsSidebar: () => import('~/components/crops_sidebar.vue'),
   }
 }
 </script>

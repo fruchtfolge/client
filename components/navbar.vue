@@ -1,7 +1,11 @@
 <template>
-  <div class='zap-slideout' v-bind:class='{ isOpen: isOpen }'>
-    <div class="zap-slideout-opener"
-           @click="toggle">{{openerText}}</div>
+  <div class="zap-slideout" :class="{ isOpen: isOpen }">
+    <div
+      class="zap-slideout-opener"
+      @click="toggle"
+    >
+      {{ openerText }}
+    </div>
   </div>
 </template>
 <script>
@@ -13,19 +17,19 @@ export default {
   }),
   methods: {
     open() {
-      this.openerText = 'Close';
-      this.isOpen = true;
+      this.openerText = 'Close'
+      this.isOpen = true
       console.log(this.isOpen)
     },
     close() {
-      this.openerText = 'Open';
-      this.isOpen = false;
+      this.openerText = 'Open'
+      this.isOpen = false
     },
     toggle() {
       if (this.isOpen) {
-        this.close();
+        this.close()
       } else {
-        this.open();
+        this.open()
       }
     }
   }
@@ -39,8 +43,8 @@ export default {
   width: 300px;
   height: calc(100vh - 60px);
   top: 60px;
-  }
-  
+}
+
 .zap-slideout {
   height: 100%;
   width: 0;
@@ -64,10 +68,9 @@ export default {
   letter-spacing: 0.08em;
   color: #fff;
   cursor: pointer;
-  
+
   &:hover {
     text-decoration: underline;
   }
 }
-
 </style>

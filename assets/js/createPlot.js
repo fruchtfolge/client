@@ -3,10 +3,9 @@ import mapquest from './mapquest'
 import { soilType, sqr } from 'bgr-apis'
 import Plot from '~/constructors/Plot'
 
-
 export default async function createPlot(properties, settings) {
   // get all required information to create a new plot
-  //console.log(settings)
+  // console.log(settings)
   if (!properties.year) {
     properties.year = settings.curYear
   }

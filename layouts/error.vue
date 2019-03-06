@@ -6,7 +6,7 @@
     <h2 class="info">
       ERROR {{ error.statusCode }}
     </h2>
-    <nuxt-link class="button" to="/" v-if="error.statusCode === 404 || error.statusCode === 403">
+    <nuxt-link v-if="error.statusCode === 404 || error.statusCode === 403" class="button" to="/">
       Zurück zur Startseite
     </nuxt-link>
   </section>
@@ -27,18 +27,15 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.title
-{
+.title {
   font-size: 3em;
 }
-.info
-{
+.info {
   font-weight: 300;
   color: #9aabb1;
   margin: 0;
 }
-.button
-{
+.button {
   margin-top: 50px;
 }
 </style>

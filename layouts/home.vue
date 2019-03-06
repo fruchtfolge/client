@@ -1,12 +1,16 @@
 <template>
   <div>
     <div class="header">
-      <nuxt-link to="/" class="logo">FRUCHTFOLGE</nuxt-link>
+      <nuxt-link to="/" class="logo">
+        FRUCHTFOLGE
+      </nuxt-link>
       <!-- Planning year selector -->
-      <button class="register" @click="flip">{{ buttonText }}</button>
+      <button class="register" @click="flip">
+        {{ buttonText }}
+      </button>
     </div>
     <!-- this is where the main application lives -->
-    <nuxt class="nuxt"></nuxt>
+    <nuxt class="nuxt" />
   </div>
 </template>
 
@@ -24,21 +28,21 @@ export default {
       } else {
         this.buttonText = 'REGISTRIEREN'
       }
-      this.$bus.$emit('flip',null)
+      this.$bus.$emit('flip', null)
     }
   }
 }
 </script>
 
 <style>
-
-body,html {
+body,
+html {
   margin: 0px;
   padding: 0px;
   height: 100%;
   width: 100%;
   overflow-x: hidden;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   font-family: 'Open Sans Condensed', sans-serif;
 }
 
@@ -79,9 +83,7 @@ body,html {
 .nuxt {
   position: relative;
   top: 60px;
-  transition: margin-left .5s;
+  transition: margin-left 0.5s;
   padding-bottom: 50px;
 }
-
-
 </style>

@@ -1,6 +1,5 @@
 <template>
-  <div id="map" class="map">
-  </div>
+  <div id="map" class="map" />
 </template>
 
 <script>
@@ -35,7 +34,7 @@ export default {
       type: 'error'
     }
   },
-  async mounted () {
+  async mounted() {
     let settings
     try {
       settings = await this.$db.get('settings')
@@ -44,20 +43,20 @@ export default {
       // initially draw plots, if available
       if (this.$store.curPlots) {
         this.curPlots = this.$store.curPlots
-        console.log(this.curPlots);
+        console.log(this.curPlots)
         await this.drawPlots(this.curYear, this.curPlots)
       }
     } catch (e) {
       if (e.status === 404) {
         this.showAddressWarn()
-        return $nuxt.$router.replace({path: 'settings'})
+        return $nuxt.$router.replace({ path: 'settings' })
       }
       console.log(e)
     }
-    //if (!settings.home) {
-  //  this.showAddressWarn()
-  //  return $nuxt.$router.replace({path: 'settings'})
-    //}
+    // if (!settings.home) {
+    //  this.showAddressWarn()
+    //  return $nuxt.$router.replace({path: 'settings'})
+    // }
   },
   async created() {
     // listen to changes in settings and plots (current planning year etc.)
@@ -70,7 +69,7 @@ export default {
       }
     })
     // listen to flyTo events
-    this.$bus.$on('flyTo', (plot) => {
+    this.$bus.$on('flyTo', plot => {
       console.log(plot.center)
       this.map.flyTo({
         center: plot.center,
@@ -80,9 +79,9 @@ export default {
 
     this.$bus.$on('resize', () => {
       setTimeout(() => {
-        //console.log(this.map);
+        // console.log(this.map);
         this.map.resize()
-      }, 500);
+      }, 500)
     })
 
     this.$bus.$on('drawPlot', geometry => {
@@ -94,13 +93,14 @@ export default {
   },
   methods: {
     async createMap(settings) {
-      mapboxgl.accessToken = 'pk.eyJ1IjoidG9mZmkiLCJhIjoiY2l3cXRnNHplMDAxcTJ6cWY1YWp5djBtOSJ9.mBYmcCSgNdaRJ1qoHW5KSQ'
+      mapboxgl.accessToken =
+        'pk.eyJ1IjoidG9mZmkiLCJhIjoiY2l3cXRnNHplMDAxcTJ6cWY1YWp5djBtOSJ9.mBYmcCSgNdaRJ1qoHW5KSQ'
 
       // init the map
       this.map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/satellite-streets-v9?optimize=true',
-        center: settings.home || [7.685235,51.574318],
+        center: settings.home || [7.685235, 51.574318],
         zoom: settings.home ? 14 : 8,
         dragPan: false,
         drageRotate: false
@@ -119,15 +119,15 @@ export default {
     },
     async drawPlots(year, plots) {
       try {
-        //const geometries = []
+        // const geometries = []
         plots.forEach(plot => {
           this.Draw.add(plot.geometry)
-          //geometries.push(plot.geometry)
+          // geometries.push(plot.geometry)
         })
         // fit map to the bounds of the plots
-        //const extent = featureCollection(geometries)
-        //const bounds = bbox(extent)
-        //this.map.fitBounds(bounds, {padding: 40, duration: 0})
+        // const extent = featureCollection(geometries)
+        // const bounds = bbox(extent)
+        // this.map.fitBounds(bounds, {padding: 40, duration: 0})
       } catch (e) {
         console.log(e)
       }
@@ -164,9 +164,7 @@ export default {
       const m2 = area(geometry)
       return Number((m2 / 10000).toFixed(2))
     },
-    async combine() {
-
-    },
+    async combine() {},
     async create(data) {
       this.$emit('addPlot', data)
       this.Draw.delete(data.features[0].id)
@@ -175,8 +173,8 @@ export default {
       this.Draw.deleteAll()
     },
     select(data) {
-      console.log(data);
-      if (data.features.length !== 1)  return
+      console.log(data)
+      if (data.features.length !== 1) return
       this.$bus.$emit('selectedPlot', data.features[0].properties._id)
     }
   }

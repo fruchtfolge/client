@@ -1,40 +1,72 @@
 <template lang="html">
   <div>
-    <div class="blur"></div>
+    <div class="blur" />
     <div class="constraintBox">
       <div class="inputs">
-        <h2 class="infoText">NEUE NEBENBEDINGUNG HINZUFÜGEN</h2>
+        <h2 class="infoText">
+          NEUE NEBENBEDINGUNG HINZUFÜGEN
+        </h2>
         <label for="add.constraint.crop1">Kultur</label>
-        <select class="dropdown" id="add.constraint.crop1" v-model="crop1">
-          <option disabled value="">Kultur</option>
-          <option v-for="(crop, i) in crops" :key="i" :value="crop">{{ crop.name }}</option>
-          <option :value="allCrops">Alle Kulturen</option>
-          <option :value="allCropCombis">Alle Kombinationen aus Kulturen</option>
-          <option :value="efa">Ökologische Vorrangfläche</option>
+        <select id="add.constraint.crop1" v-model="crop1" class="dropdown">
+          <option disabled value="">
+            Kultur
+          </option>
+          <option v-for="(crop, i) in crops" :key="i" :value="crop">
+            {{ crop.name }}
+          </option>
+          <option :value="allCrops">
+            Alle Kulturen
+          </option>
+          <option :value="allCropCombis">
+            Alle Kombinationen aus Kulturen
+          </option>
+          <option :value="efa">
+            Ökologische Vorrangfläche
+          </option>
         </select>
         <label for="add.constraint.crop2">und Kultur (optional)</label>
-        <select class="dropdown" id="add.constraint.crop2" v-model="crop2">
-          <option disabled value="">Kultur</option>
-          <option value="" selected></option>
-          <option v-for="(crop, i) in crops" :key="i" :value="crop">{{ crop.name }}</option>
+        <select id="add.constraint.crop2" v-model="crop2" class="dropdown">
+          <option disabled value="">
+            Kultur
+          </option>
+          <option value="" selected />
+          <option v-for="(crop, i) in crops" :key="i" :value="crop">
+            {{ crop.name }}
+          </option>
         </select>
         <label for="add.constraint.crop4">weniger/mehr</label>
-        <select class="dropdown" id="add.constraint.crop4" v-model="operator">
-          <option disabled value="">weniger/mehr</option>
-          <option value="<">weniger als</option>
-          <option value=">">mehr als</option>
+        <select id="add.constraint.crop4" v-model="operator" class="dropdown">
+          <option disabled value="">
+            weniger/mehr
+          </option>
+          <option value="<">
+            weniger als
+          </option>
+          <option value=">">
+            mehr als
+          </option>
         </select>
-          <label for="add.constraint.crop4">Flächeneinheit</label>
-        <select class="dropdown" id="add.constraint.crop4" v-model="sizeType">
-          <option value="ha">ha</option>
-          <option value="Prozent">Prozent der Gesamtfläche</option>
+        <label for="add.constraint.crop4">Flächeneinheit</label>
+        <select id="add.constraint.crop4" v-model="sizeType" class="dropdown">
+          <option value="ha">
+            ha
+          </option>
+          <option value="Prozent">
+            Prozent der Gesamtfläche
+          </option>
         </select>
-        <label for="add.constraint.name">Fläche in {{sizeType}}</label>
-        <input type="number" id="add.constraint.name" class="input" v-model="area" @keyup.enter="addConstraint">
+        <label for="add.constraint.name">Fläche in {{ sizeType }}</label>
+        <input id="add.constraint.name" v-model="area" type="number" class="input" @keyup.enter="addConstraint">
       </div>
-      <p v-if="!crop1" style="text-align: center; margin-top: 30px; color:red;">Bitte Kultur auswählen.</p>
-      <button v-if="crop1" class="buttonOk" @click="addConstraint">ÜBERNEHMEN</button>
-      <button class="buttonCancel" @click="cancel">ABBRECHEN</button>
+      <p v-if="!crop1" style="text-align: center; margin-top: 30px; color:red;">
+        Bitte Kultur auswählen.
+      </p>
+      <button v-if="crop1" class="buttonOk" @click="addConstraint">
+        ÜBERNEHMEN
+      </button>
+      <button class="buttonCancel" @click="cancel">
+        ABBRECHEN
+      </button>
     </div>
   </div>
 </template>
@@ -82,11 +114,11 @@ export default {
           area: this.area
         })
         // store new constraint in database
-        console.log(constraint);
+        console.log(constraint)
         await this.$db.post(constraint)
         this.$emit('closeAddConstraint')
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
     cancel() {
@@ -98,7 +130,7 @@ export default {
 
 <style scoped>
 .blur {
-  background: #F5F5F5;
+  background: #f5f5f5;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -118,7 +150,7 @@ export default {
   margin-left: -200px;
   background-color: white;
   border: 1px solid;
-  border-color: #CCCCCC;
+  border-color: #cccccc;
   z-index: 99;
 }
 
@@ -185,6 +217,6 @@ export default {
 }
 
 .buttonCancel:hover {
-  background-color: rgba(0,0,0,0.05);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 </style>

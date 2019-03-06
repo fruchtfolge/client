@@ -1,33 +1,47 @@
 <template>
   <div class="plotsSidebar">
     <div class="content-pos">
-      <h1 class="sumHa">GESAMT {{ totalHa }} ha</h1>
-      <div v-if="regions" v-for="(region, n) in regions" :key='n'>
+      <h1 class="sumHa">
+        GESAMT {{ totalHa }} ha
+      </h1>
+      <div v-for="(region, n) in regions" v-if="regions" :key="n">
         <div class="container" @click="expand(region[0].region)">
-          <h2 class="regionText"> {{ region[0].region.toUpperCase() }}</h2>
-          <div class="arrow" v-bind:class="{ rotate: shown[region[0].region]}"></div>
+          <h2 class="regionText">
+            {{ region[0].region.toUpperCase() }}
+          </h2>
+          <div class="arrow" :class="{ rotate: shown[region[0].region]}" />
         </div>
-        <transition name="expand"
-        v-on:before-enter="beforeEnter" v-on:enter="enter"
-        v-on:before-leave="beforeLeave" v-on:leave="leave">
-          <div class="body" v-show="shown[region[0].region]">
-            <p v-for="(plot, m) in region" :key='m'
-            @click="flyTo(plot)"
-            class="plotsText"
-            v-bind:class="{ active: isClicked(plot)}"> {{plot.name}} ({{plot.size}} ha) </p>
+        <transition
+          name="expand"
+          @before-enter="beforeEnter"
+          @enter="enter"
+          @before-leave="beforeLeave"
+          @leave="leave"
+        >
+          <div v-show="shown[region[0].region]" class="body">
+            <p
+              v-for="(plot, m) in region"
+              :key="m"
+              class="plotsText"
+              :class="{ active: isClicked(plot)}"
+              @click="flyTo(plot)"
+            >
+              {{ plot.name }} ({{ plot.size }} ha)
+            </p>
           </div>
         </transition>
       </div>
       <div v-else>
-        <p class="regionText">Klicken Sie auf den Rechteck-Button in der Karte links-unten um ein neues Feld eizuzeichnen.</p>
+        <p class="regionText">
+          Klicken Sie auf den Rechteck-Button in der Karte links-unten um ein neues Feld eizuzeichnen.
+        </p>
       </div>
     </div>
   </div>
 </template>
 <script>
-
 export default {
-  data () {
+  data() {
     return {
       regions: null,
       totalHa: 0,
@@ -49,16 +63,16 @@ export default {
   },
   methods: {
     beforeEnter(el) {
-      el.style.height = '0px';
+      el.style.height = '0px'
     },
     enter(el) {
-      el.style.height = el.scrollHeight + 'px';
+      el.style.height = el.scrollHeight + 'px'
     },
     beforeLeave(el) {
-      el.style.height = el.scrollHeight + 'px';
+      el.style.height = el.scrollHeight + 'px'
     },
     leave(el) {
-      el.style.height = '0px';
+      el.style.height = '0px'
     },
     expand(region) {
       if (!this.shown[region]) {
@@ -68,7 +82,9 @@ export default {
       }
     },
     calcTotal() {
-      const total = _.sumBy(this.plots, (plot) => { return plot.size })
+      const total = _.sumBy(this.plots, plot => {
+        return plot.size
+      })
       if (total) {
         return Number(total).toFixed(2)
       } else {
@@ -79,10 +95,10 @@ export default {
       this.plots = this.$store.curPlots
       this.regions = _.groupBy(this.plots, 'region')
       // initially collapse all regions, if they aren't opended yet
-      Object.keys(this.regions).forEach((region) => {
+      Object.keys(this.regions).forEach(region => {
         let shown = false
         if (this.shown[region]) shown = true
-        this.$set(this.shown,region,shown)
+        this.$set(this.shown, region, shown)
       })
       // update ha count
       this.totalHa = this.calcTotal()
@@ -96,7 +112,9 @@ export default {
     },
     activatePlot(id) {
       if (!this.plots) return
-      const plot = this.plots.filter(o => {return o._id === id})
+      const plot = this.plots.filter(o => {
+        return o._id === id
+      })
       if (!plot || !plot[0] || !plot[0].region) return
       this.shown[plot[0].region] = true
       this.curPlot = plot[0]
@@ -131,7 +149,7 @@ export default {
 }
 
 .container:hover:not(.active) {
-  background-color: rgba(0, 0, 0, .02);
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
 .arrow {
@@ -141,30 +159,31 @@ export default {
   background-position: 100% 100%;
   background-repeat: no-repeat;
   transform: rotate(0deg);
-  transition-duration: .5s;
+  transition-duration: 0.5s;
 }
 
 .arrow.rotate {
   transform: rotate(180deg);
-  transition: .5s;
+  transition: 0.5s;
 }
 
-.expand-enter-active, .expand-leave-active {
-  transition: height .5s ease-in-out;
+.expand-enter-active,
+.expand-leave-active {
+  transition: height 0.5s ease-in-out;
   overflow: hidden;
 }
 
-.expand-enter, .expand-leave-to {
+.expand-enter,
+.expand-leave-to {
   height: 0;
 }
 
 .body p:hover:not(.active) {
-  background-color: rgba(0, 0, 0, .02);
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
-
 .active {
-  background-color: rgba(0, 0, 0, .05);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .plotsText {
@@ -193,11 +212,9 @@ export default {
   font-weight: normal;
 }
 
-
 .plotInput {
   font-family: 'open_sanscondensed_light', sans-serif;
   font-size: 16px;
   letter-spacing: 0.1em;
 }
-
 </style>

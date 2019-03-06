@@ -1,33 +1,46 @@
 <template>
   <div v-if="settings">
     <div class="header">
-      <div @click='toggle' type="button" name="button" class="navIcon"></div>
-      <div class="logo">FRUCHTFOLGE</div>
+      <div type="button" name="button" class="navIcon" @click="toggle" />
+      <div class="logo">
+        FRUCHTFOLGE
+      </div>
       <!-- Scenario selector -->
-      <select v-model="settings.curScenario" @change="saveSettings" class="planYear scenario" type="button" value="Standard">
-        <option disabled value="">Szenario</option>
-        <option v-for="(scenario,j) in scenarios" :key="j" :value="scenario.name"> {{ scenario.name }}</option>
+      <select v-model="settings.curScenario" class="planYear scenario" type="button" value="Standard" @change="saveSettings">
+        <option disabled value="">
+          Szenario
+        </option>
+        <option v-for="(scenario,j) in scenarios" :key="j" :value="scenario.name">
+          {{ scenario.name }}
+        </option>
         <!-- <option>Neues Szenario</option> -->
       </select>
       <!-- Planning year selector -->
-      <select v-model="settings.curYear" @change="saveSettings" class="planYear" type="button" value="2019">
-        <option disabled value="">Planungsjahr</option>
-        <option v-for="(year,i) in years" :key="i" :value="year.single"> {{ year.full }}</option>
+      <select v-model="settings.curYear" class="planYear" type="button" value="2019" @change="saveSettings">
+        <option disabled value="">
+          Planungsjahr
+        </option>
+        <option v-for="(year,i) in years" :key="i" :value="year.single">
+          {{ year.full }}
+        </option>
       </select>
     </div>
     <!-- navigation bar on the side -->
-    <div class="sidenav" v-bind:style="sidenavStyle">
+    <div class="sidenav" :style="sidenavStyle">
       <ul class="sidenav-container">
-        <li v-for="(route, index) in routes"
-            :key='index' @click="follow(route)">
-            <p class="sidenav-links" v-bind:class="{ active: isClicked(route), subPage: route.subPage }">
-              {{ route.name }}
-            </p>
-          </li>
+        <li
+          v-for="(route, index) in routes"
+          :key="index"
+          @click="follow(route)"
+        >
+          <p class="sidenav-links" :class="{ active: isClicked(route), subPage: route.subPage }">
+            {{ route.name }}
+          </p>
+        </li>
       </ul>
     </div>
     <!-- this is where the main application lives -->
-    <nuxt class="nuxt" v-bind:style="mainStyle"></nuxt>
+    <nuxt class="nuxt" :style="mainStyle" />
   </div>
   <div v-else>
     <!-- loading component -->
@@ -37,9 +50,9 @@
 <script>
 import Setting from '~/constructors/settings'
 import routes from '~/assets/js/routes.js'
-//console.log(routes);
+// console.log(routes);
 export default {
-  data () {
+  data() {
     return {
       settings: {
         curYear: 2019,
@@ -47,9 +60,11 @@ export default {
       },
       curPage: '',
       years: [],
-      scenarios: [{
-        name: 'Standard'
-      }],
+      scenarios: [
+        {
+          name: 'Standard'
+        }
+      ],
       isOpen: false,
       sidenavStyle: {
         width: '0px'
@@ -73,7 +88,7 @@ export default {
       const settings = await this.$db.get('settings')
       this.settings.curYear = settings.curYear
       this.settings.curScenario = settings.curScenario
-    } catch(e) {
+    } catch (e) {
       if (e.status === 404) {
         this.settings = new Setting(this.settings)
         // store in db
@@ -87,21 +102,21 @@ export default {
     open() {
       this.sidenavStyle.width = '250px'
       this.mainStyle.marginLeft = '250px'
-      //this.mainStyle.width = 'calc(100% - 250px)'
+      // this.mainStyle.width = 'calc(100% - 250px)'
       this.isOpen = true
     },
     close() {
       this.sidenavStyle.width = '0px'
       this.mainStyle.marginLeft = '0px'
-      //this.mainStyle.width = '100%'
+      // this.mainStyle.width = '100%'
       this.isOpen = false
     },
     toggle() {
       this.$bus.$emit('resize', null)
       if (this.isOpen) {
-        this.close();
+        this.close()
       } else {
-        this.open();
+        this.open()
       }
     },
     async follow(route) {
@@ -110,10 +125,10 @@ export default {
           await this.$axios.post('http://localhost:3001/auth/logout')
         }
         this.curPage = route.path
-        return $nuxt.$router.replace({path: route.path})
+        return $nuxt.$router.replace({ path: route.path })
       } catch (e) {
         console.log(e)
-        return $nuxt.$router.replace({path: route.path})
+        return $nuxt.$router.replace({ path: route.path })
       }
     },
     isClicked(route) {
@@ -126,9 +141,9 @@ export default {
         const settings = await this.$db.get('settings')
         settings.curYear = this.settings.curYear
         settings.curScenario = this.settings.curScenario
-        console.log(settings);
+        console.log(settings)
         await this.$db.put(settings)
-      } catch(e) {
+      } catch (e) {
         console.log(e)
       }
     },
@@ -137,7 +152,7 @@ export default {
       const year = date.getFullYear()
       const month = date.getMonth()
 
-      for (var i = year - 3; i < year + 6; i++) {
+      for (let i = year - 3; i < year + 6; i++) {
         this.years.push({
           single: i,
           full: `${i - 1}/${i}`
@@ -155,14 +170,14 @@ export default {
 </script>
 
 <style>
-
-body,html {
+body,
+html {
   margin: 0px;
   padding: 0px;
   height: 100%;
   width: 100%;
   overflow-x: hidden;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   font-family: 'Open Sans Condensed', sans-serif;
 }
 
@@ -211,7 +226,7 @@ body,html {
 }
 
 .planYear:hover {
-  background-color: rgba(0, 0, 0, .02);
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
 .scenario {
@@ -221,7 +236,7 @@ body,html {
 .nuxt {
   position: relative;
   top: 60px;
-  transition: margin-left .5s;
+  transition: margin-left 0.5s;
   padding-bottom: 50px;
 }
 
@@ -234,10 +249,9 @@ body,html {
   left: 0;
   background-color: #ececec;
   overflow-x: hidden;
-  transition: width .5s;
+  transition: width 0.5s;
   padding-top: 10px;
 }
-
 
 .sidenav-container {
   list-style: none;
@@ -258,10 +272,10 @@ body,html {
   margin-bottom: 5px;
 }
 .sidenav-links:not(.active):hover {
-  background-color: rgba(0, 0, 0, .02);
+  background-color: rgba(0, 0, 0, 0.02);
 }
 .active {
-  background-color: rgba(0, 0, 0, .05);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .subPage {
@@ -270,22 +284,20 @@ body,html {
 }
 
 .navIcon {
-	position: fixed;
-	left: 22px;
-	top: 19px;
-	z-index: 120;
-	width: 33px;
-	height: 27px;
+  position: fixed;
+  left: 22px;
+  top: 19px;
+  z-index: 120;
+  width: 33px;
+  height: 27px;
   cursor: pointer;
-	background: url("data:image/svg+xml;utf8,<svg version='1.1' id='Ebene_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='33px' height='27px' viewBox='0 0 33 27' enable-background='new 0 0 33 27' xml:space='preserve'> <g> <rect width='33' height='2'/> </g> <g> <rect y='25' width='33' height='2'/> </g> <g> <rect y='12' width='33' height='2'/> </g> </svg>")  no-repeat;
-	background-size: 23px 25px;
-	background-repeat: no-repeat;
-	border-radius: 0 !important;
-	border-style: solid;
-	border-width: 0px;
+  background: url("data:image/svg+xml;utf8,<svg version='1.1' id='Ebene_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='33px' height='27px' viewBox='0 0 33 27' enable-background='new 0 0 33 27' xml:space='preserve'> <g> <rect width='33' height='2'/> </g> <g> <rect y='25' width='33' height='2'/> </g> <g> <rect y='12' width='33' height='2'/> </g> </svg>")
+    no-repeat;
+  background-size: 23px 25px;
+  background-repeat: no-repeat;
+  border-radius: 0 !important;
+  border-style: solid;
+  border-width: 0px;
   -moz-user-select: -moz-none;
 }
-
-
-
 </style>

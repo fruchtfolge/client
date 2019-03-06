@@ -1,28 +1,42 @@
 <template lang="html">
   <div>
     <div class="blur" :class="{ plotLoading: loading }">
-      <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+      <div class="lds-spinner">
+        <div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div />
+      </div>
     </div>
     <div class="plotBox">
       <div class="inputs">
-        <h2 class="infoText">NEUEN SCHLAG HINZUFÜGEN</h2>
+        <h2 class="infoText">
+          NEUEN SCHLAG HINZUFÜGEN
+        </h2>
         <label for="add.plot.name">Name</label>
-        <input type="text" id="add.plot.name" class="input" v-model="name" @keyup.enter="addPlot">
+        <input id="add.plot.name" v-model="name" type="text" class="input" @keyup.enter="addPlot">
         <label for="add.plot.prevCrop1">Hauptfrucht {{ curYear - 1 }}</label>
-        <select class="dropdown" id="add.plot.prevCrop1" v-model="prevCrop1">
-          <option v-for="(crop, i) in crops" :key="i" :value="crop">{{ crop }}</option>
+        <select id="add.plot.prevCrop1" v-model="prevCrop1" class="dropdown">
+          <option v-for="(crop, i) in crops" :key="i" :value="crop">
+            {{ crop }}
+          </option>
         </select>
         <label for="add.plot.prevCrop2">Hauptfrucht {{ curYear - 2 }}</label>
-        <select class="dropdown" id="add.plot.prevCrop2" v-model="prevCrop2">
-          <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop">{{ prevCrop }}</option>
+        <select id="add.plot.prevCrop2" v-model="prevCrop2" class="dropdown">
+          <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop">
+            {{ prevCrop }}
+          </option>
         </select>
         <label for="add.plot.prevCrop3">Hauptfrucht {{ curYear - 3 }}</label>
-        <select class="dropdown" id="add.plot.prevCrop3" v-model="prevCrop3">
-          <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop">{{ prevCrop }}</option>
+        <select id="add.plot.prevCrop3" v-model="prevCrop3" class="dropdown">
+          <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop">
+            {{ prevCrop }}
+          </option>
         </select>
       </div>
-      <button class="buttonOk" @click="addPlot">ÜBERNEHMEN</button>
-      <button class="buttonCancel" @click="cancel">ABBRECHEN</button>
+      <button class="buttonOk" @click="addPlot">
+        ÜBERNEHMEN
+      </button>
+      <button class="buttonCancel" @click="cancel">
+        ABBRECHEN
+      </button>
     </div>
   </div>
 </template>
@@ -60,15 +74,22 @@ export default {
     crops() {
       let unique = _.uniqBy(ktblCrops, 'cropGroup')
       if (unique.length > 0) {
-        unique = unique.map(o => {return o.cropGroup})
-        console.log(unique);
+        unique = unique.map(o => {
+          return o.cropGroup
+        })
+        console.log(unique)
         return unique.sort()
       }
     },
     systems() {
-      let data = _.filter(ktblCrops, {farmingType: this.farmingType, crop: this.crop})
+      let data = _.filter(ktblCrops, {
+        farmingType: this.farmingType,
+        crop: this.crop
+      })
       if (data) {
-        data = data.map(o => {return o.system})
+        data = data.map(o => {
+          return o.system
+        })
         return data
       }
     }
@@ -89,7 +110,11 @@ export default {
           settings: settings
         }
         console.log(properties)
-        const { data } = await this.$axios.post('http://localhost:3001/plots/', properties,{ progress: true })
+        const { data } = await this.$axios.post(
+          'http://localhost:3001/plots/',
+          properties,
+          { progress: true }
+        )
         this.$bus.$emit('drawPlot', data.geometry)
         // store new plot in database
         await this.$db.put(data)
@@ -99,9 +124,9 @@ export default {
       } catch (e) {
         this.showPlotErr()
         this.loading = false
-        console.log(e);
+        console.log(e)
       }
-      //const settings = await this.$db.get('settings')
+      // const settings = await this.$db.get('settings')
       //
     },
     getSize(geometry) {
@@ -117,7 +142,7 @@ export default {
 
 <style scoped>
 .blur {
-  background: #F5F5F5;
+  background: #f5f5f5;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -137,7 +162,7 @@ export default {
   margin-left: -200px;
   background-color: white;
   border: 1px solid;
-  border-color: #CCCCCC;
+  border-color: #cccccc;
   z-index: 99;
 }
 
@@ -208,6 +233,6 @@ export default {
 }
 
 .buttonCancel:hover {
-  background-color: rgba(0,0,0,0.05);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 </style>

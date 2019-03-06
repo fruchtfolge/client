@@ -7,6 +7,9 @@ module.exports = {
   parserOptions: {
     parser: 'babel-eslint'
   },
+  globals: {
+    '_': true
+  },
   extends: [
     '@nuxtjs',
     'plugin:prettier/recommended'
@@ -15,5 +18,7 @@ module.exports = {
     'prettier'
   ],
   // add your custom rules here
-  rules: {}
+  rules: {
+    'no-console': 'off'
+  }
 }

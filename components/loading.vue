@@ -1,6 +1,6 @@
 <template>
-  <div class="loading-page" v-if="loading">
-    <vue-simple-spinner font-size="20" spacing="20" class="spinner" line-fg-color="#79ae98" message="LÄDT..."></vue-simple-spinner>
+  <div v-if="loading" class="loading-page">
+    <vue-simple-spinner font-size="20" spacing="20" class="spinner" line-fg-color="#79ae98" message="LÄDT..." />
   </div>
 </template>
 
@@ -15,10 +15,10 @@ export default {
     loading: false
   }),
   methods: {
-    start () {
+    start() {
       this.loading = true
     },
-    finish () {
+    finish() {
       this.loading = false
     }
   }
@@ -27,13 +27,13 @@ export default {
 
 <style scoped>
 .loading-page {
-  background: #F5F5F5;
+  background: #f5f5f5;
   position: fixed;
   width: 100%;
   height: 100%;
   z-index: 95;
-  transition: all 0.4s ease-in-out; */
-  opacity: 0.8;
+  transition: all 0.4s ease-in-out;
+  */opacity: 0.8;
 }
 .spinner {
   position: fixed;

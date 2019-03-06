@@ -1,7 +1,7 @@
 <template lang="html">
   <div>
     <div class="cropShares-wrapper">
-      <canvas id="cropShares-chart" width="280" height="280" style="display: unset;"></canvas>
+      <canvas id="cropShares-chart" width="280" height="280" style="display: unset;" />
     </div>
   </div>
 </template>
@@ -9,6 +9,12 @@
 import Chart from 'chart.js'
 
 export default {
+  props: {
+    shares: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {
       cropShares: undefined,
@@ -17,23 +23,17 @@ export default {
   },
   watch: {
     shares(val) {
-      console.log(this.shares);
+      console.log(this.shares)
       this.prepareData()
       this.cropShares.data.datasets[0].data = this.dataset.data
       this.cropShares.data.datasets[0].backgroundColor = this.dataset.backgroundColor
       this.cropShares.data.labels = this.dataset.labels
       this.cropShares.update()
-    },
+    }
   },
   mounted() {
     this.prepareData()
     this.createChart('cropShares-chart', this.cropShares)
-  },
-  props: {
-    shares: {
-      type: Array,
-      required: true
-    }
   },
   methods: {
     prepareData() {
@@ -49,30 +49,32 @@ export default {
       })
     },
     createChart(chartId, chartData) {
-      Chart.defaults.global.defaultFontFamily = "Open Sans Light";
-      Chart.defaults.global.defaultFontSize = 14;
+      Chart.defaults.global.defaultFontFamily = 'Open Sans Light'
+      Chart.defaults.global.defaultFontSize = 14
 
       const config = {
         type: 'pie',
         data: {
-          datasets: [{
-            data: this.dataset.data,
-            backgroundColor: this.dataset.backgroundColor,
-            label: 'Summe Kulturen'
-          }],
+          datasets: [
+            {
+              data: this.dataset.data,
+              backgroundColor: this.dataset.backgroundColor,
+              label: 'Summe Kulturen'
+            }
+          ],
           labels: this.dataset.labels
         },
         options: {
           responsive: false,
           legend: {
-            position: "bottom"
+            position: 'bottom'
           },
           tooltips: {
             callbacks: {
               label: function(tooltipItem, data) {
-                var value = data.datasets[0].data[tooltipItem.index];
-                var label = data.labels[tooltipItem.index];
-                return label + ': ' + value + ' ha';
+                const value = data.datasets[0].data[tooltipItem.index]
+                const label = data.labels[tooltipItem.index]
+                return label + ': ' + value + ' ha'
               }
             },
             xPadding: 6,
@@ -83,7 +85,7 @@ export default {
       }
       const ctx = document.getElementById(chartId).getContext('2d')
       this.cropShares = new Chart(ctx, config)
-      console.log(this.cropShares);
+      console.log(this.cropShares)
     }
   }
 }

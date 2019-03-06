@@ -48,7 +48,7 @@ miniToastr.init({
       },
       '&:hover': {
         opacity: 1
-        //'box-shadow': '#000 0 0 12px'
+        // 'box-shadow': '#000 0 0 12px'
       }
     },
     '.mini-toastr-notification__title': {
@@ -68,7 +68,7 @@ miniToastr.init({
 // This mean that in case of 'success' message we will call miniToastr.success(message, title, timeout, cb)
 // In case of 'error' we will call miniToastr.error(message, title, timeout, cb)
 // and etc.
-function toast ({title, message, type, timeout, cb}) {
+function toast({ title, message, type, timeout, cb }) {
   return miniToastr[type](message, title, 5000, cb)
 }
 

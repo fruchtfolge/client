@@ -1,15 +1,21 @@
 <template>
   <div class="">
     <div class="chart-wrapper">
-      <canvas id="labour-chart"></canvas>
+      <canvas id="labour-chart" />
     </div>
     <div v-if="!stored" style="width:100%;text-align:center;margin-top: 40px;">
-      <h3>Aktuell sind keine Arbeitszeit-Restriktionen hinterlegt.<br>
-        Sie können durch Klicken auf den 'Hinzufügen'-Button maximale Arbeitsstunden hinzufügen.<br></h3>
-      <button type="button" name="button" @click="add">HINZUFÜGEN</button>
+      <h3>
+        Aktuell sind keine Arbeitszeit-Restriktionen hinterlegt.<br>
+        Sie können durch Klicken auf den 'Hinzufügen'-Button maximale Arbeitsstunden hinzufügen.<br>
+      </h3>
+      <button type="button" name="button" @click="add">
+        HINZUFÜGEN
+      </button>
     </div>
     <div v-if="stored" style="width:100%;text-align:center;margin-top: 40px;">
-      <button type="button" name="button" @click="remove">ENTFERNEN</button>
+      <button type="button" name="button" @click="remove">
+        ENTFERNEN
+      </button>
     </div>
   </div>
 </template>
@@ -57,9 +63,9 @@ export default {
       this.labourChart = new Chart(ctx, {
         type: chartData.chartType,
         data: chartData.data,
-        options: chartData.options,
+        options: chartData.options
       })
-      console.log(this.labourChart);
+      console.log(this.labourChart)
     },
     async add() {
       // create new time constraints object
@@ -67,7 +73,7 @@ export default {
       chartDefaults.scenario = this.$store.curScenario
 
       const timeConstraints = new TimeConstraints(chartDefaults)
-      console.log(timeConstraints);
+      console.log(timeConstraints)
       await this.$db.put(timeConstraints)
     },
     async saveChanges(e, datasetIndex, index, value) {
@@ -78,7 +84,7 @@ export default {
     },
     update() {
       if (!this.chartDefaults) {
-        console.log('yes');
+        console.log('yes')
         this.$set(this, 'chartDefaults', this.$store.curTimeConstraints)
         if (this.chartDefaults) {
           this.stored = true

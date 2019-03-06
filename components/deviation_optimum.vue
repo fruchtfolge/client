@@ -1,15 +1,23 @@
 <template lang="html">
   <div>
-    <transition name="expand"
-    v-on:before-enter="beforeEnter" v-on:enter="enter"
-    v-on:before-leave="beforeLeave" v-on:leave="leave">
+    <transition
+      name="expand"
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @before-leave="beforeLeave"
+      @leave="leave"
+    >
       <div v-show="shown">
         <div v-if="difference !== 0">
           <h2>Differenz zum Optimum:</h2>
-          <h2 class="number" v-bind:class="{ positive: difference > 0 }">{{ format(difference) }}</h2>
+          <h2 class="number" :class="{ positive: difference > 0 }">
+            {{ format(difference) }}
+          </h2>
         </div>
         <div class="">
-          <p v-for="(deviation,i) in deviations" :key="i">{{ deviation }}</p>
+          <p v-for="(deviation,i) in deviations" :key="i">
+            {{ deviation }}
+          </p>
         </div>
       </div>
     </transition>
@@ -17,21 +25,6 @@
 </template>
 <script>
 export default {
-  data() {
-    return {
-      dataset: undefined,
-      shown: false,
-      curYear: 2019,
-      optimum: 0,
-      arableLand: 0,
-      greenLand: 0
-    }
-  },
-  mounted() {
-    this.curYear = this.$store.curYear
-    this.shown = true
-    this.getValues(this.plots)
-  },
   props: {
     shares: {
       type: Object,
@@ -46,6 +39,16 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      dataset: undefined,
+      shown: false,
+      curYear: 2019,
+      optimum: 0,
+      arableLand: 0,
+      greenLand: 0
+    }
+  },
   computed: {
     difference() {
       console.log('Optimum: ' + this.optimum)
@@ -53,27 +56,37 @@ export default {
       if (isNaN(this.optimum - this.total)) {
         return 'Keine Empfehlung vorhanden.'
       } else {
-        return _.round(this.total - this.optimum,2)
+        return _.round(this.total - this.optimum, 2)
       }
     },
     deviations() {
-      let deviations = []
+      const deviations = []
       this.plots.forEach(plot => {
         const cropCode = plot.selectedCrop
         if (!plot.matrix[this.curYear]) return deviations
         const data = plot.matrix[this.curYear][cropCode]
         // get selected crop and previous crop
-        //const selectedCrop = _.find(this.$store.curCrops, ['code', plot.selectedCrop])
-        //const prevCrop = _.find(this.$store.curCrops, ['name', plot.prevCrop1])
+        // const selectedCrop = _.find(this.$store.curCrops, ['code', plot.selectedCrop])
+        // const prevCrop = _.find(this.$store.curCrops, ['name', plot.prevCrop1])
         const croppingFactor = data.croppingFactor
         // show warning if cropping factor is below 6
         if (croppingFactor <= 0.6) {
-          deviations.push(`${plot.name}: ${data.name} ungünstige Nachfrucht von ${plot.prevCrop1}`)
+          deviations.push(
+            `${plot.name}: ${data.name} ungünstige Nachfrucht von ${
+              plot.prevCrop1
+            }`
+          )
         } else if (croppingFactor === 0) {
-          deviations.push(`${plot.name}: ${data.name} keine mögliche Nachfrucht von ${plot.prevCrop1}`)
+          deviations.push(
+            `${plot.name}: ${data.name} keine mögliche Nachfrucht von ${
+              plot.prevCrop1
+            }`
+          )
         }
         if (!data.rotBreakHeld) {
-          deviations.push(`${plot.name}: Anbaupause von ${data.name} nicht eingehalten`)
+          deviations.push(
+            `${plot.name}: Anbaupause von ${data.name} nicht eingehalten`
+          )
         }
       })
       return deviations
@@ -84,7 +97,7 @@ export default {
     },
     greeningEfa() {
       let efa = 0
-      for (let cropCode in this.shares[this.curYear]) {
+      for (const cropCode in this.shares[this.curYear]) {
         // find crop for the given code
         const share = this.shares[this.curYear][cropCode]
         const crop = _.find(this.$store.curCrops, ['code', cropCode])
@@ -92,13 +105,13 @@ export default {
           efa += share * crop.efaFactor
         }
       }
-      let fivePercent = (this.arableLand + this.greenLand) * 0.05
+      const fivePercent = (this.arableLand + this.greenLand) * 0.05
       if (efa >= fivePercent) return true
       else return false
     },
     greening75() {
-      let shares = {}
-      for (let cropCode in this.shares[this.curYear]) {
+      const shares = {}
+      for (const cropCode in this.shares[this.curYear]) {
         // find crop for the given code
         const share = this.shares[this.curYear][cropCode]
         const crop = _.find(this.$store.curCrops, ['code', cropCode])
@@ -107,15 +120,15 @@ export default {
           else shares[crop.cropGroup] += share
         }
       }
-      let sevenFivePercent = (this.arableLand + this.greenLand) * 0.75
-      for (let share of shares) {
+      const sevenFivePercent = (this.arableLand + this.greenLand) * 0.75
+      for (const share of shares) {
         if (share >= sevenFivePercent) return false
       }
       return true
     },
     greening95() {
-      let shares = {}
-      for (let cropCode in this.shares[this.curYear]) {
+      const shares = {}
+      for (const cropCode in this.shares[this.curYear]) {
         // find crop for the given code
         const share = this.shares[this.curYear][cropCode]
         const crop = _.find(this.$store.curCrops, ['code', cropCode])
@@ -124,27 +137,32 @@ export default {
           else shares[crop.cropGroup] += share
         }
       }
-      let ninceFivePercent = (this.arableLand + this.greenLand) * 0.95
-      for (let share of shares) {
-        for (let share2 of shares) {
-          if ((share + shares2) >= ninceFivePercent) return false
+      const ninceFivePercent = (this.arableLand + this.greenLand) * 0.95
+      for (const share of shares) {
+        for (const share2 of shares) {
+          if (share + shares2 >= ninceFivePercent) return false
         }
       }
       return true
     }
   },
+  mounted() {
+    this.curYear = this.$store.curYear
+    this.shown = true
+    this.getValues(this.plots)
+  },
   methods: {
     beforeEnter(el) {
-      el.style.height = '0px';
+      el.style.height = '0px'
     },
     enter(el) {
-      el.style.height = el.scrollHeight + 'px';
+      el.style.height = el.scrollHeight + 'px'
     },
     beforeLeave(el) {
-      el.style.height = el.scrollHeight + 'px';
+      el.style.height = el.scrollHeight + 'px'
     },
     leave(el) {
-      el.style.height = '0px';
+      el.style.height = '0px'
     },
     expand(displayGroup) {
       if (!this.shown[displayGroup]) {
@@ -158,7 +176,7 @@ export default {
       let arableLand = 0
       let greenLand = 0
       plots.forEach(plot => {
-        let code = plot.recommendation
+        const code = plot.recommendation
         if (code) {
           const plotData = plot.matrix[this.curYear][code]
           const grossMargin = plotData.grossMargin
@@ -170,13 +188,13 @@ export default {
           arableLand += plot.size
         }
       })
-      console.log(optimum);
+      console.log(optimum)
       this.optimum = optimum
       this.greenLand = greenLand
       this.arableLand = arableLand
     },
     format(number) {
-      const formatter =  new Intl.NumberFormat('de-DE', {
+      const formatter = new Intl.NumberFormat('de-DE', {
         style: 'currency',
         currency: 'EUR',
         minimumFractionDigits: 0

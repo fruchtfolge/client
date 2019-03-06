@@ -1,7 +1,7 @@
 <template lang="html">
   <div>
     <div class="grossMarginTimeline-wrapper">
-      <canvas id="grossMarginTimeline-chart" width="380" height="320" style="display: unset;"></canvas>
+      <canvas id="grossMarginTimeline-chart" width="380" height="320" style="display: unset;" />
     </div>
   </div>
 </template>
@@ -9,6 +9,12 @@
 import Chart from 'chart.js'
 
 export default {
+  props: {
+    plots: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {
       grossMarginTimeline: undefined,
@@ -19,7 +25,7 @@ export default {
   watch: {
     plots: {
       handler() {
-        //console.log(this.grossMarginTimeline,this.datasets);
+        // console.log(this.grossMarginTimeline,this.datasets);
         this.prepareData()
         this.grossMarginTimeline.data.datasets[0].data = this.datasets[0].data
         this.grossMarginTimeline.data.datasets[1].data = this.datasets[1].data
@@ -28,12 +34,6 @@ export default {
         this.grossMarginTimeline.update()
       },
       deep: true
-    }
-  },
-  props: {
-    plots: {
-      type: Array,
-      required: true
     }
   },
   mounted() {
@@ -46,10 +46,12 @@ export default {
       this.datasets = []
       this.labels = []
       const store = this.$store
-      const colors = ["#294D4A", "#4A6D7C", "#7690A5"]
+      const colors = ['#294D4A', '#4A6D7C', '#7690A5']
       const curYear = store.curYear
       const scenario = store.curScenario
-      const years = Array(curYear - (curYear - 10)).fill(0).map((e,i)=>i+(curYear-9))
+      const years = Array(curYear - (curYear - 10))
+        .fill(0)
+        .map((e, i) => i + (curYear - 9))
 
       for (var i = 0; i < 3; i++) {
         const croppingYear = curYear - i
@@ -57,16 +59,16 @@ export default {
           return plot.year === croppingYear && plot.scenario === scenario
         })
 
-        let data = []
-        let shares = []
+        const data = []
+        const shares = []
         years.forEach(year => {
-          const o = {year: croppingYear, sum: 0}
+          const o = { year: croppingYear, sum: 0 }
           // calculate total db for cropping plan of curYear - i under prices/yields/directCosts of year
           let grossMargins = []
           let grossMargin = 0
           grossMargins = plots.map(plot => {
             const plotData = plot.matrix[year]
-            let type = 'grossMarginNoCropEff'
+            const type = 'grossMarginNoCropEff'
             let crop = plot.crop
             if (i === 0) {
               crop = plot.selectedCrop
@@ -82,12 +84,12 @@ export default {
             }
           })
 
-          grossMargin = _.round(_.sum(grossMargins),2)
+          grossMargin = _.round(_.sum(grossMargins), 2)
           data.push(grossMargin)
           shares.push(o)
           if (this.labels.indexOf(year) === -1) this.labels.push(year)
         })
-        //console.log(shares);
+        // console.log(shares);
         this.datasets.push({
           data: data,
           label: `Anbauplan ${curYear - i}`,
@@ -98,7 +100,7 @@ export default {
     },
     createGradient(chartId) {
       const ctx = document.getElementById(chartId).getContext('2d')
-      const colors = ["#294D4A", "#4A6D7C", "#7690A5"]
+      const colors = ['#294D4A', '#4A6D7C', '#7690A5']
       this.gradient = []
 
       this.gradient[0] = ctx.createLinearGradient(0, 0, 0, 450)
@@ -118,8 +120,8 @@ export default {
       this.gradient[2].addColorStop(1, 'rgba(118,144,165, 0)')
     },
     createChart(chartId, chartData) {
-      Chart.defaults.global.defaultFontFamily = "Open Sans Light";
-      Chart.defaults.global.defaultFontSize = 14;
+      Chart.defaults.global.defaultFontFamily = 'Open Sans Light'
+      Chart.defaults.global.defaultFontSize = 14
 
       const config = {
         type: 'line',
@@ -130,7 +132,7 @@ export default {
         options: {
           responsive: false,
           legend: {
-            position: "bottom"
+            position: 'bottom'
           },
           tooltips: {
             xPadding: 6,
@@ -142,7 +144,7 @@ export default {
               {
                 ticks: {
                   callback: function(label, index, labels) {
-                    return (label).toLocaleString()+'€';
+                    return label.toLocaleString() + '€'
                   }
                 }
               }
@@ -152,7 +154,7 @@ export default {
       }
       const ctx = document.getElementById(chartId).getContext('2d')
       this.grossMarginTimeline = new Chart(ctx, config)
-      //console.log(this.grossMarginTimeline);
+      // console.log(this.grossMarginTimeline);
     }
   }
 }

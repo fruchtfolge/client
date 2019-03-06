@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 const pkg = require('./package')
 
 module.exports = {
@@ -7,7 +8,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: pkg.name,
+    title: 'Fruchtfolge',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -19,7 +20,10 @@ module.exports = {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#fff' },
+  loading: {
+    color: '#79ae98',
+    height: '5px'
+  },
 
   /*
   ** Global CSS
@@ -29,7 +33,7 @@ module.exports = {
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: [],
+  plugins: ['~/plugins/vue-pouch-db', '~/plugins/vue-notifications'],
 
   /*
   ** Nuxt.js modules
@@ -45,6 +49,9 @@ module.exports = {
     // See https://github.com/nuxt-community/axios-module#options
   },
 
+  router: {
+    middleware: 'auth'
+  },
   /*
   ** Build configuration
   */
@@ -66,6 +73,11 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
-    }
+    },
+    plugins: [
+      new webpack.ProvidePlugin({
+        _: 'lodash'
+      })
+    ]
   }
 }

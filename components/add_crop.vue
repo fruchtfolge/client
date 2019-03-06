@@ -1,30 +1,57 @@
 <template lang="html">
   <div>
-    <div class="blur"></div>
+    <div class="blur" />
     <div class="box">
       <div class="inputs">
-        <h2 class="infoText">NEUE KULTUR HINZUFÜGEN</h2>
+        <h2 class="infoText">
+          NEUE KULTUR HINZUFÜGEN
+        </h2>
         <label for="add.crop.farmingType">Anbauverfahren</label>
-        <select class="dropdown" id="add.crop.farmingType" v-model="farmingType">
-          <option disabled value="">Anbauverfahren</option>
-          <option v-for="(farmingType, i) in farmingTypes" :key="i" :value="farmingType">{{ farmingType }}</option>
+        <select id="add.crop.farmingType" v-model="farmingType" class="dropdown">
+          <option disabled value="">
+            Anbauverfahren
+          </option>
+          <option v-for="(farmingType, i) in farmingTypes" :key="i" :value="farmingType">
+            {{ farmingType }}
+          </option>
         </select>
         <label for="add.crop.crop">Kultur</label>
-        <select class="dropdown" id="add.crop.crop" v-model="crop">
-          <option disabled value="">Kultur</option>
-          <option v-for="(crop, i) in crops" :key="i" :value="crop">{{ crop }}</option>
+        <select id="add.crop.crop" v-model="crop" class="dropdown">
+          <option disabled value="">
+            Kultur
+          </option>
+          <option v-for="(crop, i) in crops" :key="i" :value="crop">
+            {{ crop }}
+          </option>
         </select>
         <label for="add.crop.system">System</label>
-        <select class="dropdown" id="add.crop.system" v-model="system">
-          <option disabled value="">System</option>
-          <option v-for="(system, i) in systems" :key="i" :value="system">{{ system }}</option>
+        <select id="add.crop.system" v-model="system" class="dropdown">
+          <option disabled value="">
+            System
+          </option>
+          <option v-for="(system, i) in systems" :key="i" :value="system">
+            {{ system }}
+          </option>
         </select>
         <label for="add.crop.variety">Sorte</label>
-        <input type="text" id="add.crop.variety" placeholder="Optional" class="input" v-model="variety" @keyup.enter="addCrop">
+        <input
+          id="add.crop.variety"
+          v-model="variety"
+          type="text"
+          placeholder="Optional"
+          class="input"
+          @keyup.enter="addCrop"
+        >
       </div>
-      <p v-if="exists" style="text-align: center; margin-top: 30px; color:red;">Kultur bereits vorhanden. Bitte anderen Sortennamen wählen.</p>
-      <button v-if="!exists" class="buttonOk" @click="addCrop">ÜBERNEHMEN</button>
-      <button class="buttonCancel" @click="cancel">ABBRECHEN</button>
+      <p v-if="exists" style="text-align: center; margin-top: 30px; color:red;">
+        Kultur bereits vorhanden. Bitte anderen Sortennamen wählen.
+      </p>
+      <button v-if="!exists" class="buttonOk" @click="addCrop">
+        ÜBERNEHMEN
+      </button>
+      <button class="buttonCancel" @click="cancel">
+        ABBRECHEN
+      </button>
     </div>
   </div>
 </template>
@@ -45,22 +72,33 @@ export default {
   },
   computed: {
     crops() {
-      const data = _.filter(ktblCrops, {farmingType: this.farmingType})
+      const data = _.filter(ktblCrops, { farmingType: this.farmingType })
       let unique = _.uniqBy(data, 'crop')
       if (data) {
-        unique = unique.map(o => {return o.crop})
+        unique = unique.map(o => {
+          return o.crop
+        })
         return unique
       }
     },
     systems() {
-      let data = _.filter(ktblCrops, {farmingType: this.farmingType, crop: this.crop})
+      let data = _.filter(ktblCrops, {
+        farmingType: this.farmingType,
+        crop: this.crop
+      })
       if (data) {
-        data = data.map(o => {return o.system})
+        data = data.map(o => {
+          return o.system
+        })
         return data
       }
     },
     curCrop() {
-      let data = _.filter(ktblCrops, {farmingType: this.farmingType, crop: this.crop, system: this.system})
+      const data = _.filter(ktblCrops, {
+        farmingType: this.farmingType,
+        crop: this.crop,
+        system: this.system
+      })
       if (data) {
         return data[0]
       }
@@ -70,9 +108,9 @@ export default {
       if (this.$store && this.$store.curCrops && this.$store.curCrops.length) {
         this.$store.curCrops.forEach(crop => {
           if (this.variety && crop.name !== this.variety) {
-            return bool = false
+            return (bool = false)
           } else if (crop.name === this.crop) {
-            return bool = true
+            return (bool = true)
           }
         })
       }
@@ -84,10 +122,12 @@ export default {
       try {
         const settings = await this.$db.get('settings')
         // create array of years from 2001 - present for timeline of crops
-        let years = Array(settings.curYear - 2000).fill(0).map((e,i)=>i+2001)
+        let years = Array(settings.curYear - 2000)
+          .fill(0)
+          .map((e, i) => i + 2001)
         // check if crop already exists in current year (but not active), or exists for previous years
         const crops = await this.$db.find({
-          selector: {name: this.variety || this.crop},
+          selector: { name: this.variety || this.crop },
           fields: ['name', 'year']
         })
         // filter out years that are already present in the database (to ensure no duplicates)
@@ -107,14 +147,17 @@ export default {
             variety: this.variety
           })
           console.log(properties)
-          const { data } = await this.$axios.post('http://localhost:3001/crops/', properties,{ progress: true })
-          
+          const { data } = await this.$axios.post(
+            'http://localhost:3001/crops/',
+            properties,
+            { progress: true }
+          )
+
           await this.$db.bulkDocs(data)
         }
-        console.log(years);
-
+        console.log(years)
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
 
       this.$emit('closeAddCrop')
@@ -128,7 +171,7 @@ export default {
 
 <style scoped>
 .blur {
-  background: #F5F5F5;
+  background: #f5f5f5;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -148,7 +191,7 @@ export default {
   margin-left: -200px;
   background-color: white;
   border: 1px solid;
-  border-color: #CCCCCC;
+  border-color: #cccccc;
   z-index: 99;
 }
 
@@ -196,25 +239,25 @@ export default {
 }
 
 .buttonOk {
-    position: absolute;
-    bottom: 35px;
-    left: 45px;
-    width: 130px;
+  position: absolute;
+  bottom: 35px;
+  left: 45px;
+  width: 130px;
 }
 
 .buttonOk:hover {
-    background-color: #79ae98;
-    color: white;
+  background-color: #79ae98;
+  color: white;
 }
 
 .buttonCancel {
-    position: absolute;
-    bottom: 35px;
-    right: 45px;
-    width: 130px;
+  position: absolute;
+  bottom: 35px;
+  right: 45px;
+  width: 130px;
 }
 
 .buttonCancel:hover {
-    background-color: rgba(0,0,0,0.05);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 </style>
