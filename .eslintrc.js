@@ -8,7 +8,8 @@ module.exports = {
     parser: 'babel-eslint'
   },
   globals: {
-    '_': true
+    '_': true,
+    '$nuxt': true
   },
   extends: [
     '@nuxtjs',

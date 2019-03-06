@@ -14,7 +14,22 @@ module.exports = {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: pkg.description }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        href: '/favicon.ico'
+      },
+      {
+        rel: 'stylesheet',
+        href: 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css'
+      },
+      {
+        rel: 'stylesheet',
+        href:
+          'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.4/mapbox-gl-draw.css'
+      }
+    ]
   },
 
   /*
@@ -28,7 +43,7 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: [],
+  css: ['@/assets/css/global.css'],
 
   /*
   ** Plugins to load before mounting the App
@@ -64,7 +79,7 @@ module.exports = {
       config.node = {
         fs: 'empty'
       }
-
+      /*
       if (ctx.isDev && ctx.isClient) {
         config.module.rules.push({
           enforce: 'pre',
@@ -73,6 +88,7 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
+      */
     },
     plugins: [
       new webpack.ProvidePlugin({
