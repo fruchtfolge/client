@@ -1,10 +1,10 @@
 <template>
   <div class="plotsSidebar">
-    <div class="content-pos">
+    <div v-if="regionsAvail" class="content-pos">
       <h1 class="sumHa">
         GESAMT {{ totalHa }} ha
       </h1>
-      <div v-for="(region, n) in regions" v-if="regions" :key="n">
+      <div v-for="(region, n) in regions" :key="n">
         <div class="container" @click="expand(region[0].region)">
           <h2 class="regionText">
             {{ region[0].region.toUpperCase() }}
@@ -31,11 +31,11 @@
           </div>
         </transition>
       </div>
-      <div v-else>
-        <p class="regionText">
-          Klicken Sie auf den Rechteck-Button in der Karte links-unten um ein neues Feld eizuzeichnen.
-        </p>
-      </div>
+    </div>
+    <div v-else>
+      <p class="regionText">
+        Klicken Sie auf den Rechteck-Button in der Karte links-unten um ein neues Feld eizuzeichnen.
+      </p>
     </div>
   </div>
 </template>
@@ -49,7 +49,16 @@ export default {
       shown: {}
     }
   },
-  async created() {
+  computed: {
+    regionsAvail() {
+      if (this.region && this.regions.length > 0) {
+        return true
+      } else {
+        return false
+      }
+    }
+  },
+  created() {
     // create initial state
     this.updateState()
     this.$bus.$on('changeCurrents', this.updateState)

@@ -75,7 +75,12 @@
 import Constraint from '~/constructors/Constraint.js'
 
 export default {
-  props: ['crops'],
+  props: {
+    crops: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       crop1: null,

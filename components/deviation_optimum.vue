@@ -139,7 +139,7 @@ export default {
       }
       const ninceFivePercent = (this.arableLand + this.greenLand) * 0.95
       for (const share of shares) {
-        for (const share2 of shares) {
+        for (const shares2 of shares) {
           if (share + shares2 >= ninceFivePercent) return false
         }
       }

@@ -348,7 +348,7 @@ export default {
       return sum
     }
   },
-  async created() {
+  created() {
     setTimeout(() => {
       this.update()
     }, 200)

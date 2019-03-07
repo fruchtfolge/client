@@ -71,24 +71,19 @@ export default {
   },
   computed: {
     plotsPrevCrops() {
+      const o = {}
       if (this.curPlots && this.curPlots.length > 0) {
-        const o = {}
-        const that = this
-        function getName(id, year) {
-          const plot = _.find(that.$store.plots, { id: id, year: year })
-          if (plot && cultures[plot.crop]) {
-            return cultures[plot.crop].variety
-          }
-        }
-
         this.curPlots.forEach(plot => {
           o[plot.id] = {}
           for (let i = 1; i < this.maxRotBreak + 1; i++) {
-            o[plot.id][this.curYear - i] = getName(plot.id, this.curYear - i)
+            o[plot.id][this.curYear - i] = this.getName(
+              plot.id,
+              this.curYear - i
+            )
           }
         })
-        return o
       }
+      return o
     }
   },
   created() {
@@ -101,6 +96,12 @@ export default {
   methods: {
     changePlot(plot) {
       this.selectedPlot = plot
+    },
+    getName(id, year) {
+      const plot = _.find(this.$store.plots, { id: id, year: year })
+      if (plot && cultures[plot.crop]) {
+        return cultures[plot.crop].variety
+      }
     },
     update() {
       const store = this.$store
@@ -154,7 +155,7 @@ export default {
         c
       ) {
         const r = (Math.random() * 16) | 0
-        const v = c == 'x' ? r : (r & 0x3) | 0x8
+        const v = c === 'x' ? r : (r & 0x3) | 0x8
         return v.toString(16)
       })
     },

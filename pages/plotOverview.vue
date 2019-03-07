@@ -60,8 +60,6 @@
 </template>
 
 <script>
-import cultures from '~/assets/js/cultures'
-
 export default {
   data() {
     return {
@@ -69,28 +67,6 @@ export default {
       selectedPlot: null,
       curYear: 2019,
       waiting: false
-    }
-  },
-  computed: {
-    plotsPrevCrops() {
-      if (this.plots && this.plots.length > 0) {
-        const o = {}
-        const that = this
-        function getName(id, year) {
-          const plot = _.find(that.$store.plots, { id: id, year: year })
-          if (plot && cultures[plot.crop]) {
-            return cultures[plot.crop].variety
-          }
-        }
-
-        this.plots.forEach(plot => {
-          o[plot.id] = {}
-          o[plot.id][this.curYear - 3] = getName(plot.id, this.curYear - 3)
-          o[plot.id][this.curYear - 2] = getName(plot.id, this.curYear - 2)
-          o[plot.id][this.curYear - 1] = getName(plot.id, this.curYear - 1)
-        })
-        return o
-      }
     }
   },
   created() {

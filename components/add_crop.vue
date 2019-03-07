@@ -11,8 +11,8 @@
           <option disabled value="">
             Anbauverfahren
           </option>
-          <option v-for="(farmingType, i) in farmingTypes" :key="i" :value="farmingType">
-            {{ farmingType }}
+          <option v-for="(typeOption, i) in farmingTypes" :key="i" :value="typeOption">
+            {{ typeOption }}
           </option>
         </select>
         <label for="add.crop.crop">Kultur</label>
@@ -20,8 +20,8 @@
           <option disabled value="">
             Kultur
           </option>
-          <option v-for="(crop, i) in crops" :key="i" :value="crop">
-            {{ crop }}
+          <option v-for="(cropOption, i) in crops" :key="i" :value="cropOption">
+            {{ cropOption }}
           </option>
         </select>
         <label for="add.crop.system">System</label>
@@ -29,8 +29,8 @@
           <option disabled value="">
             System
           </option>
-          <option v-for="(system, i) in systems" :key="i" :value="system">
-            {{ system }}
+          <option v-for="(systemOption, i) in systems" :key="i" :value="systemOption">
+            {{ systemOption }}
           </option>
         </select>
         <label for="add.crop.variety">Sorte</label>
@@ -74,12 +74,12 @@ export default {
     crops() {
       const data = _.filter(ktblCrops, { farmingType: this.farmingType })
       let unique = _.uniqBy(data, 'crop')
-      if (data) {
+      if (data && unique) {
         unique = unique.map(o => {
           return o.crop
         })
-        return unique
       }
+      return unique
     },
     systems() {
       let data = _.filter(ktblCrops, {
@@ -90,8 +90,8 @@ export default {
         data = data.map(o => {
           return o.system
         })
-        return data
       }
+      return data
     },
     curCrop() {
       const data = _.filter(ktblCrops, {
@@ -101,6 +101,8 @@ export default {
       })
       if (data) {
         return data[0]
+      } else {
+        return data
       }
     },
     exists() {

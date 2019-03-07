@@ -1,12 +1,12 @@
 <template>
   <div class="cropsSidebar">
-    <div v-if="crops && crops.length > 0">
-      <div v-for="(crops, i) in displayGroups" :key="i">
-        <div class="container" @click="expand(crops[0].displayGroup)">
+    <div v-if="cropsAvailable">
+      <div v-for="(curCrops, i) in displayGroups" :key="i">
+        <div class="container" @click="expand(curCrops[0].displayGroup)">
           <h2 class="regionText">
-            {{ crops[0].displayGroup.toUpperCase() }}
+            {{ curCrops[0].displayGroup.toUpperCase() }}
           </h2>
-          <div class="arrow" :class="{ rotate: shown[crops[0].displayGroup]}" />
+          <div class="arrow" :class="{ rotate: shown[curCrops[0].displayGroup]}" />
         </div>
         <transition
           name="expand"
@@ -15,9 +15,9 @@
           @before-leave="beforeLeave"
           @leave="leave"
         >
-          <div v-show="shown[crops[0].displayGroup]" class="body">
+          <div v-show="shown[curCrops[0].displayGroup]" class="body">
             <p
-              v-for="(crop, n) of crops"
+              v-for="(crop, n) of curCrops"
               :key="n"
               class="cropsText"
               :class="{ active: isClicked(crop)}"
@@ -44,10 +44,12 @@ export default {
   props: {
     crops: {
       type: Array,
+      default: undefined,
       required: false
     },
     selectedCrop: {
       type: Object,
+      default: undefined,
       required: false
     }
   },
@@ -57,6 +59,13 @@ export default {
     }
   },
   computed: {
+    cropsAvailable() {
+      if (this.crops && this.crops.length > 0) {
+        return true
+      } else {
+        return false
+      }
+    },
     displayGroups() {
       return _.groupBy(this.crops, 'displayGroup')
     },

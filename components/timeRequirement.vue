@@ -118,7 +118,7 @@ export default {
     },
     createGradient(chartId) {
       const ctx = document.getElementById(chartId).getContext('2d')
-      const colors = ['#294D4A', '#4A6D7C', '#7690A5']
+      // const colors = ['#294D4A', '#4A6D7C', '#7690A5']
       this.gradient = []
 
       this.gradient[0] = ctx.createLinearGradient(0, 0, 0, 450)

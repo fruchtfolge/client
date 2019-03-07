@@ -217,7 +217,11 @@ export default {
       }
     },
     async remove() {
-      this.$db.remove(this.crop)
+      try {
+        await this.$db.remove(this.crop)
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }

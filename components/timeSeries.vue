@@ -208,7 +208,11 @@ export default {
       return _.max([_.max(a), _.max(b)])
     },
     async remove() {
-      this.$db.remove(this.crop)
+      try {
+        await this.$db.remove(this.crop)
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }

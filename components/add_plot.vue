@@ -43,11 +43,15 @@
 
 <script>
 import { area } from '@turf/turf'
-import createPlot from '~/assets/js/createPlot'
 import ktblCrops from '~/assets/js/crops.js'
 
 export default {
-  props: ['plotData'],
+  props: {
+    plotData: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       curYear: 2019,
@@ -77,9 +81,10 @@ export default {
         unique = unique.map(o => {
           return o.cropGroup
         })
-        console.log(unique)
-        return unique.sort()
+        // console.log(unique)
+        unique = unique.sort()
       }
+      return unique
     },
     systems() {
       let data = _.filter(ktblCrops, {
@@ -90,8 +95,8 @@ export default {
         data = data.map(o => {
           return o.system
         })
-        return data
       }
+      return data
     }
   },
   created() {

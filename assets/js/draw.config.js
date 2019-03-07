@@ -9,16 +9,14 @@ export default {
     // ACTIVE (being drawn)
     // line stroke
     {
-      'id': 'gl-draw-line',
-      'type': 'line',
-      'filter': ['all', ['==', '$type', 'LineString'],
-        ['!=', 'mode', 'static']
-      ],
-      'layout': {
+      id: 'gl-draw-line',
+      type: 'line',
+      filter: ['all', ['==', '$type', 'LineString'], ['!=', 'mode', 'static']],
+      layout: {
         'line-cap': 'round',
         'line-join': 'round'
       },
-      'paint': {
+      paint: {
         'line-color': '#ffffff',
         'line-dasharray': [0.2, 2],
         'line-width': 2
@@ -26,12 +24,10 @@ export default {
     },
     // polygon fill
     {
-      'id': 'gl-draw-polygon-fill',
-      'type': 'fill',
-      'filter': ['all', ['==', '$type', 'Polygon'],
-        ['!=', 'mode', 'static']
-      ],
-      'paint': {
+      id: 'gl-draw-polygon-fill',
+      type: 'fill',
+      filter: ['all', ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']],
+      paint: {
         'fill-color': '#ffffff',
         'fill-outline-color': '#ffffff',
         'fill-opacity': 0
@@ -40,16 +36,14 @@ export default {
     // polygon outline stroke
     // This doesn't style the first edge of the polygon, which uses the line stroke styling instead
     {
-      'id': 'gl-draw-polygon-stroke-active',
-      'type': 'line',
-      'filter': ['all', ['==', '$type', 'Polygon'],
-        ['!=', 'mode', 'static']
-      ],
-      'layout': {
+      id: 'gl-draw-polygon-stroke-active',
+      type: 'line',
+      filter: ['all', ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']],
+      layout: {
         'line-cap': 'round',
         'line-join': 'round'
       },
-      'paint': {
+      paint: {
         'line-color': '#ffffff',
         // 'line-dasharray': [0.2, 2],
         'line-width': 2
@@ -57,39 +51,45 @@ export default {
     },
     // vertex point halos
     {
-      'id': 'gl-draw-polygon-and-line-vertex-halo-active',
-      'type': 'circle',
-      'filter': ['all', ['==', 'meta', 'vertex'],
+      id: 'gl-draw-polygon-and-line-vertex-halo-active',
+      type: 'circle',
+      filter: [
+        'all',
+        ['==', 'meta', 'vertex'],
         ['==', '$type', 'Point'],
         ['!=', 'mode', 'static']
       ],
-      'paint': {
+      paint: {
         'circle-radius': 8,
         'circle-color': '#FFF'
       }
     },
     // vertex points
     {
-      'id': 'gl-draw-polygon-and-line-vertex-active',
-      'type': 'circle',
-      'filter': ['all', ['==', 'meta', 'vertex'],
+      id: 'gl-draw-polygon-and-line-vertex-active',
+      type: 'circle',
+      filter: [
+        'all',
+        ['==', 'meta', 'vertex'],
         ['==', '$type', 'Point'],
         ['!=', 'mode', 'static']
       ],
-      'paint': {
+      paint: {
         'circle-radius': 5,
         'circle-color': '#79ae98'
       }
     },
     // midpoints
     {
-      'id': 'gl-draw-polygon-and-line-midpoint-active',
-      'type': 'circle',
-      'filter': ['all', ['==', 'meta', 'midpoint'],
+      id: 'gl-draw-polygon-and-line-midpoint-active',
+      type: 'circle',
+      filter: [
+        'all',
+        ['==', 'meta', 'midpoint'],
         ['==', '$type', 'Point'],
         ['!=', 'mode', 'static']
       ],
-      'paint': {
+      paint: {
         'circle-radius': 3,
         'circle-color': '#ffffff'
       }
@@ -98,28 +98,24 @@ export default {
     // INACTIVE (static, already drawn)
     // line stroke
     {
-      'id': 'gl-draw-line-static',
-      'type': 'line',
-      'filter': ['all', ['==', '$type', 'LineString'],
-        ['==', 'mode', 'static']
-      ],
-      'layout': {
+      id: 'gl-draw-line-static',
+      type: 'line',
+      filter: ['all', ['==', '$type', 'LineString'], ['==', 'mode', 'static']],
+      layout: {
         'line-cap': 'round',
         'line-join': 'round'
       },
-      'paint': {
+      paint: {
         'line-color': '#ffffff',
         'line-width': 3
       }
     },
     // polygon fill
     {
-      'id': 'gl-draw-polygon-fill-static',
-      'type': 'fill',
-      'filter': ['all', ['==', '$type', 'Polygon'],
-        ['==', 'mode', 'static']
-      ],
-      'paint': {
+      id: 'gl-draw-polygon-fill-static',
+      type: 'fill',
+      filter: ['all', ['==', '$type', 'Polygon'], ['==', 'mode', 'static']],
+      paint: {
         'fill-color': '#ffffff',
         'fill-outline-color': '#ffffff',
         'fill-opacity': 0.05
@@ -127,16 +123,14 @@ export default {
     },
     // polygon outline
     {
-      'id': 'gl-draw-polygon-stroke-static',
-      'type': 'line',
-      'filter': ['all', ['==', '$type', 'Polygon'],
-        ['==', 'mode', 'static']
-      ],
-      'layout': {
+      id: 'gl-draw-polygon-stroke-static',
+      type: 'line',
+      filter: ['all', ['==', '$type', 'Polygon'], ['==', 'mode', 'static']],
+      layout: {
         'line-cap': 'round',
         'line-join': 'round'
       },
-      'paint': {
+      paint: {
         'line-color': '#ffffff',
         'line-width': 3
       }

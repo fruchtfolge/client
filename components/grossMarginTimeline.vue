@@ -53,7 +53,7 @@ export default {
         .fill(0)
         .map((e, i) => i + (curYear - 9))
 
-      for (var i = 0; i < 3; i++) {
+      for (let i = 0; i < 3; i++) {
         const croppingYear = curYear - i
         const plots = store.plots.filter(plot => {
           return plot.year === croppingYear && plot.scenario === scenario
@@ -68,7 +68,6 @@ export default {
           let grossMargin = 0
           grossMargins = plots.map(plot => {
             const plotData = plot.matrix[year]
-            const type = 'grossMarginNoCropEff'
             let crop = plot.crop
             if (i === 0) {
               crop = plot.selectedCrop
@@ -100,7 +99,6 @@ export default {
     },
     createGradient(chartId) {
       const ctx = document.getElementById(chartId).getContext('2d')
-      const colors = ['#294D4A', '#4A6D7C', '#7690A5']
       this.gradient = []
 
       this.gradient[0] = ctx.createLinearGradient(0, 0, 0, 450)

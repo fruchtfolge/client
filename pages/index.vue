@@ -25,8 +25,8 @@
               autofocus="autofocus"
             >
             <input
-              v-model="password"
               id="password"
+              v-model="password"
               class="password"
               placeholder="Passwort"
               type="password"
@@ -137,7 +137,7 @@ export default {
         this.noDSGVO()
         return false
       } else if (this.password !== this.confirmPassword) {
-        return this.notMatching()
+        this.notMatching()
         return false
       } else {
         return true
@@ -167,9 +167,7 @@ export default {
       }
       return settings
     },
-    async handleSuccess(auth, signup) {
-      let settings
-      let data
+    handleSuccess(auth, signup) {
       const date = new Date()
       try {
         this.$axios.setHeader(

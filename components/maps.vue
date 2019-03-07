@@ -39,12 +39,13 @@ export default {
     try {
       settings = await this.$db.get('settings')
       this.curYear = settings.curYear
-      await this.createMap(settings)
+      // initialize map
+      this.createMap(settings)
       // initially draw plots, if available
       if (this.$store.curPlots) {
         this.curPlots = this.$store.curPlots
-        console.log(this.curPlots)
-        await this.drawPlots(this.curYear, this.curPlots)
+        // console.log(this.curPlots)
+        this.drawPlots(this.curYear, this.curPlots)
       }
     } catch (e) {
       if (e.status === 404) {
@@ -58,7 +59,7 @@ export default {
     //  return $nuxt.$router.replace({path: 'settings'})
     // }
   },
-  async created() {
+  created() {
     // listen to changes in settings and plots (current planning year etc.)
     this.$bus.$on('changeCurrents', () => {
       this.curYear = this.$store.curYear
@@ -92,7 +93,7 @@ export default {
     this.$bus.$off('changeCurrents')
   },
   methods: {
-    async createMap(settings) {
+    createMap(settings) {
       mapboxgl.accessToken =
         'pk.eyJ1IjoidG9mZmkiLCJhIjoiY2l3cXRnNHplMDAxcTJ6cWY1YWp5djBtOSJ9.mBYmcCSgNdaRJ1qoHW5KSQ'
 
@@ -117,7 +118,7 @@ export default {
       this.map.on('draw.combine', this.combine)
       this.map.on('draw.selectionchange', this.select)
     },
-    async drawPlots(year, plots) {
+    drawPlots(year, plots) {
       try {
         // const geometries = []
         plots.forEach(plot => {
@@ -164,8 +165,8 @@ export default {
       const m2 = area(geometry)
       return Number((m2 / 10000).toFixed(2))
     },
-    async combine() {},
-    async create(data) {
+    combine() {},
+    create(data) {
       this.$emit('addPlot', data)
       this.Draw.delete(data.features[0].id)
     },

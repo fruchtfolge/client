@@ -2,11 +2,7 @@
   <div>
     <addCrop v-if="addCrop" @closeAddCrop="addCrop = false" />
     <cropsSidebar :crops="crops" :selected-crop="selectedCrop" @showAddCrop="addCrop = true" @changeCrop="changeCrop" />
-    <div v-if="crops && crops.length > 0">
-      <div v-for="(crop, i) in crops" v-if="isSelected(crop)" :key="i">
-        <cropLabour :crop="crop" />
-      </div>
-    </div>
+    <cropLabour v-if="selectedCrop" :crop="selectedCrop" />
     <div v-else style="text-align: center; margin-top: 100px; width: calc(100% - 275px);">
       <h3>Noch keine Kulturen für das ausgewähle Planungsjahr und Szenario vorhanden.</h3>
       <h3>
@@ -30,8 +26,8 @@ export default {
   },
   data() {
     return {
-      crops: null,
-      selectedCrop: null,
+      crops: undefined,
+      selectedCrop: undefined,
       addCrop: false
     }
   },
@@ -51,9 +47,6 @@ export default {
       if (!this.selectedCrop && this.$store.curCrops) {
         this.$set(this, 'selectedCrop', this.$store.curCrops[0])
       }
-    },
-    isSelected(crop) {
-      return crop.name === this.selectedCrop.name
     },
     importPrev() {
       this.waiting = true
