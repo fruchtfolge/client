@@ -27,6 +27,21 @@ export default {
       timeseries
     }
   },
+  watch: {
+    crop: {
+      handler() {
+        this.filterData()
+        this.timeseriesChart.options.scales.yAxes[0].ticks.max =
+          timeseries.options.scales.yAxes[0].ticks.max
+        this.timeseriesChart.options.scales.yAxes[1].ticks.max =
+          timeseries.options.scales.yAxes[1].ticks.max
+        this.timeseriesChart.options.scales.yAxes[2].ticks.max =
+          timeseries.options.scales.yAxes[2].ticks.max
+        this.timeseriesChart.update()
+      },
+      deep: true
+    }
+  },
   mounted() {
     this.filterData()
     this.createChart('timeseries-chart', this.timeseries)
@@ -60,7 +75,7 @@ export default {
         data: timeseries.data,
         options: timeseries.options
       })
-      console.log(this.timeseriesChart)
+      // console.log(this.timeseriesChart)
     },
     filterData() {
       if (this.$store && this.$store.crops) {
@@ -85,33 +100,34 @@ export default {
         const highestA = this.getMaxTick(amount, [1])
         const highestB = this.getMaxTick(price, [1])
         const highestC = this.getMaxTick(directCosts)
-        // console.log(highestA,highestB,highestC);
+        // console.log(highestA, highestB, highestC)
         // set initial chart properties
         timeseries.data.labels = years
 
         timeseries.data.datasets[0].data = price
+        timeseries.data.datasets[1].data = amount
+        timeseries.data.datasets[2].data = directCosts
+
         timeseries.data.datasets[0].label = `Preis [${this.getLabel(
           this.cropTimeSeries,
           'revenues',
           'price'
         )}]`
-        timeseries.options.scales.yAxes[0].ticks.max = _.round(
-          highestB * 1.9,
-          0
-        )
 
         timeseries.data.datasets[1].label = `Ertrag [${this.getLabel(
           this.cropTimeSeries,
           'revenues',
           'amount'
         )}]`
-        timeseries.data.datasets[1].data = amount
+
+        timeseries.options.scales.yAxes[0].ticks.max = _.round(
+          highestB * 1.9,
+          0
+        )
         timeseries.options.scales.yAxes[1].ticks.max = _.round(
           highestA * 1.7,
           0
         )
-
-        timeseries.data.datasets[2].data = directCosts
         timeseries.options.scales.yAxes[2].ticks.max = _.round(
           highestC * 1.5,
           -2
@@ -196,9 +212,9 @@ export default {
           // console.log(crop);
           crop.contributionMargin.directCosts = newDirectCosts
         }
-        console.log(crop)
+        // console.log(crop)
         const update = await this.$db.put(crop)
-        console.log(update)
+        // console.log(update)
         crop._rev = update.rev
       } catch (e) {
         console.log(e)

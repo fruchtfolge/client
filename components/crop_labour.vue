@@ -57,6 +57,20 @@ export default {
       total: 0
     }
   },
+  watch: {
+    crop: {
+      handler() {
+        this.prepareData()
+        this.cropLabourChart.data.datasets[0].data = this.dataset.data
+        this.cropLabourChart.data.datasets[0].label = this.dataset.label
+        this.cropLabourChart.data.datasets[0].borderColor = this.dataset.borderColor
+        this.cropLabourChart.options.scales.yAxes[0].ticks.max =
+          cropLabourReq.options.scales.yAxes[0].ticks.max
+        this.cropLabourChart.update()
+      },
+      deep: true
+    }
+  },
   mounted() {
     this.prepareData()
     this.createChart('cropLabour-chart', this.cropLabour)
@@ -78,22 +92,22 @@ export default {
       cropLabourReq.data.datasets[0].borderColor = this.dataset.borderColor
       cropLabourReq.options.onDragEnd = this.saveChanges
 
-      const highest = this.getMaxTick(this.dataset.data)
-      cropLabourReq.options.scales.yAxes[0].ticks.max = _.round(
-        highest * 1.6,
-        0
-      )
-
       this.cropLabourChart = new Chart(ctx, {
         type: cropLabourReq.type,
         data: cropLabourReq.data,
         options: cropLabourReq.options
       })
-      console.log(this.cropLabourChart)
+      // console.log(this.cropLabourChart)
     },
     prepareData() {
       const halfMonths = this.labels
       const data = halfMonths.map(this.getData)
+
+      const highest = this.getMaxTick(data)
+      cropLabourReq.options.scales.yAxes[0].ticks.max = _.round(
+        highest * 1.3,
+        0
+      )
 
       this.dataset = {
         data: data,

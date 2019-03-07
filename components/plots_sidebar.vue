@@ -51,7 +51,8 @@ export default {
   },
   computed: {
     regionsAvail() {
-      if (this.region && this.regions.length > 0) {
+      console.log(this.regions)
+      if (this.regions) {
         return true
       } else {
         return false

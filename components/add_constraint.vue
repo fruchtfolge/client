@@ -77,7 +77,7 @@ import Constraint from '~/constructors/Constraint.js'
 export default {
   props: {
     crops: {
-      type: Object,
+      type: Array,
       required: true
     }
   },

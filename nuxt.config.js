@@ -79,7 +79,7 @@ module.exports = {
       config.node = {
         fs: 'empty'
       }
-      /*
+
       if (ctx.isDev && ctx.isClient) {
         config.module.rules.push({
           enforce: 'pre',
@@ -88,7 +88,6 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
-      */
     },
     plugins: [
       new webpack.ProvidePlugin({
