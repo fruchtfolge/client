@@ -142,6 +142,10 @@ export default {
         if (years.length > 0) {
           const properties = Object.assign(this.curCrop, {
             year: settings.curYear,
+            id: `${this.curCrop.farmingType}::${this.curCrop.crop}::${
+              this.curCrop.system
+            }`,
+            code: this.curCrop.code,
             years: years,
             scenario: settings.curScenario,
             farmingType: this.farmingType,
