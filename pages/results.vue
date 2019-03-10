@@ -592,12 +592,12 @@ export default {
 }
 
 .result-wrapper {
-  width: calc(100% - 260px);
+  width: calc(100vw - 200px);
   display: inline-flex;
 }
 
 .plots-wrapper {
-  width: 100%;
+  /* width: 100%; */
   text-align: center;
   margin-left: auto;
   margin-right: auto;
@@ -653,7 +653,7 @@ export default {
   font-family: 'Open Sans Light';
   letter-spacing: normal;
   border-width: 0px;
-  background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='#444' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
+  background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='%23444' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
   background-repeat: no-repeat;
   background-position: 100% 50%;
 }
