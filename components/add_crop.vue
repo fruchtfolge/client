@@ -160,6 +160,17 @@ export default {
           )
 
           await this.$db.bulkDocs(data)
+        } else {
+          // crop now has to be present, but not set to active -> activate
+          const crop = _.find(this.$store.crops, c => {
+            return (
+              c.year === settings.curYear &&
+              (c.variety === this.variety || c.crop === this.crop)
+            )
+          })
+          console.log(crop)
+          crop.active = true
+          await this.$db.put(crop)
         }
         console.log(years)
       } catch (e) {

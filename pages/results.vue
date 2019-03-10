@@ -327,6 +327,7 @@ export default {
     resultsAvailable() {
       if (
         this.curPlots &&
+        this.curPlots.length &&
         this.curPlots[0].matrix &&
         this.curPlots[0].matrix[this.curYear]
       ) {
@@ -548,6 +549,8 @@ export default {
         this.$set(this, 'curYear', store.curYear)
         if (
           this.curPlots &&
+          this.curPlots.length &&
+          store.curCrops &&
           (!this.curPlots[0].matrix ||
             !this.curPlots[0].matrix[store.curYear] ||
             !this.curPlots[0].recommendation) &&
@@ -557,6 +560,7 @@ export default {
           await this.$nextTick()
         } else if (
           this.curPlots &&
+          this.curPlots.length &&
           this.curPlots[0].matrix &&
           this.curPlots[0].matrix[store.curYear] &&
           this.curPlots[0].recommendation

@@ -14,20 +14,20 @@
         <input id="add.plot.name" v-model="name" type="text" class="input" @keyup.enter="addPlot">
         <label for="add.plot.prevCrop1">Hauptfrucht {{ curYear - 1 }}</label>
         <select id="add.plot.prevCrop1" v-model="prevCrop1" class="dropdown">
-          <option v-for="(crop, i) in crops" :key="i" :value="crop">
-            {{ crop }}
+          <option v-for="(crop, i) in crops" :key="i" :value="crop.code">
+            {{ crop.variety }}
           </option>
         </select>
         <label for="add.plot.prevCrop2">Hauptfrucht {{ curYear - 2 }}</label>
         <select id="add.plot.prevCrop2" v-model="prevCrop2" class="dropdown">
-          <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop">
-            {{ prevCrop }}
+          <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop.code">
+            {{ prevCrop.variety }}
           </option>
         </select>
         <label for="add.plot.prevCrop3">Hauptfrucht {{ curYear - 3 }}</label>
         <select id="add.plot.prevCrop3" v-model="prevCrop3" class="dropdown">
-          <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop">
-            {{ prevCrop }}
+          <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop.code">
+            {{ prevCrop.variety }}
           </option>
         </select>
       </div>
@@ -43,7 +43,7 @@
 
 <script>
 import { area } from '@turf/turf'
-import ktblCrops from '~/assets/js/crops.js'
+import cultures from '~/assets/js/cultures.js'
 
 export default {
   props: {
@@ -74,32 +74,8 @@ export default {
       type: 'error'
     }
   },
-  computed: {
-    crops() {
-      let unique = _.uniqBy(ktblCrops, 'cropGroup')
-      if (unique.length > 0) {
-        unique = unique.map(o => {
-          return o.cropGroup
-        })
-        // console.log(unique)
-        unique = unique.sort()
-      }
-      return unique
-    },
-    systems() {
-      let data = _.filter(ktblCrops, {
-        farmingType: this.farmingType,
-        crop: this.crop
-      })
-      if (data) {
-        data = data.map(o => {
-          return o.system
-        })
-      }
-      return data
-    }
-  },
   created() {
+    this.crops = cultures
     if (this.$store.curYear) this.curYear = this.$store.curYear
   },
   methods: {
@@ -111,6 +87,9 @@ export default {
         const properties = {
           name: this.name,
           geometry: this.plotData.features[0],
+          prevCrop1: this.prevCrop1,
+          prevCrop2: this.prevCrop2,
+          prevCrop3: this.prevCrop3,
           size: size,
           settings: settings
         }
@@ -120,9 +99,9 @@ export default {
           properties,
           { progress: true }
         )
-        this.$bus.$emit('drawPlot', data.geometry)
-        // store new plot in database
-        await this.$db.put(data)
+        this.$bus.$emit('drawPlot', data[0].geometry)
+        // store new plots in database
+        await this.$db.bulkDocs(data)
         this.showPlotSucc()
         this.$emit('closeAddPlot')
         this.loading = false

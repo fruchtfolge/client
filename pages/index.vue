@@ -603,10 +603,11 @@ div.flip-container {
   border-radius: 0 !important;
 }
 
+/*
 input[type='checkbox'] {
   display: none;
 }
-
+*/
 input[type='checkbox'] + label span {
   background: white;
   border: 1px solid #cccccc;

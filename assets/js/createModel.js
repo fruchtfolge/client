@@ -8,18 +8,18 @@ export default {
     return date.getFullYear()
   },
   save(string, arr) {
-    if (arr && arr.length > 0) {
-      return `${string} /\n${arr.join('\n')}\n/;\n\n`
-    } else {
-      return ''
-    }
+    return `${string} /\n${arr.join('\n')}\n/;\n\n`
   },
   getMedianYieldCap(plots) {
+    if (plots.length === 1) return _.round(plots[0].quality)
     // disregard plots with a SQR of 0
-    const sqrs = plots.map(plot => {
-      if (plot.quality && !isNaN(plot.quality) && plot.quality > 0)
+    const sqrs = plots
+      .filter(plot => {
+        return plot.quality && !isNaN(plot.quality) && plot.quality > 0
+      })
+      .map(plot => {
         return plot.quality
-    })
+      })
     const sorted = sqrs.slice().sort()
     const middle = Math.floor(sorted.length / 2)
 
@@ -225,6 +225,7 @@ set months_halfMonths(months,halfMonths) /
 /;
 
 set years / 2001*2030 /;
+$onempty
 set curYear(years) / ${properties.curYear} /;
 `
 
@@ -250,8 +251,12 @@ set curYear(years) / ${properties.curYear} /;
         )}\n '${plot._id}'.quality ${plot.quality || 0}`
       )
       plots_soilTypes.push(` '${plot._id}'.'${plot.soilType}'`)
-      if (plot.rootCrops) plots_rootCropCap.push(` '${plot._id}' 'YES'`)
-      if (plot.permPast) plots_permPast.push(` '${plot._id}' 'YES'`)
+      if (plot.rootCrops) {
+        plots_rootCropCap.push(` '${plot._id}' 'YES'`)
+      }
+      if (plot.permPast) {
+        plots_permPast.push(` '${plot._id}' 'YES'`)
+      }
       if (plot.excludedCrops && plot.excludedCrops.length > 0) {
         plot.excludedCrops.forEach(crop => {
           plots_excludedCrops.push(` '${plot._id}'.'${crop}' 'YES'`)
@@ -312,8 +317,12 @@ set curYear(years) / ${properties.curYear} /;
           crop.code
         }'.efaFactor ${crop.efaFactor}`
       )
-      if (crop.rootCrop) crops_rootCrop.push(` '${crop.code}' YES`)
-      if (crop.catchCropCap) crops_catchCrop.push(` '${crop.code}' YES`)
+      if (crop.rootCrop) {
+        crops_rootCrop.push(` '${crop.code}' YES`)
+      }
+      if (crop.catchCropCap) {
+        crops_catchCrop.push(` '${crop.code}' YES`)
+      }
       properties.curCrops.forEach(subseqCrop => {
         croppingFactor.push(
           ` '${crop.code}'.'${subseqCrop.code}' ${
@@ -335,20 +344,6 @@ set curYear(years) / ${properties.curYear} /;
       })
     })
 
-    // create plot & crop related data
-    const plots = []
-    const plots_years_crops = []
-
-    properties.plots.forEach(plot => {
-      if (plots.indexOf(` '${plot._id}'`) === -1) plots.push(` '${plot._id}'`)
-      if (plot.crop)
-        plots_years_crops.push(
-          ` '${plot._id}'.${plot.year}.'${
-            cultures[plot.crop] ? cultures[plot.crop].code : '""'
-          }' 'YES'`
-        )
-    })
-
     // create gross margin related data
     const crops = [` ''`]
     const p_grossMarginData = []
@@ -368,6 +363,31 @@ set curYear(years) / ${properties.curYear} /;
           )
         }
       })
+    })
+
+    // create plot & crop related data
+    const plots = []
+    const plots_years_crops = []
+
+    properties.curPlots.forEach(plot => {
+      // get all previous crops for that plot
+      if (plots.indexOf(` '${plot._id}'`) === -1) plots.push(` '${plot._id}'`)
+      const prev = properties.plots.filter(p => {
+        return p.flik === plot.flik
+      })
+      if (prev.length) {
+        prev.forEach(prevPlot => {
+          // add crop code to crops set if it isn't present
+          const cropCode = cultures[prevPlot.crop]
+            ? cultures[prevPlot.crop].code
+            : ''
+          if (crops.indexOf(` '${cropCode}'`) === -1)
+            crops.push(` '${cropCode}'`)
+          plots_years_crops.push(
+            ` '${plot._id}'.${prevPlot.year}.'${cropCode}' 'YES'`
+          )
+        })
+      }
     })
 
     // constraints related data
@@ -428,10 +448,10 @@ set curYear(years) / ${properties.curYear} /;
     )
     include += this.save('set plots_rootCropCap(curPlots)', plots_rootCropCap)
     include += this.save('set plots_permPast(curPlots)', plots_permPast)
-    include += this.save(
+    /* include += this.save(
       'set plots_excludedCrops(curPlots,crops)',
       plots_excludedCrops
-    )
+    ) */
 
     include += this.save('set crops', crops)
     include += this.save('set curCrops(crops)', curCrops)
@@ -458,21 +478,24 @@ set curYear(years) / ${properties.curYear} /;
       p_grossMarginData
     )
     include += this.save('parameter p_laborReq(crops,halfMonths)', laborReq)
-    include += this.save('set constraints', constraints)
-    include += this.save(
-      'parameter p_constraint(constraints,curCrops,curCrops)',
-      p_constraint
-    )
-    include += this.save(
-      'set constraints_lt(constraints,symbol)',
-      constraints_lt
-    )
-
-    include += this.save('parameter p_availLabour(months)', p_availLabour)
-    include += this.save(
-      'parameter p_availFieldWorkDays(months)',
-      p_availFieldWorkDays
-    )
+    if (constraints.length) {
+      include += this.save('set constraints', constraints)
+      include += this.save(
+        'parameter p_constraint(constraints,curCrops,curCrops)',
+        p_constraint
+      )
+      include += this.save(
+        'set constraints_lt(constraints,symbol)',
+        constraints_lt
+      )
+    }
+    if (p_availLabour.length) {
+      include += this.save('parameter p_availLabour(months)', p_availLabour)
+      include += this.save(
+        'parameter p_availFieldWorkDays(months)',
+        p_availFieldWorkDays
+      )
+    }
 
     // load base model from fruchtfolge-model
     const base = require('fruchtfolge-model')

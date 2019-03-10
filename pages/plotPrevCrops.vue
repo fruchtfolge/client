@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="curPlots && curPlots.length > 0 && crops" class="plotOverview">
+    <div v-if="curPlots && curPlots.length > 0" class="plotOverview">
       <table>
         <thead>
           <tr>
@@ -109,18 +109,19 @@ export default {
       this.$set(this, 'curYear', store.curYear)
       if (store.crops) {
         const crops = _.uniqBy(store.crops, 'code')
-        const maxRotBreak = _.maxBy(crops, 'rotBreak').rotBreak
+        let maxRotBreak = _.maxBy(crops, 'rotBreak').rotBreak
+        if (maxRotBreak < 3) maxRotBreak = 3
         this.$set(this, 'crops', crops)
         this.$set(this, 'maxRotBreak', maxRotBreak)
         console.log(this.curYear, this.maxRotBreak)
-        const prevYears = Array(
-          this.curYear - (this.curYear - this.maxRotBreak)
-        )
-          .fill(0)
-          .map((e, i) => i + (this.curYear - this.maxRotBreak))
-        console.log(prevYears)
-        this.$set(this, 'prevYears', prevYears)
+      } else {
+        this.$set(this, 'maxRotBreak', 3)
       }
+      const prevYears = Array(this.curYear - (this.curYear - this.maxRotBreak))
+        .fill(0)
+        .map((e, i) => i + (this.curYear - this.maxRotBreak))
+      console.log(prevYears)
+      this.$set(this, 'prevYears', prevYears)
     },
     async saveCropChange(plot, year) {
       try {

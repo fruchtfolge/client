@@ -11,6 +11,7 @@
             <th>Hof-Feld-Distanz</th>
             <th>Bodenqualität (SQR)</th>
             <th>Bodenart</th>
+            <th>Humusgehalt</th>
             <th>Hackfruchtfähig</th>
             <th>Dauergrünland</th>
           </tr>
@@ -31,6 +32,9 @@
             </td>
             <td style="text-align: center;">
               {{ plot.soilType }}
+            </td>
+            <td style="text-align: center;">
+              {{ plot.humusContent }}
             </td>
             <td style="text-align: center;">
               <input type="checkbox" :checked="plot.rootCrops">
