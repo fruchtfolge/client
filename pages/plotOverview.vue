@@ -135,7 +135,6 @@ export default {
           newValue = e.target.innerText
         } else if (e && (prop === 'rootCrops' || prop === 'permPast')) {
           newValue = e.target.checked
-          console.log(newValue)
         } else if (e) {
           newValue = Number(e.target.innerText)
         } else {
@@ -144,7 +143,6 @@ export default {
         // get doc
         const plot = await this.$db.get(data._id)
         plot[prop] = newValue
-        console.log(plot, plot[prop], newValue, data[prop])
         await this.$db.put(plot)
       } catch (e) {
         console.log(e)
