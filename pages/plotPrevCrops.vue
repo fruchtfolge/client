@@ -27,9 +27,13 @@
             </td>
             <td v-for="(year,m) in prevYears" :key="m" style="text-align: center;">
               <select v-model="plotsPrevCrops[plot.id][year]" class="selection" @change="saveCropChange(plot,year)">
-                <option value="" />
                 <option v-for="(crop) in crops" :key="crop.code" :value="crop.name">
                   {{ crop.name }}
+                </option>
+                <option value="" />
+                <!-- Also show cultures not grown by the farmer -->
+                <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
+                  {{ culture.variety }}
                 </option>
               </select>
             </td>
@@ -62,6 +66,7 @@ export default {
     return {
       curPlots: null,
       crops: null,
+      cultures: null,
       selectedPlot: null,
       maxRotBreak: 3,
       prevYears: [2016, 2017, 2018],
@@ -87,6 +92,7 @@ export default {
     }
   },
   created() {
+    this.cultures = cultures
     this.update()
     this.$bus.$on('changeCurrents', _.debounce(this.update, 200))
   },
@@ -135,6 +141,7 @@ export default {
         let newCropCode = ''
         const crop = _.find(this.crops, { name: newCrop })
         if (crop) newCropCode = crop.code
+        else newCropCode = _.find(this.crops, { variety: newCrop }).code
         console.log(newCropCode, storedPlot)
         if (storedPlot) {
           storedPlot.crop = newCropCode

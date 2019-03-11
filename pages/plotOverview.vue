@@ -18,29 +18,41 @@
         </thead>
         <tbody>
           <tr v-for="(plot, i) in plots" :key="i">
-            <td style="text-align: center;">
+            <td contenteditable style="text-align: center;" @blur="save($event,plot,'name')">
               {{ plot.name }}
             </td>
-            <td style="text-align: center;">
+            <td
+              contenteditable
+              style="center;"
+              @blur="save(e,plot,'size')"
+            >
               {{ plot.size }}
             </td>
-            <td style="text-align: center;">
+            <td contenteditable style="text-align: center;" @blur="save($event,plot,'distance')">
               {{ plot.distance }}
             </td>
-            <td style="text-align: center;">
+            <td contenteditable style="text-align: center;" @blur="save($event,plot,'quality')">
               {{ plot.quality }}
             </td>
             <td style="text-align: center;">
-              {{ plot.soilType }}
+              <select v-model="plot.soilType" class="selection" @change="save(null,plot,'soilType')">
+                <option v-for="(soilType) in soilTypes" :key="soilType" :value="soilType">
+                  {{ soilType }}
+                </option>
+              </select>
             </td>
             <td style="text-align: center;">
-              {{ plot.humusContent }}
+              <select v-model="plot.humusContent" class="selection" @change="save(null,plot,'humusContent')">
+                <option v-for="(humusContent) in humusContents" :key="humusContent" :value="humusContent">
+                  {{ humusContent }}
+                </option>
+              </select>
             </td>
             <td style="text-align: center;">
-              <input type="checkbox" :checked="plot.rootCrops">
+              <input type="checkbox" :checked="plot.rootCrops" @change="save($event,plot,'rootCrops')">
             </td>
             <td style="text-align: center;">
-              <input type="checkbox" :checked="plot.permPast">
+              <input type="checkbox" :checked="plot.permPast" @change="save($event,plot,'permPast')">
             </td>
           </tr>
         </tbody>
@@ -68,6 +80,29 @@ export default {
   data() {
     return {
       plots: null,
+      soilTypes: [
+        'Reinsande (ss)',
+        'Lehmsande (ls)',
+        'Schluffsande (us)',
+        'Sandlehme (sl)',
+        'Normallehme (ll)',
+        'Tonlehme (tl)',
+        'Lehmschluffe (lu)',
+        'Tonschluffe (tu)',
+        'Schlufftone (ut)',
+        'Moore (mo)'
+      ],
+      humusContents: [
+        '1 - <2%',
+        '2 - <3%',
+        '3 - <4%',
+        '4 - <6%',
+        '6 - <8%',
+        '8 - <11,5%',
+        '11,5 - <15%',
+        '15 - <30%',
+        '≥30%'
+      ],
       selectedPlot: null,
       curYear: 2019,
       waiting: false
@@ -91,6 +126,29 @@ export default {
     importPrev() {
       this.waiting = true
       this.$bus.$emit('importPrevYear')
+    },
+    async save(e, data, prop) {
+      console.log(e)
+      try {
+        let newValue = ''
+        if (e && prop === 'name') {
+          newValue = e.target.innerText
+        } else if (e && (prop === 'rootCrops' || prop === 'permPast')) {
+          newValue = e.target.checked
+          console.log(newValue)
+        } else if (e) {
+          newValue = Number(e.target.innerText)
+        } else {
+          newValue = data[prop]
+        }
+        // get doc
+        const plot = await this.$db.get(data._id)
+        plot[prop] = newValue
+        console.log(plot, plot[prop], newValue, data[prop])
+        await this.$db.put(plot)
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }
@@ -99,5 +157,17 @@ export default {
 <style>
 .plotOverview table input {
   -webkit-appearance: checkbox;
+}
+.selection {
+  min-width: 0px;
+  width: 100px;
+  font-size: 14px;
+  text-align-last: center;
+  font-family: 'Open Sans Light';
+  letter-spacing: normal;
+  border-width: 0px;
+  background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='%23444' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
+  background-repeat: no-repeat;
+  background-position: 100% 50%;
 }
 </style>

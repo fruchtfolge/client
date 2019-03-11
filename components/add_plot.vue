@@ -15,19 +15,31 @@
         <label for="add.plot.prevCrop1">Hauptfrucht {{ curYear - 1 }}</label>
         <select id="add.plot.prevCrop1" v-model="prevCrop1" class="dropdown">
           <option v-for="(crop, i) in crops" :key="i" :value="crop.code">
-            {{ crop.variety }}
+            {{ crop.name }}
+          </option>
+          <option value="" />
+          <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
+            {{ culture.variety }}
           </option>
         </select>
         <label for="add.plot.prevCrop2">Hauptfrucht {{ curYear - 2 }}</label>
         <select id="add.plot.prevCrop2" v-model="prevCrop2" class="dropdown">
           <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop.code">
-            {{ prevCrop.variety }}
+            {{ prevCrop.name }}
+          </option>
+          <option value="" />
+          <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
+            {{ culture.variety }}
           </option>
         </select>
         <label for="add.plot.prevCrop3">Hauptfrucht {{ curYear - 3 }}</label>
         <select id="add.plot.prevCrop3" v-model="prevCrop3" class="dropdown">
           <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop.code">
-            {{ prevCrop.variety }}
+            {{ prevCrop.name }}
+          </option>
+          <option value="" />
+          <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
+            {{ culture.variety }}
           </option>
         </select>
       </div>
@@ -75,7 +87,10 @@ export default {
     }
   },
   created() {
-    this.crops = cultures
+    this.cultures = cultures
+    if (this.$store.crops) {
+      this.crops = _.uniqBy(this.$store.crops, 'code')
+    }
     if (this.$store.curYear) this.curYear = this.$store.curYear
   },
   methods: {
