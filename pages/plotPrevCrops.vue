@@ -9,9 +9,14 @@
             </th>
             <th>Größe</th>
             <th>Hof-Feld-Distanz</th>
-            <th v-for="(year) in prevYears" :key="year">
-              {{ year }}
-            </th> <!--style="min-width: 200px;"-->
+            <template v-for="(year) in prevYears">
+              <th :key="year + 'ZF'">
+                ZF
+              </th>
+              <th :key="year">
+                {{ year }}
+              </th> <!--style="min-width: 200px;"-->
+            </template>
           </tr>
         </thead>
         <tbody>
@@ -25,18 +30,23 @@
             <td style="text-align: center;">
               {{ plot.distance }}
             </td>
-            <td v-for="(year,m) in prevYears" :key="m" style="text-align: center;">
-              <select v-model="plotsPrevCrops[plot.id][year]" class="selection" @change="saveCropChange(plot,year)">
-                <option v-for="(crop) in crops" :key="crop.code" :value="crop.name">
-                  {{ crop.name }}
-                </option>
-                <option value="" />
-                <!-- Also show cultures not grown by the farmer -->
-                <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
-                  {{ culture.variety }}
-                </option>
-              </select>
-            </td>
+            <template v-for="(year,m) in prevYears">
+              <td :key="m + 'ZF'" style="text-align: center;">
+                <input type="checkbox" :checked="plotsPrevCatchCrops[plot.id][year]" @change="saveCatchCrop($event,plot,year)">
+              </td>
+              <td :key="m" style="text-align: center;">
+                <select v-model="plotsPrevCrops[plot.id][year]" class="selection" @change="saveCropChange(plot,year)">
+                  <option v-for="(crop) in crops" :key="crop.code" :value="crop.name">
+                    {{ crop.name }}
+                  </option>
+                  <option value="" />
+                  <!-- Also show cultures not grown by the farmer -->
+                  <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
+                    {{ culture.variety }}
+                  </option>
+                </select>
+              </td>
+            </template>
           </tr>
         </tbody>
       </table>
@@ -85,6 +95,25 @@ export default {
               plot.id,
               this.curYear - i
             )
+          }
+        })
+      }
+      return o
+    },
+    plotsPrevCatchCrops() {
+      const o = {}
+      if (this.curPlots && this.curPlots.length > 0) {
+        this.curPlots.forEach(plot => {
+          o[plot.id] = {}
+          for (let i = 1; i < this.maxRotBreak + 1; i++) {
+            const prevPlot = _.find(this.$store.plots, p => {
+              return (
+                p.id === plot.id &&
+                p.scenario === plot.scenario &&
+                p.year === this.curYear - i
+              )
+            })
+            o[plot.id][this.curYear - i] = prevPlot ? prevPlot.catchCrop : false
           }
         })
       }

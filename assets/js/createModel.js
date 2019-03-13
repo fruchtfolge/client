@@ -8,6 +8,8 @@ export default {
     return date.getFullYear()
   },
   save(string, arr) {
+    // remove potential duplicates from array
+    arr = _.uniq(arr)
     return `${string} /\n${arr.join('\n')}\n/;\n\n`
   },
   getMedianYieldCap(plots) {
