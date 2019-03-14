@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div v-if="curPlots && curPlots.length > 0" class="plotOverview">
+    <loading v-if="loading" />
+    <div v-if="!loading && curPlots && curPlots.length > 0" class="plotOverview">
       <table>
         <thead>
           <tr>
@@ -32,18 +33,20 @@
             </td>
             <template v-for="(year,m) in prevYears">
               <td :key="'ZF' + m" style="text-align: center;">
-                <input type="checkbox" :checked="plotsPrevCrops[plot.id][year].catchCrop" @change="saveCatchCrop($event,plot,year)">
+                <input type="checkbox" :checked="plot[year + 'catchCrop']" @change="saveCatchCrop($event,plot,year)">
               </td>
 
               <td :key="m" style="text-align: center;">
-                <select v-model="plotsPrevCrops[plot.id][year].crop" class="selection" @change="saveCropChange(plot,year)">
+                <select v-model="plot[year]" class="selection" @change="saveCropChange(plot,year)">
                   <option v-for="(crop) in crops" :key="crop.code + crop.name" :value="crop.name">
                     {{ crop.name }}
                   </option>
+                  <!--
                   <option value="" />
                   <option v-for="(culture) in cultures" :key="culture.variety + culture.code" :value="culture.variety">
                     {{ culture.variety }}
                   </option>
+                -->
                 </select>
               </td>
             </template>
@@ -72,11 +75,16 @@
 import cultures from '~/assets/js/cultures'
 
 export default {
+  components: {
+    loading: () => import('~/components/loading.vue')
+  },
   data() {
     return {
+      loading: true,
       curPlots: null,
       crops: null,
       cultures: null,
+      curScenario: 'Standard',
       selectedPlot: null,
       maxRotBreak: 3,
       prevYears: [2016, 2017, 2018],
@@ -84,7 +92,8 @@ export default {
       waiting: false
     }
   },
-  created() {
+  created() {},
+  mounted() {
     this.cultures = cultures
     this.update()
     this.$bus.$on('changeCurrents', _.debounce(this.update, 200))
@@ -93,60 +102,84 @@ export default {
     this.$bus.$off('changeCurrents')
   },
   methods: {
-    changePlot(plot) {
-      this.selectedPlot = plot
+    getPlot(id, year) {
+      const plot = _.find(this.$store.plots, {
+        id: id,
+        year: year,
+        scenario: this.curScenario
+      })
+      return plot
     },
-    getName(id, year) {
-      const plot = _.find(this.$store.plots, { id: id, year: year })
+    getCrop(id, year) {
+      const plot = this.getPlot(id, year)
       if (plot && cultures[plot.crop]) {
-        return cultures[plot.crop].variety
+        // check if crop has a different name from the farmer
+        let name = cultures[plot.crop].variety
+        if (this.crops) {
+          const match = _.find(this.crops, ['code', plot.crop])
+          if (match) {
+            name = match.variety || match.name
+          }
+        }
+        return name
+      }
+    },
+    getCatchCrop(id, year) {
+      const plot = this.getPlot(id, year)
+      if (plot) {
+        return plot.catchCrop
       }
     },
     update() {
-      const store = this.$store
-      this.$set(this, 'curPlots', store.curPlots)
-      this.$set(this, 'curYear', store.curYear)
-      if (store.crops) {
-        const crops = _.uniqBy(store.crops, 'code')
-        let maxRotBreak = _.maxBy(crops, 'rotBreak').rotBreak
-        if (maxRotBreak < 3) maxRotBreak = 3
-        this.$set(this, 'crops', crops)
-        this.$set(this, 'maxRotBreak', maxRotBreak)
-        console.log(this.curYear, this.maxRotBreak)
-      } else {
-        this.$set(this, 'maxRotBreak', 3)
-      }
-      const prevYears = Array(this.curYear - (this.curYear - this.maxRotBreak))
-        .fill(0)
-        .map((e, i) => i + (this.curYear - this.maxRotBreak))
-      console.log(prevYears)
-      this.$set(this, 'prevYears', prevYears)
-      this.getPrevCrops()
-    },
-    getPrevCrops() {
-      const plotsPrevCrops = {}
-      if (this.$store.plots && this.$store.plots.length) {
-        // get all current plot ids as an array
-        const curPlots = this.curPlots.map(p => {
-          return p.id
-        })
-        this.$store.plots.forEach(plot => {
-          // don't consider plot if it's not used in the current year
-          if (
-            curPlots.indexOf(plot.id) === -1 &&
-            plot.scenario !== this.curScenario
+      this.loading = true
+      // set short timeout in order for Vue to render the loading bar
+      setTimeout(() => {
+        const store = this.$store
+        this.$set(this, 'curPlots', store.curPlots)
+        this.$set(this, 'curYear', store.curYear)
+
+        // add presonal crops to default NRW crops
+        if (store.crops) {
+          const crops = _.uniqBy(
+            store.crops.filter(c => {
+              return c.scenario === this.curScenario && c.active
+            }),
+            'code'
           )
-            return
-          // create empty object for plot if doesn't exists
-          if (!plotsPrevCrops[plot.id]) plotsPrevCrops[plot.id] = {}
-          plotsPrevCrops[plot.id][plot.year] = {
-            name: cultures[plot.code],
-            catchCrop: plot.catchCrop
+          let maxRotBreak = _.maxBy(crops, 'rotBreak').rotBreak
+          if (maxRotBreak < 3) maxRotBreak = 3
+          this.$set(this, 'crops', crops)
+          this.$set(this, 'maxRotBreak', maxRotBreak)
+          console.log(this.curYear, this.maxRotBreak)
+        } else {
+          this.$set(this, 'maxRotBreak', 3)
+        }
+        // create array of previous years
+        const prevYears = Array(
+          this.curYear - (this.curYear - this.maxRotBreak)
+        )
+          .fill(0)
+          .map((e, i) => i + (this.curYear - this.maxRotBreak))
+
+        this.$set(this, 'prevYears', prevYears)
+        // add previous crops to each crop object
+        this.plotsPrevCrops()
+        // hide loading menu when finished
+        this.loading = false
+      }, 1)
+    },
+    plotsPrevCrops() {
+      if (this.curPlots && this.curPlots.length > 0) {
+        this.curPlots.forEach(plot => {
+          for (let i = 1; i < this.maxRotBreak + 1; i++) {
+            plot[this.curYear - i] = this.getCrop(plot.id, this.curYear - i)
+            plot[this.curYear - i + 'catchCrop'] = this.getCatchCrop(
+              plot.id,
+              this.curYear - i
+            )
           }
         })
       }
-      console.log(plotsPrevCrops)
-      this.plotsPrevCrops = plotsPrevCrops
     },
     async saveCropChange(plot, year) {
       try {
@@ -156,12 +189,17 @@ export default {
           year: year,
           scenario: this.$store.curScenario
         })
-        const newCrop = this.plotsPrevCrops[plot.id][year]
+
+        const newCrop = plot[year]
         let newCropCode = ''
         const crop = _.find(this.crops, { name: newCrop })
-        if (crop) newCropCode = crop.code
-        else newCropCode = _.find(this.crops, { variety: newCrop }).code
-        console.log(newCropCode, storedPlot)
+        if (crop) {
+          newCropCode = crop.code
+        } else {
+          newCropCode = _.find(this.crops, { variety: newCrop }).code
+        }
+        console.log(newCropCode, storedPlot, newCrop)
+
         if (storedPlot) {
           storedPlot.crop = newCropCode
           await this.$db.put(storedPlot)
@@ -185,6 +223,7 @@ export default {
           year: year,
           scenario: this.$store.curScenario
         })
+        console.log(storedPlot, e)
         // if found, get plot from db
         if (storedPlot) {
           const data = await this.$db.get(storedPlot._id)
@@ -206,7 +245,7 @@ export default {
       })
     },
     importPrev() {
-      this.waiting = true
+      this.loading = true
       this.$bus.$emit('importPrevYear')
     }
   }

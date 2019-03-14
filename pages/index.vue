@@ -1,15 +1,6 @@
 <template>
   <div class="main">
-    <div v-if="loading" class="blur loading">
-      <div class="spinner-container">
-        <div class="lds-spinner">
-          <div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div />
-        </div>
-        <h2 style="text-align: center;">
-          Daten werden geladen ... <br> Der Vorgang kann einige Minuten in Anspruch nehmen
-        </h2>
-      </div>
-    </div>
+    <loading v-if="loading" />
     <div v-else>
       <img id="background" class="background" src="~assets/img/background.jpeg" alt="background">
       <div id="login" class="flip-container" :class="{ flip: showRegister }">
@@ -69,6 +60,9 @@
 import Setting from '~/constructors/settings'
 
 export default {
+  components: {
+    loading: () => import('~/components/loading.vue')
+  },
   data() {
     return {
       showRegister: false,

@@ -1,15 +1,6 @@
 <template>
   <div>
-    <div v-if="loading" class="blur loading">
-      <div class="spinner-container">
-        <div class="lds-spinner">
-          <div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div />
-        </div>
-        <h2 style="text-align: center;">
-          Daten werden geladen ... <br> Der Vorgang kann einige Minuten in Anspruch nehmen
-        </h2>
-      </div>
-    </div>
+    <loading v-if="loading" />
     <div style="width: 50%; min-width: 500px; margin: auto; top: 120px;">
       <h1 style="font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
         EINSTELLUNGEN
@@ -131,6 +122,9 @@
 import mapquest from '~/assets/js/mapquest'
 
 export default {
+  components: {
+    loading: () => import('~/components/loading.vue')
+  },
   data() {
     return {
       loading: false,

@@ -1,15 +1,6 @@
 <template>
   <div class="">
-    <div v-if="loading" class="blur loading">
-      <div class="spinner-container">
-        <div class="lds-spinner">
-          <div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div />
-        </div>
-        <h2 style="text-align: center;">
-          Daten werden geladen ... <br> Der Vorgang kann einige Minuten in Anspruch nehmen
-        </h2>
-      </div>
-    </div>
+    <loading v-if="loading" />
     <div v-else-if="resultsAvailable">
       <div class="result-wrapper">
         <table class="result-table">
@@ -61,7 +52,7 @@
                   {{ format(plot.curGrossMargin) }}
                 </td>
               </tr>
-              <tr v-show="plot.id === selection" :key="plot._id">
+              <tr v-if="plot.id === selection" :key="plot._id">
                 <td colspan="6" class="inner-table-wrapper" align="right">
                   <table class="inner-table">
                     <thead>
@@ -251,6 +242,7 @@ import model from '~/assets/js/createModel.js'
 
 export default {
   components: {
+    loading: () => import('~/components/loading.vue'),
     cropShares: () => import('~/components/cropShares.vue'),
     grossMarginTimeline: () => import('~/components/grossMarginTimeline.vue'),
     timeRequirement: () => import('~/components/timeRequirement.vue'),
@@ -628,10 +620,17 @@ export default {
   background-color: #ececec;
 }
 
+.result-table tr:nth-child(odd) {
+  background-color: #f5f5f5;
+}
+
+/*
 .result-table tr:nth-child(4n + 1),
 .result-table tr:nth-child(4n + 2) {
   background-color: #f5f5f5;
 }
+*/
+
 .inner-table-wrapper {
   padding: 20px;
 }
@@ -646,6 +645,7 @@ export default {
 .inner-table tr:nth-child(odd) {
   background-color: #f5f5f5;
 }
+
 .inner-table tr:nth-child(even) {
   background-color: #ececec;
 }
