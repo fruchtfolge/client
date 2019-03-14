@@ -31,17 +31,17 @@
               {{ plot.distance }}
             </td>
             <template v-for="(year,m) in prevYears">
-              <td :key="m + 'ZF'" style="text-align: center;">
-                <input type="checkbox" :checked="plotsPrevCatchCrops[plot.id][year]" @change="saveCatchCrop($event,plot,year)">
+              <td :key="'ZF' + m" style="text-align: center;">
+                <input type="checkbox" :checked="plotsPrevCrops[plot.id][year].catchCrop" @change="saveCatchCrop($event,plot,year)">
               </td>
+
               <td :key="m" style="text-align: center;">
-                <select v-model="plotsPrevCrops[plot.id][year]" class="selection" @change="saveCropChange(plot,year)">
-                  <option v-for="(crop) in crops" :key="crop.code" :value="crop.name">
+                <select v-model="plotsPrevCrops[plot.id][year].crop" class="selection" @change="saveCropChange(plot,year)">
+                  <option v-for="(crop) in crops" :key="crop.code + crop.name" :value="crop.name">
                     {{ crop.name }}
                   </option>
                   <option value="" />
-                  <!-- Also show cultures not grown by the farmer -->
-                  <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
+                  <option v-for="(culture) in cultures" :key="culture.variety + culture.code" :value="culture.variety">
                     {{ culture.variety }}
                   </option>
                 </select>
@@ -84,42 +84,6 @@ export default {
       waiting: false
     }
   },
-  computed: {
-    plotsPrevCrops() {
-      const o = {}
-      if (this.curPlots && this.curPlots.length > 0) {
-        this.curPlots.forEach(plot => {
-          o[plot.id] = {}
-          for (let i = 1; i < this.maxRotBreak + 1; i++) {
-            o[plot.id][this.curYear - i] = this.getName(
-              plot.id,
-              this.curYear - i
-            )
-          }
-        })
-      }
-      return o
-    },
-    plotsPrevCatchCrops() {
-      const o = {}
-      if (this.curPlots && this.curPlots.length > 0) {
-        this.curPlots.forEach(plot => {
-          o[plot.id] = {}
-          for (let i = 1; i < this.maxRotBreak + 1; i++) {
-            const prevPlot = _.find(this.$store.plots, p => {
-              return (
-                p.id === plot.id &&
-                p.scenario === plot.scenario &&
-                p.year === this.curYear - i
-              )
-            })
-            o[plot.id][this.curYear - i] = prevPlot ? prevPlot.catchCrop : false
-          }
-        })
-      }
-      return o
-    }
-  },
   created() {
     this.cultures = cultures
     this.update()
@@ -157,6 +121,32 @@ export default {
         .map((e, i) => i + (this.curYear - this.maxRotBreak))
       console.log(prevYears)
       this.$set(this, 'prevYears', prevYears)
+      this.getPrevCrops()
+    },
+    getPrevCrops() {
+      const plotsPrevCrops = {}
+      if (this.$store.plots && this.$store.plots.length) {
+        // get all current plot ids as an array
+        const curPlots = this.curPlots.map(p => {
+          return p.id
+        })
+        this.$store.plots.forEach(plot => {
+          // don't consider plot if it's not used in the current year
+          if (
+            curPlots.indexOf(plot.id) === -1 &&
+            plot.scenario !== this.curScenario
+          )
+            return
+          // create empty object for plot if doesn't exists
+          if (!plotsPrevCrops[plot.id]) plotsPrevCrops[plot.id] = {}
+          plotsPrevCrops[plot.id][plot.year] = {
+            name: cultures[plot.code],
+            catchCrop: plot.catchCrop
+          }
+        })
+      }
+      console.log(plotsPrevCrops)
+      this.plotsPrevCrops = plotsPrevCrops
     },
     async saveCropChange(plot, year) {
       try {
@@ -182,6 +172,25 @@ export default {
           delete newPlot._rev
           newPlot._id = this.uuidv4()
           await this.$db.put(newPlot)
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async saveCatchCrop(e, plot, year) {
+      try {
+        // find given plot
+        const storedPlot = _.find(this.$store.plots, {
+          id: plot.id,
+          year: year,
+          scenario: this.$store.curScenario
+        })
+        // if found, get plot from db
+        if (storedPlot) {
+          const data = await this.$db.get(storedPlot._id)
+          data.catchCrop = e.target.checked
+          // save in db
+          await this.$db.put(data)
         }
       } catch (e) {
         console.log(e)

@@ -593,6 +593,7 @@ export default {
 
 .result-wrapper {
   width: calc(100vw - 200px);
+  min-width: 1024px;
   display: inline-flex;
 }
 
@@ -609,6 +610,7 @@ export default {
   margin-top: 20px;
   margin-left: 20px;
   max-width: 50vw;
+  min-width: 600px;
 }
 
 .expand-enter-active,
