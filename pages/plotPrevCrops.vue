@@ -146,8 +146,12 @@ export default {
             }),
             'code'
           )
-          let maxRotBreak = _.maxBy(crops, 'rotBreak').rotBreak
-          if (maxRotBreak < 3) maxRotBreak = 3
+          const maxRotBreakArr = _.maxBy(crops, 'rotBreak')
+          let maxRotBreak = 3
+          if (maxRotBreakArr && maxRotBreakArr.lenght) {
+            maxRotBreak = maxRotBreakArr.rotBreak
+            if (maxRotBreak < 3) maxRotBreak = 3
+          }
           this.$set(this, 'crops', crops)
           this.$set(this, 'maxRotBreak', maxRotBreak)
           console.log(this.curYear, this.maxRotBreak)

@@ -5,6 +5,9 @@
     <div v-if="selectedCrop" class="cropSettings">
       <div class="subseqCrops">
         <table>
+          <caption class="caption">
+            Nachfruchtwirkungen
+          </caption>
           <thead>
             <tr>
               <th>Nachfrucht</th>
@@ -23,6 +26,9 @@
       </div>
       <div class="settings">
         <table>
+          <caption class="caption">
+            Fruchtfolge Eigenschaften
+          </caption>
           <thead>
             <tr>
               <th>Eigenschaft</th>
@@ -51,6 +57,14 @@
             <tr>
               <td>Hackfrucht</td>
               <td><input type="checkbox" :checked="selectedCrop.rootCrop" @change="saveRootCrop($event,i)"></td>
+            </tr>
+            <tr>
+              <td>Sommerung</td>
+              <td><input type="checkbox" :checked="selectedCrop.season === 'Sommer'" @change="saveRootCrop($event,i)"></td>
+            </tr>
+            <tr>
+              <td>Zwischenfrucht anschließend möglich</td>
+              <td><input type="checkbox" :checked="selectedCrop.catchCropAfter" @change="saveRootCrop($event,i)"></td>
             </tr>
             <tr>
               <td>Faktor für Öko. Vorrangfläche (Greening)</td>
@@ -150,6 +164,10 @@ export default {
 </script>
 
 <style>
+.caption {
+  line-height: 30px;
+}
+
 .cropSettings {
   width: calc(100% - 275px);
 }

@@ -47,7 +47,6 @@ function initalizeDB() {
       aggregate: true
     })
     .on('update', (update, aggregate) => {
-      console.log('update')
       Vue.set(Vue.prototype.$store, 'plots', aggregate)
       updateCurrent()
     })
