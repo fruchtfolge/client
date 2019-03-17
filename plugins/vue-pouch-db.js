@@ -187,7 +187,17 @@ Vue.prototype.$bus.$on('importPrevYear', async () => {
       const data = result.docs.map(o => {
         o._id = uuidv4()
         delete o._rev
+        // set year to new year
         o.year = curYear
+        // delete calculated settings from previous year to enforce re-calculation
+        o.prevCrop3 = o.prevCrop2
+        o.prevCrop2 = o.prevCrop1
+        o.prevCrop1 = o.crop
+        o.crop = ''
+        delete o.selectedCrop
+        delete o.recommendation
+        delete o.catchCrop
+        delete o.matrix
         return o
       })
       await Vue.prototype.$db.bulkDocs(data)

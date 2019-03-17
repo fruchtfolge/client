@@ -194,7 +194,7 @@ export default {
 * Static data
 set grossMarginAttr / price,yield,directCosts,variableCosts,fixCosts,grossMargin,revenue,distanceCosts,croppingFactor,yieldCap /;
 set plotAttr / size,distance,quality /;
-set cropAttr / rotBreak,maxShare,minSoilQuality,efaFactor/;
+set cropAttr / rotBreak, maxShare, minSoilQuality, efaFactor, catchCropAfter, season/;
 set symbol / lt,gt /;
 
 set months /jan,feb,mrz,apr,mai,jun,jul,aug,sep,okt,nov,dez/;
@@ -274,6 +274,7 @@ set curYear(years) / ${properties.curYear} /;
     const p_cropData = []
     const crops_rootCrop = []
     const crops_catchCrop = []
+    const crops_summer = []
     const croppingFactor = []
     const laborReq = []
     const halfMonths = [
@@ -304,26 +305,41 @@ set curYear(years) / ${properties.curYear} /;
     ]
     const permPastCropCodes = [459, 480, 492, 57, 567, 572, 592, 972]
 
+    function createCropPropertyString(crop) {
+      let props = ['rotBreak', 'maxShare', 'minSoilQuality', 'efaFactor']
+      props = props.map(prop => {
+        return `'${crop.code}'.${prop} ${crop[prop]}`
+      })
+      props = props.join('\n')
+      return props
+    }
+
     properties.curCrops.forEach(crop => {
       if (!crop) return
-      if (cropGroup.indexOf(` '${crop.cropGroup}'`) === -1)
+      // add crop group if it doesn't exist yet
+      if (cropGroup.indexOf(` '${crop.cropGroup}'`) === -1) {
         cropGroup.push(` '${crop.cropGroup}'`)
+      }
+      // add link between crop and crop group
       crops_cropGroup.push(` '${crop.code}'.'${crop.cropGroup}'`)
+
+      // add current crop to possible list of crops
       curCrops.push(` '${crop.code}'`)
-      if (permPastCropCodes.indexOf(crop.code) > -1)
+      // declare crop as a permanent pasture crop if within the range of
+      // pasture crops
+      if (permPastCropCodes.indexOf(crop.code) > -1) {
         permPastCrops.push(` '${crop.code}'`)
-      p_cropData.push(
-        ` '${crop.code}'.rotBreak ${crop.rotBreak}\n '${crop.code}'.maxShare ${
-          crop.maxShare
-        }\n '${crop.code}'.minSoilQuality ${crop.minSoilQuality}\n '${
-          crop.code
-        }'.efaFactor ${crop.efaFactor}`
-      )
+      }
+      // add all crop properties to p_cropData parameter
+      p_cropData.push(createCropPropertyString(crop))
       if (crop.rootCrop) {
         crops_rootCrop.push(` '${crop.code}' YES`)
       }
-      if (crop.catchCropCap) {
+      if (crop.catchCropAfter) {
         crops_catchCrop.push(` '${crop.code}' YES`)
+      }
+      if (crop.season === 'Sommer') {
+        crops_summer.push(` '${crop.code}' YES`)
       }
       properties.curCrops.forEach(subseqCrop => {
         croppingFactor.push(
@@ -466,6 +482,7 @@ set curYear(years) / ${properties.curYear} /;
     include += this.save('parameter p_cropData(curCrops,cropAttr)', p_cropData)
     include += this.save('set crops_rootCrop(curCrops)', crops_rootCrop)
     include += this.save('set crops_catchCrop(curCrops)', crops_catchCrop)
+    include += this.save('set crops_summer(curCrops)', crops_summer)
     include += this.save(
       'parameter p_croppingFactor(curCrops,curCrops)',
       croppingFactor

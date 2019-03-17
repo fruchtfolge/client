@@ -75,6 +75,63 @@
           </tbody>
         </table>
       </div>
+      <div class="duevSettings">
+        <table>
+          <caption class="caption">
+            Einstellungen Düngeverordnung 2017
+          </caption>
+          <thead>
+            <tr>
+              <th>Eigenschaft</th>
+              <th>Wert</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ertragsniveau nach Tab. X [dt/ha]</td>
+              <td contenteditable="true" @blur="save($event, i, 'duevYieldLvl')">
+                {{ selectedCrop.duevYieldLvl }}
+              </td>
+            </tr>
+            <tr>
+              <td>N-Düngebedarf nach Tab. X [kg/ha]</td>
+              <td contenteditable="true" @blur="save($event, i, 'nRequirement')">
+                {{ selectedCrop.nRequirement }}
+              </td>
+            </tr>
+            <tr>
+              <td>Maximaler N-Bedarfszuschlag bei Mehrertrag je dt (Tab. X) [kg/ha]</td>
+              <td contenteditable="true" @blur="save($event, i, 'nMaxAddition')">
+                {{ selectedCrop.nMaxAddition }}
+              </td>
+            </tr>
+            <tr>
+              <td>Minimaler N-Bedarfsabzug bei Minderertrag je dt (Tab. X) [kg/ha]</td>
+              <td contenteditable="true" @blur="save($event, i, 'nMinSubtraction')">
+                {{ selectedCrop.nMinSubtraction }}
+              </td>
+            </tr>
+            <tr>
+              <td>N-Bedarfsabzug wenn Vorfrucht (Tab. X) [kg/ha]</td>
+              <td contenteditable="true" @blur="save($event, i, 'prevCropEff')">
+                {{ selectedCrop.prevCropEff }}
+              </td>
+            </tr>
+            <tr>
+              <td>P-Entzug (Tab. X) [kg/ha]</td>
+              <td contenteditable="true" @blur="save($event, i, 'pWithdraw')">
+                {{ selectedCrop.pWithdraw }}
+              </td>
+            </tr>
+            <tr>
+              <td>P-Rückstände Erntereste [kg/ha]</td>
+              <td contenteditable="true" @blur="save($event, i, 'pHarvestLeft')">
+                {{ selectedCrop.pHarvestLeft }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <div style="text-align:center;margin-top: 40px;">
         <button type="button" name="button" @click="remove">
           ENTFERNEN

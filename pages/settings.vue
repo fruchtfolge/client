@@ -1,6 +1,6 @@
 <template>
   <div>
-    <loading v-if="loading" />
+    <loading v-if="loading" :main="status" />
     <div style="width: 50%; min-width: 500px; margin: auto; top: 120px;">
       <h1 style="font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
         EINSTELLUNGEN
@@ -128,6 +128,9 @@ export default {
   data() {
     return {
       loading: false,
+      status:
+        'Flächenanträge werden von der Landwirtschaftskammer heruntergerladen.',
+      interval: '',
       zidId: '',
       zidPass: '',
       curYear: 2019,
@@ -250,6 +253,41 @@ export default {
         reader.readAsArrayBuffer(file)
       })
     },
+    clearStatus() {
+      clearInterval(this.interval)
+    },
+    getStatus(request, settings) {
+      this.interval = setInterval(async () => {
+        try {
+          const { data } = await this.$axios.post(
+            'http://localhost:3001/elan/status/',
+            request,
+            { progress: true }
+          )
+          this.status = `Bearbeite Schlag ${data.plot} von ${
+            data.outOfPlots
+          }, Anbaujahr ${data.year}`
+
+          if (data.docs) {
+            clearInterval(this.interval)
+            // save zid id in settings, however don't store password for security reasons
+            settings.zidId = this.zidId
+            settings.elanYears = settings.elanYears
+              ? request.years.concat(settings.elanYears)
+              : request.years
+            const update = data.docs.concat(settings)
+
+            await this.$db.bulkDocs(update)
+            this.loading = false
+            this.showZidSucc()
+          }
+        } catch (e) {
+          clearInterval(this.interval)
+          this.loading = false
+          console.log(e)
+        }
+      }, 2000)
+    },
     async processFile(event, type) {
       try {
         const file = event.target.files[0]
@@ -258,23 +296,37 @@ export default {
         const fileContent = this.arrayBufferToString(buffer)
         if (type === 'xml' && !this.xml) this.xml = fileContent
         if (type === 'gml' && !this.gml) this.gml = fileContent
+
         if (this.xml && this.gml) {
           this.loading = true
           const settings = await this.$db.get('settings')
+
+          // parse elan year
+          const yearRegex = /<antragsjahr>(.*?)<\/antragsjahr>/
+          const yearMatch = yearRegex.exec(this.xml)
+          if (!yearMatch) throw new Error('Datei beschädigt.')
+
+          // parse farm number
+          const farmNoRegex = /<bnrzd>(.*?)<\/bnrzd>/
+          const farmNoMatch = farmNoRegex.exec(this.xml)
+          if (!farmNoMatch) throw new Error('Datei beschädigt.')
+
           const request = {
             xml: this.xml,
             gml: this.gml,
+            years: [Number(yearMatch[1])],
+            farmno: Number(farmNoMatch[1]),
+            pass: Math.random(),
             settings: settings
           }
           console.log(request)
-          const { data } = await this.$axios.post(
+          const { headers } = await this.$axios.post(
             'http://localhost:3001/elan/files/',
             request,
             { progress: true }
           )
-          await this.$db.bulkDocs(data)
-          this.loading = false
-          this.showZidSucc()
+          console.log(headers)
+          this.getStatus(request, settings)
         }
       } catch (e) {
         this.showError()
@@ -397,20 +449,13 @@ export default {
             settings: settings
           }
           console.log(request)
-          const { data } = await this.$axios.post(
+          const { headers } = await this.$axios.post(
             'http://localhost:3001/elan/',
             request,
             { progress: true }
           )
-          // save zid id in settings, however don't store password for security reasons
-          settings.zidId = this.zidId
-          settings.elanYears = settings.elanYears
-            ? years.concat(settings.elanYears)
-            : years
-          const update = data.concat(settings)
-          await this.$db.bulkDocs(update)
-          this.loading = false
-          this.showZidSucc()
+          console.log(headers)
+          this.getStatus(request, settings)
         } else {
           this.showZidErr()
         }

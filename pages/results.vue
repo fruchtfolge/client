@@ -6,20 +6,23 @@
         <table class="result-table">
           <thead>
             <tr>
-              <th style="min-width: 150px;" @click="sortPlots('name')">
+              <th style="width: 125px;" @click="sortPlots('name')">
                 Name
               </th>
-              <th @click="sortPlots('size')">
+              <th style="width: 50px;" @click="sortPlots('size')">
                 Größe
               </th>
-              <th @click="sortPlots('distance')">
-                Hof-Feld-Distanz
+              <th style="width: 50px;" @click="sortPlots('distance')">
+                Distanz
               </th>
               <th style="min-width: 100px;" @click="sortPlots('prevCrop1')">
                 {{ curYear - 1 }}
               </th>
+              <th style="width: 50px;" @click="sortPlots('prevCrop1')">
+                Planung ZF
+              </th>
               <th style="min-width: 100px;" @click="sortPlots('selectedCrop')">
-                Empfehlung {{ curYear }}
+                Planung {{ curYear }}
               </th>
               <th @click="sortPlots('curGrossMargin')">
                 Deckungsbeitrag
@@ -29,19 +32,22 @@
           <tbody>
             <template v-for="(plot,i) in curPlots">
               <tr :key="plot.id">
-                <td style="text-align: center;">
+                <td class="wide-cells">
                   {{ plot.name }}
                 </td>
-                <td style="text-align: center;">
+                <td class="narrow-cells">
                   {{ plot.size }}
                 </td>
-                <td style="text-align: center;">
+                <td class="narrow-cells">
                   {{ plot.distance }}
                 </td>
-                <td style="text-align: center;">
+                <td class="wide-cells">
                   {{ plot.prevCrop1 }}
                 </td>
-                <td style="text-align: center;">
+                <td class="narrow-cells">
+                  <input type="checkbox" style="-webkit-appearance: checkbox;" :checked="plot.catchCrop">
+                </td>
+                <td class="wide-cells">
                   <select v-model="plot.selectedCrop" class="selection" @change="saveCropChange(plot)">
                     <option v-for="(crop) in plot.matrix[curYear]" :key="crop.grossMarginNoCropEff" :value="crop.code">
                       {{ crop.name }}
@@ -53,7 +59,7 @@
                 </td>
               </tr>
               <tr v-if="plot.id === selection" :key="plot._id">
-                <td colspan="6" class="inner-table-wrapper" align="right">
+                <td colspan="7" class="inner-table-wrapper" align="right">
                   <table class="inner-table">
                     <thead>
                       <th />
@@ -205,7 +211,7 @@
               </tr>
             </template>
             <tr>
-              <td colspan="5" style="font-weight: bold;">
+              <td colspan="6" style="font-weight: bold;">
                 Summe
               </td>
               <td style="text-align: center;font-weight: bold;">
@@ -603,6 +609,18 @@ export default {
   margin-left: 20px;
   max-width: 50vw;
   min-width: 600px;
+  table-layout: fixed;
+}
+.wide-cells {
+  width: 125px;
+  text-align: left;
+  overflow-x: hidden;
+}
+
+.narrow-cells {
+  width: 50px;
+  text-align: center;
+  overflow-x: hidden;
 }
 
 .expand-enter-active,
@@ -651,12 +669,12 @@ export default {
 }
 .selection {
   font-size: 14px;
-  text-align-last: center;
+  text-align-last: left;
   font-family: 'Open Sans Light';
   letter-spacing: normal;
   border-width: 0px;
   background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='%23444' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
   background-repeat: no-repeat;
-  background-position: 100% 50%;
+  background-position: 80px 50%;
 }
 </style>
