@@ -152,6 +152,7 @@ export default {
           active: crop.active,
           grown: plot.crop === crop.code,
           code: crop.code,
+          catchCropCosts: this.catchCropCosts(plot),
           yieldCap,
           amount,
           correctedAmount,
@@ -182,6 +183,12 @@ export default {
       })
     })
     return plots
+  },
+  catchCropCosts(plot) {
+    return _.round(
+      0.2850553506 * plot.distance - 0.6666666667 * plot.size + 113,
+      2
+    )
   },
   createInclude(properties) {
     let include = `* -------------------------------

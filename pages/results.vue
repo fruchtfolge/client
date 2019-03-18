@@ -340,8 +340,10 @@ export default {
         const code = plot.selectedCrop
         if (code) {
           const plotData = plot.matrix[year][code]
-          const grossMargin = plotData.grossMargin
-          sum += grossMargin
+          sum += plotData.grossMargin
+          if (plot.catchCrop) {
+            sum += -plotData.catchCrop
+          }
         }
       })
       return sum
@@ -408,6 +410,7 @@ export default {
             store.curPlots.forEach(plot => {
               plot.recommendation = data.recommendation[plot._id]
               plot.selectedCrop = plot.recommendation
+              plot.catchCrop = plot.catchCrop[plot._id]
             })
           } else {
             this.infeasible = true
