@@ -75,7 +75,7 @@ export default {
             if (plotData[crop]) {
               let catchCropCosts = 0
               if (plot.catchCrop) {
-                catchCropCosts = plotData[crop].catchCropCosts * plot.size
+                catchCropCosts = plot.matrix.catchCropCosts
               }
               if (o[crop]) o[crop] += plotData[crop].size
               else o[crop] = plotData[crop].size

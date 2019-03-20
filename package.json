@@ -13,8 +13,6 @@
     "precommit": "npm run lint"
   },
   "dependencies": {
-    "cross-env": "^5.2.0",
-    "nuxt": "^1.4.5",
     "@mapbox/mapbox-gl-draw": "^1.1.1",
     "@mapquest/directions": "^0.3.3",
     "@mapquest/geocoding": "0.0.4",
@@ -26,11 +24,13 @@
     "bufferutil": "^4.0.1",
     "chart.js": "^2.7.3",
     "chartjs-plugin-dragdata": "^0.3.0",
-    "fruchtfolge-model": "^1.6.0",
+    "cross-env": "^5.2.0",
+    "fruchtfolge-model": "^1.8.2",
     "lodash": "^4.17.11",
     "mapbox-gl": "^0.53.0",
     "mini-toastr": "^0.8.1",
     "nano": "^7.1.1",
+    "nuxt": "^1.4.5",
     "pouchdb": "^7.0.0",
     "pouchdb-browser": "^7.0.0",
     "pouchdb-find": "^7.0.0",

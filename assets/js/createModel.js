@@ -144,7 +144,7 @@ export default {
           2
         )
         const distanceCosts = this.calculateDistanceCosts(plot, correctedAmount)
-
+        plot.matrix.catchCropCosts = this.catchCropCosts(plot)
         plot.matrix[crop.year][crop.code] = {
           croppingFactor: cropFactAndRotBreak[0],
           rotBreakHeld: cropFactAndRotBreak[1],
@@ -152,7 +152,6 @@ export default {
           active: crop.active,
           grown: plot.crop === crop.code,
           code: crop.code,
-          catchCropCosts: this.catchCropCosts(plot),
           yieldCap,
           amount,
           correctedAmount,
@@ -185,10 +184,12 @@ export default {
     return plots
   },
   catchCropCosts(plot) {
-    return _.round(
-      0.2850553506 * plot.distance - 0.6666666667 * plot.size + 113,
+    const value = _.round(
+      (0.2850553506 * plot.distance - 0.6666666667 * plot.size + 113) *
+        plot.size,
       2
     )
+    return value
   },
   createInclude(properties) {
     let include = `* -------------------------------
@@ -372,12 +373,14 @@ set curYear(years) / ${properties.curYear} /;
     // create gross margin related data
     const crops = [` ''`]
     const p_grossMarginData = []
+    const p_catchCropCosts = []
 
     properties.crops.forEach(crop => {
       if (crops.indexOf(` '${crop.code}'`) === -1) crops.push(` '${crop.code}'`)
     })
 
     properties.curPlots.forEach(plot => {
+      p_catchCropCosts.push(` '${plot._id}' ${plot.matrix.catchCropCosts}`)
       properties.curCrops.forEach(crop => {
         crop = plot.matrix[properties.curYear][crop.code]
         // make sure there only is a gross margin for a plot if the rotational break is held
@@ -502,6 +505,10 @@ set curYear(years) / ${properties.curYear} /;
     include += this.save(
       'parameter p_grossMarginData(curPlots,curCrops)',
       p_grossMarginData
+    )
+    include += this.save(
+      'parameter p_catchCropCosts(curPlots)',
+      p_catchCropCosts
     )
     include += this.save('parameter p_laborReq(crops,halfMonths)', laborReq)
     if (constraints.length) {

@@ -45,7 +45,7 @@
                   {{ plot.prevCrop1 }}
                 </td>
                 <td class="narrow-cells">
-                  <input type="checkbox" style="-webkit-appearance: checkbox;" :checked="plot.catchCrop">
+                  <input type="checkbox" style="-webkit-appearance: checkbox;" :checked="plot.catchCrop" @change="saveCatchCropChange($event,plot)">
                 </td>
                 <td class="wide-cells">
                   <select v-model="plot.selectedCrop" class="selection" @change="saveCropChange(plot)">
@@ -342,7 +342,8 @@ export default {
           const plotData = plot.matrix[year][code]
           sum += plotData.grossMargin
           if (plot.catchCrop) {
-            sum += -plotData.catchCrop
+            console.log(plot.matrix.catchCropCosts)
+            sum += -plot.matrix.catchCropCosts
           }
         }
       })
@@ -410,7 +411,7 @@ export default {
             store.curPlots.forEach(plot => {
               plot.recommendation = data.recommendation[plot._id]
               plot.selectedCrop = plot.recommendation
-              plot.catchCrop = plot.catchCrop[plot._id]
+              plot.catchCrop = data.catchCrop[plot._id]
             })
           } else {
             this.infeasible = true
@@ -512,6 +513,17 @@ export default {
         doc.selectedCrop = plot.selectedCrop
         doc.curGrossMargin =
           plot.matrix[this.curYear][plot.selectedCrop].grossMargin
+        await this.$db.put(doc)
+      } catch (e) {
+        console.log(e)
+      }
+    },
+
+    async saveCatchCropChange(e, plot) {
+      try {
+        const id = plot._id
+        const doc = await this.$db.get(id)
+        doc.catchCrop = e.target ? e.target.checked : false
         await this.$db.put(doc)
       } catch (e) {
         console.log(e)
