@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import Setting from '~/constructors/settings'
+import Setting from '~/constructors/Settings'
 
 export default {
   components: {
