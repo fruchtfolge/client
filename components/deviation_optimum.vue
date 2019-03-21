@@ -1,32 +1,9 @@
 <template lang="html">
   <div>
-    <div class="greening-check">
-      <h2>Greening-Check:</h2>
-      <div style="display: inline-block;">
-        <div class="greening-entries">
-          <div :class="{ check: checkEfa, fail: !checkEfa }" />
-          <p>Ökologische Vorrangfläche: Über 5% des AL</p>
-        </div>
-        <div class="greening-entries">
-          <div :class="{ check: check75, fail: !check75 }" />
-          <p>Diversifizierung: Keine Kulturgruppe > 75% des AL</p>
-        </div>
-        <div class="greening-entries">
-          <div :class="{ check: check95, fail: !check95 }" />
-          <p>Diversifizierung: Keine komb. der Kulturgruppen > 95% des AL</p>
-        </div>
-      </div>
-    </div>
-    <transition
-      name="expand"
-      @before-enter="beforeEnter"
-      @enter="enter"
-      @before-leave="beforeLeave"
-      @leave="leave"
-    >
+    <div>
       <div v-show="shown">
         <div v-if="difference !== 0">
-          <h2>Differenz zum Optimum:</h2>
+          <h2>Differenz zum Optimum</h2>
           <h2 class="number" :class="{ positive: difference > 0 }">
             {{ format(difference) }}
           </h2>
@@ -37,7 +14,24 @@
           </p>
         </div>
       </div>
-    </transition>
+    </div>
+    <div class="greening-check">
+      <h2>Greening</h2>
+      <div style="display: inline-block;">
+        <div class="greening-entries">
+          <div :class="{ check: !brokeEfa, fail: brokeEfa }" />
+          <p>Ökologische Vorrangfläche: Über 5% des AL</p>
+        </div>
+        <div class="greening-entries">
+          <div :class="{ check: !broke75, fail: broke75 }" />
+          <p>Diversifizierung: Keine Kulturgruppe > 75% des AL</p>
+        </div>
+        <div class="greening-entries">
+          <div :class="{ check: !broke95, fail: broke95 }" />
+          <p>Diversifizierung: Keine komb. der Kulturgruppen > 95% des AL</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -115,20 +109,20 @@ export default {
         }
       })
       // only apply 5% greening rule if more than 15ha
-      if (!this.checkEfa && this.arableLand > 15) {
+      if (this.brokeEfa && this.arableLand > 15) {
         deviations.push(
           `Greening: Ökologische Vorrangfläche unter 5% (${
             this.greeningEfa
           }ha statt ${this.fivePercent}ha)`
         )
       }
-      // only apply 5% greening rule if more than 15ha
-      if (!this.check75 && this.arableLand > 10) {
-        deviations.push(
-          `Greening: Über 75% des AL mit (${this.greeningEfa}ha statt ${
-            this.fivePercent
-          }ha)`
-        )
+      // no crop more than 75%, if farm has more than 10ha
+      if (this.broke75 && this.arableLand > 10) {
+        deviations.push(`Greening: Über 75% des AL mit (${this.broke75}ha`)
+      }
+      // no crop combi more than 95%, if farm has more than 30ha
+      if (this.broke95 && this.arableLand > 30) {
+        deviations.push(`Greening: Über 95% des AL mit (${this.broke95}ha`)
       }
       return deviations
       // show error if cropping factor is 0
@@ -145,23 +139,23 @@ export default {
     ninceFivePercent() {
       return _.round(this.arableLand * 0.95, 2)
     },
-    checkEfa() {
+    brokeEfa() {
       if (this.greeningEfa < this.fivePercent) {
-        return false
+        return true
       }
-      return true
+      return false
     },
-    check75() {
+    broke75() {
       const props = Object.keys(this.greening75)
-      let flag = true
+      let flag = false
       props.forEach(share => {
-        if (this.greening75[share] >= this.sevenFivePercent) flag = false
+        if (this.greening75[share] >= this.sevenFivePercent) flag = share
       })
       return flag
     },
-    check95() {
+    broke95() {
       const props = Object.keys(this.greening95)
-      let flag = true
+      let flag = false
       props.forEach(share => {
         props.forEach(share2 => {
           if (share === share2) return
@@ -169,7 +163,7 @@ export default {
             this.greening95[share] + this.greening95[share2] >=
             this.ninceFivePercent
           ) {
-            flag = false
+            flag = share + ' ' + share2
           }
         })
       })
@@ -256,7 +250,7 @@ export default {
           const plotData = plot.matrix[this.curYear][code]
           const grossMargin = plotData.grossMargin
           optimum += grossMargin
-          if (plot.catchCrop) {
+          if (plot.recommendedCatchCrop) {
             optimum += -plot.matrix.catchCropCosts
           }
         }

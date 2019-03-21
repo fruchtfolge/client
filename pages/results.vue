@@ -412,11 +412,13 @@ export default {
               plot.recommendation = data.recommendation[plot._id]
               plot.selectedCrop = plot.recommendation
               plot.catchCrop = data.catchCrop[plot._id]
+              plot.recommendedCatchCrop = data.catchCrop[plot._id]
             })
           } else {
             this.infeasible = true
             store.curPlots.forEach(plot => {
               plot.recommendation = ''
+              plot.recommendedCatchCrop = false
               if (!plot.selectedCrop) {
                 plot.selectedCrop = Object.keys(plot.matrix[this.curYear])[0]
               }
