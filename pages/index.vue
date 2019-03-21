@@ -1,15 +1,6 @@
 <template>
   <div class="main">
-    <div v-if="loading" class="blur loading">
-      <div class="spinner-container">
-        <div class="lds-spinner">
-          <div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div />
-        </div>
-        <h2 style="text-align: center;">
-          Daten werden geladen ... <br> Der Vorgang kann einige Minuten in Anspruch nehmen
-        </h2>
-      </div>
-    </div>
+    <loading v-if="loading" :main="progress" />
     <div v-else>
       <img id="background" class="background" src="~assets/img/background.jpeg" alt="background">
       <div id="login" class="flip-container" :class="{ flip: showRegister }">
@@ -69,9 +60,14 @@
 import Setting from '~/constructors/settings'
 
 export default {
+  components: {
+    loading: () => import('~/components/loading.vue')
+  },
   data() {
     return {
       showRegister: false,
+      pendingMax: 0,
+      progress: '0%',
       email: '',
       password: '',
       address: '',
@@ -167,6 +163,19 @@ export default {
       }
       return settings
     },
+    getProgress(pending) {
+      let progress
+      this.pendingMax = this.pendingMax < pending ? pending : this.pendingMax // first time capture
+      if (this.pendingMax > 0) {
+        progress = 1 - pending / this.pendingMax
+        if (pending === 0) {
+          this.pendingMax = 0 // reset for live/next replication
+        }
+      } else {
+        progress = 1 // 100%
+      }
+      return progress
+    },
     handleSuccess(auth, signup) {
       const date = new Date()
       try {
@@ -185,6 +194,10 @@ export default {
         // do a one way replication
         this.$db.replicate
           .from(auth.userDBs.userdb)
+          .on('change', info => {
+            this.progress =
+              _.round(this.getProgress(info.pending) * 100, 0) + '%'
+          })
           .on('complete', async info => {
             console.log(info)
             const settings = await this.getSettings(date)

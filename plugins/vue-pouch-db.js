@@ -47,7 +47,6 @@ function initalizeDB() {
       aggregate: true
     })
     .on('update', (update, aggregate) => {
-      console.log('update')
       Vue.set(Vue.prototype.$store, 'plots', aggregate)
       updateCurrent()
     })
@@ -188,7 +187,18 @@ Vue.prototype.$bus.$on('importPrevYear', async () => {
       const data = result.docs.map(o => {
         o._id = uuidv4()
         delete o._rev
+        // set year to new year, and shift crops one year back
         o.year = curYear
+        o.prevCrop3 = o.prevCrop2
+        o.prevCrop2 = o.prevCrop1
+        o.prevCrop1 = o.crop
+        o.crop = ''
+        // delete calculated settings from previous year to enforce re-calculation
+        delete o.selectedCrop
+        delete o.recommendation
+        delete o.curGrossMargin
+        delete o.matrix
+        o.catchCrop = false
         return o
       })
       await Vue.prototype.$db.bulkDocs(data)

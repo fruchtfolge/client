@@ -8,6 +8,8 @@ export default {
     return date.getFullYear()
   },
   save(string, arr) {
+    // remove potential duplicates from array
+    arr = _.uniq(arr)
     return `${string} /\n${arr.join('\n')}\n/;\n\n`
   },
   getMedianYieldCap(plots) {
@@ -142,7 +144,7 @@ export default {
           2
         )
         const distanceCosts = this.calculateDistanceCosts(plot, correctedAmount)
-
+        plot.matrix.catchCropCosts = this.catchCropCosts(plot)
         plot.matrix[crop.year][crop.code] = {
           croppingFactor: cropFactAndRotBreak[0],
           rotBreakHeld: cropFactAndRotBreak[1],
@@ -181,6 +183,14 @@ export default {
     })
     return plots
   },
+  catchCropCosts(plot) {
+    const value = _.round(
+      (0.2850553506 * plot.distance - 0.6666666667 * plot.size + 113) *
+        plot.size,
+      2
+    )
+    return value
+  },
   createInclude(properties) {
     let include = `* -------------------------------
 * Fruchtfolge Model - Include file
@@ -192,7 +202,7 @@ export default {
 * Static data
 set grossMarginAttr / price,yield,directCosts,variableCosts,fixCosts,grossMargin,revenue,distanceCosts,croppingFactor,yieldCap /;
 set plotAttr / size,distance,quality /;
-set cropAttr / rotBreak,maxShare,minSoilQuality,efaFactor/;
+set cropAttr / rotBreak, maxShare, minSoilQuality, efaFactor, catchCropAfter, season/;
 set symbol / lt,gt /;
 
 set months /jan,feb,mrz,apr,mai,jun,jul,aug,sep,okt,nov,dez/;
@@ -272,6 +282,7 @@ set curYear(years) / ${properties.curYear} /;
     const p_cropData = []
     const crops_rootCrop = []
     const crops_catchCrop = []
+    const crops_summer = []
     const croppingFactor = []
     const laborReq = []
     const halfMonths = [
@@ -302,26 +313,41 @@ set curYear(years) / ${properties.curYear} /;
     ]
     const permPastCropCodes = [459, 480, 492, 57, 567, 572, 592, 972]
 
+    function createCropPropertyString(crop) {
+      let props = ['rotBreak', 'maxShare', 'minSoilQuality', 'efaFactor']
+      props = props.map(prop => {
+        return `'${crop.code}'.${prop} ${crop[prop]}`
+      })
+      props = props.join('\n')
+      return props
+    }
+
     properties.curCrops.forEach(crop => {
       if (!crop) return
-      if (cropGroup.indexOf(` '${crop.cropGroup}'`) === -1)
+      // add crop group if it doesn't exist yet
+      if (cropGroup.indexOf(` '${crop.cropGroup}'`) === -1) {
         cropGroup.push(` '${crop.cropGroup}'`)
+      }
+      // add link between crop and crop group
       crops_cropGroup.push(` '${crop.code}'.'${crop.cropGroup}'`)
+
+      // add current crop to possible list of crops
       curCrops.push(` '${crop.code}'`)
-      if (permPastCropCodes.indexOf(crop.code) > -1)
+      // declare crop as a permanent pasture crop if within the range of
+      // pasture crops
+      if (permPastCropCodes.indexOf(crop.code) > -1) {
         permPastCrops.push(` '${crop.code}'`)
-      p_cropData.push(
-        ` '${crop.code}'.rotBreak ${crop.rotBreak}\n '${crop.code}'.maxShare ${
-          crop.maxShare
-        }\n '${crop.code}'.minSoilQuality ${crop.minSoilQuality}\n '${
-          crop.code
-        }'.efaFactor ${crop.efaFactor}`
-      )
+      }
+      // add all crop properties to p_cropData parameter
+      p_cropData.push(createCropPropertyString(crop))
       if (crop.rootCrop) {
         crops_rootCrop.push(` '${crop.code}' YES`)
       }
-      if (crop.catchCropCap) {
+      if (crop.catchCropAfter) {
         crops_catchCrop.push(` '${crop.code}' YES`)
+      }
+      if (crop.season === 'Sommer') {
+        crops_summer.push(` '${crop.code}' YES`)
       }
       properties.curCrops.forEach(subseqCrop => {
         croppingFactor.push(
@@ -347,12 +373,14 @@ set curYear(years) / ${properties.curYear} /;
     // create gross margin related data
     const crops = [` ''`]
     const p_grossMarginData = []
+    const p_catchCropCosts = []
 
     properties.crops.forEach(crop => {
       if (crops.indexOf(` '${crop.code}'`) === -1) crops.push(` '${crop.code}'`)
     })
 
     properties.curPlots.forEach(plot => {
+      p_catchCropCosts.push(` '${plot._id}' ${plot.matrix.catchCropCosts}`)
       properties.curCrops.forEach(crop => {
         crop = plot.matrix[properties.curYear][crop.code]
         // make sure there only is a gross margin for a plot if the rotational break is held
@@ -464,6 +492,7 @@ set curYear(years) / ${properties.curYear} /;
     include += this.save('parameter p_cropData(curCrops,cropAttr)', p_cropData)
     include += this.save('set crops_rootCrop(curCrops)', crops_rootCrop)
     include += this.save('set crops_catchCrop(curCrops)', crops_catchCrop)
+    include += this.save('set crops_summer(curCrops)', crops_summer)
     include += this.save(
       'parameter p_croppingFactor(curCrops,curCrops)',
       croppingFactor
@@ -476,6 +505,10 @@ set curYear(years) / ${properties.curYear} /;
     include += this.save(
       'parameter p_grossMarginData(curPlots,curCrops)',
       p_grossMarginData
+    )
+    include += this.save(
+      'parameter p_catchCropCosts(curPlots)',
+      p_catchCropCosts
     )
     include += this.save('parameter p_laborReq(crops,halfMonths)', laborReq)
     if (constraints.length) {

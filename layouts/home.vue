@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="header">
+      <img src="~/assets/img/Web_2.png" alt="Uni Bonn Logo" class="uniBonn">
       <nuxt-link to="/" class="logo">
         FRUCHTFOLGE
       </nuxt-link>
@@ -58,12 +59,17 @@ html {
   line-height: 60px;
 }
 
+.uniBonn {
+  height: 60px;
+  border-width: 0px;
+}
 .logo {
   color: black;
   font-family: 'Open Sans Condensed', sans-serif;
   letter-spacing: 0.3em;
   font-size: 28px;
-  padding-left: 80px;
+  position: absolute;
+  padding-left: 30px;
   margin: 0px;
   -webkit-touch-callout: none;
   -webkit-user-select: none;

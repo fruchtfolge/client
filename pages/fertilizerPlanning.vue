@@ -23,28 +23,28 @@
               {{ plot.name }}
             </td>
             <td style="text-align: center;">
-              {{ nData[plot.id].avgYield }}
+              {{ nData[plot._id].avgYield }}
             </td>
             <td style="text-align: center;">
-              {{ nData[plot.id].nReq }}
+              {{ nData[plot._id].nReq }}
             </td>
             <td style="text-align: center;">
-              {{ nData[plot.id].nYieldDiff }}
+              {{ nData[plot._id].nYieldDiff }}
             </td>
             <td style="text-align: center;">
-              {{ nData[plot.id].nMinDiff }}
+              {{ nData[plot._id].nMinDiff }}
             </td>
             <td style="text-align: center;">
-              {{ nData[plot.id].humusContent }}
+              {{ nData[plot._id].humusContent }}
             </td>
             <td style="text-align: center;">
-              {{ nData[plot.id].nFertPrevYear }}
+              {{ nData[plot._id].nFertPrevYear }}
             </td>
             <td style="text-align: center;">
-              {{ nData[plot.id].nPrevCrop }}
+              {{ nData[plot._id].nPrevCrop }}
             </td>
             <td style="text-align: center;">
-              {{ nData[plot.id].sum }}
+              {{ nData[plot._id].sum }}
             </td>
           </tr>
         </tbody>
@@ -81,12 +81,15 @@ export default {
   computed: {
     dataAvail() {
       let bool = true
+      console.log(this.nData)
       if (this.nData && this.plots && this.plots.length) {
         this.plots.forEach(p => {
           if (!this.nData[p._id]) {
+            console.log(p)
             bool = false
           }
           if (!p.crop && !p.selectedCrop) {
+            console.log(p._id, 'crop')
             bool = false
           }
         })
@@ -114,7 +117,8 @@ export default {
     calcData() {
       this.plots.forEach(plot => {
         // use crop that was acutally grown over selected crop
-        const cropCode = plot.crop ? plot.crop : plot.selectedCrop
+        // const cropCode = plot.crop ? plot.crop : plot.selectedCrop
+        const cropCode = plot.selectedCrop
         console.log(cropCode)
         const crop = _.find(this.crops, ['code', Number(cropCode)])
         if (!crop) return
@@ -141,7 +145,7 @@ export default {
           data.nFertPrevYear +
           data.nPrevCrop
 
-        this.nData[plot.id] = data
+        this.nData[plot._id] = data
         console.log(data)
       })
     },
@@ -165,9 +169,9 @@ export default {
         deviation = avgYield - duevYield
       }
       if (deviation >= 0) {
-        return crop.nMaxAddition * deviation
+        return _.round(crop.nMaxAddition * deviation, 1)
       } else {
-        return crop.nMinSubtraction * deviation
+        return _.round(crop.nMinSubtraction * deviation, 1)
       }
     },
     avgYield(cropCode) {
@@ -179,7 +183,7 @@ export default {
           c.code === Number(cropCode)
         )
       })
-      console.log(data)
+      // console.log(data)
       if (data) {
         const yieldSum = _.sum(
           data.map(d => {
@@ -188,7 +192,7 @@ export default {
             })
           })
         )
-        return _.round(yieldSum / data.length, 2) * 10
+        return _.round(yieldSum / data.length, 1) * 10
       }
     },
     importPrev() {

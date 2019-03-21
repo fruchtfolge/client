@@ -5,6 +5,9 @@
     <div v-if="selectedCrop" class="cropSettings">
       <div class="subseqCrops">
         <table>
+          <caption class="caption">
+            Nachfruchtwirkungen
+          </caption>
           <thead>
             <tr>
               <th>Nachfrucht</th>
@@ -23,6 +26,9 @@
       </div>
       <div class="settings">
         <table>
+          <caption class="caption">
+            Fruchtfolge Eigenschaften
+          </caption>
           <thead>
             <tr>
               <th>Eigenschaft</th>
@@ -53,9 +59,74 @@
               <td><input type="checkbox" :checked="selectedCrop.rootCrop" @change="saveRootCrop($event,i)"></td>
             </tr>
             <tr>
+              <td>Sommerung</td>
+              <td><input type="checkbox" :checked="selectedCrop.season === 'Sommer'" @change="saveRootCrop($event,i)"></td>
+            </tr>
+            <tr>
+              <td>Zwischenfrucht anschließend möglich</td>
+              <td><input type="checkbox" :checked="selectedCrop.catchCropAfter" @change="saveRootCrop($event,i)"></td>
+            </tr>
+            <tr>
               <td>Faktor für Öko. Vorrangfläche (Greening)</td>
               <td contenteditable="true" @blur="save($event, i, 'efaFactor')">
                 {{ selectedCrop.efaFactor }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="duevSettings">
+        <table>
+          <caption class="caption">
+            Einstellungen Düngeverordnung 2017
+          </caption>
+          <thead>
+            <tr>
+              <th>Eigenschaft</th>
+              <th>Wert</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ertragsniveau nach Tab. X [dt/ha]</td>
+              <td contenteditable="true" @blur="save($event, i, 'duevYieldLvl')">
+                {{ selectedCrop.duevYieldLvl }}
+              </td>
+            </tr>
+            <tr>
+              <td>N-Düngebedarf nach Tab. X [kg/ha]</td>
+              <td contenteditable="true" @blur="save($event, i, 'nRequirement')">
+                {{ selectedCrop.nRequirement }}
+              </td>
+            </tr>
+            <tr>
+              <td>Maximaler N-Bedarfszuschlag bei Mehrertrag je dt (Tab. X) [kg/ha]</td>
+              <td contenteditable="true" @blur="save($event, i, 'nMaxAddition')">
+                {{ selectedCrop.nMaxAddition }}
+              </td>
+            </tr>
+            <tr>
+              <td>Minimaler N-Bedarfsabzug bei Minderertrag je dt (Tab. X) [kg/ha]</td>
+              <td contenteditable="true" @blur="save($event, i, 'nMinSubtraction')">
+                {{ selectedCrop.nMinSubtraction }}
+              </td>
+            </tr>
+            <tr>
+              <td>N-Bedarfsabzug wenn Vorfrucht (Tab. X) [kg/ha]</td>
+              <td contenteditable="true" @blur="save($event, i, 'prevCropEff')">
+                {{ selectedCrop.prevCropEff }}
+              </td>
+            </tr>
+            <tr>
+              <td>P-Entzug (Tab. X) [kg/ha]</td>
+              <td contenteditable="true" @blur="save($event, i, 'pWithdraw')">
+                {{ selectedCrop.pWithdraw }}
+              </td>
+            </tr>
+            <tr>
+              <td>P-Rückstände Erntereste [kg/ha]</td>
+              <td contenteditable="true" @blur="save($event, i, 'pHarvestLeft')">
+                {{ selectedCrop.pHarvestLeft }}
               </td>
             </tr>
           </tbody>
@@ -150,6 +221,10 @@ export default {
 </script>
 
 <style>
+.caption {
+  line-height: 30px;
+}
+
 .cropSettings {
   width: calc(100% - 275px);
 }

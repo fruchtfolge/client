@@ -1,34 +1,28 @@
 <template>
   <div class="">
-    <div v-if="loading" class="blur loading">
-      <div class="spinner-container">
-        <div class="lds-spinner">
-          <div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div />
-        </div>
-        <h2 style="text-align: center;">
-          Daten werden geladen ... <br> Der Vorgang kann einige Minuten in Anspruch nehmen
-        </h2>
-      </div>
-    </div>
+    <loading v-if="loading" />
     <div v-else-if="resultsAvailable">
       <div class="result-wrapper">
         <table class="result-table">
           <thead>
             <tr>
-              <th style="min-width: 150px;" @click="sortPlots('name')">
+              <th style="width: 125px;" @click="sortPlots('name')">
                 Name
               </th>
-              <th @click="sortPlots('size')">
+              <th style="width: 50px;" @click="sortPlots('size')">
                 Größe
               </th>
-              <th @click="sortPlots('distance')">
-                Hof-Feld-Distanz
+              <th style="width: 50px;" @click="sortPlots('distance')">
+                Distanz
               </th>
               <th style="min-width: 100px;" @click="sortPlots('prevCrop1')">
                 {{ curYear - 1 }}
               </th>
+              <th style="width: 50px;" @click="sortPlots('prevCrop1')">
+                Planung ZF
+              </th>
               <th style="min-width: 100px;" @click="sortPlots('selectedCrop')">
-                Empfehlung {{ curYear }}
+                Planung {{ curYear }}
               </th>
               <th @click="sortPlots('curGrossMargin')">
                 Deckungsbeitrag
@@ -38,19 +32,22 @@
           <tbody>
             <template v-for="(plot,i) in curPlots">
               <tr :key="plot.id">
-                <td style="text-align: center;">
+                <td class="wide-cells">
                   {{ plot.name }}
                 </td>
-                <td style="text-align: center;">
+                <td class="narrow-cells">
                   {{ plot.size }}
                 </td>
-                <td style="text-align: center;">
+                <td class="narrow-cells">
                   {{ plot.distance }}
                 </td>
-                <td style="text-align: center;">
+                <td class="wide-cells">
                   {{ plot.prevCrop1 }}
                 </td>
-                <td style="text-align: center;">
+                <td class="narrow-cells">
+                  <input type="checkbox" style="-webkit-appearance: checkbox;" :checked="plot.catchCrop" @change="saveCatchCropChange($event,plot)">
+                </td>
+                <td class="wide-cells">
                   <select v-model="plot.selectedCrop" class="selection" @change="saveCropChange(plot)">
                     <option v-for="(crop) in plot.matrix[curYear]" :key="crop.grossMarginNoCropEff" :value="crop.code">
                       {{ crop.name }}
@@ -61,8 +58,8 @@
                   {{ format(plot.curGrossMargin) }}
                 </td>
               </tr>
-              <tr v-show="plot.id === selection" :key="plot._id">
-                <td colspan="6" class="inner-table-wrapper" align="right">
+              <tr v-if="plot.id === selection" :key="plot._id">
+                <td colspan="7" class="inner-table-wrapper" align="right">
                   <table class="inner-table">
                     <thead>
                       <th />
@@ -214,7 +211,7 @@
               </tr>
             </template>
             <tr>
-              <td colspan="5" style="font-weight: bold;">
+              <td colspan="6" style="font-weight: bold;">
                 Summe
               </td>
               <td style="text-align: center;font-weight: bold;">
@@ -251,6 +248,7 @@ import model from '~/assets/js/createModel.js'
 
 export default {
   components: {
+    loading: () => import('~/components/loading.vue'),
     cropShares: () => import('~/components/cropShares.vue'),
     grossMarginTimeline: () => import('~/components/grossMarginTimeline.vue'),
     timeRequirement: () => import('~/components/timeRequirement.vue'),
@@ -342,8 +340,11 @@ export default {
         const code = plot.selectedCrop
         if (code) {
           const plotData = plot.matrix[year][code]
-          const grossMargin = plotData.grossMargin
-          sum += grossMargin
+          sum += plotData.grossMargin
+          if (plot.catchCrop) {
+            console.log(plot.matrix.catchCropCosts)
+            sum += -plot.matrix.catchCropCosts
+          }
         }
       })
       return sum
@@ -410,11 +411,14 @@ export default {
             store.curPlots.forEach(plot => {
               plot.recommendation = data.recommendation[plot._id]
               plot.selectedCrop = plot.recommendation
+              plot.catchCrop = data.catchCrop[plot._id]
+              plot.recommendedCatchCrop = data.catchCrop[plot._id]
             })
           } else {
             this.infeasible = true
             store.curPlots.forEach(plot => {
               plot.recommendation = ''
+              plot.recommendedCatchCrop = false
               if (!plot.selectedCrop) {
                 plot.selectedCrop = Object.keys(plot.matrix[this.curYear])[0]
               }
@@ -517,6 +521,17 @@ export default {
       }
     },
 
+    async saveCatchCropChange(e, plot) {
+      try {
+        const id = plot._id
+        const doc = await this.$db.get(id)
+        doc.catchCrop = e.target ? e.target.checked : false
+        await this.$db.put(doc)
+      } catch (e) {
+        console.log(e)
+      }
+    },
+
     getName(id, year) {
       const plot = _.find(this.$store.plots, { id: id, year: year })
       if (plot && cultures[plot.crop]) {
@@ -593,6 +608,7 @@ export default {
 
 .result-wrapper {
   width: calc(100vw - 200px);
+  min-width: 1024px;
   display: inline-flex;
 }
 
@@ -609,6 +625,19 @@ export default {
   margin-top: 20px;
   margin-left: 20px;
   max-width: 50vw;
+  min-width: 600px;
+  table-layout: fixed;
+}
+.wide-cells {
+  width: 125px;
+  text-align: left;
+  overflow-x: hidden;
+}
+
+.narrow-cells {
+  width: 50px;
+  text-align: center;
+  overflow-x: hidden;
 }
 
 .expand-enter-active,
@@ -626,10 +655,17 @@ export default {
   background-color: #ececec;
 }
 
+.result-table tr:nth-child(odd) {
+  background-color: #f5f5f5;
+}
+
+/*
 .result-table tr:nth-child(4n + 1),
 .result-table tr:nth-child(4n + 2) {
   background-color: #f5f5f5;
 }
+*/
+
 .inner-table-wrapper {
   padding: 20px;
 }
@@ -644,17 +680,18 @@ export default {
 .inner-table tr:nth-child(odd) {
   background-color: #f5f5f5;
 }
+
 .inner-table tr:nth-child(even) {
   background-color: #ececec;
 }
 .selection {
   font-size: 14px;
-  text-align-last: center;
+  text-align-last: left;
   font-family: 'Open Sans Light';
   letter-spacing: normal;
   border-width: 0px;
   background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='%23444' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
   background-repeat: no-repeat;
-  background-position: 100% 50%;
+  background-position: 80px 50%;
 }
 </style>
