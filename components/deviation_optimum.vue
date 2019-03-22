@@ -82,6 +82,7 @@ export default {
         // const selectedCrop = _.find(this.$store.curCrops, ['code', plot.selectedCrop])
         // const prevCrop = _.find(this.$store.curCrops, ['name', plot.prevCrop1])
         const croppingFactor = data.croppingFactor
+        // Crop rotational deviations
         // show warning if cropping factor is below 6
         if (croppingFactor <= 0.6) {
           deviations.push(
@@ -96,18 +97,58 @@ export default {
             }`
           )
         }
+        // when rotational break for crop isn't held
         if (!data.rotBreakHeld) {
           deviations.push(
             `${plot.name}: Anbaupause von ${data.name} nicht eingehalten`
           )
         }
+        // show warning when perm pasture is recultivated with another crop
         if (plot.permPast && permPastCropCodes.indexOf(cropCode) === -1) {
-          console.log(cropCode)
           deviations.push(
             `${plot.name}: Umbruch von Dauergrünland nicht erlaubt.`
           )
         }
       })
+      // show warning when crop shares are exceeded
+      this.$store.curCrops.forEach(crop => {
+        const maxShare = crop.maxShare || 100
+        const maxHa = (maxShare / 100) * this.arableLand
+        const share = _.round(
+          this.shares[this.curYear] ? this.shares[this.curYear][crop.code] : 0,
+          2
+        )
+        if (share > maxHa) {
+          deviations.push(
+            `${
+              crop.variety
+            }: Über zulässigem Fruchtfolgeanteil (${share}ha statt ${maxHa}).`
+          )
+        }
+      })
+      // show warnings when user defined constraints are not met
+      if (this.$store.curConstraints) {
+        this.$store.curConstraints.forEach(constraint => {
+          const area = Number(constraint.area)
+          let share = this.shares[this.curYear]
+          let crop = constraint.crop1
+            ? this.shares[this.curYear][constraint.crop1Code]
+            : 0
+          if (constraint.crop2Code) {
+            crop += ' + ' + constraint.crop2
+            share += this.shares[this.curYear]
+              ? this.shares[this.curYear][constraint.crop2Code]
+              : 0
+          }
+          if (share > area && constraint.operator === '<') {
+            deviations.push(`${crop}: Mehr als ${area} (${share}).`)
+          } else if (share < area && constraint.operator === '>') {
+            deviations.push(`${crop}: Weniger als ${area} (${share}).`)
+          }
+        })
+      }
+      // show warning when time requirements are exceeded
+      // GREENING
       // only apply 5% greening rule if more than 15ha
       if (this.brokeEfa && this.arableLand > 15) {
         deviations.push(
