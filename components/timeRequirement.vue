@@ -25,7 +25,6 @@ export default {
   watch: {
     result: {
       handler() {
-        console.log(this.timeRequirement, this.datasets)
         this.prepareData()
         this.timeRequirement.data.datasets[0].data = this.datasets[0].data
         this.timeRequirement.data.datasets[1].data = this.datasets[1].data
@@ -75,6 +74,7 @@ export default {
         ['NOV1', 'NOV2'],
         ['DEZ1', 'DEZ2']
       ]
+      const catchCropMonths = ['AUG2', 'SEP1', 'SEP2', 'FEB2']
 
       for (let i = 0; i < 3; i++) {
         const croppingYear = curYear - i
@@ -98,16 +98,29 @@ export default {
             let steps = crop.workingSteps.filter(o => {
               return month[0] === o.month || month[1] === o.month
             })
-            if (steps && steps.length > 0) {
+            if (steps && steps.length > 0 && share) {
               steps = steps.map(step => {
                 return _.sumBy(step.steps, 'time')
               })
               time += _.sum(steps) * share
             }
           })
+          store.curPlots.forEach(plot => {
+            if (
+              (plot.catchCrop && catchCropMonths.indexOf(month[0]) > -1) ||
+              catchCropMonths.indexOf(month[1]) > -1
+            ) {
+              // Source: Own regression made from KTBL - Verfahrensrechner Pflanze data
+              // Based on crop "Zwischenfrucht Senf"
+              time +=
+                (0.04827586207 * plot.distance -
+                  0.1 * plot.size +
+                  4.191724138) /
+                catchCropMonths.length
+            }
+          })
           return _.round(time, 2)
         })
-
         this.datasets.push({
           data: data,
           label: `Anbauplan ${croppingYear}`,
@@ -172,7 +185,6 @@ export default {
       }
       const ctx = document.getElementById(chartId).getContext('2d')
       this.timeRequirement = new Chart(ctx, config)
-      console.log(this.timeRequirement)
     }
   }
 }

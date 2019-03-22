@@ -45,6 +45,10 @@ export default {
       type: Array,
       required: true
     },
+    time: {
+      type: Array,
+      required: true
+    },
     total: {
       type: Number,
       required: true
@@ -63,8 +67,8 @@ export default {
   },
   computed: {
     difference() {
-      console.log('Optimum: ' + this.optimum)
-      console.log('Total: ' + this.total)
+      // console.log('Optimum: ' + this.optimum)
+      // console.log('Total: ' + this.total)
       if (isNaN(this.optimum - this.total)) {
         return 'Keine Empfehlung vorhanden.'
       } else {
@@ -113,7 +117,7 @@ export default {
       // show warning when crop shares are exceeded
       this.$store.curCrops.forEach(crop => {
         const maxShare = crop.maxShare || 100
-        const maxHa = (maxShare / 100) * this.arableLand
+        const maxHa = _.round((maxShare / 100) * this.arableLand, 2)
         const share = _.round(
           this.shares[this.curYear] ? this.shares[this.curYear][crop.code] : 0,
           2
@@ -122,7 +126,7 @@ export default {
           deviations.push(
             `${
               crop.variety
-            }: Über zulässigem Fruchtfolgeanteil (${share}ha statt ${maxHa}).`
+            }: Über zulässigem Fruchtfolgeanteil von ${maxShare}% (${share}ha statt ${maxHa}ha).`
           )
         }
       })
@@ -144,6 +148,20 @@ export default {
             deviations.push(`${crop}: Mehr als ${area} (${share}).`)
           } else if (share < area && constraint.operator === '>') {
             deviations.push(`${crop}: Weniger als ${area} (${share}).`)
+          }
+        })
+      }
+      // show warning when time requirements are not met
+      if (this.$store.curTimeConstraints) {
+        const timeReqConstraint = this.$store.curTimeConstraints
+        timeReqConstraint.data.datasets[0].data.forEach((month, i) => {
+          if (this.time && month < this.time[i]) {
+            const monthName = timeReqConstraint.data.labels[i]
+            deviations.push(
+              `${monthName}: Arbeitszeit überschritten (${
+                this.time[i]
+              }h statt ${month}ha).`
+            )
           }
         })
       }
@@ -187,21 +205,23 @@ export default {
       return false
     },
     broke75() {
-      const props = Object.keys(this.greening75)
+      const props = Object.keys(this.shares[this.curYear])
       let flag = false
       props.forEach(share => {
-        if (this.greening75[share] >= this.sevenFivePercent) flag = share
+        if (this.shares[this.curYear][share] >= this.sevenFivePercent)
+          flag = share
       })
       return flag
     },
     broke95() {
-      const props = Object.keys(this.greening95)
+      const props = Object.keys(this.shares[this.curYear])
       let flag = false
       props.forEach(share => {
         props.forEach(share2 => {
           if (share === share2) return
           if (
-            this.greening95[share] + this.greening95[share2] >=
+            this.shares[this.curYear][share] +
+              this.shares[this.curYear][share2] >=
             this.ninceFivePercent
           ) {
             flag = share + ' ' + share2
@@ -212,47 +232,23 @@ export default {
     },
     greeningEfa() {
       let efa = 0
-      for (const cropCode in this.shares[this.curYear]) {
+      const props = Object.keys(this.shares[this.curYear])
+      props.forEach(cropCode => {
         // find crop for the given code
         const share = this.shares[this.curYear][cropCode]
-        const crop = _.find(this.$store.curCrops, ['code', cropCode])
-        if (crop) {
+        const crop = _.find(this.$store.curCrops, ['code', Number(cropCode)])
+        if (crop && share) {
           efa += share * crop.efaFactor
         }
-      }
+      })
       // add Ecological focus area from catch crops
       this.plots.forEach(plot => {
         if (plot.catchCrop) {
           efa += plot.size
         }
       })
+
       return _.round(efa, 2)
-    },
-    greening75() {
-      const shares = {}
-      for (const cropCode in this.shares[this.curYear]) {
-        // find crop for the given code
-        const share = this.shares[this.curYear][cropCode]
-        const crop = _.find(this.$store.curCrops, ['code', Number(cropCode)])
-        if (crop) {
-          if (!shares[crop.cropGroup]) shares[crop.cropGroup] = share
-          else shares[crop.cropGroup] += share
-        }
-      }
-      return shares
-    },
-    greening95() {
-      const shares = {}
-      for (const cropCode in this.shares[this.curYear]) {
-        // find crop for the given code
-        const share = this.shares[this.curYear][cropCode]
-        const crop = _.find(this.$store.curCrops, ['code', Number(cropCode)])
-        if (crop) {
-          if (!shares[crop.cropGroup]) shares[crop.cropGroup] = share
-          else shares[crop.cropGroup] += share
-        }
-      }
-      return shares
     }
   },
   mounted() {
@@ -306,7 +302,6 @@ export default {
       this.totLand = totLand
       this.greenLand = greenLand
       this.arableLand = arableLand
-      console.log(this.totLand)
     },
     format(number) {
       const formatter = new Intl.NumberFormat('de-DE', {

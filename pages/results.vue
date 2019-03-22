@@ -222,7 +222,7 @@
         </table>
         <div class="plots-wrapper">
           <cropShares :shares="curShares" />
-          <deviationOptimum :shares="shares" :plots="curPlots" :total="grossMarginCurYear" />
+          <deviationOptimum :shares="shares" :plots="curPlots" :time="curTimeReq" :total="grossMarginCurYear" />
           <grossMarginTimeline :plots="curPlots" />
           <timeRequirement :shares="shares" />
           <button type="button" name="button" style="margin-top: 20px;" @click="solve(true)">
@@ -263,11 +263,60 @@ export default {
       infeasible: false,
       selection: undefined,
       sortKey: '',
+      shares: {},
       sortOrder: 'desc',
       cropColor: {}
     }
   },
   computed: {
+    curTimeReq() {
+      const months = [
+        ['JAN1', 'JAN2'],
+        ['FEB1', 'FEB2'],
+        ['MRZ1', 'MRZ2'],
+        ['APR1', 'APR2'],
+        ['MAI1', 'MAI2'],
+        ['JUN1', 'JUN2'],
+        ['JUL1', 'JUL2'],
+        ['AUG1', 'AUG2'],
+        ['SEP1', 'SEP2'],
+        ['OKT1', 'OKT2'],
+        ['NOV1', 'NOV2'],
+        ['DEZ1', 'DEZ2']
+      ]
+      const catchCropMonths = ['AUG2', 'SEP1', 'SEP2', 'FEB2']
+
+      const data = months.map(month => {
+        let time = 0
+        this.$store.curCrops.forEach(crop => {
+          const share = this.shares[this.curYear][crop.code]
+          let steps = crop.workingSteps.filter(o => {
+            return month[0] === o.month || month[1] === o.month
+          })
+          if (steps && steps.length > 0 && share) {
+            steps = steps.map(step => {
+              return _.sumBy(step.steps, 'time')
+            })
+            time += _.sum(steps) * share
+          }
+        })
+        this.curPlots.forEach(plot => {
+          if (
+            plot.catchCrop &&
+            (catchCropMonths.indexOf(month[0]) > -1 ||
+              catchCropMonths.indexOf(month[1]) > -1)
+          ) {
+            // Source: Own regression made from KTBL - Verfahrensrechner Pflanze data
+            // Based on crop "Zwischenfrucht Senf"
+            time +=
+              (0.04827586207 * plot.distance - 0.1 * plot.size + 4.191724138) /
+              catchCropMonths.length
+          }
+        })
+        return _.round(time, 2)
+      })
+      return data
+    },
     curShares() {
       const colors = [
         '#294D4A',
@@ -304,24 +353,6 @@ export default {
       })
       return a
     },
-    shares() {
-      const plots = this.$store.plots.filter(plot => {
-        return plot.scenario === this.$store.curScenario
-      })
-      const shares = {}
-      plots.forEach(plot => {
-        if (!shares[plot.year]) shares[plot.year] = {}
-        let crop = plot.crop
-        if (plot.year === this.curYear) crop = plot.selectedCrop
-        if (!crop) return
-        if (!shares[plot.year][crop]) {
-          shares[plot.year][crop] = plot.size
-        } else {
-          shares[plot.year][crop] += plot.size
-        }
-      })
-      return shares
-    },
     resultsAvailable() {
       if (
         this.curPlots &&
@@ -342,7 +373,6 @@ export default {
           const plotData = plot.matrix[year][code]
           sum += plotData.grossMargin
           if (plot.catchCrop) {
-            console.log(plot.matrix.catchCropCosts)
             sum += -plot.matrix.catchCropCosts
           }
         }
@@ -435,6 +465,26 @@ export default {
           console.log(e)
         }
       }, 1)
+    },
+    calcShares() {
+      if (!this.$store.plots) return []
+      const plots = this.$store.plots.filter(plot => {
+        return plot.scenario === this.$store.curScenario
+      })
+      const shares = {}
+      if (!plots) return {}
+      plots.forEach(plot => {
+        if (!shares[plot.year]) shares[plot.year] = {}
+        let crop = plot.crop
+        if (plot.year === this.curYear) crop = plot.selectedCrop
+        if (!crop) return
+        if (!shares[plot.year][crop]) {
+          shares[plot.year][crop] = plot.size
+        } else {
+          shares[plot.year][crop] += plot.size
+        }
+      })
+      this.shares = shares
     },
     sortPlots(column) {
       if (this.sortKey === column) {
@@ -581,12 +631,15 @@ export default {
           this.curPlots[0].recommendation
         ) {
           // this.$bus.$off('changeCurrents')
-          this.loading = false
+          // this.loading = false
         } else {
-          this.loading = false
+          // this.loading = false
         }
         // update prev crops
         this.updatePrevCrops()
+        // update shares
+        this.calcShares()
+        this.loading = false
       }
     },
 
