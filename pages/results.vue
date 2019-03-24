@@ -497,7 +497,11 @@ export default {
     },
     updatePrevCrops() {
       if (this.curPlots && this.curPlots.length > 0) {
+        let debugBounds = ''
         this.curPlots = this.curPlots.map(plot => {
+          debugBounds += `'v_binCropPlot.fx('${plot.selectedCrop}','${
+            plot._id
+          }') = 1;\n`
           plot.prevCrop1 = this.getName(plot.id, this.curYear - 1).name
           plot.prevCrop2 = this.getName(plot.id, this.curYear - 2).name
           plot.prevCrop3 = this.getName(plot.id, this.curYear - 3).name
@@ -513,6 +517,7 @@ export default {
           }
           return plot
         })
+        console.log({ a: debugBounds })
       }
     },
     async save(e, i, type, plot) {

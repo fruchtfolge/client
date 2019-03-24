@@ -1055,7 +1055,8 @@ module.exports = {
     cropGroupCode: '1.2.1',
     cropGroup: 'Gattung: Allium (Lauch)',
     displayGroup: 'Gemüse',
-    id: 'konventionell/integriert::Speisezwiebeln::Pflanzzwiebeln, Direktabsatz'
+    id:
+      'konventionell/integriert::Speisezwiebeln::Säzwiebeln, Belieferung von Abpackbetrieben'
   },
   '634': {
     code: 634,
@@ -1064,8 +1065,7 @@ module.exports = {
     cropGroupCode: '1.3.11',
     cropGroup: 'Gattung: Daucus (Möhren)',
     displayGroup: 'Gemüse',
-    id:
-      'konventionell/integriert::Möhren::Frischmarktware, Waschmöhre, Dammanbau'
+    id: 'ökologisch::Möhren::Verarbeitungsware, Verkauf ab Feldrand'
   },
   '635': {
     code: 635,
@@ -1153,8 +1153,7 @@ module.exports = {
     cropGroupCode: '1.3.14',
     cropGroup: 'Gattung: Pastinaca (Pastinaken)',
     displayGroup: 'Gemüse',
-    id:
-      'konventionell/integriert::Möhren::Frischmarktware, Waschmöhre, Dammanbau'
+    id: 'ökologisch::Möhren::Verarbeitungsware, Verkauf ab Feldrand'
   },
   '644': {
     code: 644,
@@ -1190,8 +1189,7 @@ module.exports = {
     cropGroupCode: '1.6.21',
     cropGroup: 'Gattung: Scorzonera (Schwarzwurzeln)',
     displayGroup: 'Gemüse',
-    id:
-      'konventionell/integriert::Möhren::Frischmarktware, Waschmöhre, Dammanbau'
+    id: 'ökologisch::Möhren::Verarbeitungsware, Verkauf ab Feldrand'
   },
   '648': {
     code: 648,

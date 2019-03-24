@@ -116,10 +116,13 @@ export default {
       })
       // show warning when crop shares are exceeded
       this.$store.curCrops.forEach(crop => {
+        if (!this.shares[this.curYear]) return
         const maxShare = crop.maxShare || 100
         const maxHa = _.round((maxShare / 100) * this.arableLand, 2)
         const share = _.round(
-          this.shares[this.curYear] ? this.shares[this.curYear][crop.code] : 0,
+          this.shares[this.curYear][crop.code]
+            ? this.shares[this.curYear][crop.code]
+            : 0,
           2
         )
         if (share > maxHa) {
@@ -135,9 +138,9 @@ export default {
         this.$store.curConstraints.forEach(constraint => {
           const area = Number(constraint.area)
           let share = this.shares[this.curYear]
-          let crop = constraint.crop1
             ? this.shares[this.curYear][constraint.crop1Code]
             : 0
+          let crop = constraint.crop1
           if (constraint.crop2Code) {
             crop += ' + ' + constraint.crop2
             share += this.shares[this.curYear]
@@ -145,9 +148,13 @@ export default {
               : 0
           }
           if (share > area && constraint.operator === '<') {
-            deviations.push(`${crop}: Mehr als ${area} (${share}).`)
+            deviations.push(
+              `${crop}: Mehr als ${area}ha (${_.round(share, 2)}ha).`
+            )
           } else if (share < area && constraint.operator === '>') {
-            deviations.push(`${crop}: Weniger als ${area} (${share}).`)
+            deviations.push(
+              `${crop}: Weniger als ${area}ha (${_.round(share, 2)}ha).`
+            )
           }
         })
       }
@@ -205,6 +212,7 @@ export default {
       return false
     },
     broke75() {
+      if (!this.shares[this.curYear]) return false
       const props = Object.keys(this.shares[this.curYear])
       let flag = false
       props.forEach(share => {
@@ -214,6 +222,7 @@ export default {
       return flag
     },
     broke95() {
+      if (!this.shares[this.curYear]) return false
       const props = Object.keys(this.shares[this.curYear])
       let flag = false
       props.forEach(share => {
@@ -231,6 +240,7 @@ export default {
       return flag
     },
     greeningEfa() {
+      if (!this.shares[this.curYear]) return 0
       let efa = 0
       const props = Object.keys(this.shares[this.curYear])
       props.forEach(cropCode => {
