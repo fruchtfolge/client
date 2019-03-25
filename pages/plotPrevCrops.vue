@@ -11,7 +11,7 @@
             <th>Größe</th>
             <th>Hof-Feld-Distanz</th>
             <template v-for="(year) in prevYears">
-              <th :key="year + 'ZF'">
+              <th :key="`ZF_${year}`">
                 ZF
               </th>
               <th :key="year">
@@ -21,7 +21,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(plot) in curPlots" :key="plot.id">
+          <tr v-for="(plot) in curPlots" :key="plot._id">
             <td style="text-align: center;">
               {{ plot.name }}
             </td>
@@ -32,13 +32,13 @@
               {{ plot.distance }}
             </td>
             <template v-for="(year,m) in prevYears">
-              <td :key="'ZF' + m" style="text-align: center;">
+              <td :key="`ZF_${year}_${m}`" style="text-align: center;">
                 <input type="checkbox" :checked="plot[year + 'catchCrop']" @change="saveCatchCrop($event,plot,year)">
               </td>
 
-              <td :key="m" style="text-align: center;">
+              <td :key="`${year}_${m}`" style="text-align: center;">
                 <select v-model="plot[year]" class="selection" @change="saveCropChange(plot,year)">
-                  <option v-for="(crop) in crops" :key="crop.code + crop.name" :value="crop.name">
+                  <option v-for="(crop) in crops" :key="`${crop.code}_${crop.name}`" :value="crop.name">
                     {{ crop.name }}
                   </option>
                   <!--

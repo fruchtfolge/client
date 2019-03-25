@@ -68,6 +68,7 @@ export default {
     return {
       curYear: 2019,
       name: 'Unbenannt',
+      crops: [],
       loading: false,
       prevCrop1: '',
       prevCrop2: '',

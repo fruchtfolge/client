@@ -23,7 +23,6 @@ export default {
   },
   watch: {
     shares(val) {
-      console.log(this.shares)
       this.prepareData()
       this.cropShares.data.datasets[0].data = this.dataset.data
       this.cropShares.data.datasets[0].backgroundColor = this.dataset.backgroundColor
@@ -85,7 +84,6 @@ export default {
       }
       const ctx = document.getElementById(chartId).getContext('2d')
       this.cropShares = new Chart(ctx, config)
-      console.log(this.cropShares)
     }
   }
 }

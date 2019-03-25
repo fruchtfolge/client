@@ -14,6 +14,7 @@
           <option v-for="(crop, i) in crops" :key="i" :value="crop">
             {{ crop.name }}
           </option>
+          <!--
           <option :value="allCrops">
             Alle Kulturen
           </option>
@@ -23,6 +24,7 @@
           <option :value="efa">
             Ökologische Vorrangfläche
           </option>
+        -->
         </select>
         <label for="add.constraint.crop2">und Kultur (optional)</label>
         <select id="add.constraint.crop2" v-model="crop2" class="dropdown">
@@ -51,9 +53,11 @@
           <option value="ha">
             ha
           </option>
+          <!--
           <option value="Prozent">
             Prozent der Gesamtfläche
           </option>
+        -->
         </select>
         <label for="add.constraint.name">Fläche in {{ sizeType }}</label>
         <input id="add.constraint.name" v-model="area" type="number" class="input" @keyup.enter="addConstraint">

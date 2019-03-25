@@ -17,7 +17,7 @@
       </thead>
       <tbody>
         <!-- Revenues-->
-        <tr v-for="(source, i) in cm.revenues" :key="revenues + i">
+        <tr v-for="(source, i) in cm.revenues" :key="`revenues_${i}`">
           <td>{{ source.name }}</td>
           <td contenteditable="true" @blur="update($event, 'revenues', i, 'amount')">
             {{ source.amount.value }}
@@ -38,7 +38,7 @@
           <td>€/ha</td>
         </tr>
         <!-- Direct Costs-->
-        <tr v-for="(source, i) in cm.directCosts" :key="directCosts + i">
+        <tr v-for="(source, i) in cm.directCosts" :key="`directCosts_${i}`">
           <td>{{ source.name }}</td>
           <td contenteditable="true" @blur="update($event, 'directCosts', i, 'amount')">
             {{ source.amount.value }}
@@ -59,7 +59,7 @@
           <td>€/ha</td>
         </tr>
         <!-- Other Variable Costs-->
-        <tr v-for="(source, i) in cm.variableCosts" :key="variableCosts + i">
+        <tr v-for="(source, i) in cm.variableCosts" :key="`variableCosts_${i}`">
           <td>{{ source.name }}</td>
           <td contenteditable="true" @blur="update($event, 'variableCosts', i, 'amount')">
             {{ source.amount.value }}
@@ -88,7 +88,7 @@
           <td>€/ha</td>
         </tr>
         <!-- Fix Costs-->
-        <tr v-for="(source, i) in cm.fixCosts" :key="fixCosts + i">
+        <tr v-for="(source, i) in cm.fixCosts" :key="`fixCosts_${i}`">
           <td>{{ source.name }}</td>
           <td contenteditable="true" @blur="update($event, 'fixCosts', i, 'amount')">
             {{ source.amount.value }}
@@ -191,6 +191,9 @@ export default {
         const price = this.cm[key][index].price.value
         const value = this.calcValue(amount, price, this.cm[key][index])
         this.$set(this.cm[key][index].total, 'value', _.round(value, 2))
+        // get rev from database and update
+        const doc = await this.$db.get(this.crop._id)
+        this.crop._rev = doc._rev
         // store in Database
         await this.$db.put(this.crop)
       } catch (e) {

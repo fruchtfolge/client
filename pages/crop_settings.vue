@@ -17,7 +17,7 @@
           <tbody>
             <tr v-for="(subseq) in crops" :key="subseq._id">
               <td>{{ subseq.name }}</td>
-              <td contenteditable="true" @blur="save($event, i, 'subseqCrops', subseq.cropGroup)">
+              <td contenteditable="true" @blur="save($event, 'subseqCrops', subseq.cropGroup)">
                 {{ selectedCrop.subseqCrops[subseq.cropGroup] }}
               </td>
             </tr>
@@ -38,37 +38,37 @@
           <tbody>
             <tr>
               <td>Anbauspause in Jahren</td>
-              <td contenteditable="true" @blur="save($event, i, 'rotBreak')">
+              <td contenteditable="true" @blur="save($event, 'rotBreak')">
                 {{ selectedCrop.rotBreak }}
               </td>
             </tr>
             <tr>
               <td>Max. Anteil Anbaufläche [%]</td>
-              <td contenteditable="true" @blur="save($event, i, 'maxShare')">
+              <td contenteditable="true" @blur="save($event, 'maxShare')">
                 {{ selectedCrop.maxShare }}
               </td>
             </tr>
             <tr>
               <td>Mindestanforderung Bodenqualität</td>
-              <td contenteditable="true" @blur="save($event, i, 'minSoilQuality')">
+              <td contenteditable="true" @blur="save($event, 'minSoilQuality')">
                 {{ selectedCrop.minSoilQuality }}
               </td>
             </tr>
             <tr>
               <td>Hackfrucht</td>
-              <td><input type="checkbox" :checked="selectedCrop.rootCrop" @change="saveRootCrop($event,i)"></td>
+              <td><input type="checkbox" :checked="selectedCrop.rootCrop" @change="saveRootCrop($event)"></td>
             </tr>
             <tr>
               <td>Sommerung</td>
-              <td><input type="checkbox" :checked="selectedCrop.season === 'Sommer'" @change="saveRootCrop($event,i)"></td>
+              <td><input type="checkbox" :checked="selectedCrop.season === 'Sommer'" @change="saveRootCrop($event)"></td>
             </tr>
             <tr>
               <td>Zwischenfrucht anschließend möglich</td>
-              <td><input type="checkbox" :checked="selectedCrop.catchCropAfter" @change="saveRootCrop($event,i)"></td>
+              <td><input type="checkbox" :checked="selectedCrop.catchCropAfter" @change="saveRootCrop($event)"></td>
             </tr>
             <tr>
               <td>Faktor für Öko. Vorrangfläche (Greening)</td>
-              <td contenteditable="true" @blur="save($event, i, 'efaFactor')">
+              <td contenteditable="true" @blur="save($event,'efaFactor')">
                 {{ selectedCrop.efaFactor }}
               </td>
             </tr>
@@ -89,43 +89,43 @@
           <tbody>
             <tr>
               <td>Ertragsniveau nach Tab. X [dt/ha]</td>
-              <td contenteditable="true" @blur="save($event, i, 'duevYieldLvl')">
+              <td contenteditable="true" @blur="save($event,'duevYieldLvl')">
                 {{ selectedCrop.duevYieldLvl }}
               </td>
             </tr>
             <tr>
               <td>N-Düngebedarf nach Tab. X [kg/ha]</td>
-              <td contenteditable="true" @blur="save($event, i, 'nRequirement')">
+              <td contenteditable="true" @blur="save($event,'nRequirement')">
                 {{ selectedCrop.nRequirement }}
               </td>
             </tr>
             <tr>
               <td>Maximaler N-Bedarfszuschlag bei Mehrertrag je dt (Tab. X) [kg/ha]</td>
-              <td contenteditable="true" @blur="save($event, i, 'nMaxAddition')">
+              <td contenteditable="true" @blur="save($event,'nMaxAddition')">
                 {{ selectedCrop.nMaxAddition }}
               </td>
             </tr>
             <tr>
               <td>Minimaler N-Bedarfsabzug bei Minderertrag je dt (Tab. X) [kg/ha]</td>
-              <td contenteditable="true" @blur="save($event, i, 'nMinSubtraction')">
+              <td contenteditable="true" @blur="save($event,'nMinSubtraction')">
                 {{ selectedCrop.nMinSubtraction }}
               </td>
             </tr>
             <tr>
               <td>N-Bedarfsabzug wenn Vorfrucht (Tab. X) [kg/ha]</td>
-              <td contenteditable="true" @blur="save($event, i, 'prevCropEff')">
+              <td contenteditable="true" @blur="save($event,'prevCropEff')">
                 {{ selectedCrop.prevCropEff }}
               </td>
             </tr>
             <tr>
               <td>P-Entzug (Tab. X) [kg/ha]</td>
-              <td contenteditable="true" @blur="save($event, i, 'pWithdraw')">
+              <td contenteditable="true" @blur="save($event,'pWithdraw')">
                 {{ selectedCrop.pWithdraw }}
               </td>
             </tr>
             <tr>
               <td>P-Rückstände Erntereste [kg/ha]</td>
-              <td contenteditable="true" @blur="save($event, i, 'pHarvestLeft')">
+              <td contenteditable="true" @blur="save($event,'pHarvestLeft')">
                 {{ selectedCrop.pHarvestLeft }}
               </td>
             </tr>
@@ -183,24 +183,26 @@ export default {
         this.$set(this, 'selectedCrop', this.$store.curCrops[0])
       }
     },
-    async save(e, i, type, value) {
+    async save(e, type, value) {
       try {
         const newValue = Number(e.target.innerText)
         if (type === 'subseqCrops') {
-          this.$set(this.crops[i].subseqCrops, value, newValue)
+          this.$set(this.selectedCrop.subseqCrops, value, newValue)
         } else {
-          this.$set(this.crops[i], type, newValue)
+          this.$set(this.selectedCrop, type, newValue)
         }
-        await this.$db.put(this.crops[i])
+        const update = await this.$db.put(this.selectedCrop)
+        this.selectedCrop._rev = update.rev
       } catch (e) {
         console.log(e)
       }
     },
-    async saveRootCrop(e, i) {
+    async saveRootCrop(e) {
       try {
         const newValue = e.target.checked
-        this.$set(this.crops[i], 'rootCrop', newValue)
-        await this.$db.put(this.crops[i])
+        this.$set(this.selectedCrop, 'rootCrop', newValue)
+        const update = await this.$db.put(this.selectedCrop)
+        this.selectedCrop._rev = update.rev
       } catch (e) {
         console.log(e)
       }
