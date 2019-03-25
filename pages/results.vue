@@ -31,7 +31,7 @@
           </thead>
           <tbody>
             <template v-for="(plot,i) in curPlots">
-              <tr :key="plot.id">
+              <tr :key="`data_${plot._id}`">
                 <td class="wide-cells">
                   {{ plot.name }}
                 </td>
@@ -49,7 +49,7 @@
                 </td>
                 <td class="wide-cells">
                   <select v-model="plot.selectedCrop" class="selection" @change="saveCropChange(plot)">
-                    <option v-for="(crop) in plot.matrix[curYear]" :key="crop.grossMarginNoCropEff" :value="crop.code">
+                    <option v-for="(crop) in plot.matrix[curYear]" :key="`${crop.name}_${plot._id}`" :value="crop.code">
                       {{ crop.name }}
                     </option>
                   </select>
@@ -58,7 +58,7 @@
                   {{ format(plot.curGrossMargin) }}
                 </td>
               </tr>
-              <tr v-if="plot.id === selection" :key="plot._id">
+              <tr v-if="plot.id === selection" :key="`detail_${plot._id}`">
                 <td colspan="7" class="inner-table-wrapper" align="right">
                   <table class="inner-table">
                     <thead>

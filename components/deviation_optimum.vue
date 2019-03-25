@@ -15,10 +15,10 @@
         </div>
       </div>
     </div>
-    <div class="greening-check">
+    <div v-if="arableLand >= 10" class="greening-check">
       <h2>Greening</h2>
       <div style="display: inline-block;">
-        <div class="greening-entries">
+        <div v-if="arableLand >= 15" class="greening-entries">
           <div :class="{ check: !brokeEfa, fail: brokeEfa }" />
           <p>Ökologische Vorrangfläche: Über 5% des AL</p>
         </div>
@@ -26,7 +26,7 @@
           <div :class="{ check: !broke75, fail: broke75 }" />
           <p>Diversifizierung: Keine Kulturgruppe > 75% des AL</p>
         </div>
-        <div class="greening-entries">
+        <div v-if="arableLand >= 30" class="greening-entries">
           <div :class="{ check: !broke95, fail: broke95 }" />
           <p>Diversifizierung: Keine komb. der Kulturgruppen > 95% des AL</p>
         </div>
@@ -184,11 +184,11 @@ export default {
       }
       // no crop more than 75%, if farm has more than 10ha
       if (this.broke75 && this.arableLand > 10) {
-        deviations.push(`Greening: Über 75% des AL mit (${this.broke75}ha`)
+        deviations.push(`Greening: Über 75% des AL mit ${this.broke75}`)
       }
       // no crop combi more than 95%, if farm has more than 30ha
       if (this.broke95 && this.arableLand > 30) {
-        deviations.push(`Greening: Über 95% des AL mit (${this.broke95}ha`)
+        deviations.push(`Greening: Über 95% des AL mit ${this.broke95}`)
       }
       return deviations
       // show error if cropping factor is 0
@@ -216,8 +216,10 @@ export default {
       const props = Object.keys(this.shares[this.curYear])
       let flag = false
       props.forEach(share => {
-        if (this.shares[this.curYear][share] >= this.sevenFivePercent)
-          flag = share
+        if (this.shares[this.curYear][share] >= this.sevenFivePercent) {
+          const crop = _.find(this.$store.curCrops, ['code', Number(share)])
+          flag = crop.variety
+        }
       })
       return flag
     },
@@ -226,14 +228,19 @@ export default {
       const props = Object.keys(this.shares[this.curYear])
       let flag = false
       props.forEach(share => {
+        const crop1 = _.find(this.$store.curCrops, ['code', Number(share)])
+        if (this.shares[this.curYear][share] >= this.ninceFivePercent) {
+          flag = crop1.variety
+        }
         props.forEach(share2 => {
           if (share === share2) return
+          const crop2 = _.find(this.$store.curCrops, ['code', Number(share2)])
           if (
             this.shares[this.curYear][share] +
               this.shares[this.curYear][share2] >=
             this.ninceFivePercent
           ) {
-            flag = share + ' ' + share2
+            flag = crop1.variety + ' ' + crop2.variety
           }
         })
       })
