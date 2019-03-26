@@ -260,7 +260,7 @@ export default {
       this.interval = setInterval(async () => {
         try {
           const { data } = await this.$axios.post(
-            'http://localhost:3001/elan/status/',
+            'http://fruchtfolge.agp.uni-bonn.de/api/elan/status/',
             request,
             { progress: true }
           )
@@ -321,7 +321,7 @@ export default {
           }
           console.log(request)
           const { headers } = await this.$axios.post(
-            'http://localhost:3001/elan/files/',
+            'http://fruchtfolge.agp.uni-bonn.de/api/elan/files/',
             request,
             { progress: true }
           )
@@ -450,9 +450,11 @@ export default {
           }
           console.log(request)
           const { headers } = await this.$axios.post(
-            'http://localhost:3001/elan/',
+            'http://fruchtfolge.agp.uni-bonn.de/api/elan/',
             request,
-            { progress: true }
+            {
+              progress: true
+            }
           )
           console.log(headers)
           this.getStatus(request, settings)

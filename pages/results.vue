@@ -432,7 +432,7 @@ export default {
           console.log({ a: gams })
           // solve the model
           const { data } = await this.$axios.post(
-            'http://localhost:3001/model/',
+            'http://fruchtfolge.agp.uni-bonn.de/api/model/',
             { model: gams },
             { progress: true }
           )
