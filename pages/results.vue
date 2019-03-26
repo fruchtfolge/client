@@ -354,15 +354,15 @@ export default {
       return a
     },
     resultsAvailable() {
-      if (
-        this.curPlots &&
-        this.curPlots.length &&
-        this.curPlots[0].matrix &&
-        this.curPlots[0].matrix[this.curYear]
-      ) {
-        return true
+      let flag = true
+      if (this.curPlots && this.curPlots.length) {
+        this.curPlots.forEach(plot => {
+          if (!plot.matrix || !plot.matrix[this.curYear]) {
+            flag = false
+          }
+        })
       }
-      return false
+      return flag
     },
     grossMarginCurYear() {
       const year = this.curYear
@@ -621,9 +621,7 @@ export default {
           this.curPlots &&
           this.curPlots.length &&
           store.curCrops &&
-          (!this.curPlots[0].matrix ||
-            !this.curPlots[0].matrix[store.curYear] ||
-            !this.curPlots[0].recommendation) &&
+          !this.resultsAvailable &&
           !this.infeasible
         ) {
           await this.solve(true)
