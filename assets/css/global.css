@@ -74,6 +74,9 @@ input, textarea, select, button, img {
   font-size: 14px;
   -webkit-user-drag: none;
 }
+input[type='checkbox'] {
+  -webkit-appearance: checkbox;
+}
 
 .draggable {
   -webkit-app-region: drag;

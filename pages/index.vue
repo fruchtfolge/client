@@ -31,27 +31,41 @@
           </div>
           <div class="registrierung">
             <p>JETZT KOSTENLOS ANMELDEN</p>
-            <input id="address" v-model="address" class="address" placeholder="Strasse u. Hausnr. (Betrieb)">
-            <input id="postcode" v-model="postcode" class="postcode" placeholder="PLZ">
-            <input id="email2" v-model="email" class="email2" placeholder="E-Mail Adresse">
-            <input id="password2" v-model="password" class="password2" placeholder="Passwort" type="password">
-            <input
-              id="confirmPassword"
-              v-model="confirmPassword"
-              class="repeat-password"
-              placeholder="Passwort wiederholen"
-              type="password"
-              @keyup.enter="signup"
-            >
-            <input class="checkbox" type="checkbox">
-            <input id="c2" v-model="dsgvoAccepted" type="checkbox" name="cc">
-            <label for="c2" class="label-login" style="margin-top: 100px;"><span />Ich akzeptiere die Nutzungsbedingungen der Universität Bonn.</label>
+            <div class="register-container">
+              <input id="address" v-model="address" class="address" placeholder="Strasse u. Hausnr. (Betrieb)">
+              <input id="postcode" v-model="postcode" class="address" placeholder="PLZ">
+              <input id="email2" v-model="email" class="address" placeholder="E-Mail Adresse">
+              <input id="password2" v-model="password" class="address" placeholder="Passwort" type="password">
+              <input
+                id="confirmPassword"
+                v-model="confirmPassword"
+                class="address"
+                placeholder="Passwort wiederholen"
+                type="password"
+                @keyup.enter="signup"
+              >
+              <input id="c2" v-model="dsgvoAccepted" type="checkbox" name="cc" class="">
+              <label for="c2" class="label-login" style="margin-top: 100px;">
+                <span />Ich habe die Nutzungsbedingungen gelesen und bin mit ihnen 
+                einverstanden. Die Datenschutzhinweise habe ich ebenfalls zur Kenntnis genommen.
+              </label>
+              <br>
+              <input id="c3" v-model="cookiesAccepted" type="checkbox" name="cookies" class="">
+              <label for="c3" class="label-login" style="margin-top: 100px;">
+                <span />Ich stimme der Verwendung von Cookies auf der Webseite zu.
+              </label>
+            </div>
             <button id="signup" type="button" class="register-button" @click="signup">
               REGISTRIEREN
             </button>
           </div>
         </div>
       </div>
+      <!--
+      <div class="">
+        Test
+      </div>
+    -->
     </div>
   </div>
 </template>
@@ -74,6 +88,7 @@ export default {
       postcode: '',
       confirmPassword: '',
       dsgvoAccepted: false,
+      cookiesAccepted: false,
       clicked: false,
       loading: false
     }
@@ -93,7 +108,7 @@ export default {
     noDSGVO: {
       title: 'NUTZUNGSBEDINGUNG',
       message:
-        'Für die Nutzung der Anwendung müssen Sie den Nutzungsbedingungen zustimmen.',
+        'Für die Nutzung der Anwendung müssen Sie den Nutzungsbedingungen und der Cookies-Richtlinie zustimmen.',
       type: 'error'
     },
     notMatching: {
@@ -129,7 +144,7 @@ export default {
       ) {
         this.incomplete()
         return false
-      } else if (!this.dsgvoAccepted) {
+      } else if (!this.dsgvoAccepted || !this.cookiesAccepted) {
         this.noDSGVO()
         return false
       } else if (this.password !== this.confirmPassword) {
@@ -202,7 +217,7 @@ export default {
             console.log(info)
             const settings = await this.getSettings(date)
             const { data } = await this.$axios.post(
-              'http://localhost:3001/auth/userDoc',
+              'http://fruchtfolge.agp.uni-bonn.de/api/auth/userDoc',
               {
                 username: auth.user_id
               }
@@ -240,10 +255,13 @@ export default {
       this.clicked = true
 
       try {
-        if (!this.checkSignup()) return
+        if (!this.checkSignup()) {
+          this.clicked = false
+          return
+        }
 
         const { data } = await this.$axios.post(
-          'http://localhost:3001/auth/register',
+          'http://fruchtfolge.agp.uni-bonn.de/api/auth/register',
           {
             email: this.email,
             password: this.password,
@@ -257,6 +275,10 @@ export default {
         this.clicked = false
         if (e.response && e.response.status === 401) {
           this.loginError({ message: e.response.data.message })
+        } else if (e.response && e.response.status === 400) {
+          this.loginError({
+            message: 'E-Mail bereits benutzt.'
+          })
         } else {
           this.loginError({ message: 'Fehler beim Verbindungsaufbau.' })
           console.error(e)
@@ -268,9 +290,12 @@ export default {
       this.clicked = true
 
       try {
-        if (!this.checkLogin()) return
+        if (!this.checkLogin()) {
+          this.clicked = false
+          return
+        }
         const { data } = await this.$axios.post(
-          'http://localhost:3001/auth/login',
+          'http://fruchtfolge.agp.uni-bonn.de/api/auth/login',
           {
             username: this.email,
             password: this.password
@@ -280,7 +305,7 @@ export default {
       } catch (e) {
         this.clicked = false
         if (e.response && e.response.status === 401) {
-          this.loginError({ message: e.response.data.message })
+          this.loginError({ message: 'E-Mail oder Passwort ungültig.' })
         } else {
           this.loginError({ message: 'Fehler beim Verbindungsaufbau.' })
           console.error(e)
@@ -347,7 +372,7 @@ div.flip-container {
   left: 50%;
   margin-left: -150px;
   top: 50%;
-  margin-top: -185px;
+  margin-top: -250px;
 }
 
 /* entire container, keeps perspective */
@@ -392,7 +417,7 @@ div.flip-container {
 
 /* back, initially hidden pane */
 .registrierung {
-  height: 500px;
+  height: 580px;
   transform: rotateY(180deg);
 }
 
@@ -455,14 +480,16 @@ div.flip-container {
   border-radius: 0 !important;
 }
 
+.register-container {
+  margin-top: 20px;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+
 .address {
-  position: absolute;
-  top: 50%;
-  margin-top: -134px;
-  left: 50%;
-  margin-left: -116.5px;
   width: 233px;
   height: 33px;
+  margin-bottom: 10px;
   border-style: solid;
   border-width: 1px;
   border-color: #cccccc;
@@ -616,36 +643,10 @@ div.flip-container {
   border-radius: 0 !important;
 }
 
-/*
-input[type='checkbox'] {
-  display: none;
-}
-*/
-input[type='checkbox'] + label span {
-  background: white;
-  border: 1px solid #cccccc;
-  margin: -1px 12px 0 0;
-  border-radius: 0 !important;
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-  vertical-align: middle;
-  cursor: pointer;
-}
-
-input[type='checkbox']:checked + label span {
-  background: grey;
-  outline: 2px solid white;
-  outline-offset: -3px;
-}
-
 .label-login {
-  position: absolute;
-  top: 50%;
-  margin-top: 48px;
-  left: 33.5px;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
-  letter-spacing: 0.1em;
+  padding-left: 5px;
+  letter-spacing: 0.05em;
   font-size: 14px;
   color: #999999;
   -webkit-touch-callout: none;
@@ -687,8 +688,7 @@ input[type='checkbox']:checked + label span {
 
 .register-button {
   position: absolute;
-  top: 50%;
-  margin-top: 162px;
+  bottom: 30px;
   width: 233px;
   height: 40px;
   left: 50%;

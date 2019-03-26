@@ -154,9 +154,11 @@ export default {
           })
           console.log(properties)
           const { data } = await this.$axios.post(
-            'http://localhost:3001/crops/',
+            'http://fruchtfolge.agp.uni-bonn.de/api/crops/',
             properties,
-            { progress: true }
+            {
+              progress: true
+            }
           )
 
           await this.$db.bulkDocs(data)

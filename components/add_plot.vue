@@ -109,11 +109,12 @@ export default {
           size: size,
           settings: settings
         }
-        console.log(properties)
         const { data } = await this.$axios.post(
-          'http://localhost:3001/plots/',
+          'http://fruchtfolge.agp.uni-bonn.de/api/plots/',
           properties,
-          { progress: true }
+          {
+            progress: true
+          }
         )
         this.$bus.$emit('drawPlot', data[0].geometry)
         // store new plots in database

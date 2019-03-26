@@ -122,7 +122,9 @@ export default {
     async follow(route) {
       try {
         if (route.path === '/') {
-          await this.$axios.post('http://localhost:3001/auth/logout')
+          await this.$axios.post(
+            'http://fruchtfolge.agp.uni-bonn.de/api/auth/logout'
+          )
         }
         this.curPage = route.path
         return $nuxt.$router.replace({ path: route.path })
