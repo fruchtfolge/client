@@ -25,7 +25,7 @@
     "chart.js": "^2.7.3",
     "chartjs-plugin-dragdata": "^0.3.0",
     "cross-env": "^5.2.0",
-    "fruchtfolge-model": "^1.8.3",
+    "fruchtfolge-model": "^1.8.4",
     "lodash": "^4.17.11",
     "mapbox-gl": "^0.53.0",
     "mini-toastr": "^0.8.1",

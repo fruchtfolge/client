@@ -49,7 +49,7 @@
                 </td>
                 <td class="wide-cells">
                   <select v-model="plot.selectedCrop" class="selection" @change="saveCropChange(plot)">
-                    <option v-for="(crop) in plot.matrix[curYear]" :key="`${crop.name}_${plot._id}`" :value="crop.code">
+                    <option v-for="(crop) in plot.matrix[curYear]" :key="`${crop.name}_${plot._id}`" :value="crop.name">
                       {{ crop.name }}
                     </option>
                   </select>
@@ -260,6 +260,7 @@ export default {
       curPlots: undefined,
       plots: undefined,
       curYear: undefined,
+      curScenario: 'Standard',
       infeasible: false,
       selection: undefined,
       sortKey: '',
@@ -285,11 +286,12 @@ export default {
         ['DEZ1', 'DEZ2']
       ]
       const catchCropMonths = ['AUG2', 'SEP1', 'SEP2', 'FEB2']
+      if (!this.$store || !this.$store.curCrops) return []
 
       const data = months.map(month => {
         let time = 0
         this.$store.curCrops.forEach(crop => {
-          const share = this.shares[this.curYear][crop.code]
+          const share = this.shares[this.curYear][crop.name]
           let steps = crop.workingSteps.filter(o => {
             return month[0] === o.month || month[1] === o.month
           })
@@ -331,13 +333,14 @@ export default {
       ]
       // calculate crop shares
       const o = {}
+      if (!this.curPlots) return o
       this.curPlots.forEach(plot => {
         const selectedCrop = plot.selectedCrop
         if (!selectedCrop) return
         if (!o[selectedCrop]) {
           o[selectedCrop] = {
             data: plot.size,
-            name: plot.matrix[this.curYear][selectedCrop].name
+            name: selectedCrop
           }
         } else o[selectedCrop].data += plot.size
       })
@@ -355,8 +358,9 @@ export default {
       return a
     },
     resultsAvailable() {
-      let flag = true
-      if (this.curPlots && this.curPlots.length) {
+      let flag = false
+      if (this.$store && this.curPlots && this.curPlots.length) {
+        flag = true
         this.curPlots.forEach(plot => {
           if (!plot.matrix || !plot.matrix[this.curYear]) {
             flag = false
@@ -368,10 +372,11 @@ export default {
     grossMarginCurYear() {
       const year = this.curYear
       let sum = 0
+      if (!this.curPlots) return 0
       this.curPlots.forEach(plot => {
-        const code = plot.selectedCrop
-        if (code) {
-          const plotData = plot.matrix[year][code]
+        const name = plot.selectedCrop
+        if (name && plot.matrix[year] && plot.matrix[year][name]) {
+          const plotData = plot.matrix[year][name]
           sum += plotData.grossMargin
           if (plot.catchCrop) {
             sum += -plot.matrix.catchCropCosts
@@ -418,7 +423,8 @@ export default {
             store.plots = await model.buildMatrix(
               store.plots,
               store.crops,
-              store.curYear
+              store.curYear,
+              store.curScenario
             )
             // update current plots with newly created gross margins
             store.curPlots = store.plots.filter(plot => {
@@ -476,15 +482,22 @@ export default {
       if (!plots) return {}
       plots.forEach(plot => {
         if (!shares[plot.year]) shares[plot.year] = {}
-        let crop = plot.crop
-        if (plot.year === this.curYear) crop = plot.selectedCrop
-        if (!crop) return
+        let crop
+        if (plot.year === this.curYear) {
+          crop = plot.selectedCrop
+        } else {
+          const cropCode = plot.crop
+          const cropData = _.find(this.$store.crops, ['code', cropCode])
+          if (!cropData) return
+          crop = cropData.name
+        }
         if (!shares[plot.year][crop]) {
           shares[plot.year][crop] = plot.size
         } else {
           shares[plot.year][crop] += plot.size
         }
       })
+      console.log(shares)
       this.shares = shares
     },
     sortPlots(column) {
@@ -618,6 +631,7 @@ export default {
       if (store) {
         this.$set(this, 'curPlots', store.curPlots)
         this.$set(this, 'curYear', store.curYear)
+        this.$set(this, 'curScenario', store.curScenario)
         if (
           this.curPlots &&
           this.curPlots.length &&

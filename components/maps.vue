@@ -122,6 +122,7 @@ export default {
       try {
         // const geometries = []
         plots.forEach(plot => {
+          plot.geometry.properties._id = plot._id
           this.Draw.add(plot.geometry)
           // geometries.push(plot.geometry)
         })
