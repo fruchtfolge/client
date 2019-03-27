@@ -14,16 +14,23 @@ export default {
     return request.data.route.distance
   },
 
-  async forward(street, postcode, city) {
-    const url = `http://open.mapquestapi.com/nominatim/v1/search.php?key=eoEN8KRKeFAMe9JR8UG53yw5Gh3XU9Ex&format=json&q=${street},${postcode},${city}&addressdetails=1&limit=1`
+  async forward(street, postcode) {
+    const url = `http://open.mapquestapi.com/nominatim/v1/search.php?key=eoEN8KRKeFAMe9JR8UG53yw5Gh3XU9Ex&format=json&q=${street},${postcode}&addressdetails=1&limit=1`
     const results = await axios.get(url)
     console.log(results)
-    const coordinates = [results.data[0].lon, results.data[0].lat]
-    const stateDistrict = results.data[0].address.state_district.split(' ')[1]
-
-    return {
-      home: coordinates,
-      state_district: stateDistrict
+    if (results.data && results.data[0]) {
+      const coordinates = [results.data[0].lon, results.data[0].lat]
+      const stateDistrict = results.data[0].address.state_district.split(' ')[1]
+      const town = results.data[0].address.city
+      return {
+        home: coordinates,
+        state_district: stateDistrict,
+        city: town
+      }
+    } else {
+      return {
+        error: 'Keine Koordinaten für die angegebene Adresse gefunden.'
+      }
     }
   },
 

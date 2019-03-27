@@ -38,7 +38,7 @@
           </p>
         </li>
       </ul>
-      <div class="footer">
+      <div class="footer-sidebar">
         <nuxt-link to="/kontakt">
           Kontakt
         </nuxt-link>
@@ -317,7 +317,7 @@ html {
   -moz-user-select: -moz-none;
 }
 
-.footer {
+.footer-sidebar {
   position: absolute;
   background-color: rgba(0, 0, 0, 0.02);
   bottom: 0px;
@@ -325,7 +325,7 @@ html {
   padding-bottom: 20px;
 }
 
-.footer a {
+.footer-sidebar a {
   color: grey;
   font-family: 'Open Sans Light';
   text-decoration: none;

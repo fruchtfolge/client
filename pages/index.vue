@@ -72,6 +72,7 @@
 
 <script>
 import Setting from '~/constructors/Settings'
+import mapquest from '~/assets/js/mapquest'
 
 export default {
   components: {
@@ -260,6 +261,13 @@ export default {
           return
         }
 
+        const address = await mapquest.forward(this.address, this.postcode)
+        if (address.error) {
+          this.loginError({ message: address.error })
+          this.clicked = false
+          return
+        }
+
         const { data } = await this.$axios.post(
           'http://fruchtfolge.agp.uni-bonn.de/api/auth/register',
           {
@@ -267,7 +275,10 @@ export default {
             password: this.password,
             confirmPassword: this.confirmPassword,
             address: this.address,
-            postcode: this.postcode
+            postcode: this.postcode,
+            home: address.home,
+            state_district: address.stateDistrict,
+            city: address.city
           }
         )
         await this.handleSuccess(data, true)
