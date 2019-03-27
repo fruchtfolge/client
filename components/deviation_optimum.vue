@@ -80,11 +80,10 @@ export default {
       const permPastCropCodes = [459, 480, 492, 57, 567, 572, 592, 972]
       this.plots.forEach(plot => {
         const cropCode = Number(plot.selectedCrop)
-        if (!plot.matrix[this.curYear]) return
+        if (!plot.matrix[this.curYear] || !plot.matrix[this.curYear][cropCode])
+          return
         const data = plot.matrix[this.curYear][cropCode]
         // get selected crop and previous crop
-        // const selectedCrop = _.find(this.$store.curCrops, ['code', plot.selectedCrop])
-        // const prevCrop = _.find(this.$store.curCrops, ['name', plot.prevCrop1])
         const croppingFactor = data.croppingFactor
         // Crop rotational deviations
         // show warning if cropping factor is below 6
@@ -120,15 +119,15 @@ export default {
         const maxShare = crop.maxShare || 100
         const maxHa = _.round((maxShare / 100) * this.arableLand, 2)
         const share = _.round(
-          this.shares[this.curYear][crop.code]
-            ? this.shares[this.curYear][crop.code]
+          this.shares[this.curYear][crop.name]
+            ? this.shares[this.curYear][crop.name]
             : 0,
           2
         )
         if (share > maxHa) {
           deviations.push(
             `${
-              crop.variety
+              crop.name
             }: Über zulässigem Fruchtfolgeanteil von ${maxShare}% (${share}ha statt ${maxHa}ha).`
           )
         }
@@ -217,8 +216,7 @@ export default {
       let flag = false
       props.forEach(share => {
         if (this.shares[this.curYear][share] >= this.sevenFivePercent) {
-          const crop = _.find(this.$store.curCrops, ['code', Number(share)])
-          flag = crop.variety
+          flag = share
         }
       })
       return flag
@@ -228,32 +226,31 @@ export default {
       const props = Object.keys(this.shares[this.curYear])
       let flag = false
       props.forEach(share => {
-        const crop1 = _.find(this.$store.curCrops, ['code', Number(share)])
         if (this.shares[this.curYear][share] >= this.ninceFivePercent) {
-          flag = crop1.variety
+          flag = share
         }
         props.forEach(share2 => {
           if (share === share2) return
-          const crop2 = _.find(this.$store.curCrops, ['code', Number(share2)])
           if (
             this.shares[this.curYear][share] +
               this.shares[this.curYear][share2] >=
             this.ninceFivePercent
           ) {
-            flag = crop1.variety + ' ' + crop2.variety
+            flag = share + ' ' + share2
           }
         })
       })
       return flag
     },
     greeningEfa() {
+      console.log(this.shares)
       if (!this.shares[this.curYear]) return 0
       let efa = 0
       const props = Object.keys(this.shares[this.curYear])
-      props.forEach(cropCode => {
+      props.forEach(cropName => {
         // find crop for the given code
-        const share = this.shares[this.curYear][cropCode]
-        const crop = _.find(this.$store.curCrops, ['code', Number(cropCode)])
+        const share = this.shares[this.curYear][cropName]
+        const crop = _.find(this.$store.curCrops, ['name', cropName])
         if (crop && share) {
           efa += share * crop.efaFactor
         }

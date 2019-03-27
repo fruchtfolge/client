@@ -83,7 +83,7 @@ export default {
     if (curPlot.distance > 2) return value
     return value * -1
   },
-  buildMatrix(plots, crops, curYear) {
+  buildMatrix(plots, crops, curYear, curScenario) {
     // get median yield capacity
     const medianYieldCap = this.getMedianYieldCap(plots)
     // loop over all plots and create 'matrix' property where all
@@ -96,7 +96,12 @@ export default {
       }
       crops.forEach(crop => {
         // don't consider more than 10 years prior to the optimisation horizon
-        if (crop.year < curYear - 10) return
+        if (
+          crop.year < curYear - 10 ||
+          crop.scenario !== curScenario
+          // (crop.year === curYear && !crop.active)
+        )
+          return
         if (!plot.matrix[crop.year]) plot.matrix[crop.year] = {}
         const cropFactAndRotBreak = this.getCropFactAndRotBreak(
           plot,
@@ -145,7 +150,7 @@ export default {
         )
         const distanceCosts = this.calculateDistanceCosts(plot, correctedAmount)
         plot.matrix.catchCropCosts = this.catchCropCosts(plot)
-        plot.matrix[crop.year][crop.code] = {
+        plot.matrix[crop.year][crop.name] = {
           croppingFactor: cropFactAndRotBreak[0],
           rotBreakHeld: cropFactAndRotBreak[1],
           name: crop.name,
@@ -316,7 +321,7 @@ set curYear(years) / ${properties.curYear} /;
     function createCropPropertyString(crop) {
       let props = ['rotBreak', 'maxShare', 'minSoilQuality', 'efaFactor']
       props = props.map(prop => {
-        return `'${crop.code}'.${prop} ${crop[prop]}`
+        return `'${crop.name}'.${prop} ${crop[prop]}`
       })
       props = props.join('\n')
       return props
@@ -329,29 +334,29 @@ set curYear(years) / ${properties.curYear} /;
         cropGroup.push(` '${crop.cropGroup}'`)
       }
       // add link between crop and crop group
-      crops_cropGroup.push(` '${crop.code}'.'${crop.cropGroup}'`)
+      crops_cropGroup.push(` '${crop.name}'.'${crop.cropGroup}'`)
 
       // add current crop to possible list of crops
-      curCrops.push(` '${crop.code}'`)
+      curCrops.push(` '${crop.name}'`)
       // declare crop as a permanent pasture crop if within the range of
       // pasture crops
-      if (permPastCropCodes.indexOf(crop.code) > -1) {
-        permPastCrops.push(` '${crop.code}'`)
+      if (permPastCropCodes.indexOf(crop.name) > -1) {
+        permPastCrops.push(` '${crop.name}'`)
       }
       // add all crop properties to p_cropData parameter
       p_cropData.push(createCropPropertyString(crop))
       if (crop.rootCrop) {
-        crops_rootCrop.push(` '${crop.code}' YES`)
+        crops_rootCrop.push(` '${crop.name}' YES`)
       }
       if (crop.catchCropAfter) {
-        crops_catchCrop.push(` '${crop.code}' YES`)
+        crops_catchCrop.push(` '${crop.name}' YES`)
       }
       if (crop.season === 'Sommer') {
-        crops_summer.push(` '${crop.code}' YES`)
+        crops_summer.push(` '${crop.name}' YES`)
       }
       properties.curCrops.forEach(subseqCrop => {
         croppingFactor.push(
-          ` '${crop.code}'.'${subseqCrop.code}' ${
+          ` '${crop.name}'.'${subseqCrop.name}' ${
             crop.subseqCrops[subseqCrop.cropGroup]
           }`
         )
@@ -365,7 +370,7 @@ set curYear(years) / ${properties.curYear} /;
             return _.sumBy(step.steps, 'time')
           })
           const time = _.sum(steps)
-          laborReq.push(` '${crop.code}'.${halfMonth} ${_.round(time, 2)}`)
+          laborReq.push(` '${crop.name}'.${halfMonth} ${_.round(time, 2)}`)
         }
       })
     })
@@ -376,18 +381,18 @@ set curYear(years) / ${properties.curYear} /;
     const p_catchCropCosts = []
 
     properties.crops.forEach(crop => {
-      if (crops.indexOf(` '${crop.code}'`) === -1) crops.push(` '${crop.code}'`)
+      if (crops.indexOf(` '${crop.name}'`) === -1) crops.push(` '${crop.name}'`)
     })
 
     properties.curPlots.forEach(plot => {
       p_catchCropCosts.push(` '${plot._id}' ${plot.matrix.catchCropCosts}`)
       properties.curCrops.forEach(crop => {
-        crop = plot.matrix[properties.curYear][crop.code]
+        crop = plot.matrix[properties.curYear][crop.name]
         // make sure there only is a gross margin for a plot if the rotational break is held
         // and the crop is set to active
         if (crop.rotBreakHeld && crop.active) {
           p_grossMarginData.push(
-            ` '${plot._id}'.'${crop.code}' ${crop.grossMargin}`
+            ` '${plot._id}'.'${crop.name}' ${crop.grossMargin}`
           )
         }
       })
@@ -395,7 +400,7 @@ set curYear(years) / ${properties.curYear} /;
 
     // create plot & crop related data
     const plots = []
-    const plots_years_crops = []
+    const plots_years_cropGroup = []
 
     properties.curPlots.forEach(plot => {
       // get all previous crops for that plot
@@ -405,14 +410,14 @@ set curYear(years) / ${properties.curYear} /;
       })
       if (prev.length) {
         prev.forEach(prevPlot => {
-          // add crop code to crops set if it isn't present
-          const cropCode = cultures[prevPlot.crop]
-            ? cultures[prevPlot.crop].code
+          // add crop name to crops set if it isn't present
+          const cropGroupName = cultures[prevPlot.crop]
+            ? cultures[prevPlot.crop].cropGroup
             : ''
-          if (crops.indexOf(` '${cropCode}'`) === -1)
-            crops.push(` '${cropCode}'`)
-          plots_years_crops.push(
-            ` '${plot._id}'.${prevPlot.year}.'${cropCode}' 'YES'`
+          if (cropGroup.indexOf(` '${cropGroupName}'`) === -1)
+            cropGroup.push(` '${cropGroupName}'`)
+          plots_years_cropGroup.push(
+            ` '${plot._id}'.${prevPlot.year}.'${cropGroupName}' 'YES'`
           )
         })
       }
@@ -499,8 +504,8 @@ set curYear(years) / ${properties.curYear} /;
     )
 
     include += this.save(
-      'set plots_years_crops(plots,years,crops)',
-      plots_years_crops
+      'set plots_years_cropGroup(plots,years,cropGroup)',
+      plots_years_cropGroup
     )
     include += this.save(
       'parameter p_grossMarginData(curPlots,curCrops)',

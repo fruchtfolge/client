@@ -46,8 +46,8 @@
               >
               <input id="c2" v-model="dsgvoAccepted" type="checkbox" name="cc" class="">
               <label for="c2" class="label-login" style="margin-top: 100px;">
-                <span />Ich habe die Nutzungsbedingungen gelesen und bin mit ihnen 
-                einverstanden. Die Datenschutzhinweise habe ich ebenfalls zur Kenntnis genommen.
+                <span />Ich habe die <nuxt-link to="/nutzungsbedingungen">Nutzungsbedingungen</nuxt-link> gelesen und bin mit ihnen 
+                einverstanden. Die <nuxt-link to="/datenschutz">Datenschutzerklärung</nuxt-link> habe ich ebenfalls zur Kenntnis genommen und akzeptiert.
               </label>
               <br>
               <input id="c3" v-model="cookiesAccepted" type="checkbox" name="cookies" class="">
@@ -72,6 +72,7 @@
 
 <script>
 import Setting from '~/constructors/Settings'
+import mapquest from '~/assets/js/mapquest'
 
 export default {
   components: {
@@ -260,6 +261,13 @@ export default {
           return
         }
 
+        const address = await mapquest.forward(this.address, this.postcode)
+        if (address.error) {
+          this.loginError({ message: address.error })
+          this.clicked = false
+          return
+        }
+
         const { data } = await this.$axios.post(
           'http://fruchtfolge.agp.uni-bonn.de/api/auth/register',
           {
@@ -267,7 +275,10 @@ export default {
             password: this.password,
             confirmPassword: this.confirmPassword,
             address: this.address,
-            postcode: this.postcode
+            postcode: this.postcode,
+            home: address.home,
+            state_district: address.stateDistrict,
+            city: address.city
           }
         )
         await this.handleSuccess(data, true)

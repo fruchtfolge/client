@@ -3,8 +3,11 @@
     <div class="timeseries-wrapper">
       <canvas id="timeseries-chart" />
     </div>
-    <div style="width:calc(100% - 275px);text-align:center;margin-top: 40px;">
-      <button type="button" name="button" @click="remove">
+    <div style="width:calc(100% - 275px);text-align:center;margin-top: 30px;">
+      <p style="color:grey;">
+        Quelle der Daten: KTBL Standarddeckungsbeiträge Datenbank
+      </p>
+      <button style="margin-top: 10px;" type="button" name="button" @click="remove">
         ENTFERNEN
       </button>
     </div>

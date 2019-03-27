@@ -81,9 +81,9 @@ export default {
         if (!this.shares[croppingYear]) continue
         const cropsGrown = Object.keys(this.shares[croppingYear])
         const crops = store.crops.filter(crop => {
-          if (crop.code) {
+          if (crop.name) {
             return (
-              cropsGrown.indexOf(crop.code.toString()) > -1 &&
+              cropsGrown.indexOf(crop.name) > -1 &&
               crop.year === croppingYear &&
               crop.scenario === store.curScenario
             )
@@ -94,7 +94,7 @@ export default {
         const data = months.map(month => {
           let time = 0
           crops.forEach(crop => {
-            const share = this.shares[croppingYear][crop.code]
+            const share = this.shares[croppingYear][crop.name]
             let steps = crop.workingSteps.filter(o => {
               return month[0] === o.month || month[1] === o.month
             })

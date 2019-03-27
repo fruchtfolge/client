@@ -38,6 +38,20 @@
           </p>
         </li>
       </ul>
+      <div class="footer-sidebar">
+        <nuxt-link to="/kontakt">
+          Kontakt
+        </nuxt-link>
+        <nuxt-link to="/impressum">
+          Impressum
+        </nuxt-link>
+        <nuxt-link to="/nutzungsbedingungen">
+          Nutzungsbedingungen
+        </nuxt-link>
+        <nuxt-link to="/Datenschutz">
+          Datenschutz
+        </nuxt-link>
+      </div>
     </div>
     <!-- this is where the main application lives -->
     <nuxt class="nuxt" :style="mainStyle" />
@@ -301,5 +315,20 @@ html {
   border-style: solid;
   border-width: 0px;
   -moz-user-select: -moz-none;
+}
+
+.footer-sidebar {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.02);
+  bottom: 0px;
+  padding: 10px;
+  padding-bottom: 20px;
+}
+
+.footer-sidebar a {
+  color: grey;
+  font-family: 'Open Sans Light';
+  text-decoration: none;
+  font-size: 14px;
 }
 </style>

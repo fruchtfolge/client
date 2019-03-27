@@ -116,9 +116,14 @@
           <td>{{ contributionMargin2 }}</td>
           <td>€/ha</td>
         </tr>
+        <tr>
+          <td colspan="7" style="color: grey;">
+            Quelle der Daten: KTBL Anwendung Leistungs-Kostenrechnung Pflanzenbau
+          </td>
+        </tr>
       </tbody>
     </table>
-    <div style="text-align:center;margin-top: 40px;">
+    <div style="text-align:center;margin-top: 40px">
       <button type="button" name="button" @click="remove">
         ENTFERNEN
       </button>

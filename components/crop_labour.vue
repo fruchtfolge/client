@@ -6,8 +6,11 @@
     <div class="cropLabour-wrapper">
       <canvas id="cropLabour-chart" />
     </div>
-    <div style="width:calc(100% - 275px);text-align:center;margin-top: 40px;">
-      <button type="button" name="button" @click="remove">
+    <div style="width:calc(100% - 275px);text-align:center;margin-top: 20px;">
+      <p style="color:grey;">
+        Quelle der Daten: KTBL Verfahrensrechner Pflanzenbau
+      </p>
+      <button style="margin-top: 10px;" type="button" name="button" @click="remove">
         ENTFERNEN
       </button>
     </div>

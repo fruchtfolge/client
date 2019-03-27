@@ -50,7 +50,7 @@
 
 /* Appearance of overall page */
 html,body {
-  -webkit-user-select: none;
+  /*-webkit-user-select: none;*/
   -webkit-user-drag: none;
   cursor: default;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
