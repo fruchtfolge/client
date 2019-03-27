@@ -5,13 +5,28 @@
       <nuxt-link to="/" class="logo">
         FRUCHTFOLGE
       </nuxt-link>
-      <!-- Planning year selector -->
-      <button class="register" @click="flip">
+      <!-- Switch between register and login -->
+      <button v-if="$nuxt.$route.path === '/'" class="register" @click="flip">
         {{ buttonText }}
       </button>
     </div>
     <!-- this is where the main application lives -->
     <nuxt class="nuxt" />
+    <!-- Footer for legal texts-->
+    <div class="footer">
+      <nuxt-link to="/kontakt">
+        Kontakt
+      </nuxt-link>
+      <nuxt-link to="/impressum">
+        Impressum
+      </nuxt-link>
+      <nuxt-link to="/nutzungsbedingungen">
+        Nutzungsbedingungen
+      </nuxt-link>
+      <nuxt-link to="/Datenschutz">
+        Datenschutz
+      </nuxt-link>
+    </div>
   </div>
 </template>
 
@@ -63,6 +78,7 @@ html {
   height: 60px;
   border-width: 0px;
 }
+
 .logo {
   color: black;
   font-family: 'Open Sans Condensed', sans-serif;
@@ -91,5 +107,21 @@ html {
   top: 60px;
   transition: margin-left 0.5s;
   padding-bottom: 50px;
+}
+
+.footer {
+  position: fixed;
+  text-align: right;
+  bottom: 0px;
+  right: 0px;
+  padding-right: 10px;
+  padding-left: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.footer a {
+  padding-right: 5px;
+  padding-left: 5px;
+  text-decoration: none;
+  color: white;
 }
 </style>

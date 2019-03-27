@@ -80,11 +80,10 @@ export default {
       const permPastCropCodes = [459, 480, 492, 57, 567, 572, 592, 972]
       this.plots.forEach(plot => {
         const cropCode = Number(plot.selectedCrop)
-        if (!plot.matrix[this.curYear]) return
+        if (!plot.matrix[this.curYear] || !plot.matrix[this.curYear][cropCode])
+          return
         const data = plot.matrix[this.curYear][cropCode]
         // get selected crop and previous crop
-        // const selectedCrop = _.find(this.$store.curCrops, ['code', plot.selectedCrop])
-        // const prevCrop = _.find(this.$store.curCrops, ['name', plot.prevCrop1])
         const croppingFactor = data.croppingFactor
         // Crop rotational deviations
         // show warning if cropping factor is below 6

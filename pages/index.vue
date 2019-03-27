@@ -46,8 +46,8 @@
               >
               <input id="c2" v-model="dsgvoAccepted" type="checkbox" name="cc" class="">
               <label for="c2" class="label-login" style="margin-top: 100px;">
-                <span />Ich habe die Nutzungsbedingungen gelesen und bin mit ihnen 
-                einverstanden. Die Datenschutzhinweise habe ich ebenfalls zur Kenntnis genommen.
+                <span />Ich habe die <nuxt-link to="/nutzungsbedingungen">Nutzungsbedingungen</nuxt-link> gelesen und bin mit ihnen 
+                einverstanden. Die <nuxt-link to="/datenschutz">Datenschutzerklärung</nuxt-link> habe ich ebenfalls zur Kenntnis genommen und akzeptiert.
               </label>
               <br>
               <input id="c3" v-model="cookiesAccepted" type="checkbox" name="cookies" class="">

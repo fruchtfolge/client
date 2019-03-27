@@ -333,6 +333,7 @@ export default {
       const o = {}
       this.curPlots.forEach(plot => {
         const selectedCrop = plot.selectedCrop
+        if (!selectedCrop) return
         if (!o[selectedCrop]) {
           o[selectedCrop] = {
             data: plot.size,
@@ -625,18 +626,7 @@ export default {
           !this.infeasible
         ) {
           await this.solve(true)
-          await this.$nextTick()
-        } else if (
-          this.curPlots &&
-          this.curPlots.length &&
-          this.curPlots[0].matrix &&
-          this.curPlots[0].matrix[store.curYear] &&
-          this.curPlots[0].recommendation
-        ) {
-          // this.$bus.$off('changeCurrents')
-          // this.loading = false
-        } else {
-          // this.loading = false
+          return
         }
         // update prev crops
         this.updatePrevCrops()

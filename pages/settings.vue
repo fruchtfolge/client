@@ -5,7 +5,7 @@
       <h1 style="font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
         EINSTELLUNGEN
       </h1>
-      <span>Für die Optimierung wird der Standort Ihres Betriebes benötigt. Dieser wird für die Berechnung der Hof-Feld-Distanzen der einzelnen Schläge verwendet. Anhand dieser Information werden die Deckungsbeiträge schlagspezifisch errechnet.</span>
+      <span>Für die Optimierung wird der Standort Ihres Betriebes benötigt. Dieser wird für die Berechnung der Hof-Feld-Distanzen der einzelnen Schläge verwendet. Anhand dieser Information werden die Deckungsbeiträge schlagspezifisch errechnet und regionalisierte Daten bezogen.</span>
       <br>
       <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
         <span style="font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
@@ -25,7 +25,7 @@
       </h1>
       <span>Für die Optimierung werden Daten bezüglich Ihrer bewirtschafteten Flächen benötigt. Dabei werden insbesondere die Schlagskizzen (Geodaten) sowie die Vorfrüchte der Felder für die Optimierungsrechnung verwendet. Wenn Ihr Betrieb den Flächenantrag in Nordrhein-Westfalen stellt, können die Flächendaten aus dem ELAN-Downloadportal durch eingabe der ZID-Nummer und Passwort automatisch eingefügt werden.
         <br>
-        <strong>Datenschutzhinweis:</strong> Ihre Invekos-Daten (Betriebsnummer und Passwort) werden über eine gesicherte SSL-Verbindung zur Abfrage im ELAN-Downloadportal übertragen. Die Anmeldedaten werden lokal auf Ihrem Rechner gespeichert.</span>
+        <strong>Datenschutzhinweis:</strong> Ihre Invekos-Daten (Betriebsnummer und Passwort) werden einmalig zur Abfrage im ELAN-Downloadportal übertragen. Ihre Betriebsnummer, jedoch nicht das Passwort wird lokal auf Ihrem Rechner gespeichert.</span>
       <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
         <span style="font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
           ZID-DATEN ABFRAGE <!--Padding is optional-->
@@ -38,7 +38,7 @@
           type="text"
           class="input"
           name="zid"
-          placeholder="ZID-Betriebsnummer"
+          placeholder="ZID-Betriebsnummer (27605...)"
         >
         <br>
         <input
@@ -149,7 +149,7 @@ export default {
     showZidErr: {
       title: 'INVEKOS FEHLER',
       message:
-        'Bitte stellen Sie sicher, dass Ihre 12-stellige Betriebsnummer vollständig ist, und Sie das korekkte Passwort eingegeben haben. ',
+        'Bitte stellen Sie sicher, dass Ihre 12-stellige NRW Betriebsnummer (muss mit 27605 beginnen) vollständig ist und Sie das korekkte Passwort eingegeben haben. ',
       type: 'warn'
     },
     noAddressErr: {
@@ -421,9 +421,9 @@ export default {
     async getElan() {
       try {
         const settings = await this.$db.get('settings')
-        const stateCode = this.zidId.slice(0, 3)
+        const stateCode = this.zidId.slice(0, 5)
         console.log(this.zidId.length, stateCode, this.zidPass)
-        if (this.zidId.length === 15 && stateCode === '276' && this.zidPass) {
+        if (this.zidId.length === 15 && stateCode === '27605' && this.zidPass) {
           this.loading = true
           // check if older elan data is already stored in db => only download new data
           let years = this.getAvailYears()

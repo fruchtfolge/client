@@ -60,7 +60,7 @@ export default {
         ['!=', 'mode', 'static']
       ],
       paint: {
-        'circle-radius': 8,
+        'circle-radius': 14,
         'circle-color': '#FFF'
       }
     },
@@ -75,7 +75,7 @@ export default {
         ['!=', 'mode', 'static']
       ],
       paint: {
-        'circle-radius': 5,
+        'circle-radius': 10,
         'circle-color': '#79ae98'
       }
     },
