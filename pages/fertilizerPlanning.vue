@@ -118,17 +118,17 @@ export default {
       this.plots.forEach(plot => {
         // use crop that was acutally grown over selected crop
         // const cropCode = plot.crop ? plot.crop : plot.selectedCrop
-        const cropCode = plot.selectedCrop
-        console.log(cropCode)
-        const crop = _.find(this.crops, ['code', Number(cropCode)])
+        const cropName = plot.selectedCrop
+        console.log(cropName)
+        const crop = _.find(this.crops, ['name', cropName])
         if (!crop) return
         const data = {
-          avgYield: this.avgYield(cropCode)
-            ? this.avgYield(cropCode)
+          avgYield: this.avgYield(cropName)
+            ? this.avgYield(cropName)
             : crop.duevYieldLvl,
           nReq: crop.nRequirement,
           nYieldDiff: this.nYieldDiff(
-            this.avgYield(cropCode),
+            this.avgYield(cropName),
             crop.duevYieldLvl,
             crop
           ),
@@ -174,13 +174,13 @@ export default {
         return _.round(crop.nMinSubtraction * deviation, 1)
       }
     },
-    avgYield(cropCode) {
+    avgYield(name) {
       // find object for crop of last 3 years
       const data = this.$store.crops.filter(c => {
         return (
           c.year >= this.curYear - 3 &&
           c.scenario === this.$store.curScenario &&
-          c.code === Number(cropCode)
+          c.name === name
         )
       })
       // console.log(data)

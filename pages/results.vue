@@ -54,7 +54,10 @@
                     </option>
                   </select>
                 </td>
-                <td style="text-align: center;" @click="showPlotInfo(plot.id)">
+                <td v-if="plot.catchCrop" style="text-align: center;" @click="showPlotInfo(plot.id)">
+                  {{ format(plot.curGrossMargin - plot.matrix.catchCropCosts) }}
+                </td>
+                <td v-else style="text-align: center;" @click="showPlotInfo(plot.id)">
                   {{ format(plot.curGrossMargin) }}
                 </td>
               </tr>
@@ -191,14 +194,50 @@
                       </tr>
                       <tr>
                         <td colspan="3">
+                          Zwischenfruchtanbau
+                        </td>
+                        <td v-if="plot.catchCrop" style="text-align:center;" contenteditable="true" @blur="save($event,i,'catchCropCosts', plot)">
+                          {{
+                            format(plot.matrix.catchCropCosts / plot.size) 
+                          }}
+                        </td>
+                        <td v-else style="text-align:center;" contenteditable="true" @blur="save($event,i,'catchCropCosts', plot)">
+                          {{
+                            format(0) 
+                          }}
+                        </td>
+                        <td v-if="plot.catchCrop" style="text-align:center;">
+                          {{
+                            format(plot.matrix.catchCropCosts)
+                          }}
+                        </td>
+                        <td v-else style="text-align:center;">
+                          {{
+                            format(0)
+                          }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="3">
                           Deckungsbeitrag
                         </td>
-                        <td style="text-align:center;">
+                        <td v-if="plot.catchCrop" style="text-align:center;">
+                          {{
+                            format(plot.matrix[curYear][plot.selectedCrop].grossMarginHa - (plot.matrix.catchCropCosts / plot.size))
+                          }}
+                        </td>
+                        <td v-else style="text-align:center;">
                           {{
                             format(plot.matrix[curYear][plot.selectedCrop].grossMarginHa)
                           }}
                         </td>
-                        <td style="text-align:center;">
+                        <td v-if="plot.catchCrop" style="text-align:center;">
+                          {{
+                            format(plot.matrix[curYear][plot.selectedCrop].grossMarginHa
+                              * plot.matrix[curYear][plot.selectedCrop].size - plot.matrix.catchCropCosts)
+                          }}
+                        </td>
+                        <td v-else style="text-align:center;">
                           {{
                             format(plot.matrix[curYear][plot.selectedCrop].grossMarginHa
                               * plot.matrix[curYear][plot.selectedCrop].size)
@@ -233,6 +272,7 @@
           </button>
         </div>
       </div>
+      <download class="excel-download" :data="curPlots" :year="curYear" />
     </div>
     <div v-else style="text-align: center; margin-top: 80px;">
       <h3>
@@ -252,7 +292,8 @@ export default {
     cropShares: () => import('~/components/cropShares.vue'),
     grossMarginTimeline: () => import('~/components/grossMarginTimeline.vue'),
     timeRequirement: () => import('~/components/timeRequirement.vue'),
-    deviationOptimum: () => import('~/components/deviation_optimum.vue')
+    deviationOptimum: () => import('~/components/deviation_optimum.vue'),
+    download: () => import('~/components/download.vue')
   },
   data() {
     return {
@@ -497,7 +538,6 @@ export default {
           shares[plot.year][crop] += plot.size
         }
       })
-      console.log(shares)
       this.shares = shares
     },
     sortPlots(column) {
@@ -753,5 +793,10 @@ export default {
   background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='%23444' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
   background-repeat: no-repeat;
   background-position: 80px 50%;
+}
+
+.excel-download {
+  margin-top: 40px;
+  text-align: center;
 }
 </style>
