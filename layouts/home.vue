@@ -23,7 +23,7 @@
       <nuxt-link to="/nutzungsbedingungen">
         Nutzungsbedingungen
       </nuxt-link>
-      <nuxt-link to="/Datenschutz">
+      <nuxt-link to="/datenschutz">
         Datenschutz
       </nuxt-link>
     </div>

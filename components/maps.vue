@@ -71,7 +71,7 @@ export default {
     })
     // listen to flyTo events
     this.$bus.$on('flyTo', plot => {
-      console.log(plot.center)
+      if (!plot || !plot.center) return
       this.map.flyTo({
         center: plot.center,
         zoom: 15
@@ -80,7 +80,6 @@ export default {
 
     this.$bus.$on('resize', () => {
       setTimeout(() => {
-        // console.log(this.map);
         this.map.resize()
       }, 500)
     })

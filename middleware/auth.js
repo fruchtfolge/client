@@ -1,4 +1,11 @@
 export default async function(context) {
+  const allowedRoutes = [
+    '/',
+    '/datenschutz',
+    '/impressum',
+    '/kontakt',
+    '/nutzungsbedingungen'
+  ]
   async function deleteAndRedirect() {
     if (context.app.$db) {
       // get elements in db
@@ -10,7 +17,7 @@ export default async function(context) {
         context.app.$db = context.app.$initalizeDB()
       }
     }
-    if (context.route.path !== '/') {
+    if (allowedRoutes.indexOf(context.route.path) === -1) {
       return context.redirect('/')
     }
   }

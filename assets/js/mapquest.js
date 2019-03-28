@@ -20,8 +20,12 @@ export default {
     console.log(results)
     if (results.data && results.data[0]) {
       const coordinates = [results.data[0].lon, results.data[0].lat]
-      const stateDistrict = results.data[0].address.state_district.split(' ')[1]
+      const stateDistrict = results.data[0].address.state_district
+        ? results.data[0].address.state_district.split(' ')[1]
+        : 'Deutschland'
       const town = results.data[0].address.city
+        ? results.data[0].address.city
+        : results.data[0].address.village
       return {
         home: coordinates,
         state_district: stateDistrict,
