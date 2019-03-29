@@ -46,7 +46,7 @@
               >
               <input id="c2" v-model="dsgvoAccepted" type="checkbox" name="cc" class="">
               <label for="c2" class="label-login" style="margin-top: 100px;">
-                <span />Ich habe die <nuxt-link to="/nutzungsbedingungen">Nutzungsbedingungen</nuxt-link> gelesen und bin mit ihnen 
+                <span />Ich habe die <nuxt-link to="/nutzungsbedingungen">Nutzungsbedingungen</nuxt-link> gelesen und bin mit ihnen
                 einverstanden. Die <nuxt-link to="/datenschutz">Datenschutzerklärung</nuxt-link> habe ich ebenfalls zur Kenntnis genommen und akzeptiert.
               </label>
               <br>
@@ -61,11 +61,15 @@
           </div>
         </div>
       </div>
-      <!--
-      <div class="">
-        Test
+      <div class="expand" @click="jump('landing')">
+        <h2>WEITERE INFOS</h2>
+        <div id="landing" class="arrow" />
       </div>
-    -->
+      <div class="landing">
+        <h1>
+          ANBAUPLANUNG
+        </h1>
+      </div>
     </div>
   </div>
 </template>
@@ -131,6 +135,8 @@ export default {
   },
   methods: {
     flip() {
+      // scroll to top of page after clicking
+      window.scrollTo(0, 0)
       return this.showRegister
         ? (this.showRegister = false)
         : (this.showRegister = true)
@@ -296,6 +302,11 @@ export default {
         }
       }
     },
+    jump(id) {
+      const el = document.getElementById(id)
+      el.scrollIntoView({ behavior: 'smooth' })
+      el.scrollTop += 10
+    },
     async login() {
       if (this.clicked) return
       this.clicked = true
@@ -337,14 +348,13 @@ export default {
 }
 
 .background {
-  position: fixed;
   border: 0px;
   padding: 0px;
   top: 0;
   left: 0;
   /* Preserve aspet ratio */
   min-width: 100%;
-  min-height: 100%;
+  min-height: calc(100vh - 60px);
 }
 
 .registrieren-oben {
@@ -378,12 +388,11 @@ export default {
 }
 
 div.flip-container {
-  position: fixed;
+  position: absolute;
   cursor: default;
   left: 50%;
   margin-left: -150px;
-  top: 50%;
-  margin-top: -250px;
+  margin-top: calc(-50vh - 290px);
 }
 
 /* entire container, keeps perspective */
@@ -749,5 +758,39 @@ div.flip-container {
 
 .registrierung {
   background: white;
+}
+
+.landing {
+  height: 100vh;
+  margin-top: 120px;
+}
+
+.landing h1 {
+  font-weight: normal;
+  text-align: center;
+  letter-spacing: 0.15em;
+}
+
+.expand {
+  text-align: center;
+  margin-top: -90px;
+}
+
+.expand h2 {
+  color: white;
+  font-size: 18px;
+  letter-spacing: 0.15em;
+}
+
+.arrow {
+  position: absolute;
+  left: 50%;
+  margin-left: -20px;
+  margin-top: -15px;
+  width: 40px;
+  height: 40px;
+  background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='white' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 </style>
