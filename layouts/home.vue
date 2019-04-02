@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="header">
+    <div id="header" class="header">
       <img src="~/assets/img/Web_2.png" alt="Uni Bonn Logo" class="uniBonn">
       <nuxt-link to="/" class="logo">
         FRUCHTFOLGE

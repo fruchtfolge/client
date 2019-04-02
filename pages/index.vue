@@ -67,8 +67,53 @@
       </div>
       <div class="landing">
         <h1>
-          ANBAUPLANUNG
+          DEN ACKERBAU IM BLICK
         </h1>
+        <div class="copy">
+          <!--
+          Der moderne Ackerbau stellt eine Vielzahl an Herausforderungen bereit:
+          Verfügbare Arbeitszeiten, Fruchtfolgeeffekte, Bodenarten und -qualitäten,
+          Vermarktungsbedingungen, Nachhaltigkeitsaspekte sowie rechtliche Vorschriften
+          müssen berücksichtigt und gewinnmaximierend zusammengeführt werden.
+
+          Die "Fruchtfolge"-Anwendung der Universität Bonn
+        -->
+          Die kostenlose "Fruchtfolge"-Anwendung der Universität Bonn unterstützt
+          Sie dabei, den Gewinn Ihres Betriebes durch eine optimierte Anbauplanung
+          zu maximieren.
+
+          <br>
+          <br>
+
+          Sehen Sie sich das kurze Einführungsvideo an oder lesen Sie unterhalb
+          des Videos weiter.
+
+          <video class="video" :src="require('~/assets/img/test.mp4')" controls type="video/mp4" />
+
+          <br>
+          <br>
+          <h1 style="text-align: left;">
+            FAQ
+          </h1>
+          <h2>Was macht die "Fruchtfolge"-Anwendung?</h2>
+
+          Der morderne Ackerbau stellt eine Vielzahl an Herausforderungen bereit,
+          die in der Fruchtfolgeplanung berücksichtigt werden müssen.
+          Verfügbare Arbeitszeitstunden, Fruchtfolgeeffekte,
+          Vermarktungsoptionen und rechtliche Auflagen (wie z.B. das Greening oder die
+          Düngeverordnung) müssen in die Entscheidung einbezogen und
+          gewinnmaximierend zusammengeführt werden.
+
+          <h2>Ist die Anwendung wirklich kostenlos?</h2>
+
+          <h2>Sind meine Daten sicher?</h2>
+
+          <h2>Gibt es ein Benutzerhandbuch?</h2>
+
+          <h2>Ich würde gerne bei der Entwicklung mithelfen. Was kann ich tun?</h2>
+
+          <h2>Ich habe Fragen/Anregungen bezüglich der Anwendung.</h2>
+        </div>
       </div>
     </div>
   </div>
@@ -136,7 +181,8 @@ export default {
   methods: {
     flip() {
       // scroll to top of page after clicking
-      window.scrollTo(0, 0)
+      const el = document.getElementById('background')
+      el.scrollIntoView({ behavior: 'smooth' })
       return this.showRegister
         ? (this.showRegister = false)
         : (this.showRegister = true)
@@ -348,13 +394,14 @@ export default {
 }
 
 .background {
+  margin-top: -60px;
   border: 0px;
   padding: 0px;
   top: 0;
   left: 0;
   /* Preserve aspet ratio */
   min-width: 100%;
-  min-height: calc(100vh - 60px);
+  height: 100vh;
 }
 
 .registrieren-oben {
@@ -768,6 +815,7 @@ div.flip-container {
 .landing h1 {
   font-weight: normal;
   text-align: center;
+  margin-bottom: 40px;
   letter-spacing: 0.15em;
 }
 
@@ -792,5 +840,20 @@ div.flip-container {
   background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='white' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.copy {
+  margin: auto;
+  font-family: 'Open Sans Light';
+  width: 50%;
+  min-width: 580px;
+  max-width: 800px;
+}
+
+.video {
+  width: 100%;
+  margin-bottom: 40px;
+  margin-top: 40px;
+  object-fit: cover;
 }
 </style>

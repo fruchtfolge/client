@@ -11,7 +11,10 @@ module.exports = {
     title: 'Fruchtfolge',
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      {
+        name: 'viewport',
+        content: 'width=device-width, user-scalable=no, initial-scale=1'
+      },
       { hid: 'description', name: 'description', content: pkg.description }
     ],
     link: [
@@ -85,6 +88,11 @@ module.exports = {
           loader: 'eslint-loader',
           exclude: /(node_modules)/
         })
+      }
+      const vueLoader = config.module.rules.find(r => r.loader === 'vue-loader')
+      vueLoader.options.transformToRequire = {
+        video: 'poster',
+        source: 'src'
       }
     },
     plugins: [
