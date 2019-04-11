@@ -77,6 +77,9 @@ export default {
     }
     return [croppingFactor, rotBreakHeld]
   },
+  calcTimeReq(plot, crop) {
+    // use heuristics as long as no ktbl data is available
+  },
   calculateDistanceCosts(curPlot, cropYield) {
     if (cropYield > 100) cropYield = 100
     const value = cropYield * (0.2915 * Math.abs(curPlot.distance - 2) + 1.4287)
@@ -148,6 +151,9 @@ export default {
           }),
           2
         )
+
+        const timeReq = this.calcTimeReq(plot, crop)
+
         const distanceCosts = this.calculateDistanceCosts(plot, correctedAmount)
         plot.matrix.catchCropCosts = this.catchCropCosts(plot)
         plot.matrix[crop.year][crop.name] = {
@@ -157,6 +163,7 @@ export default {
           active: crop.active,
           grown: plot.crop === crop.code,
           code: crop.code,
+          timeReq,
           yieldCap,
           amount,
           correctedAmount,
