@@ -51,6 +51,7 @@
 /* Appearance of overall page */
 html,body {
   /*-webkit-user-select: none;*/
+  -webkit-overflow-scrolling: touch;
   -webkit-user-drag: none;
   cursor: default;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
