@@ -63,11 +63,11 @@
       </div>
       <div class="expand" @click="jump('landing')">
         <h2>WEITERE INFOS</h2>
-        <div id="landing" class="arrow" />
+        <div id="landing" class="arrow-bottom" />
       </div>
       <div class="landing">
         <h1>
-          ANBAUPLANUNG OPTIMIEREN
+          FRUCHTFOLGE IST KEINE ACKERSCHLAGKARTEI
         </h1>
         <div class="copy">
           Die kostenlose "Fruchtfolge"-Anwendung der Universität Bonn unterstützt
@@ -81,6 +81,13 @@
           des Videos weiter.
 
           <video class="video" :src="require('~/assets/img/test.mp4')" controls type="video/mp4" />
+
+          <div class="smallDisplay">
+            <h2>Warum kann ich mich nicht anmelden?</h2>
+            Die Fruchtfolge Anwendung ist für Tablets und Desktop Computer optimiert.
+            Rufen Sie die Anwendung von einem Gerät mit einem größeren Bildschirm auf,
+            um den vollen Umfang der Anwendung zu nutzen.
+          </div>
 
           <h2>Was macht die "Fruchtfolge"-Anwendung?</h2>
           Die "Fruchtfolge"-Anwendung stellt einen Gewinnmaximierenden Anbauplan
@@ -454,6 +461,7 @@ export default {
   /* Preserve aspet ratio */
   min-width: 100%;
   height: 100vh;
+  min-height: 700px;
 }
 
 .registrieren-oben {
@@ -882,7 +890,7 @@ div.flip-container {
   letter-spacing: 0.15em;
 }
 
-.arrow {
+.arrow-bottom {
   position: absolute;
   left: 50%;
   margin-left: -20px;
@@ -894,6 +902,10 @@ div.flip-container {
   background-size: cover;
 }
 
+.smallDisplay {
+  display: none;
+}
+
 .copy {
   margin: auto;
   font-family: 'Open Sans Light';
@@ -901,6 +913,8 @@ div.flip-container {
   min-width: 580px;
   max-width: 800px;
   padding-bottom: 50px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 .copy h2 {
@@ -911,5 +925,53 @@ div.flip-container {
   margin-bottom: 40px;
   margin-top: 40px;
   object-fit: cover;
+}
+
+/* Hide most elements when display size is too small */
+@media (max-width: 700px) {
+  .register {
+    display: none;
+  }
+
+  #login {
+    display: none;
+  }
+
+  .background {
+    display: none;
+  }
+
+  .copy {
+    margin: auto;
+    font-family: 'Open Sans Light';
+    font-size: 14px;
+    width: initial;
+    min-width: initial;
+    max-width: initial;
+    padding-bottom: 50px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .smallDisplay {
+    display: initial;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  .landing h1 {
+    margin-bottom: 15px;
+    margin-top: -30px;
+  }
 }
 </style>

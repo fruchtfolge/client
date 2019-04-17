@@ -1,9 +1,10 @@
 const webpack = require('webpack')
 const pkg = require('./package')
 
+const features = ['fetch', 'Object.entries', 'IntersectionObserver'].join('%2C')
+
 module.exports = {
   mode: 'spa',
-
   /*
   ** Headers of the page
   */
@@ -16,6 +17,12 @@ module.exports = {
         content: 'width=device-width, user-scalable=no, initial-scale=1'
       },
       { hid: 'description', name: 'description', content: pkg.description }
+    ],
+    script: [
+      {
+        src: `https://polyfill.io/v3/polyfill.min.js?features=${features}`,
+        body: true
+      }
     ],
     link: [
       {

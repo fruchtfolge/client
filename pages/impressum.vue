@@ -32,16 +32,18 @@ export default {
 </script>
 
 <style scoped>
-.copy {
-  width: 50%;
-  min-width: 500px;
-  margin: auto;
-  top: 120px;
-}
-.copy h1 {
-  letter-spacing: 0.05em;
-}
-.copy p {
-  font-family: 'Open Sans Light';
+@media (min-width: 700px) {
+  .copy {
+    width: 50%;
+    min-width: 500px;
+    margin: auto;
+    top: 120px;
+  }
+  .copy h1 {
+    letter-spacing: 0.05em;
+  }
+  .copy p {
+    font-family: 'Open Sans Light';
+  }
 }
 </style>
