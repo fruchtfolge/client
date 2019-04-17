@@ -67,17 +67,9 @@
       </div>
       <div class="landing">
         <h1>
-          DEN ACKERBAU IM BLICK
+          ANBAUPLANUNG OPTIMIEREN
         </h1>
         <div class="copy">
-          <!--
-          Der moderne Ackerbau stellt eine Vielzahl an Herausforderungen bereit:
-          Verfügbare Arbeitszeiten, Fruchtfolgeeffekte, Bodenarten und -qualitäten,
-          Vermarktungsbedingungen, Nachhaltigkeitsaspekte sowie rechtliche Vorschriften
-          müssen berücksichtigt und gewinnmaximierend zusammengeführt werden.
-
-          Die "Fruchtfolge"-Anwendung der Universität Bonn
-        -->
           Die kostenlose "Fruchtfolge"-Anwendung der Universität Bonn unterstützt
           Sie dabei, den Gewinn Ihres Betriebes durch eine optimierte Anbauplanung
           zu maximieren.
@@ -90,29 +82,89 @@
 
           <video class="video" :src="require('~/assets/img/test.mp4')" controls type="video/mp4" />
 
-          <br>
-          <br>
-          <h1 style="text-align: left;">
-            FAQ
-          </h1>
           <h2>Was macht die "Fruchtfolge"-Anwendung?</h2>
+          Die "Fruchtfolge"-Anwendung stellt einen Gewinnmaximierenden Anbauplan
+          für Ihre Ackerflächen auf.<br><br>
+          Dabei werden Nebenbedingungen wie maximal verfügbare Arbeitszeitstunden,
+          Fruchtfolgeeffekte, Bodenqualitäten, Hof-Feld Entfernungen (und deren Auswirkungen
+          auf Arbeitszeitbedarfe und Maschinenkosten) und die Greening-Richtlinie
+          berücksichtigt.<br><br>
+          Die empfohlene Anbaukultur kann für jeden Schlag ersetzt werden, die daraus
+          resultierenden Konsequenzen (z.B. Verstoß gegen Greening-Auflagen,
+          Überschreitung von maximalen Fruchtfolgenateilen, verringerter
+          Gesamtdeckungsbeitrag etc.) werden Ihnen direkt mitgeteilt.<br><br>
 
-          Der morderne Ackerbau stellt eine Vielzahl an Herausforderungen bereit,
-          die in der Fruchtfolgeplanung berücksichtigt werden müssen.
-          Verfügbare Arbeitszeitstunden, Fruchtfolgeeffekte,
-          Vermarktungsoptionen und rechtliche Auflagen (wie z.B. das Greening oder die
-          Düngeverordnung) müssen in die Entscheidung einbezogen und
-          gewinnmaximierend zusammengeführt werden.
+          Es werden automatisch Standardwerte für Fruchtfolgeeffekte,
+          Deckungsbeiträge und Zeitreihendaten aus diversen Datenbanken importiert,
+          sodass Sie nicht alle Daten selber eingeben müssen. Wenn ihr Betrieb
+          den Flächenantrag in Nordrhein-Westfalen stellt, können Sie des Weiteren
+          bequem Ihre Schläge und Kulturen importieren.<br><br>
+          Alle Daten für die Optimierung sind veränderbar und lassen sich
+          and Ihre persönlichen Gegebenheiten anpassen.<br><br>
+          Die Erstellung eines optimierten Anbauplans dauert in der Regel weniger als
+          10-30 Minuten (je nach Betriebsbeschaffenheit).<br><br>
+
+          <h2>Für wen ist die "Fruchtfolge"-Anwendung gedacht?</h2>
+          Grundsätzlich ist die Anwendung für alle Entscheidungsträger, das heißt
+          Landwirte/Landwirtinnen sowie deren Berater gedacht.<br>
+          Die Anwendung ist gleichermaßen für konventionell als auch
+          ökologisch/integriert wirtschaftende Betriebe geeignet.<br>
+          Ein Datenimport aus Flächenatragsdaten ist
+          derzeit lediglich für das Land Nordrhein-Westfalen verfügbar.
+
+          <h2>Wie gut ist der erstellte Anbauplan?</h2>
+          Die Qualität der Optimierung steht und fällt mit der Qualität der
+          von Ihnen eingegeben Daten. Da für die Anbaukulturen Standardwerte für
+          Preise, Erträge, Kosten, Fruchtfolgeeffekte uvm. aus diversen
+          Datenbanken importiert werden, können diese teilweise stark von den
+          tatsächlich auf Ihrem Betrieb auftretenden Daten abweichen. Eine Anpassung
+          Ihrerseits ist daher unabdingbar.<br><br>
+          Allgemein ist die "Fruchtfolge"-Anwendung als praktische Planungshilfe
+          gedacht. Die sorgfältige Überprüfung und gegebenenfalls Anpassung des
+          Anbauplans vor der tatsächlichen Umsetzung ist jedoch zwingend erforderlich.
 
           <h2>Ist die Anwendung wirklich kostenlos?</h2>
+          Ja. Die "Fruchtfolge"-Anwendung ist ein sogenanntes Open-Source Projekt,
+          dass von der Universität Bonn verwaltet und bereitgestellt wird. Open-Source
+          Projekte können kostenlos verwendet werden. Im gegenzug besteht jedoch
+          dafür kein Anspruch auf Unterstützung im Umgang mit der Anwendung.<br>
+          Ein weiterer Vorteil ist, dass interessierte Entwickler bei der
+          Gestaltung der Anwendung teilhaben, mögliche Fehler
+          beseitigen oder neue Funktionen hinzufügen. <br>
+          Bekannte Beispiele für Open-Source Projekte sind beispielsweise der
+          beliebte Internet-Browser Mozilla Firefox oder der vorinstallierte
+          Taschenrechner auf Microsoft Windows Computern.
+
+          <h2>Warum muss ich meine Adresse bei der Registrierung angeben?</h2>
+          Die Adresse Ihrer Hofstelle wird benötigt, um die Hof-Feld Entfernungen
+          der von Ihnen bewirtschafteten Flächen zu errechnen. Mit dieser Information
+          werden Schlagspezifische Transportkosten und Arbeitszeitbedarfe für
+          Sie errechnet.
 
           <h2>Sind meine Daten sicher?</h2>
+          Ihre Daten werden nur lokal auf Ihrem Rechner, sowie auf einem gesicherten
+          Server der Universität in Bonn gespeichert und unterliegen somit den Datenschutzauflagen
+          des Landes NRW.
 
-          <h2>Gibt es ein Benutzerhandbuch?</h2>
+          <h2>Wie stabil ist die Anwendung?</h2>
+          Die "Fruchtfolge"-Anwendung befindet sich derzeit noch im sogenannten
+          Beta stadium. Wenn bei der Nutzung der Anwendung Fehler auftreten,
+          würden wir uns über eine <nuxt-link to="/kontakt">
+            kurze Mitteilung
+          </nuxt-link> freuen.
 
           <h2>Ich würde gerne bei der Entwicklung mithelfen. Was kann ich tun?</h2>
+          Die Entwicklung der Anwendung findet auf der Entwicklerplattform Github
+          unter der Adresse
+          <a href="https://github.com/fruchtfolge/client">https://github.com/fruchtfolge/client</a>
+          statt. Auf der Seite finden Sie weitere Hinweise zur Kollaboration sowie
+          aktuell anstehende Aufgaben.
 
           <h2>Ich habe Fragen/Anregungen bezüglich der Anwendung.</h2>
+          Sie können uns gerne über die auf der <nuxt-link to="/kontakt">
+            Kontakt-Seite
+          </nuxt-link>
+          angegebenen Kontaktmöglichkeiten erreichen.
         </div>
       </div>
     </div>
@@ -848,8 +900,12 @@ div.flip-container {
   width: 50%;
   min-width: 580px;
   max-width: 800px;
+  padding-bottom: 50px;
 }
 
+.copy h2 {
+  margin-top: 60px;
+}
 .video {
   width: 100%;
   margin-bottom: 40px;
