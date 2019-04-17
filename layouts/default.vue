@@ -79,12 +79,12 @@ export default {
           name: 'Standard'
         }
       ],
-      isOpen: false,
+      isOpen: true,
       sidenavStyle: {
-        width: '0px'
+        width: '250px'
       },
       mainStyle: {
-        marginLeft: '0px'
+        marginLeft: '250px'
       },
       clickedPage: {
         backgroundColor: 'rgba(0, 0, 0, .05)'
@@ -102,6 +102,9 @@ export default {
       const settings = await this.$db.get('settings')
       this.settings.curYear = settings.curYear
       this.settings.curScenario = settings.curScenario
+      // auto open sidenav when window width is greater than x
+      const width = window.innerWidth > 0 ? window.innerWidth : screen.width
+      if (width <= 1000) this.close()
     } catch (e) {
       if (e.status === 404) {
         this.settings = new Setting(this.settings)
@@ -263,9 +266,9 @@ html {
   z-index: 1;
   top: 0;
   left: 0;
+  transition: width 0.5s;
   background-color: #ececec;
   overflow-x: hidden;
-  transition: width 0.5s;
   padding-top: 10px;
 }
 
