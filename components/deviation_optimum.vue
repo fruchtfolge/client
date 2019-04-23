@@ -373,7 +373,7 @@ export default {
   display: inline-flex;
   margin-right: 10px;
   vertical-align: text-top;
-  background: url('~/assets/img/check.svg');
+  background: url('~assets/img/check.svg');
 }
 .fail {
   width: 20px;
@@ -381,7 +381,7 @@ export default {
   display: inline-flex;
   margin-right: 10px;
   vertical-align: text-top;
-  background: url('~/assets/img/fail.svg');
+  background: url('~assets/img/fail.svg');
 }
 .number {
   margin-top: -20px;

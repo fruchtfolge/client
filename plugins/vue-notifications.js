@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueNotifications from 'vue-notifications'
 
 // Include mini-toaster (or any other UI-notification library)
-import miniToastr from './mini-toastr'
+import miniToastr from 'mini-toastr'
 
 // We shall setup types of the messages. ('error' type - red and 'success' - green in mini-toastr)
 const toastTypes = {

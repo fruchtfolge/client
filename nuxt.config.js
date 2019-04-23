@@ -1,7 +1,16 @@
 const path = require('path')
 const webpack = require('webpack')
 const pkg = require('./package')
-const features = ['fetch', 'Object.entries', 'IntersectionObserver'].join('%2C')
+
+const features = [
+  'fetch',
+  'Object.entries',
+  'IntersectionObserver',
+  'Array.prototype.find',
+  'EventSource',
+  'Object.assign',
+  'Array.prototype.fill'
+].join('%2C')
 
 module.exports = {
   mode: 'spa',
@@ -38,6 +47,11 @@ module.exports = {
         rel: 'stylesheet',
         href:
           'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.4/mapbox-gl-draw.css'
+      },
+      {
+        rel: 'stylesheet',
+        href:
+          'https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans:300,400,600,700'
       }
     ]
   },
@@ -76,7 +90,7 @@ module.exports = {
   ** API base url, can be changed for debugging
   */
   env: {
-    baseUrl: 'http://localhost:3001/' // http://fruchtfolge.agp.uni-bonn.de/api/
+    baseUrl: 'http://fruchtfolge.agp.uni-bonn.de/api/' // 'http://localhost:3001/'
   },
 
   router: {
@@ -86,6 +100,7 @@ module.exports = {
   ** Build configuration
   */
   build: {
+    transpile: ['mini-toastr'],
     /*
     ** You can extend webpack config here
     */
@@ -100,9 +115,15 @@ module.exports = {
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
-          exclude: /node_modules\/(?!(mini-toastr)\/).*/
+          exclude: /(node_modules)/
         })
       }
+      const alias = (config.resolve.alias = config.resolve.alias || {})
+      alias['@mapbox/mapbox-gl-draw'] = path.resolve(
+        __dirname,
+        'node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js'
+      )
+
       const vueLoader = config.module.rules.find(r => r.loader === 'vue-loader')
       vueLoader.options.transformToRequire = {
         video: 'poster',
@@ -113,7 +134,6 @@ module.exports = {
       new webpack.ProvidePlugin({
         _: 'lodash'
       })
-    ],
-    transpile: ['node_modules/mini-toastr']
+    ]
   }
 }

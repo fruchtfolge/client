@@ -61,7 +61,7 @@ module.exports = [
   },
   {
     subPage: true,
-    path: '/crops_settings',
+    path: '/crop_settings',
     name: 'Eigenschaften',
     icon: 'static/crops.png'
   },

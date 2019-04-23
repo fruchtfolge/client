@@ -133,8 +133,9 @@ export default {
   background: #ececec;
   z-index: 94;
 }
+
 .cropCollaps {
-  background: url("data:image/svg+xml;utf8,<svg width='24' height='24' xmlns='http://www.w3.org/2000/svg'> <g> <title>background</title> <rect fill='none' id='canvas_background' height='402' width='582' y='-1' x='-1'/> </g> <g> <title>Layer 1</title> <path transform='rotate(-180 12,11.531000137329102) ' id='svg_1' d='m7.406,7.828l4.594,4.594l4.594,-4.594l1.406,1.406l-6,6l-6,-6l1.406,-1.406z' fill='#444'/> </g> </svg>");
+  background: url('data:image/svg+xml,%3Csvg%20width%3D%2724%27%20height%3D%2724%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%20%3Cg%3E%20%3Ctitle%3Ebackground%3C%2Ftitle%3E%20%3Crect%20fill%3D%27none%27%20id%3D%27canvas_background%27%20height%3D%27402%27%20width%3D%27582%27%20y%3D%27-1%27%20x%3D%27-1%27%2F%3E%20%3C%2Fg%3E%20%3Cg%3E%20%3Ctitle%3ELayer%201%3C%2Ftitle%3E%20%3Cpath%20transform%3D%27rotate(-180%2012%2C11.531000137329102)%20%27%20id%3D%27svg_1%27%20d%3D%27m7.406%2C7.828l4.594%2C4.594l4.594%2C-4.594l1.406%2C1.406l-6%2C6l-6%2C-6l1.406%2C-1.406z%27%20fill%3D%27%23444%27%2F%3E%20%3C%2Fg%3E%20%3C%2Fsvg%3E');
   background-position: 100% 50%;
   background-repeat: no-repeat;
 }
@@ -218,7 +219,7 @@ export default {
 .arrow {
   width: 24px;
   height: 24px;
-  background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='%23444' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
+  background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
   background-position: 100% 100%;
   background-repeat: no-repeat;
   transform: rotate(0deg);

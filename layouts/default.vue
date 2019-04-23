@@ -38,19 +38,21 @@
           </p>
         </li>
       </ul>
-      <div class="footer-sidebar">
-        <nuxt-link to="/kontakt">
-          Kontakt
-        </nuxt-link>
-        <nuxt-link to="/impressum">
-          Impressum
-        </nuxt-link>
-        <nuxt-link to="/nutzungsbedingungen">
-          Nutzungsbedingungen
-        </nuxt-link>
-        <nuxt-link to="/Datenschutz">
-          Datenschutz
-        </nuxt-link>
+      <div class="footer-container">
+        <div class="footer-sidebar">
+          <nuxt-link to="/kontakt">
+            Kontakt
+          </nuxt-link>
+          <nuxt-link to="/impressum">
+            Impressum
+          </nuxt-link>
+          <nuxt-link to="/nutzungsbedingungen">
+            Nutzungsbedingungen
+          </nuxt-link>
+          <nuxt-link to="/Datenschutz">
+            Datenschutz
+          </nuxt-link>
+        </div>
       </div>
     </div>
     <!-- this is where the main application lives -->
@@ -234,7 +236,7 @@ html {
   margin-bottom: 15px;
   height: 40px;
   padding-right: 25px;
-  background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='%23444' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
+  background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
   background-repeat: no-repeat;
   background-position: 100% 50%;
   position: fixed;
@@ -273,7 +275,7 @@ html {
 .sidenav-container {
   list-style: none;
   padding-left: 0px;
-  padding-bottom: 50px;
+  padding-bottom: 150px;
 }
 
 .sidenav-links {
@@ -309,7 +311,7 @@ html {
   width: 33px;
   height: 27px;
   cursor: pointer;
-  background: url("data:image/svg+xml;utf8,<svg version='1.1' id='Ebene_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='33px' height='27px' viewBox='0 0 33 27' enable-background='new 0 0 33 27' xml:space='preserve'> <g> <rect width='33' height='2'/> </g> <g> <rect y='25' width='33' height='2'/> </g> <g> <rect y='12' width='33' height='2'/> </g> </svg>")
+  background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20id%3D%27Ebene_1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20x%3D%270px%27%20y%3D%270px%27%20width%3D%2733px%27%20height%3D%2727px%27%20viewBox%3D%270%200%2033%2027%27%20enable-background%3D%27new%200%200%2033%2027%27%20xml%3Aspace%3D%27preserve%27%3E%20%3Cg%3E%20%3Crect%20width%3D%2733%27%20height%3D%272%27%2F%3E%20%3C%2Fg%3E%20%3Cg%3E%20%3Crect%20y%3D%2725%27%20width%3D%2733%27%20height%3D%272%27%2F%3E%20%3C%2Fg%3E%20%3Cg%3E%20%3Crect%20y%3D%2712%27%20width%3D%2733%27%20height%3D%272%27%2F%3E%20%3C%2Fg%3E%20%3C%2Fsvg%3E')
     no-repeat;
   background-size: 23px 25px;
   background-repeat: no-repeat;
@@ -319,17 +321,23 @@ html {
   -moz-user-select: -moz-none;
 }
 
-.footer-sidebar {
-  position: sticky;
-  background-color: rgba(0, 0, 0, 0.02);
+.footer-container {
   bottom: 0px;
+  position: fixed;
+  width: inherit;
+  overflow: hidden;
+}
+
+.footer-sidebar {
+  background-color: rgba(0, 0, 0, 0.02);
   padding: 10px;
   padding-bottom: 10px;
 }
 
 .footer-sidebar a {
   color: grey;
-  font-family: 'Open Sans Light';
+  font-family: 'Open Sans';
+  font-weight: 300;
   text-decoration: none;
   font-size: 14px;
 }

@@ -43,7 +43,8 @@ export default {
     letter-spacing: 0.05em;
   }
   .copy p {
-    font-family: 'Open Sans Light';
+    font-family: 'Open Sans';
+    font-weigth: 300;
   }
 }
 </style>

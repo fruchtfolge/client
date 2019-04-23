@@ -32,8 +32,8 @@
           <div class="registrierung">
             <p>JETZT KOSTENLOS ANMELDEN</p>
             <div class="register-container">
-              <input id="address" v-model="address" class="address" placeholder="Strasse u. Hausnr. (Betrieb)">
               <input id="postcode" v-model="postcode" class="address" placeholder="PLZ">
+              <input id="address" v-model="address" class="address" placeholder="Strasse u. Hausnr. (Betrieb)" @input="debouncedAutocomplete">
               <input id="email2" v-model="email" class="address" placeholder="E-Mail Adresse">
               <input id="password2" v-model="password" class="address" placeholder="Passwort" type="password">
               <input
@@ -180,7 +180,7 @@
 
 <script>
 import Setting from '~/constructors/Settings'
-import mapquest from '~/assets/js/mapquest'
+import geo from '~/assets/js/geo'
 
 export default {
   components: {
@@ -196,6 +196,7 @@ export default {
       address: '',
       postcode: '',
       confirmPassword: '',
+      autocomplete: [],
       dsgvoAccepted: false,
       cookiesAccepted: false,
       clicked: false,
@@ -203,7 +204,13 @@ export default {
     }
   },
   created() {
-    console.log(process.env.baseUrl)
+    this.debouncedAutocomplete = _.debounce(async () => {
+      try {
+        this.autocomplete = await geo.autocomplete(this.address, this.postcode)
+      } catch (e) {
+        this.incomplete({ title: 'ADRESSE', message: e.message })
+      }
+    }, 500)
     this.$bus.$on('flip', this.flip)
   },
   destroyed() {
@@ -213,18 +220,18 @@ export default {
     incomplete: {
       title: 'UNVOLLSTÄNDIG',
       message: 'Bitte füllen Sie zur Anmeldung alle Felder aus.',
-      type: 'error'
+      type: 'warn'
     },
     noDSGVO: {
       title: 'NUTZUNGSBEDINGUNG',
       message:
         'Für die Nutzung der Anwendung müssen Sie den Nutzungsbedingungen und der Cookies-Richtlinie zustimmen.',
-      type: 'error'
+      type: 'warn'
     },
     notMatching: {
       title: 'PASSWORT ÜBEREINSTIMMUNG',
       message: 'Die Passwörter stimmen nicht überein.',
-      type: 'error'
+      type: 'warn'
     },
     loginError: {
       title: 'FEHLER',
@@ -373,7 +380,7 @@ export default {
           return
         }
 
-        const address = await mapquest.forward(this.address, this.postcode)
+        const address = await geo.forward(this.address, this.postcode)
         if (address.error) {
           this.loginError({ message: address.error })
           this.clicked = false
@@ -898,7 +905,7 @@ div.flip-container {
   margin-top: -15px;
   width: 40px;
   height: 40px;
-  background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='white' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
+  background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27white%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -909,7 +916,8 @@ div.flip-container {
 
 .copy {
   margin: auto;
-  font-family: 'Open Sans Light';
+  font-family: 'Open Sans';
+  font-weight: 300;
   width: 50%;
   min-width: 580px;
   max-width: 800px;
@@ -944,7 +952,8 @@ div.flip-container {
 
   .copy {
     margin: auto;
-    font-family: 'Open Sans Light';
+    font-family: 'Open Sans';
+    font-weight: 300;
     font-size: 14px;
     width: initial;
     min-width: initial;

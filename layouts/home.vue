@@ -85,7 +85,7 @@ html {
   letter-spacing: 0.3em;
   font-size: 28px;
   position: absolute;
-  padding-left: 30px;
+  padding-left: 70px;
   margin: 0px;
   -webkit-touch-callout: none;
   -webkit-user-select: none;

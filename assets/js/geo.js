@@ -14,18 +14,52 @@ export default {
     return request.data.route.distance
   },
 
+  async autocomplete(street, postcode) {
+    console.log(street, postcode)
+    if (!postcode) throw Error('Bitte zuerst Postleizahl eingeben.')
+    if (!street || street.length < 3) return
+    const { data } = await axios.get(
+      'https://api.openrouteservice.org/geocode/autocomplete',
+      {
+        params: {
+          api_key: '5b3ce3597851110001cf624840afc87995d74264ab078793584fa381',
+          text: `${street},${postcode}`,
+          country: 'DE',
+          lang: 'DE'
+        }
+      }
+    )
+    if (data && data.features) {
+      const match = data.features
+      return match.map(o => o.properties.name)
+    }
+  },
+
   async forward(street, postcode) {
-    const url = `http://open.mapquestapi.com/nominatim/v1/search.php?key=BvBLJHXPz5l9HthuTFRC9Nrt16F2yK7B&format=json&q=${street},${postcode}&addressdetails=1&limit=1`
-    const results = await axios.get(url)
-    console.log(results)
-    if (results.data && results.data[0]) {
-      const coordinates = [results.data[0].lon, results.data[0].lat]
-      const stateDistrict = results.data[0].address.state_district
-        ? results.data[0].address.state_district.split(' ')[1]
+    const { data } = await axios.get(
+      'https://api.openrouteservice.org/geocode/search/structured',
+      {
+        params: {
+          api_key: '5b3ce3597851110001cf624840afc87995d74264ab078793584fa381',
+          address: street,
+          postalcode: postcode,
+          country: 'DE',
+          lang: 'DE',
+          size: 1
+        }
+      }
+    )
+    console.log(data)
+    if (data && data.features) {
+      const match = data.features[0]
+      const coordinates = [
+        match.geometry.coordinates[0],
+        match.geometry.coordinates[1]
+      ]
+      const stateDistrict = match.properties.macrocounty
+        ? match.properties.macrocounty.split(' ')[0]
         : 'Deutschland'
-      const town = results.data[0].address.city
-        ? results.data[0].address.city
-        : results.data[0].address.village
+      const town = match.properties.locality
       return {
         home: coordinates,
         state_district: stateDistrict,
