@@ -198,12 +198,12 @@
                         </td>
                         <td v-if="plot.catchCrop" style="text-align:center;" contenteditable="true" @blur="save($event,i,'catchCropCosts', plot)">
                           {{
-                            format(plot.matrix.catchCropCosts / plot.size) 
+                            format(plot.matrix.catchCropCosts / plot.size)
                           }}
                         </td>
                         <td v-else style="text-align:center;" contenteditable="true" @blur="save($event,i,'catchCropCosts', plot)">
                           {{
-                            format(0) 
+                            format(0)
                           }}
                         </td>
                         <td v-if="plot.catchCrop" style="text-align:center;">
@@ -250,9 +250,11 @@
               </tr>
             </template>
             <tr>
-              <td colspan="6" style="font-weight: bold;">
+              <td colspan="1" style="font-weight: bold;">
                 Summe
               </td>
+              <td>{{ totLand }}</td>
+              <td colspan="4" />
               <td style="text-align: center;font-weight: bold;">
                 {{ format(grossMarginCurYear) }}
               </td>
@@ -303,7 +305,9 @@ export default {
       curYear: undefined,
       curScenario: 'Standard',
       infeasible: false,
+      warnings: undefined,
       selection: undefined,
+      totLand: 0,
       sortKey: '',
       shares: {},
       sortOrder: 'desc',
@@ -443,6 +447,11 @@ export default {
       message: 'Die Optimierung war erfolgreich und hat eine Lösung gefunden.',
       type: 'success'
     },
+    showWarnings: {
+      title: 'ANPASSUNG NÖTIG',
+      message: 'Nicht alle Restriktionen konnten eingehalten werden',
+      type: 'warn'
+    },
     showInfeasible: {
       title: 'UNMÖGLICH',
       message:
@@ -480,12 +489,13 @@ export default {
           console.log({ a: gams })
           // solve the model
           const { data } = await this.$axios.post(
-            'http://fruchtfolge.agp.uni-bonn.de/api/model/',
+            process.env.baseUrl + 'model/',
             { model: gams },
             { progress: true }
           )
           console.log(data)
           if (data.model_status === 1) {
+            this.warnings = data.warnings
             store.curPlots.forEach(plot => {
               plot.recommendation = data.recommendation[plot._id]
               plot.selectedCrop = plot.recommendation
@@ -504,8 +514,11 @@ export default {
           }
           // save results in database
           await this.$db.bulkDocs(store.plots)
-          if (!this.infeasible) {
+          if (!this.infeasible && !this.warnings) {
             this.showSolved()
+          } else if (!this.infeasible && this.warnings) {
+            const warnings = this.warnings.join('\n')
+            this.showWarnings({ message: warnings })
           } else {
             this.showInfeasible()
           }
@@ -552,10 +565,18 @@ export default {
     updatePrevCrops() {
       if (this.curPlots && this.curPlots.length > 0) {
         let debugBounds = ''
+        this.totLand = 0
         this.curPlots = this.curPlots.map(plot => {
-          debugBounds += `'v_binCropPlot.fx('${plot.selectedCrop}','${
+          this.totLand += plot.size
+          debugBounds += `v_binCropPlot.fx('${plot.selectedCrop}','${
             plot._id
           }') = 1;\n`
+          if (plot.catchCrop) {
+            debugBounds += `v_binCatchCrop.fx('${plot.selectedCrop}','${
+              plot._id
+            }') = 1;\n`
+          }
+
           plot.prevCrop1 = this.getName(plot.id, this.curYear - 1).name
           plot.prevCrop2 = this.getName(plot.id, this.curYear - 2).name
           plot.prevCrop3 = this.getName(plot.id, this.curYear - 3).name

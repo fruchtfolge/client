@@ -37,9 +37,7 @@ export default async function(context) {
         'Bearer ' + settings.auth.token + ':' + settings.auth.password
       )
       // get session
-      await context.$axios.get(
-        'http://fruchtfolge.agp.uni-bonn.de/api/auth/session'
-      )
+      await context.$axios.get(process.env.baseUrl + 'auth/session')
       // only sync on page reload
       // ugly hack, as I didn't find a way to check if middleware is called after page reload
       // the 'sync' property is injected into the store, if it is present and not cancelled yet,

@@ -112,7 +112,7 @@ export default {
           if (
             crop.name === this.crop ||
             crop.name === this.variety ||
-            crop.variety === this.variety
+            (crop.variety && crop.variety === this.variety)
           ) {
             bool = true
           }
@@ -156,7 +156,7 @@ export default {
           })
           console.log(properties)
           const { data } = await this.$axios.post(
-            'http://fruchtfolge.agp.uni-bonn.de/api/crops/',
+            process.env.baseUrl + 'crops/',
             properties,
             {
               progress: true

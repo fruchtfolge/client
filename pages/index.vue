@@ -203,6 +203,7 @@ export default {
     }
   },
   created() {
+    console.log(process.env.baseUrl)
     this.$bus.$on('flip', this.flip)
   },
   destroyed() {
@@ -329,7 +330,7 @@ export default {
             console.log(info)
             const settings = await this.getSettings(date)
             const { data } = await this.$axios.post(
-              'http://fruchtfolge.agp.uni-bonn.de/api/auth/userDoc',
+              process.env.baseUrl + 'auth/userDoc',
               {
                 username: auth.user_id
               }
@@ -380,7 +381,7 @@ export default {
         }
 
         const { data } = await this.$axios.post(
-          'http://fruchtfolge.agp.uni-bonn.de/api/auth/register',
+          process.env.baseUrl + 'auth/register',
           {
             email: this.email,
             password: this.password,
@@ -422,7 +423,7 @@ export default {
           return
         }
         const { data } = await this.$axios.post(
-          'http://fruchtfolge.agp.uni-bonn.de/api/auth/login',
+          process.env.baseUrl + 'auth/login',
           {
             username: this.email,
             password: this.password

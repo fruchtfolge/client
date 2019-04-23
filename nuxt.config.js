@@ -1,6 +1,6 @@
+const path = require('path')
 const webpack = require('webpack')
 const pkg = require('./package')
-
 const features = ['fetch', 'Object.entries', 'IntersectionObserver'].join('%2C')
 
 module.exports = {
@@ -72,6 +72,13 @@ module.exports = {
   */
   axios: {},
 
+  /*
+  ** API base url, can be changed for debugging
+  */
+  env: {
+    baseUrl: 'http://localhost:3001/' // http://fruchtfolge.agp.uni-bonn.de/api/
+  },
+
   router: {
     middleware: 'auth'
   },
@@ -93,7 +100,7 @@ module.exports = {
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
-          exclude: /(node_modules)/
+          exclude: /node_modules\/(?!(mini-toastr)\/).*/
         })
       }
       const vueLoader = config.module.rules.find(r => r.loader === 'vue-loader')
@@ -106,6 +113,7 @@ module.exports = {
       new webpack.ProvidePlugin({
         _: 'lodash'
       })
-    ]
+    ],
+    transpile: ['node_modules/mini-toastr']
   }
 }

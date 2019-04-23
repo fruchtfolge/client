@@ -68,6 +68,7 @@ export default {
           let grossMargin = 0
           grossMargins = plots.map(plot => {
             const plotData = plot.matrix[year]
+            if (!plotData) return
             const cropCode = plot.crop
             let crop = _.find(this.$store.crops, ['code', cropCode])
             if (crop) {

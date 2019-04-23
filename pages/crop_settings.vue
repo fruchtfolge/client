@@ -56,15 +56,15 @@
             </tr>
             <tr>
               <td>Hackfrucht</td>
-              <td><input type="checkbox" :checked="selectedCrop.rootCrop" @change="saveRootCrop($event)"></td>
+              <td><input type="checkbox" :checked="selectedCrop.rootCrop" @change="saveCheckbox($event,'rootCrop')"></td>
             </tr>
             <tr>
               <td>Sommerung</td>
-              <td><input type="checkbox" :checked="selectedCrop.season === 'Sommer'" @change="saveRootCrop($event)"></td>
+              <td><input type="checkbox" :checked="selectedCrop.season === 'Sommer'" @change="saveCheckbox($event,'season')"></td>
             </tr>
             <tr>
               <td>Zwischenfrucht anschließend möglich</td>
-              <td><input type="checkbox" :checked="selectedCrop.catchCropAfter" @change="saveRootCrop($event)"></td>
+              <td><input type="checkbox" :checked="selectedCrop.catchCropAfter" @change="saveCheckbox($event,'catchCropAfter')"></td>
             </tr>
             <tr>
               <td>Faktor für Öko. Vorrangfläche (Greening)</td>
@@ -197,10 +197,10 @@ export default {
         console.log(e)
       }
     },
-    async saveRootCrop(e) {
+    async saveCheckbox(e, prop) {
       try {
         const newValue = e.target.checked
-        this.$set(this.selectedCrop, 'rootCrop', newValue)
+        this.$set(this.selectedCrop, prop, newValue)
         const update = await this.$db.put(this.selectedCrop)
         this.selectedCrop._rev = update.rev
       } catch (e) {

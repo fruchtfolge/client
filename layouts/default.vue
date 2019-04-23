@@ -139,9 +139,7 @@ export default {
     async follow(route) {
       try {
         if (route.path === '/') {
-          await this.$axios.post(
-            'http://fruchtfolge.agp.uni-bonn.de/api/auth/logout'
-          )
+          await this.$axios.post(process.env.baseUrl + 'auth/logout')
         }
         this.curPage = route.path
         return $nuxt.$router.replace({ path: route.path })
@@ -275,6 +273,7 @@ html {
 .sidenav-container {
   list-style: none;
   padding-left: 0px;
+  padding-bottom: 50px;
 }
 
 .sidenav-links {
@@ -321,11 +320,11 @@ html {
 }
 
 .footer-sidebar {
-  position: absolute;
+  position: sticky;
   background-color: rgba(0, 0, 0, 0.02);
   bottom: 0px;
   padding: 10px;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
 }
 
 .footer-sidebar a {

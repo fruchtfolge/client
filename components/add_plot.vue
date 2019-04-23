@@ -110,7 +110,7 @@ export default {
           settings: settings
         }
         const { data } = await this.$axios.post(
-          'http://fruchtfolge.agp.uni-bonn.de/api/plots/',
+          process.env.baseUrl + 'plots/',
           properties,
           {
             progress: true

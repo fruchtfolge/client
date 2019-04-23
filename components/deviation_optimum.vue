@@ -79,10 +79,15 @@ export default {
       const deviations = []
       const permPastCropCodes = [459, 480, 492, 57, 567, 572, 592, 972]
       this.plots.forEach(plot => {
-        const cropCode = Number(plot.selectedCrop)
-        if (!plot.matrix[this.curYear] || !plot.matrix[this.curYear][cropCode])
+        const crop = _.find(this.$store.curCrops, ['name', plot.selectedCrop])
+        const cropCode = crop ? crop.code : ''
+        if (
+          !cropCode ||
+          !plot.matrix[this.curYear] ||
+          !plot.matrix[this.curYear][plot.selectedCrop]
+        )
           return
-        const data = plot.matrix[this.curYear][cropCode]
+        const data = plot.matrix[this.curYear][plot.selectedCrop]
         // get selected crop and previous crop
         const croppingFactor = data.croppingFactor
         // Crop rotational deviations
@@ -111,6 +116,13 @@ export default {
           deviations.push(
             `${plot.name}: Umbruch von Dauergrünland nicht erlaubt.`
           )
+        }
+        // show warning when growing catch crop is not possible
+        if (plot.catchCrop) {
+          const catchCropDeviation = this.checkCatchCrop(plot)
+          if (catchCropDeviation) {
+            deviations.push(catchCropDeviation)
+          }
         }
       })
       // show warning when crop shares are exceeded
@@ -261,7 +273,6 @@ export default {
           efa += plot.size
         }
       })
-
       return _.round(efa, 2)
     }
   },
@@ -290,6 +301,19 @@ export default {
         this.shown[displayGroup] = false
       }
     },
+    checkCatchCrop(plot) {
+      const crop = plot.selectedCrop
+      const selectedData = _.find(this.$store.curCrops, ['name', crop])
+      console.log(selectedData, crop)
+      if (selectedData && selectedData.season === 'Winter') {
+        return `${plot.name}: Greening ZF nur vor Sommerung`
+      }
+      const prevCrop = plot.prevCrop1
+      const prevCropData = _.find(this.$store.curCrops, ['name', prevCrop])
+      if (prevCropData && !prevCropData.catchCropAfter) {
+        return `${plot.name}: Greening ZF nicht nach ${prevCrop}`
+      }
+    },
     getValues(plots) {
       let optimum = 0
       let arableLand = 0
@@ -316,6 +340,7 @@ export default {
       this.totLand = totLand
       this.greenLand = greenLand
       this.arableLand = arableLand
+      console.log(this.arableLand)
     },
     format(number) {
       const formatter = new Intl.NumberFormat('de-DE', {
