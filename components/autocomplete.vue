@@ -1,19 +1,31 @@
 <template>
   <div class="">
-    <ul>
-      <li v-for="(suggestion,i) in suggestions" :key="`suggestion_${i}`">
+    <datalist id="suggestions" class="">
+      <option v-for="(suggestion,i) in cleanSuggestions" :key="`suggestion_${i}`">
         {{ suggestion }}
-      </li>
-    </ul>
+      </option>
+    </datalist>
   </div>
 </template>
 
 <script>
+import toAscii from 'fold-to-ascii'
+
 export default {
   props: {
     suggestions: {
       type: Array,
-      required: true
+      default: () => {
+        return []
+      },
+      required: false
+    }
+  },
+  computed: {
+    cleanSuggestions() {
+      return this.suggestions.map(s => {
+        return toAscii.fold(s)
+      })
     }
   }
 }

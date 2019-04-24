@@ -33,7 +33,15 @@
             <p>JETZT KOSTENLOS ANMELDEN</p>
             <div class="register-container">
               <input id="postcode" v-model="postcode" class="address" placeholder="PLZ">
-              <input id="address" v-model="address" class="address" placeholder="Strasse u. Hausnr. (Betrieb)" @input="debouncedAutocomplete">
+              <input
+                id="address"
+                v-model="address"
+                list="suggestions"
+                class="address"
+                placeholder="Strasse u. Hausnr. (Betrieb)"
+                @input="debouncedAutocomplete"
+              >
+              <autocomplete :suggestions="autocomplete" />
               <input id="email2" v-model="email" class="address" placeholder="E-Mail Adresse">
               <input id="password2" v-model="password" class="address" placeholder="Passwort" type="password">
               <input
@@ -184,7 +192,8 @@ import geo from '~/assets/js/geo'
 
 export default {
   components: {
-    loading: () => import('~/components/loading.vue')
+    loading: () => import('~/components/loading.vue'),
+    autocomplete: () => import('~/components/autocomplete.vue')
   },
   data() {
     return {
@@ -210,7 +219,7 @@ export default {
       } catch (e) {
         this.incomplete({ title: 'ADRESSE', message: e.message })
       }
-    }, 500)
+    }, 350)
     this.$bus.$on('flip', this.flip)
   },
   destroyed() {
@@ -381,11 +390,6 @@ export default {
         }
 
         const address = await geo.forward(this.address, this.postcode)
-        if (address.error) {
-          this.loginError({ message: address.error })
-          this.clicked = false
-          return
-        }
 
         const { data } = await this.$axios.post(
           process.env.baseUrl + 'auth/register',
@@ -409,6 +413,8 @@ export default {
           this.loginError({
             message: 'E-Mail bereits benutzt.'
           })
+        } else if (e.message) {
+          this.loginError({ message: e.message })
         } else {
           this.loginError({ message: 'Fehler beim Verbindungsaufbau.' })
           console.error(e)

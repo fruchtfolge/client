@@ -517,9 +517,13 @@ export default {
           }
           // save results in database
           await this.$db.bulkDocs(store.plots)
-          if (!this.infeasible && !this.warnings) {
+          if (!this.infeasible && (!this.warnings || !this.warnings.length)) {
             this.showSolved()
-          } else if (!this.infeasible && this.warnings) {
+          } else if (
+            !this.infeasible &&
+            this.warnings &&
+            this.warnings.length
+          ) {
             const warnings = this.warnings.join('\n')
             this.showWarnings({ message: warnings })
           } else {

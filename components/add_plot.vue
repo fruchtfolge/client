@@ -157,7 +157,7 @@ export default {
   position: absolute;
   width: 400px;
   height: 500px;
-  top: calc(50% -60px);
+  top: calc(50% - 60px);
   margin-top: -250px;
   left: 50%;
   margin-left: -200px;

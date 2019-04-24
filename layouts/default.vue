@@ -31,11 +31,11 @@
         <li
           v-for="(route, index) in routes"
           :key="index"
+          class="sidenav-links"
+          :class="{ active: isClicked(route), subPage: route.subPage }"
           @click="follow(route)"
         >
-          <p class="sidenav-links" :class="{ active: isClicked(route), subPage: route.subPage }">
-            {{ route.name }}
-          </p>
+          {{ route.name }}
         </li>
       </ul>
       <div class="footer-container">
@@ -278,6 +278,10 @@ html {
   padding-bottom: 150px;
 }
 
+.sidenav-container li:first-child {
+  margin-bottom: 15px;
+}
+
 .sidenav-links {
   position: relative;
   width: 100%;
@@ -291,6 +295,7 @@ html {
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
 .sidenav-links:not(.active):hover {
   background-color: rgba(0, 0, 0, 0.02);
 }
