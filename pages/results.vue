@@ -198,12 +198,12 @@
                         </td>
                         <td v-if="plot.catchCrop" style="text-align:center;" contenteditable="true" @blur="save($event,i,'catchCropCosts', plot)">
                           {{
-                            format(plot.matrix.catchCropCosts / plot.size) 
+                            format(plot.matrix.catchCropCosts / plot.size)
                           }}
                         </td>
                         <td v-else style="text-align:center;" contenteditable="true" @blur="save($event,i,'catchCropCosts', plot)">
                           {{
-                            format(0) 
+                            format(0)
                           }}
                         </td>
                         <td v-if="plot.catchCrop" style="text-align:center;">
@@ -250,9 +250,11 @@
               </tr>
             </template>
             <tr>
-              <td colspan="6" style="font-weight: bold;">
+              <td colspan="1" style="font-weight: bold;">
                 Summe
               </td>
+              <td>{{ curTotLand }}</td>
+              <td colspan="4" />
               <td style="text-align: center;font-weight: bold;">
                 {{ format(grossMarginCurYear) }}
               </td>
@@ -303,7 +305,9 @@ export default {
       curYear: undefined,
       curScenario: 'Standard',
       infeasible: false,
+      warnings: undefined,
       selection: undefined,
+      totLand: 0,
       sortKey: '',
       shares: {},
       sortOrder: 'desc',
@@ -311,6 +315,9 @@ export default {
     }
   },
   computed: {
+    curTotLand() {
+      return _.round(this.totLand, 2)
+    },
     curTimeReq() {
       const months = [
         ['JAN1', 'JAN2'],
@@ -443,6 +450,11 @@ export default {
       message: 'Die Optimierung war erfolgreich und hat eine Lösung gefunden.',
       type: 'success'
     },
+    showWarnings: {
+      title: 'ANPASSUNG NÖTIG',
+      message: 'Nicht alle Restriktionen konnten eingehalten werden',
+      type: 'warn'
+    },
     showInfeasible: {
       title: 'UNMÖGLICH',
       message:
@@ -480,12 +492,13 @@ export default {
           console.log({ a: gams })
           // solve the model
           const { data } = await this.$axios.post(
-            'http://fruchtfolge.agp.uni-bonn.de/api/model/',
+            process.env.baseUrl + 'model/',
             { model: gams },
             { progress: true }
           )
           console.log(data)
           if (data.model_status === 1) {
+            this.warnings = data.warnings
             store.curPlots.forEach(plot => {
               plot.recommendation = data.recommendation[plot._id]
               plot.selectedCrop = plot.recommendation
@@ -504,8 +517,15 @@ export default {
           }
           // save results in database
           await this.$db.bulkDocs(store.plots)
-          if (!this.infeasible) {
+          if (!this.infeasible && (!this.warnings || !this.warnings.length)) {
             this.showSolved()
+          } else if (
+            !this.infeasible &&
+            this.warnings &&
+            this.warnings.length
+          ) {
+            const warnings = this.warnings.join('\n')
+            this.showWarnings({ message: warnings })
           } else {
             this.showInfeasible()
           }
@@ -552,10 +572,18 @@ export default {
     updatePrevCrops() {
       if (this.curPlots && this.curPlots.length > 0) {
         let debugBounds = ''
+        this.totLand = 0
         this.curPlots = this.curPlots.map(plot => {
-          debugBounds += `'v_binCropPlot.fx('${plot.selectedCrop}','${
+          this.totLand += plot.size
+          debugBounds += `v_binCropPlot.fx('${plot.selectedCrop}','${
             plot._id
           }') = 1;\n`
+          if (plot.catchCrop) {
+            debugBounds += `v_binCatchCrop.fx('${plot.selectedCrop}','${
+              plot._id
+            }') = 1;\n`
+          }
+
           plot.prevCrop1 = this.getName(plot.id, this.curYear - 1).name
           plot.prevCrop2 = this.getName(plot.id, this.curYear - 2).name
           plot.prevCrop3 = this.getName(plot.id, this.curYear - 3).name
@@ -787,10 +815,11 @@ export default {
 .selection {
   font-size: 14px;
   text-align-last: left;
-  font-family: 'Open Sans Light';
+  font-family: 'Open Sans';
+  font-weight: 300;
   letter-spacing: normal;
   border-width: 0px;
-  background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='%23444' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
+  background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
   background-repeat: no-repeat;
   background-position: 80px 50%;
 }

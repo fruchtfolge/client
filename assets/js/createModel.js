@@ -340,7 +340,7 @@ set curYear(years) / ${properties.curYear} /;
       curCrops.push(` '${crop.name}'`)
       // declare crop as a permanent pasture crop if within the range of
       // pasture crops
-      if (permPastCropCodes.indexOf(crop.name) > -1) {
+      if (permPastCropCodes.indexOf(crop.code) > -1) {
         permPastCrops.push(` '${crop.name}'`)
       }
       // add all crop properties to p_cropData parameter
@@ -430,14 +430,20 @@ set curYear(years) / ${properties.curYear} /;
 
     if (properties.curConstraints) {
       properties.curConstraints.forEach(constraint => {
-        constraints.push(` '${constraint.name}'`)
+        constraints.push(
+          ` '${constraint.name} ${constraint.operator} ${constraint.area}ha'`
+        )
         p_constraint.push(
-          ` '${constraint.name}'.'${constraint.crop1Code}'.${
-            constraint.crop2 ? constraint.crop2Code : '""'
-          } ${constraint.area}`
+          ` '${constraint.name} ${constraint.operator} ${constraint.area}ha'.'${
+            constraint.crop1
+          }'.${constraint.crop2 ? constraint.crop2 : '""'} ${constraint.area}`
         )
         if (constraint.operator === '<')
-          constraints_lt.push(` '${constraint.name}'.lt YES`)
+          constraints_lt.push(
+            ` '${constraint.name} ${constraint.operator} ${
+              constraint.area
+            }ha'.lt YES`
+          )
       })
     }
 

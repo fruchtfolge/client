@@ -69,7 +69,7 @@ miniToastr.init({
 // In case of 'error' we will call miniToastr.error(message, title, timeout, cb)
 // and etc.
 function toast({ title, message, type, timeout, cb }) {
-  return miniToastr[type](message, title, 5000, cb)
+  return miniToastr[type](message, title, 8000, cb)
 }
 
 // Here we map vue-notifications method to function abowe (to mini-toastr)

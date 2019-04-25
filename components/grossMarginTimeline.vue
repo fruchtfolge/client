@@ -68,6 +68,7 @@ export default {
           let grossMargin = 0
           grossMargins = plots.map(plot => {
             const plotData = plot.matrix[year]
+            if (!plotData) return
             const cropCode = plot.crop
             let crop = _.find(this.$store.crops, ['code', cropCode])
             if (crop) {
@@ -129,7 +130,7 @@ export default {
       this.gradient[2].addColorStop(1, 'rgba(118,144,165, 0)')
     },
     createChart(chartId, chartData) {
-      Chart.defaults.global.defaultFontFamily = 'Open Sans Light'
+      Chart.defaults.global.defaultFontFamily = 'Open Sans'
       Chart.defaults.global.defaultFontSize = 14
 
       const config = {

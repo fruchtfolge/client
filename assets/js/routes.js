@@ -24,14 +24,14 @@ module.exports = [
   },
   {
     subPage: true,
-    path: '/plotOverview',
+    path: '/plot-overview',
     name: 'Übersicht',
     file: 'plotsTable',
     icon: 'static/plots.png'
   },
   {
     subPage: true,
-    path: '/plotPrevCrops',
+    path: '/plots-previous-crops',
     name: 'Vorfrüchte',
     file: 'plotsTable',
     icon: 'static/plots.png'
@@ -55,13 +55,13 @@ module.exports = [
   },
   {
     subPage: true,
-    path: '/cropLabourReq',
+    path: '/crop-labour-requirement',
     name: 'Arbeitsbedarf',
     icon: 'static/crops.png'
   },
   {
     subPage: true,
-    path: '/crops_settings',
+    path: '/crop-settings',
     name: 'Eigenschaften',
     icon: 'static/crops.png'
   },
@@ -90,7 +90,7 @@ module.exports = [
   /*
   {
     subPage: true,
-    path: '/fertilizerPlanning',
+    path: '/fertilizer-planning',
     name: 'N-Düngeplanung',
     icon: 'static/fertPlanning.png'
   }

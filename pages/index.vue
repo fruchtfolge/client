@@ -32,8 +32,16 @@
           <div class="registrierung">
             <p>JETZT KOSTENLOS ANMELDEN</p>
             <div class="register-container">
-              <input id="address" v-model="address" class="address" placeholder="Strasse u. Hausnr. (Betrieb)">
               <input id="postcode" v-model="postcode" class="address" placeholder="PLZ">
+              <input
+                id="address"
+                v-model="address"
+                list="suggestions"
+                class="address"
+                placeholder="Strasse u. Hausnr. (Betrieb)"
+                @input="debouncedAutocomplete"
+              >
+              <autocomplete :suggestions="autocomplete" />
               <input id="email2" v-model="email" class="address" placeholder="E-Mail Adresse">
               <input id="password2" v-model="password" class="address" placeholder="Passwort" type="password">
               <input
@@ -63,21 +71,13 @@
       </div>
       <div class="expand" @click="jump('landing')">
         <h2>WEITERE INFOS</h2>
-        <div id="landing" class="arrow" />
+        <div id="landing" class="arrow-bottom" />
       </div>
       <div class="landing">
         <h1>
-          DEN ACKERBAU IM BLICK
+          FRUCHTFOLGE IST KEINE ACKERSCHLAGKARTEI
         </h1>
         <div class="copy">
-          <!--
-          Der moderne Ackerbau stellt eine Vielzahl an Herausforderungen bereit:
-          Verfügbare Arbeitszeiten, Fruchtfolgeeffekte, Bodenarten und -qualitäten,
-          Vermarktungsbedingungen, Nachhaltigkeitsaspekte sowie rechtliche Vorschriften
-          müssen berücksichtigt und gewinnmaximierend zusammengeführt werden.
-
-          Die "Fruchtfolge"-Anwendung der Universität Bonn
-        -->
           Die kostenlose "Fruchtfolge"-Anwendung der Universität Bonn unterstützt
           Sie dabei, den Gewinn Ihres Betriebes durch eine optimierte Anbauplanung
           zu maximieren.
@@ -90,29 +90,96 @@
 
           <video class="video" :src="require('~/assets/img/test.mp4')" controls type="video/mp4" />
 
-          <br>
-          <br>
-          <h1 style="text-align: left;">
-            FAQ
-          </h1>
-          <h2>Was macht die "Fruchtfolge"-Anwendung?</h2>
+          <div class="smallDisplay">
+            <h2>Warum kann ich mich nicht anmelden?</h2>
+            Die Fruchtfolge Anwendung ist für Tablets und Desktop Computer optimiert.
+            Rufen Sie die Anwendung von einem Gerät mit einem größeren Bildschirm auf,
+            um den vollen Umfang der Anwendung zu nutzen.
+          </div>
 
-          Der morderne Ackerbau stellt eine Vielzahl an Herausforderungen bereit,
-          die in der Fruchtfolgeplanung berücksichtigt werden müssen.
-          Verfügbare Arbeitszeitstunden, Fruchtfolgeeffekte,
-          Vermarktungsoptionen und rechtliche Auflagen (wie z.B. das Greening oder die
-          Düngeverordnung) müssen in die Entscheidung einbezogen und
-          gewinnmaximierend zusammengeführt werden.
+          <h2>Was macht die "Fruchtfolge"-Anwendung?</h2>
+          Die "Fruchtfolge"-Anwendung stellt einen Gewinnmaximierenden Anbauplan
+          für Ihre Ackerflächen auf.<br><br>
+          Dabei werden Nebenbedingungen wie maximal verfügbare Arbeitszeitstunden,
+          Fruchtfolgeeffekte, Bodenqualitäten, Hof-Feld Entfernungen (und deren Auswirkungen
+          auf Arbeitszeitbedarfe und Maschinenkosten) und die Greening-Richtlinie
+          berücksichtigt.<br><br>
+          Die empfohlene Anbaukultur kann für jeden Schlag ersetzt werden, die daraus
+          resultierenden Konsequenzen (z.B. Verstoß gegen Greening-Auflagen,
+          Überschreitung von maximalen Fruchtfolgenateilen, verringerter
+          Gesamtdeckungsbeitrag etc.) werden Ihnen direkt mitgeteilt.<br><br>
+
+          Es werden automatisch Standardwerte für Fruchtfolgeeffekte,
+          Deckungsbeiträge und Zeitreihendaten aus diversen Datenbanken importiert,
+          sodass Sie nicht alle Daten selber eingeben müssen. Wenn ihr Betrieb
+          den Flächenantrag in Nordrhein-Westfalen stellt, können Sie des Weiteren
+          bequem Ihre Schläge und Kulturen importieren.<br><br>
+          Alle Daten für die Optimierung sind veränderbar und lassen sich
+          and Ihre persönlichen Gegebenheiten anpassen.<br><br>
+          Die Erstellung eines optimierten Anbauplans dauert in der Regel weniger als
+          10-30 Minuten (je nach Betriebsbeschaffenheit).<br><br>
+
+          <h2>Für wen ist die "Fruchtfolge"-Anwendung gedacht?</h2>
+          Grundsätzlich ist die Anwendung für alle Entscheidungsträger, das heißt
+          Landwirte/Landwirtinnen sowie deren Berater gedacht.<br>
+          Die Anwendung ist gleichermaßen für konventionell als auch
+          ökologisch/integriert wirtschaftende Betriebe geeignet.<br>
+          Ein Datenimport aus Flächenatragsdaten ist
+          derzeit lediglich für das Land Nordrhein-Westfalen verfügbar.
+
+          <h2>Wie gut ist der erstellte Anbauplan?</h2>
+          Die Qualität der Optimierung steht und fällt mit der Qualität der
+          von Ihnen eingegeben Daten. Da für die Anbaukulturen Standardwerte für
+          Preise, Erträge, Kosten, Fruchtfolgeeffekte uvm. aus diversen
+          Datenbanken importiert werden, können diese teilweise stark von den
+          tatsächlich auf Ihrem Betrieb auftretenden Daten abweichen. Eine Anpassung
+          Ihrerseits ist daher unabdingbar.<br><br>
+          Allgemein ist die "Fruchtfolge"-Anwendung als praktische Planungshilfe
+          gedacht. Die sorgfältige Überprüfung und gegebenenfalls Anpassung des
+          Anbauplans vor der tatsächlichen Umsetzung ist jedoch zwingend erforderlich.
 
           <h2>Ist die Anwendung wirklich kostenlos?</h2>
+          Ja. Die "Fruchtfolge"-Anwendung ist ein sogenanntes Open-Source Projekt,
+          dass von der Universität Bonn verwaltet und bereitgestellt wird. Open-Source
+          Projekte können kostenlos verwendet werden. Im gegenzug besteht jedoch
+          dafür kein Anspruch auf Unterstützung im Umgang mit der Anwendung.<br>
+          Ein weiterer Vorteil ist, dass interessierte Entwickler bei der
+          Gestaltung der Anwendung teilhaben, mögliche Fehler
+          beseitigen oder neue Funktionen hinzufügen. <br>
+          Bekannte Beispiele für Open-Source Projekte sind beispielsweise der
+          beliebte Internet-Browser Mozilla Firefox oder der vorinstallierte
+          Taschenrechner auf Microsoft Windows Computern.
+
+          <h2>Warum muss ich meine Adresse bei der Registrierung angeben?</h2>
+          Die Adresse Ihrer Hofstelle wird benötigt, um die Hof-Feld Entfernungen
+          der von Ihnen bewirtschafteten Flächen zu errechnen. Mit dieser Information
+          werden Schlagspezifische Transportkosten und Arbeitszeitbedarfe für
+          Sie errechnet.
 
           <h2>Sind meine Daten sicher?</h2>
+          Ihre Daten werden nur lokal auf Ihrem Rechner, sowie auf einem gesicherten
+          Server der Universität in Bonn gespeichert und unterliegen somit den Datenschutzauflagen
+          des Landes NRW.
 
-          <h2>Gibt es ein Benutzerhandbuch?</h2>
+          <h2>Wie stabil ist die Anwendung?</h2>
+          Die "Fruchtfolge"-Anwendung befindet sich derzeit noch im sogenannten
+          Beta stadium. Wenn bei der Nutzung der Anwendung Fehler auftreten,
+          würden wir uns über eine <nuxt-link to="/kontakt">
+            kurze Mitteilung
+          </nuxt-link> freuen.
 
           <h2>Ich würde gerne bei der Entwicklung mithelfen. Was kann ich tun?</h2>
+          Die Entwicklung der Anwendung findet auf der Entwicklerplattform Github
+          unter der Adresse
+          <a href="https://github.com/fruchtfolge/client">https://github.com/fruchtfolge/client</a>
+          statt. Auf der Seite finden Sie weitere Hinweise zur Kollaboration sowie
+          aktuell anstehende Aufgaben.
 
           <h2>Ich habe Fragen/Anregungen bezüglich der Anwendung.</h2>
+          Sie können uns gerne über die auf der <nuxt-link to="/kontakt">
+            Kontakt-Seite
+          </nuxt-link>
+          angegebenen Kontaktmöglichkeiten erreichen.
         </div>
       </div>
     </div>
@@ -121,11 +188,12 @@
 
 <script>
 import Setting from '~/constructors/Settings'
-import mapquest from '~/assets/js/mapquest'
+import geo from '~/assets/js/geo'
 
 export default {
   components: {
-    loading: () => import('~/components/loading.vue')
+    loading: () => import('~/components/loading.vue'),
+    autocomplete: () => import('~/components/autocomplete.vue')
   },
   data() {
     return {
@@ -137,6 +205,7 @@ export default {
       address: '',
       postcode: '',
       confirmPassword: '',
+      autocomplete: [],
       dsgvoAccepted: false,
       cookiesAccepted: false,
       clicked: false,
@@ -144,6 +213,13 @@ export default {
     }
   },
   created() {
+    this.debouncedAutocomplete = _.debounce(async () => {
+      try {
+        this.autocomplete = await geo.autocomplete(this.address, this.postcode)
+      } catch (e) {
+        this.incomplete({ title: 'ADRESSE', message: e.message })
+      }
+    }, 350)
     this.$bus.$on('flip', this.flip)
   },
   destroyed() {
@@ -153,18 +229,18 @@ export default {
     incomplete: {
       title: 'UNVOLLSTÄNDIG',
       message: 'Bitte füllen Sie zur Anmeldung alle Felder aus.',
-      type: 'error'
+      type: 'warn'
     },
     noDSGVO: {
       title: 'NUTZUNGSBEDINGUNG',
       message:
         'Für die Nutzung der Anwendung müssen Sie den Nutzungsbedingungen und der Cookies-Richtlinie zustimmen.',
-      type: 'error'
+      type: 'warn'
     },
     notMatching: {
       title: 'PASSWORT ÜBEREINSTIMMUNG',
       message: 'Die Passwörter stimmen nicht überein.',
-      type: 'error'
+      type: 'warn'
     },
     loginError: {
       title: 'FEHLER',
@@ -270,7 +346,7 @@ export default {
             console.log(info)
             const settings = await this.getSettings(date)
             const { data } = await this.$axios.post(
-              'http://fruchtfolge.agp.uni-bonn.de/api/auth/userDoc',
+              process.env.baseUrl + 'auth/userDoc',
               {
                 username: auth.user_id
               }
@@ -313,15 +389,10 @@ export default {
           return
         }
 
-        const address = await mapquest.forward(this.address, this.postcode)
-        if (address.error) {
-          this.loginError({ message: address.error })
-          this.clicked = false
-          return
-        }
+        const address = await geo.forward(this.address, this.postcode)
 
         const { data } = await this.$axios.post(
-          'http://fruchtfolge.agp.uni-bonn.de/api/auth/register',
+          process.env.baseUrl + 'auth/register',
           {
             email: this.email,
             password: this.password,
@@ -342,6 +413,8 @@ export default {
           this.loginError({
             message: 'E-Mail bereits benutzt.'
           })
+        } else if (e.message) {
+          this.loginError({ message: e.message })
         } else {
           this.loginError({ message: 'Fehler beim Verbindungsaufbau.' })
           console.error(e)
@@ -363,7 +436,7 @@ export default {
           return
         }
         const { data } = await this.$axios.post(
-          'http://fruchtfolge.agp.uni-bonn.de/api/auth/login',
+          process.env.baseUrl + 'auth/login',
           {
             username: this.email,
             password: this.password
@@ -402,6 +475,7 @@ export default {
   /* Preserve aspet ratio */
   min-width: 100%;
   height: 100vh;
+  min-height: 700px;
 }
 
 .registrieren-oben {
@@ -830,30 +904,90 @@ div.flip-container {
   letter-spacing: 0.15em;
 }
 
-.arrow {
+.arrow-bottom {
   position: absolute;
   left: 50%;
   margin-left: -20px;
   margin-top: -15px;
   width: 40px;
   height: 40px;
-  background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='white' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
+  background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27white%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
   background-repeat: no-repeat;
   background-size: cover;
 }
 
+.smallDisplay {
+  display: none;
+}
+
 .copy {
   margin: auto;
-  font-family: 'Open Sans Light';
+  font-family: 'Open Sans';
+  font-weight: 300;
   width: 50%;
   min-width: 580px;
   max-width: 800px;
+  padding-bottom: 50px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
+.copy h2 {
+  margin-top: 60px;
+}
 .video {
   width: 100%;
   margin-bottom: 40px;
   margin-top: 40px;
   object-fit: cover;
+}
+
+/* Hide most elements when display size is too small */
+@media (max-width: 700px) {
+  .register {
+    display: none;
+  }
+
+  #login {
+    display: none;
+  }
+
+  .background {
+    display: none;
+  }
+
+  .copy {
+    margin: auto;
+    font-family: 'Open Sans';
+    font-weight: 300;
+    font-size: 14px;
+    width: initial;
+    min-width: initial;
+    max-width: initial;
+    padding-bottom: 50px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .smallDisplay {
+    display: initial;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  .landing h1 {
+    margin-bottom: 15px;
+    margin-top: -30px;
+  }
 }
 </style>

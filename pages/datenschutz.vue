@@ -26,7 +26,7 @@
       <p><strong>Ebenfalls haben die Nutzer und Betroffenen nach Art. 21 DSGVO das Recht auf Widerspruch gegen die künftige Verarbeitung der sie betreffenden Daten, sofern die Daten durch den Anbieter nach Maßgabe von Art. 6 Abs. 1 lit. f) DSGVO verarbeitet werden. Insbesondere ist ein Widerspruch gegen die Datenverarbeitung zum Zwecke der Direktwerbung statthaft.</strong></p>
       <h2>III. Informationen zur Datenverarbeitung</h2>
       <p>Ihre bei Nutzung unseres Internetauftritts verarbeiteten Daten werden gelöscht oder gesperrt, sobald der Zweck der Speicherung entfällt, der Löschung der Daten keine gesetzlichen Aufbewahrungspflichten entgegenstehen und nachfolgend keine anderslautenden Angaben zu einzelnen Verarbeitungsverfahren gemacht werden.</p>
-      
+
       <h3>Cookies</h3>
       <h4>a) Drittanbieter-Cookies</h4>
       <p>Gegebenenfalls werden mit unserem Internetauftritt Cookies von Partnerunternehmen, insbesondere Mapbox Inc., die zur Anzeige der Kartenanwendung benötigt werden, verwendet.</p>
@@ -34,7 +34,7 @@
       <h4>c) Beseitigungsmöglichkeit</h4>
       <p>Sie können die Installation der Cookies durch eine Einstellung Ihres Internet-Browsers verhindern oder einschränken. Ebenfalls können Sie bereits gespeicherte Cookies jederzeit löschen. Die hierfür erforderlichen Schritte und Maßnahmen hängen jedoch von Ihrem konkret genutzten Internet-Browser ab. Bei Fragen benutzen Sie daher bitte die Hilfefunktion oder Dokumentation Ihres Internet-Browsers oder wenden sich an dessen Hersteller bzw. Support. Bei sog. Flash-Cookies kann die Verarbeitung allerdings nicht über die Einstellungen des Browsers unterbunden werden. Stattdessen müssen Sie insoweit die Einstellung Ihres Flash-Players ändern. Auch die hierfür erforderlichen Schritte und Maßnahmen hängen von Ihrem konkret genutzten Flash-Player ab. Bei Fragen benutzen Sie daher bitte ebenso die Hilfefunktion oder Dokumentation Ihres Flash-Players oder wenden sich an den Hersteller bzw. Benutzer-Support.</p>
       <p>Sollten Sie die Installation der Cookies verhindern oder einschränken, kann dies allerdings dazu führen, dass nicht sämtliche Funktionen unseres Internetauftritts vollumfänglich nutzbar sind. </p>
-      
+
       <h3>Vertragsabwicklung</h3>
       <p>Die von Ihnen zur Inanspruchnahme unseres Dienstleistungsangebots übermittelten Daten werden von uns zum Zwecke der Vertragsabwicklung verarbeitet und sind insoweit erforderlich. Vertragsschluss und Vertragsabwicklung sind ohne Bereitstellung Ihrer Daten nicht möglich.</p>
       <p>Rechtsgrundlage für die Verarbeitung ist Art. 6 Abs. 1 lit. b) DSGVO.</p>
@@ -59,7 +59,7 @@
         anonymisiert im Interesse der Wissenschaftlichen Forschung weiter zu verwenden. Hierbei sei insbesondere auf die mögliche Verwendung in Wissenschaftlichen Publikationen verwiesen.
       </p>
       <p>Rechtsgrundlage für die Weitergabe der Daten ist dann Art. 6 Abs. 1 lit. b) DSGVO.</p>
-      
+
       <h3>Kundenkonto / Registrierungsfunktion</h3>
       <p>Die von Ihnen bei der Registrierung eingegebenen Daten (also bspw. Ihre Anschrift oder Ihre E-Mail-Adresse) werden wir ausschließlich für vorvertragliche Leistungen, für die Vertragserfüllung oder zum Zwecke der Kundenpflege (bspw. um Ihnen Hinweise über neue Funktionen anbieten zu können) erheben und speichern. Gleichzeitig speichern wir dann die IP-Adresse und das Datum Ihrer Registrierung nebst Uhrzeit. Eine Weitergabe dieser Daten an Dritte erfolgt natürlich nicht.</p>
       <p>Im Rahmen des weiteren Anmeldevorgangs wird Ihre Einwilligung in diese Verarbeitung eingeholt und auf diese Datenschutzerklärung verwiesen. Die dabei von uns erhobenen Daten werden ausschließlich für die Zurverfügungstellung des Kundenkontos verwendet.&nbsp;</p>
@@ -67,12 +67,12 @@
       <p>Sofern die Eröffnung des Kundenkontos zusätzlich auch vorvertraglichen Maßnahmen oder der Vertragserfüllung dient, so ist Rechtsgrundlage für diese Verarbeitung auch noch Art. 6 Abs. 1 lit. b) DSGVO.</p>
       <p>Die uns erteilte Einwilligung in die Eröffnung und den Unterhalt des Kundenkontos können Sie gemäß Art. 7 Abs. 3 DSGVO jederzeit mit Wirkung für die Zukunft widerrufen. Hierzu müssen Sie uns lediglich über Ihren Widerruf in Kenntnis setzen.</p>
       <p>Die insoweit erhobenen Daten werden gelöscht, sobald die Verarbeitung nicht mehr erforderlich ist. Hierbei müssen wir aber steuer- und handelsrechtliche Aufbewahrungsfristen beachten.</p>
-      
+
       <h3>Kontaktanfragen / Kontaktmöglichkeit</h3>
       <p>Sofern Sie per Kontaktformular oder E-Mail mit uns in Kontakt treten, werden die dabei von Ihnen angegebenen Daten zur Bearbeitung Ihrer Anfrage genutzt. Die Angabe der Daten ist zur Bearbeitung und Beantwortung Ihre Anfrage erforderlich - ohne deren Bereitstellung können wir Ihre Anfrage nicht oder allenfalls eingeschränkt beantworten.</p>
       <p>Rechtsgrundlage für diese Verarbeitung ist Art. 6 Abs. 1 lit. b) DSGVO.</p>
       <p>Ihre Daten werden gelöscht, sofern Ihre Anfrage abschließend beantwortet worden ist und der Löschung keine gesetzlichen Aufbewahrungspflichten entgegenstehen, wie bspw. bei einer sich etwaig anschließenden Vertragsabwicklung.</p>
-      
+
       <h3>Mapbox API</h3>
       <p>Für die Bereitstellung von Karten setzen wir Mapbox API, einen Dienst der Mapbox Inc., 740 15th Street NW, 5 th Floor, Washington, District of Columbia 20005, USA, nachfolgend nur „Mapbox“ genannt, ein.</p>
       <p>Durch die Zertifizierung nach dem EU-US-Datenschutzschild („EU-US Privacy Shield“)</p>
@@ -85,7 +85,7 @@
       <p>Zudem bietet Mapbox unter</p>
       <p><a href="https://www.mapbox.com/privacy/" target="_blank" rel="noopener">https://www.mapbox.com/privacy/</a><u /></p>
       <p>weitere Informationen zur Erhebung und Nutzung der Daten sowie zu Ihren Rechten und Möglichkeiten zum Schutz Ihrer Privatsphäre an.</p>
-      
+
       <p>
         <a target="_blank" href="https://www.ratgeberrecht.eu/leistungen/muster-datenschutzerklaerung.html">Muster-Datenschutzerklärung</a> der <a target="_blank" href="https://www.ratgeberrecht.eu/">Anwaltskanzlei Weiß &amp; Partner</a>
       </p>
@@ -101,16 +101,19 @@ export default {
 </script>
 
 <style scoped>
-.copy {
-  width: 50%;
-  min-width: 500px;
-  margin: auto;
-  top: 120px;
-}
-.copy h1 {
-  letter-spacing: 0.05em;
-}
-.copy p {
-  font-family: 'Open Sans Light';
+@media (min-width: 700px) {
+  .copy {
+    width: 50%;
+    min-width: 500px;
+    margin: auto;
+    top: 120px;
+  }
+  .copy h1 {
+    letter-spacing: 0.05em;
+  }
+  .copy p {
+    font-family: 'Open Sans';
+    font-weight: 300;
+  }
 }
 </style>

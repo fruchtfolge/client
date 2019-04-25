@@ -246,7 +246,7 @@ td:nth-child(6) {
 }
 
 .cropsTable {
-  width: calc(100%-275px);
+  width: calc(100% - 275px);
 }
 
 .highlightRow {

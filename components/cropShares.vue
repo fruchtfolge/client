@@ -48,7 +48,7 @@ export default {
       })
     },
     createChart(chartId, chartData) {
-      Chart.defaults.global.defaultFontFamily = 'Open Sans Light'
+      Chart.defaults.global.defaultFontFamily = 'Open Sans'
       Chart.defaults.global.defaultFontSize = 14
 
       const config = {

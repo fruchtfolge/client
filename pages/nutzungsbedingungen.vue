@@ -19,8 +19,8 @@
       <p>
         Der Diensteanbieter haftet unbeschränkt für Vorsatz jedoch nicht für grobe Fahrlässigkeit; im Übrigen ist die Haftung
         nach Maßgabe der nachfolgenden Regelungen beschränkt bzw. ausgeschlossen.
-        Es wird keine Haftung und Gewähr für die Inhalte und die Richtigkeit der Daten innerhalb des Angebots und der darin enthaltenen Abfragemöglichkeiten und Online-Anwendungen übernommen. Die Inhalte des Angebots begründen keine Verantwortung des 
-        Diensteanbieters für die dort bereit gehaltenen Daten und Informationen. Für rechtswidrige, fehlerhafte oder unvollständige Inhalte und für Schäden, die aufgrund der Nutzung des Angebots verursacht worden sind, haftet der Diensteanbieter daher nicht. 
+        Es wird keine Haftung und Gewähr für die Inhalte und die Richtigkeit der Daten innerhalb des Angebots und der darin enthaltenen Abfragemöglichkeiten und Online-Anwendungen übernommen. Die Inhalte des Angebots begründen keine Verantwortung des
+        Diensteanbieters für die dort bereit gehaltenen Daten und Informationen. Für rechtswidrige, fehlerhafte oder unvollständige Inhalte und für Schäden, die aufgrund der Nutzung des Angebots verursacht worden sind, haftet der Diensteanbieter daher nicht.
       </p>
       <h2><strong>5. Urheberrecht</strong></h2>
       <p>
@@ -76,16 +76,19 @@ export default {
 </script>
 
 <style scoped>
-.copy {
-  width: 50%;
-  min-width: 500px;
-  margin: auto;
-  top: 120px;
-}
-.copy h1 {
-  letter-spacing: 0.05em;
-}
-.copy p {
-  font-family: 'Open Sans Light';
+@media (min-width: 700px) {
+  .copy {
+    width: 50%;
+    min-width: 500px;
+    margin: auto;
+    top: 120px;
+  }
+  .copy h1 {
+    letter-spacing: 0.05em;
+  }
+  .copy p {
+    font-family: 'Open Sans';
+    font-weight: 300;
+  }
 }
 </style>

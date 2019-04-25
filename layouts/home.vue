@@ -2,7 +2,7 @@
   <div>
     <div id="header" class="header">
       <img src="~/assets/img/Web_2.png" alt="Uni Bonn Logo" class="uniBonn">
-      <nuxt-link to="/" class="logo">
+      <nuxt-link to="/" class="logo-home">
         FRUCHTFOLGE
       </nuxt-link>
       <!-- Switch between register and login -->
@@ -79,7 +79,7 @@ html {
   border-width: 0px;
 }
 
-.logo {
+.logo-home {
   color: black;
   font-family: 'Open Sans Condensed', sans-serif;
   letter-spacing: 0.3em;
