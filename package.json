@@ -11,7 +11,9 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "precommit": "npm run lint"
+    "precommit": "npm run lint",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "^1.1.1",
@@ -56,6 +58,7 @@
     "eslint-plugin-standard": ">=4.0.0",
     "eslint-plugin-vue": "^5.0.0",
     "nodemon": "^1.18.11",
-    "prettier": "1.14.3"
+    "prettier": "1.14.3",
+    "vuepress": "^0.14.11"
   }
 }
