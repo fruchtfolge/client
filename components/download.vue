@@ -7,8 +7,6 @@
 </template>
 
 <script>
-import XLSX from 'xlsx'
-
 export default {
   props: {
     data: {
@@ -48,40 +46,44 @@ export default {
       })
       return output
     },
-    onexport() {
-      this.fields = [
-        ['Name', 'name'],
-        ['Nummer', 'id'],
-        ['Größe (ha)', 'size'],
-        ['Hof-Feld-Distanz (km)', 'distance'],
-        ['Feldblock (FLIK)', 'flik'],
-        ['Koordinaten', 'center'],
-        ['Dauergrünland', 'permPast'],
-        ['Hackfruchtfähig', 'rootCrops'],
-        ['Bodenart', 'soilType'],
-        ['Bodenqualität', 'quality'],
-        ['Humusgehalt', 'humusContent'],
-        [`${this.year - 3}`, 'prevCrop3'],
-        [`${this.year - 2}`, 'prevCrop2'],
-        [`${this.year - 1}`, 'prevCrop1'],
-        ['Zwischenfrucht', 'catchCrop'],
-        [`Planung ${this.year}`, 'selectedCrop'],
-        ['Deckungsbeitrag Planungjahr', 'curGrossMargin']
-      ]
-      const order = this.fields.map(a => {
-        return a[0]
-      })
-      // create intermediate JSON in order to be able to export
-      const exportData = this.data.map(this.prepare)
-
-      const exportWS = XLSX.utils.json_to_sheet(exportData, { header: order })
-      const wb = XLSX.utils.book_new() // make Workbook of Excel
-
-      // add Worksheet to Workbook
-      XLSX.utils.book_append_sheet(wb, exportWS, 'Fruchtfolge')
-      console.log('test')
-      // export Excel file
-      XLSX.writeFile(wb, `Fruchtfolge - Planung ${this.year}.xlsx`)
+    async onexport() {
+      try {
+        const body = {}
+        this.fields = [
+          ['Name', 'name'],
+          ['Nummer', 'id'],
+          ['Größe (ha)', 'size'],
+          ['Hof-Feld-Distanz (km)', 'distance'],
+          ['Feldblock (FLIK)', 'flik'],
+          ['Koordinaten', 'center'],
+          ['Dauergrünland', 'permPast'],
+          ['Hackfruchtfähig', 'rootCrops'],
+          ['Bodenart', 'soilType'],
+          ['Bodenqualität', 'quality'],
+          ['Humusgehalt', 'humusContent'],
+          [`${this.year - 3}`, 'prevCrop3'],
+          [`${this.year - 2}`, 'prevCrop2'],
+          [`${this.year - 1}`, 'prevCrop1'],
+          ['Zwischenfrucht', 'catchCrop'],
+          [`Planung ${this.year}`, 'selectedCrop'],
+          ['Deckungsbeitrag Planungjahr', 'curGrossMargin']
+        ]
+        body.order = this.fields.map(a => {
+          return a[0]
+        })
+        // create intermediate JSON in order to be able to export
+        body.data = this.data.map(this.prepare)
+        body.year = this.year
+        // export Excel file
+        await this.$axios.post(process.env.baseUrl + 'export/excel/', body, {
+          progress: true
+        })
+        // await this.$axios.get(process.env.baseUrl + 'export/excel/', {
+        //   progress: true
+        // })
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }
