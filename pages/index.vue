@@ -85,10 +85,11 @@
           <br>
           <br>
 
-          Sehen Sie sich das kurze Einführungsvideo an oder lesen Sie unterhalb
-          des Videos weiter.
+          <!-- Sehen Sie sich das kurze Einführungsvideo an oder lesen Sie unterhalb
+          des Videos weiter. -->
 
-          <video class="video" :src="require('~/assets/img/test.mp4')" controls type="video/mp4" />
+          <!-- <video class="video" :src="require('~/assets/img/test.mp4')" controls type="video/mp4" /> -->
+          <img class="image" src="~assets/img/results.png" alt="Results">
 
           <div class="smallDisplay">
             <h2>Warum kann ich mich nicht anmelden?</h2>
@@ -460,6 +461,11 @@ export default {
 </script>
 
 <style>
+.image {
+  width: 100%;
+  border: none;
+  padding: 0px;
+}
 .container {
   width: 100%;
   height: 100%;
