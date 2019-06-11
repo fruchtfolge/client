@@ -154,7 +154,7 @@ export default {
             region: settings.state_district,
             variety: this.variety
           })
-          console.log(properties)
+          // console.log(properties)
           const { data } = await this.$axios.post(
             process.env.baseUrl + 'crops/',
             properties,
