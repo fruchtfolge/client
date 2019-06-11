@@ -347,7 +347,7 @@ export default {
               _.round(this.getProgress(info.pending) * 100, 0) + '%'
           })
           .on('complete', async info => {
-            console.log(info, auth.userDBs.userdb)
+            // console.log(info, auth.userDBs.userdb)
             const settings = await this.getSettings(date)
             const { data } = await this.$axios.post(
               process.env.baseUrl + 'auth/userDoc',
