@@ -176,7 +176,7 @@ export default {
           crop.active = true
           await this.$db.put(crop)
         }
-        console.log(years)
+        // console.log(years)
       } catch (e) {
         console.log(e)
       }
