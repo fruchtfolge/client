@@ -53,7 +53,7 @@ export default {
         // we calculate the exponential moving average of the cropping factors
         const plotYearCrop = _.find(crops, {
           code: plotYear.crop,
-          year: plotYear.year
+          year: plotYear.year + 1
         })
         if (i === sortedPlots.length - 1 && plotYearCrop) {
           croppingFactor = plotYearCrop.subseqCrops[curCrop.cropGroup]

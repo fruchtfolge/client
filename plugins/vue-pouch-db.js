@@ -11,161 +11,6 @@ Vue.prototype.$bus = new Vue({})
 // initate store
 Vue.prototype.$store = {}
 
-function initalizeDB() {
-  const db = new PouchDB('data', { auto_compaction: true })
-  Vue.prototype.$db = db
-
-  // store settings and keep updated
-  Vue.prototype.$db
-    .liveFind({
-      selector: {
-        type: 'settings'
-      },
-      aggregate: true
-    })
-    .on('update', (update, aggregate) => {
-      Vue.set(Vue.prototype.$store, 'settings', aggregate[0])
-      Vue.set(Vue.prototype.$store, 'curYear', aggregate[0].curYear)
-      Vue.set(Vue.prototype.$store, 'curScenario', aggregate[0].curScenario)
-      updateCurrent()
-    })
-    .on('error', err => {
-      console.log(err)
-    })
-
-  // plots
-  Vue.prototype.$db
-    .liveFind({
-      selector: {
-        type: 'plot'
-      },
-      sort: [
-        {
-          name: 'asc'
-        }
-      ],
-      aggregate: true
-    })
-    .on('update', (update, aggregate) => {
-      Vue.set(Vue.prototype.$store, 'plots', aggregate)
-      updateCurrent()
-    })
-    .on('error', err => {
-      console.log(err)
-    })
-
-  // crops
-  Vue.prototype.$db
-    .liveFind({
-      selector: {
-        type: 'crop'
-      },
-      sort: [
-        {
-          name: 'asc'
-        }
-      ],
-      aggregate: true
-    })
-    .on('update', (update, aggregate) => {
-      Vue.set(Vue.prototype.$store, 'crops', aggregate)
-      updateCurrent()
-    })
-    .on('error', err => {
-      console.log(err)
-    })
-
-  // constraints
-  Vue.prototype.$db
-    .liveFind({
-      selector: {
-        type: 'constraint'
-      },
-      aggregate: true
-    })
-    .on('update', (update, aggregate) => {
-      Vue.set(Vue.prototype.$store, 'constraints', aggregate)
-      updateCurrent()
-    })
-    .on('error', err => {
-      console.log(err)
-    })
-
-  // time constraints
-  Vue.prototype.$db
-    .liveFind({
-      selector: {
-        type: 'timeConstraints'
-      },
-      aggregate: true
-    })
-    .on('update', (update, aggregate) => {
-      Vue.set(Vue.prototype.$store, 'timeConstraints', aggregate)
-      updateCurrent()
-    })
-    .on('error', err => {
-      console.log(err)
-    })
-
-  function updateCurrent() {
-    if (Vue.prototype.$store.plots && Vue.prototype.$store.settings) {
-      Vue.set(
-        Vue.prototype.$store,
-        'curPlots',
-        Vue.prototype.$store.plots.filter(plot => {
-          return (
-            plot.year === Vue.prototype.$store.settings.curYear &&
-            plot.scenario === Vue.prototype.$store.settings.curScenario
-          )
-        })
-      )
-    }
-    if (Vue.prototype.$store.crops && Vue.prototype.$store.settings) {
-      Vue.set(
-        Vue.prototype.$store,
-        'curCrops',
-        Vue.prototype.$store.crops.filter(crop => {
-          return (
-            crop.year === Vue.prototype.$store.settings.curYear &&
-            crop.active === true &&
-            crop.scenario === Vue.prototype.$store.settings.curScenario
-          )
-        })
-      )
-    }
-    if (Vue.prototype.$store.constraints && Vue.prototype.$store.settings) {
-      Vue.set(
-        Vue.prototype.$store,
-        'curConstraints',
-        Vue.prototype.$store.constraints.filter(constraint => {
-          return (
-            constraint.year === Vue.prototype.$store.settings.curYear &&
-            constraint.scenario === Vue.prototype.$store.settings.curScenario
-          )
-        })
-      )
-    }
-    if (Vue.prototype.$store.timeConstraints && Vue.prototype.$store.settings) {
-      const match = Vue.prototype.$store.timeConstraints.filter(
-        timeConstraints => {
-          return (
-            timeConstraints.year === Vue.prototype.$store.settings.curYear &&
-            timeConstraints.scenario ===
-              Vue.prototype.$store.settings.curScenario
-          )
-        }
-      )
-      if (match.length > 0) {
-        Vue.set(Vue.prototype.$store, 'curTimeConstraints', match[0])
-      } else {
-        Vue.set(Vue.prototype.$store, 'curTimeConstraints', null)
-      }
-    }
-    Vue.prototype.$bus.$emit('changeCurrents')
-  }
-  return Vue.prototype.$db
-}
-
 function uuidv4() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     const r = (Math.random() * 16) | 0
@@ -209,10 +54,161 @@ Vue.prototype.$bus.$on('importPrevYear', async () => {
   }
 })
 
-initalizeDB()
+function updateCurrent() {
+  if (Vue.prototype.$store.plots && Vue.prototype.$store.settings) {
+    Vue.set(
+      Vue.prototype.$store,
+      'curPlots',
+      Vue.prototype.$store.plots.filter(plot => {
+        return (
+          plot.year === Vue.prototype.$store.settings.curYear &&
+          plot.scenario === Vue.prototype.$store.settings.curScenario
+        )
+      })
+    )
+  }
+  if (Vue.prototype.$store.crops && Vue.prototype.$store.settings) {
+    Vue.set(
+      Vue.prototype.$store,
+      'curCrops',
+      Vue.prototype.$store.crops.filter(crop => {
+        return (
+          crop.year === Vue.prototype.$store.settings.curYear &&
+          crop.active === true &&
+          crop.scenario === Vue.prototype.$store.settings.curScenario
+        )
+      })
+    )
+  }
+  if (Vue.prototype.$store.constraints && Vue.prototype.$store.settings) {
+    Vue.set(
+      Vue.prototype.$store,
+      'curConstraints',
+      Vue.prototype.$store.constraints.filter(constraint => {
+        return (
+          constraint.year === Vue.prototype.$store.settings.curYear &&
+          constraint.scenario === Vue.prototype.$store.settings.curScenario
+        )
+      })
+    )
+  }
+  if (Vue.prototype.$store.timeConstraints && Vue.prototype.$store.settings) {
+    const match = Vue.prototype.$store.timeConstraints.filter(
+      timeConstraints => {
+        return (
+          timeConstraints.year === Vue.prototype.$store.settings.curYear &&
+          timeConstraints.scenario === Vue.prototype.$store.settings.curScenario
+        )
+      }
+    )
+    if (match.length > 0) {
+      Vue.set(Vue.prototype.$store, 'curTimeConstraints', match[0])
+    } else {
+      Vue.set(Vue.prototype.$store, 'curTimeConstraints', null)
+    }
+  }
+  Vue.prototype.$bus.$emit('changeCurrents')
+}
 
 export default ({ app }, inject) => {
   inject('store', Vue.prototype.$store)
-  inject('db', Vue.prototype.$db)
-  inject('initalizeDB', initalizeDB)
+  inject('initalizeDB', database => {
+    const db = new PouchDB(database, { auto_compaction: true })
+    Vue.prototype.$db = db
+    const debouncedUpdate = _.debounce(updateCurrent, 50)
+    // console.log(debouncedUpdate())
+    // store settings and keep updated
+    Vue.prototype.$db
+      .liveFind({
+        selector: {
+          type: 'settings'
+        },
+        aggregate: true
+      })
+      .on('update', (update, aggregate) => {
+        Vue.set(Vue.prototype.$store, 'settings', aggregate[0])
+        Vue.set(Vue.prototype.$store, 'curYear', aggregate[0].curYear)
+        Vue.set(Vue.prototype.$store, 'curScenario', aggregate[0].curScenario)
+        debouncedUpdate()
+      })
+      .on('error', err => {
+        console.log(err)
+      })
+
+    // plots
+    Vue.prototype.$db
+      .liveFind({
+        selector: {
+          type: 'plot'
+        },
+        sort: [
+          {
+            name: 'asc'
+          }
+        ],
+        aggregate: true
+      })
+      .on('update', (update, aggregate) => {
+        Vue.set(Vue.prototype.$store, 'plots', aggregate)
+        debouncedUpdate()
+      })
+      .on('error', err => {
+        console.log(err)
+      })
+
+    // crops
+    Vue.prototype.$db
+      .liveFind({
+        selector: {
+          type: 'crop'
+        },
+        sort: [
+          {
+            name: 'asc'
+          }
+        ],
+        aggregate: true
+      })
+      .on('update', (update, aggregate) => {
+        Vue.set(Vue.prototype.$store, 'crops', aggregate)
+        debouncedUpdate()
+      })
+      .on('error', err => {
+        console.log(err)
+      })
+
+    // constraints
+    Vue.prototype.$db
+      .liveFind({
+        selector: {
+          type: 'constraint'
+        },
+        aggregate: true
+      })
+      .on('update', (update, aggregate) => {
+        Vue.set(Vue.prototype.$store, 'constraints', aggregate)
+        debouncedUpdate()
+      })
+      .on('error', err => {
+        console.log(err)
+      })
+
+    // time constraints
+    Vue.prototype.$db
+      .liveFind({
+        selector: {
+          type: 'timeConstraints'
+        },
+        aggregate: true
+      })
+      .on('update', (update, aggregate) => {
+        Vue.set(Vue.prototype.$store, 'timeConstraints', aggregate)
+        debouncedUpdate()
+      })
+      .on('error', err => {
+        console.log(err)
+      })
+
+    inject('db', Vue.prototype.$db)
+  })
 }

@@ -6,17 +6,7 @@ export default async function(context) {
     '/kontakt',
     '/nutzungsbedingungen'
   ]
-  async function deleteAndRedirect() {
-    if (context.app.$db) {
-      // get elements in db
-      const result = await context.app.$db.info()
-      if (result.doc_count > 0) {
-        // destroy database if not empty
-        await context.app.$db.destroy()
-        // reinitialize empty db
-        context.app.$db = context.app.$initalizeDB()
-      }
-    }
+  function deleteAndRedirect() {
     if (allowedRoutes.indexOf(context.route.path) === -1) {
       return context.redirect('/')
     }

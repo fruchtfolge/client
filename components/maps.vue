@@ -171,7 +171,7 @@ export default {
       this.Draw.delete(data.features[0].id)
     },
     removeDraw() {
-      this.Draw.deleteAll()
+      if (this.Draw) this.Draw.deleteAll()
     },
     select(data) {
       console.log(data)
