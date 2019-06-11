@@ -334,7 +334,8 @@ export default {
         this.confirmPassword = ''
         // show succes banner
         this.success()
-        // get settings object and store auth
+        // store auth user
+        localStorage.setItem('lastUser', auth.user_id)
         // initiate database
         this.$initalizeDB(auth.user_id)
 
@@ -460,7 +461,7 @@ export default {
       }
     }
   },
-  middleware: null,
+  middleware: 'auth',
   layout: 'home'
 }
 </script>

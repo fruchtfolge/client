@@ -7,14 +7,21 @@ export default async function(context) {
     '/nutzungsbedingungen'
   ]
   function deleteAndRedirect() {
+    localStorage.removeItem('lastUser')
     if (allowedRoutes.indexOf(context.route.path) === -1) {
       return context.redirect('/')
     }
   }
 
+  if (!context.app.$db) {
+    const lastUser = localStorage.getItem('lastUser')
+    if (lastUser) context.app.$initalizeDB(lastUser)
+  }
+
   let settings
   try {
     settings = await context.app.$db.get('settings')
+    // console.log(settings)
   } catch (e) {
     console.log(e)
     return deleteAndRedirect()
@@ -43,6 +50,9 @@ export default async function(context) {
             retry: true
           }
         )
+        if (context.route.path === '/') {
+          return context.redirect('/maps')
+        }
       }
     } else {
       throw new Error('no auth')
