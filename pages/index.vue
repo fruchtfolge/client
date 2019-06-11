@@ -214,7 +214,9 @@ export default {
     }
   },
   created() {
-    console.log('Moin! Interssiert an der Entwicklung?')
+    console.log(
+      'Moin! Interssiert an der Entwicklung? Vorbeischauen bei Github lohnt sich :)'
+    )
     this.debouncedAutocomplete = _.debounce(async () => {
       try {
         this.autocomplete = await geo.autocomplete(this.address, this.postcode)
