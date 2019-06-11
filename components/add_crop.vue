@@ -172,7 +172,7 @@ export default {
               (c.variety === this.variety || c.crop === this.crop)
             )
           })
-          console.log(crop)
+          // console.log(crop)
           crop.active = true
           await this.$db.put(crop)
         }
