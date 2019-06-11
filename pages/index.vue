@@ -334,7 +334,10 @@ export default {
         this.confirmPassword = ''
         // show succes banner
         this.success()
-        // get settings object and store auth
+        // store auth user
+        localStorage.setItem('lastUser', auth.user_id)
+        // initiate database
+        this.$initalizeDB(auth.user_id)
 
         // do a one way replication
         this.$db.replicate
@@ -344,7 +347,7 @@ export default {
               _.round(this.getProgress(info.pending) * 100, 0) + '%'
           })
           .on('complete', async info => {
-            console.log(info)
+            console.log(info, auth.userDBs.userdb)
             const settings = await this.getSettings(date)
             const { data } = await this.$axios.post(
               process.env.baseUrl + 'auth/userDoc',
@@ -372,6 +375,9 @@ export default {
               return $nuxt.$router.replace({ path: '/settings' })
             }
             return $nuxt.$router.replace({ path: '/maps' })
+          })
+          .on('error', error => {
+            console.log(error)
           })
       } catch (e) {
         this.loading = false
@@ -455,7 +461,7 @@ export default {
       }
     }
   },
-  middleware: null,
+  middleware: 'auth',
   layout: 'home'
 }
 </script>

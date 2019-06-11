@@ -6,25 +6,22 @@ export default async function(context) {
     '/kontakt',
     '/nutzungsbedingungen'
   ]
-  async function deleteAndRedirect() {
-    if (context.app.$db) {
-      // get elements in db
-      const result = await context.app.$db.info()
-      if (result.doc_count > 0) {
-        // destroy database if not empty
-        await context.app.$db.destroy()
-        // reinitialize empty db
-        context.app.$db = context.app.$initalizeDB()
-      }
-    }
+  function deleteAndRedirect() {
+    localStorage.removeItem('lastUser')
     if (allowedRoutes.indexOf(context.route.path) === -1) {
       return context.redirect('/')
     }
   }
 
+  if (!context.app.$db) {
+    const lastUser = localStorage.getItem('lastUser')
+    if (lastUser) context.app.$initalizeDB(lastUser)
+  }
+
   let settings
   try {
     settings = await context.app.$db.get('settings')
+    // console.log(settings)
   } catch (e) {
     console.log(e)
     return deleteAndRedirect()
@@ -53,6 +50,9 @@ export default async function(context) {
             retry: true
           }
         )
+        if (context.route.path === '/') {
+          return context.redirect('/maps')
+        }
       }
     } else {
       throw new Error('no auth')

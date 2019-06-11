@@ -99,7 +99,8 @@ export default {
       // init the map
       this.map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/satellite-streets-v9?optimize=true',
+        style: 'mapbox://styles/mapbox/satellite-streets-v10?optimize=true',
+        // style: 'mapbox://styles/mapbox/light-v10?optimize=true',
         center: settings.home || [7.685235, 51.574318],
         zoom: settings.home ? 14 : 8,
         dragPan: false,
@@ -171,7 +172,7 @@ export default {
       this.Draw.delete(data.features[0].id)
     },
     removeDraw() {
-      this.Draw.deleteAll()
+      if (this.Draw) this.Draw.deleteAll()
     },
     select(data) {
       console.log(data)
