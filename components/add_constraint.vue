@@ -123,7 +123,7 @@ export default {
           area: this.area
         })
         // store new constraint in database
-        console.log(constraint)
+        // console.log(constraint)
         await this.$db.post(constraint)
         this.$emit('closeAddConstraint')
       } catch (e) {
