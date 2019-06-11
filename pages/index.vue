@@ -215,7 +215,7 @@ export default {
   },
   created() {
     console.log(
-      'Moin! Interssiert an der Entwicklung? Vorbeischauen bei Github lohnt sich :)'
+      'Moin! Interssiert an der Entwicklung? Mehr Infos auf github.com/fruchtfolge :)'
     )
     this.debouncedAutocomplete = _.debounce(async () => {
       try {
