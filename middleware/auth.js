@@ -21,9 +21,8 @@ export default async function(context) {
   let settings
   try {
     settings = await context.app.$db.get('settings')
-    // console.log(settings)
   } catch (e) {
-    console.log(e)
+    // fail quietly and redirect if route requires auth
     return deleteAndRedirect()
   }
   try {
