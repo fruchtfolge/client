@@ -13,7 +13,7 @@
     <!-- this is where the main application lives -->
     <nuxt class="nuxt" />
     <!-- Footer for legal texts-->
-    <div class="footer">
+    <div class="footer-home">
       <nuxt-link to="/kontakt">
         Kontakt
       </nuxt-link>
@@ -109,7 +109,7 @@ html {
   padding-bottom: 50px;
 }
 
-.footer {
+.footer-home {
   position: fixed;
   text-align: right;
   bottom: 0px;
@@ -118,7 +118,7 @@ html {
   padding-left: 10px;
   background-color: rgba(0, 0, 0, 0.3);
 }
-.footer a {
+.footer-home a {
   padding-right: 5px;
   padding-left: 5px;
   text-decoration: none;

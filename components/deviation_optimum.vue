@@ -304,7 +304,7 @@ export default {
     checkCatchCrop(plot) {
       const crop = plot.selectedCrop
       const selectedData = _.find(this.$store.curCrops, ['name', crop])
-      console.log(selectedData, crop)
+      // console.log(selectedData, crop)
       if (selectedData && selectedData.season === 'Winter') {
         return `${plot.name}: Greening ZF nur vor Sommerung`
       }

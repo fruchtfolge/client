@@ -64,9 +64,8 @@ export default {
         years.forEach(year => {
           const o = { year: croppingYear, sum: 0 }
           // calculate total db for cropping plan of curYear - i under prices/yields/directCosts of year
-          let grossMargins = []
           let grossMargin = 0
-          grossMargins = plots.map(plot => {
+          const grossMargins = plots.map(plot => {
             const plotData = plot.matrix[year]
             if (!plotData) return
             const cropCode = plot.crop
@@ -85,22 +84,28 @@ export default {
               if (o[crop]) o[crop] += plotData[crop].size
               else o[crop] = plotData[crop].size
               o.sum += plotData[crop].size
+              /*
               if (i === 0) {
                 return plotData[crop].grossMargin - catchCropCosts
               }
+              */
               return (
-                plotData[crop].grossMarginNoCropEff * plotData[crop].size -
+                (plotData[crop].grossMarginNoCropEff +
+                  plotData[crop].distanceCosts) *
+                  plotData[crop].size -
                 catchCropCosts
               )
+            } else {
+              console.log(crop, year)
             }
           })
-
+          // console.log(grossMargins)
           grossMargin = _.round(_.sum(grossMargins), 2)
           data.push(grossMargin)
           shares.push(o)
           if (this.labels.indexOf(year) === -1) this.labels.push(year)
         })
-        // console.log(shares);
+        console.log(data, shares)
         this.datasets.push({
           data: data,
           label: `Anbauplan ${curYear - i}`,

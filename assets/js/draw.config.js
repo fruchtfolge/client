@@ -1,10 +1,12 @@
 export default {
   displayControlsDefault: false,
+  /*
   controls: {
     polygon: true,
     combine_features: true,
     trash: true
   },
+  */
   styles: [
     // ACTIVE (being drawn)
     // line stroke

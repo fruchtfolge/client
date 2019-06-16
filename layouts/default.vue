@@ -35,6 +35,7 @@
           :class="{ active: isClicked(route), subPage: route.subPage }"
           @click="follow(route)"
         >
+          <!--<i :class="route.icon" />-->
           {{ route.name }}
         </li>
       </ul>
@@ -337,6 +338,8 @@ html {
   background-color: rgba(0, 0, 0, 0.02);
   padding: 10px;
   padding-bottom: 10px;
+  width: 250px;
+  overflow-x: hidden;
 }
 
 .footer-sidebar a {

@@ -1,5 +1,10 @@
 <template>
-  <div id="map" class="map" />
+  <div>
+    <button type="button" name="addPlot" class="addPlot" @click="addPlot">
+      NEUES FELD
+    </button>
+    <div id="map" class="map" />
+  </div>
 </template>
 
 <script>
@@ -85,7 +90,7 @@ export default {
     })
 
     this.$bus.$on('drawPlot', geometry => {
-      this.Draw.add(geometry)
+      this.draw.add(geometry)
     })
   },
   destroyed() {
@@ -99,16 +104,17 @@ export default {
       // init the map
       this.map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/satellite-streets-v9?optimize=true',
+        style: 'mapbox://styles/mapbox/satellite-streets-v10?optimize=true',
+        // style: 'mapbox://styles/mapbox/dark-v10?optimize=true',
         center: settings.home || [7.685235, 51.574318],
         zoom: settings.home ? 14 : 8,
         dragPan: false,
         drageRotate: false
       })
 
-      this.Draw = new MapboxDraw(drawConfig)
+      this.draw = new MapboxDraw(drawConfig)
       this.map.addControl(new mapboxgl.NavigationControl(), 'bottom-left')
-      this.map.addControl(this.Draw, 'bottom-left')
+      this.map.addControl(this.draw, 'bottom-left')
 
       // add drawing event listeners
       this.map.on('draw.create', this.create)
@@ -117,12 +123,15 @@ export default {
       this.map.on('draw.combine', this.combine)
       this.map.on('draw.selectionchange', this.select)
     },
+    addPlot() {
+      this.draw.changeMode('draw_polygon')
+    },
     drawPlots(year, plots) {
       try {
         // const geometries = []
         plots.forEach(plot => {
           plot.geometry.properties._id = plot._id
-          this.Draw.add(plot.geometry)
+          this.draw.add(plot.geometry)
           // geometries.push(plot.geometry)
         })
         // fit map to the bounds of the plots
@@ -168,10 +177,10 @@ export default {
     combine() {},
     create(data) {
       this.$emit('addPlot', data)
-      this.Draw.delete(data.features[0].id)
+      this.draw.delete(data.features[0].id)
     },
     removeDraw() {
-      this.Draw.deleteAll()
+      this.draw.deleteAll()
     },
     select(data) {
       console.log(data)
@@ -183,6 +192,13 @@ export default {
 </script>
 
 <style>
+.addPlot {
+  position: absolute;
+  bottom: 250px;
+  left: 10px;
+  background: white;
+  z-index: 99;
+}
 .map {
   position: relative;
   width: 100%;

@@ -336,6 +336,7 @@ export default {
         // get settings object and store auth
 
         // do a one way replication
+        console.log(auth)
         this.$db.replicate
           .from(auth.userDBs.userdb)
           .on('change', info => {
@@ -889,6 +890,7 @@ div.flip-container {
 .landing h1 {
   font-weight: normal;
   text-align: center;
+  font-size: 22px;
   margin-bottom: 40px;
   letter-spacing: 0.15em;
 }

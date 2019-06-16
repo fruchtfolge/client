@@ -53,9 +53,11 @@ export default {
         // we calculate the exponential moving average of the cropping factors
         const plotYearCrop = _.find(crops, {
           code: plotYear.crop,
-          year: plotYear.year
+          year: plotYear.year + 1
         })
-        if (i === sortedPlots.length - 1 && plotYearCrop) {
+
+        if (plotYear.year === curPlot.year - 1 && plotYearCrop) {
+          // console.log(i)
           croppingFactor = plotYearCrop.subseqCrops[curCrop.cropGroup]
           // if cropping factor is 0 (crop can't be grown), then the yield is 0
           if (croppingFactor === 0) croppingFactor = 0

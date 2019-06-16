@@ -292,8 +292,8 @@ export default {
   components: {
     loading: () => import('~/components/loading.vue'),
     cropShares: () => import('~/components/cropShares.vue'),
-    grossMarginTimeline: () => import('~/components/grossMarginTimeline.vue'),
-    timeRequirement: () => import('~/components/timeRequirement.vue'),
+    grossMarginTimeline: () => import('~/components/gross_margin_timeline.vue'),
+    timeRequirement: () => import('~/components/time_requirement.vue'),
     deviationOptimum: () => import('~/components/deviation_optimum.vue'),
     download: () => import('~/components/download.vue')
   },

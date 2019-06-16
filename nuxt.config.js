@@ -52,6 +52,13 @@ module.exports = {
         rel: 'stylesheet',
         href:
           'https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans:300,400,600,700'
+      },
+      {
+        rel: 'stylesheet',
+        href: 'https://use.fontawesome.com/releases/v5.8.2/css/all.css',
+        integrity:
+          'sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay',
+        crossorigin: 'anonymous'
       }
     ]
   },
@@ -67,7 +74,10 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: ['@/assets/css/global.css'],
+  css: [
+    { src: '~/assets/css/global.scss', lang: 'scss' }
+    // { src: 'font-awesome/scss/font-awesome.scss', lang: 'scss' }
+  ],
 
   /*
   ** Plugins to load before mounting the App
@@ -77,10 +87,7 @@ module.exports = {
   /*
   ** Nuxt.js modules
   */
-  modules: [
-    // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios'
-  ],
+  modules: ['@nuxtjs/axios'],
   /*
   ** Axios module configuration
   */
@@ -90,7 +97,8 @@ module.exports = {
   ** API base url, can be changed for debugging
   */
   env: {
-    baseUrl: 'http://fruchtfolge.agp.uni-bonn.de/api/' // 'http://localhost:3001/'
+    // baseUrl: 'http://localhost:3001/'
+    baseUrl: 'http://fruchtfolge.agp.uni-bonn.de/api/'
   },
 
   router: {

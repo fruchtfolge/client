@@ -20,7 +20,7 @@
 <script>
 export default {
   components: {
-    timeSeries: () => import('~/components/timeSeries.vue'),
+    timeSeries: () => import('~/components/time_series.vue'),
     addCrop: () => import('~/components/add_crop.vue'),
     cropsSidebar: () => import('~/components/crops_sidebar.vue')
   },
