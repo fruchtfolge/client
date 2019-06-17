@@ -1,7 +1,7 @@
 {
   "name": "fruchtfolge",
   "version": "1.0.0",
-  "description": "Fruchtfolge client application",
+  "description": "Anbauplanung kostenlos optimieren",
   "author": "Christoph Pahmeyer <christoph.pahmeyer@ilr.uni-bonn.de>",
   "license": "GPL-3.0-or-later",
   "private": true,
