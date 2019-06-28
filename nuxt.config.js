@@ -79,8 +79,12 @@ module.exports = {
   */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/google-analytics'
   ],
+  googleAnalytics: {
+    id: 'UA-142985518-1'
+  },
   /*
   ** Axios module configuration
   */
