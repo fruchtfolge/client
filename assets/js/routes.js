@@ -86,13 +86,11 @@ module.exports = [
     path: '/results',
     name: 'ERGEBNISSE',
     icon: 'static/results.png'
-  }
-  /*
+  },
   {
     subPage: true,
     path: '/fertilizer-planning',
     name: 'N-Düngeplanung',
     icon: 'static/fertPlanning.png'
   }
-  */
 ]

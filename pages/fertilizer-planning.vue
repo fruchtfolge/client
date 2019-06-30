@@ -4,9 +4,10 @@
       <table>
         <thead>
           <tr>
-            <th style="min-width: 250px;">
+            <th>
               Name
             </th>
+            <th>Kultur</th>
             <th>Ertragsniveau 3 Jahr Ø Betrieb [dt/ha]</th>
             <th>N-Bedarfswert [kg N/ha]</th>
             <th>Zu- oder Abschlag Ertragsdifferenz [kg N/ha]</th>
@@ -21,6 +22,9 @@
           <tr v-for="(plot, i) in plots" :key="i">
             <td style="text-align: center;">
               {{ plot.name }}
+            </td>
+            <td style="text-align: center;">
+              {{ plot.selectedCrop }}
             </td>
             <td style="text-align: center;">
               {{ nData[plot._id].avgYield }}
@@ -115,6 +119,7 @@ export default {
       // console.log(this.nData)
     },
     calcData() {
+      if (!this.plots) return
       this.plots.forEach(plot => {
         // use crop that was acutally grown over selected crop
         // const cropCode = plot.crop ? plot.crop : plot.selectedCrop
