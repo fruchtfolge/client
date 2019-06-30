@@ -2,6 +2,7 @@ import Vue from 'vue'
 import PouchDB from 'pouchdb-browser'
 import Find from 'pouchdb-find'
 import LiveFind from 'pouchdb-live-find'
+import pkg from '../package'
 
 PouchDB.plugin(Find)
 PouchDB.plugin(LiveFind)
@@ -111,6 +112,7 @@ function updateCurrent() {
 }
 
 export default ({ app }, inject) => {
+  inject('version', pkg.version)
   inject('store', Vue.prototype.$store)
   inject('initalizeDB', database => {
     const db = new PouchDB(database, { auto_compaction: true })
