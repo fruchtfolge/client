@@ -400,6 +400,7 @@ set curYear(years) / ${properties.curYear} /;
 
     // create plot & crop related data
     const plots = []
+    const plots_years_crops = []
     const plots_years_cropGroup = []
 
     properties.curPlots.forEach(plot => {
@@ -411,11 +412,20 @@ set curYear(years) / ${properties.curYear} /;
       if (prev.length) {
         prev.forEach(prevPlot => {
           // add crop name to crops set if it isn't present
+          const cropName = cultures[prevPlot.crop]
+            ? cultures[prevPlot.crop].variety
+            : ''
           const cropGroupName = cultures[prevPlot.crop]
             ? cultures[prevPlot.crop].cropGroup
             : ''
+          if (crops.indexOf(` '${cropName}'`) === -1)
+            crops.push(` '${cropName}'`)
+
           if (cropGroup.indexOf(` '${cropGroupName}'`) === -1)
             cropGroup.push(` '${cropGroupName}'`)
+          plots_years_crops.push(
+            ` '${plot._id}'.${prevPlot.year}.'${cropName}' 'YES'`
+          )
           plots_years_cropGroup.push(
             ` '${plot._id}'.${prevPlot.year}.'${cropGroupName}' 'YES'`
           )
@@ -507,6 +517,11 @@ set curYear(years) / ${properties.curYear} /;
     include += this.save(
       'parameter p_croppingFactor(curCrops,curCrops)',
       croppingFactor
+    )
+
+    include += this.save(
+      'set plots_years_crops(plots,years,crops)',
+      plots_years_crops
     )
 
     include += this.save(

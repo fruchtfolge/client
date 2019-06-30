@@ -141,6 +141,9 @@ export default {
     async follow(route) {
       try {
         if (route.path === '/') {
+          // compact database
+          await this.$axios.post(process.env.baseUrl + 'auth/compact')
+          // then logout
           await this.$axios.post(process.env.baseUrl + 'auth/logout')
         }
         this.curPage = route.path
