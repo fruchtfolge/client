@@ -163,7 +163,7 @@ export default {
         const settings = await this.$db.get('settings')
         settings.curYear = this.settings.curYear
         settings.curScenario = this.settings.curScenario
-        // console.log(settings)
+        console.log(settings)
         await this.$db.put(settings)
       } catch (e) {
         console.log(e)
