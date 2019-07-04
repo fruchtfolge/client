@@ -39,6 +39,7 @@
     "r": "0.0.5",
     "utf-8-validate": "^5.0.2",
     "vue-notifications": "^0.9.0",
+    "vue-tour": "^1.1.0",
     "xlsx": "^0.14.2",
     "xml2js": "^0.4.19"
   },
