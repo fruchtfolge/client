@@ -24,6 +24,9 @@
           {{ year.full }}
         </option>
       </select>
+      <button id="help" type="button" name="help" class="help" @click="emitTour">
+        HILFE
+      </button>
     </div>
     <!-- navigation bar on the side -->
     <div class="sidenav" :style="sidenavStyle">
@@ -138,6 +141,9 @@ export default {
         this.open()
       }
     },
+    emitTour() {
+      this.$bus.$emit('tour')
+    },
     async follow(route) {
       try {
         if (route.path === '/') {
@@ -243,7 +249,7 @@ html {
   background-repeat: no-repeat;
   background-position: 100% 50%;
   position: fixed;
-  right: 30px;
+  right: 115px;
   top: 10px;
 }
 
@@ -252,7 +258,7 @@ html {
 }
 
 .scenario {
-  right: 175px;
+  right: 250px;
 }
 
 .nuxt {
@@ -310,7 +316,12 @@ html {
   padding-left: 60px;
   margin-top: -5px;
 }
-
+.help {
+  position: fixed;
+  right: 30px;
+  top: 10px;
+  width: 75px;
+}
 .navIcon {
   position: fixed;
   left: 22px;

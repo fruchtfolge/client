@@ -13,11 +13,11 @@
         </span>
       </div>
       <div style="text-align: center;">
-        <input v-model="street" type="text" class="input" placeholder="Straße und Hausnummer">
+        <input id="settings-street" v-model="street" type="text" class="input" placeholder="Straße und Hausnummer">
         <br>
-        <input v-model="postcode" type="text" class="input" placeholder="PLZ">
+        <input id="settings-postcode" v-model="postcode" type="text" class="input" placeholder="PLZ">
         <br>
-        <input v-model="city" type="text" class="input" placeholder="Stadt">
+        <input id="settings-city" v-model="city" type="text" class="input" placeholder="Stadt">
       </div>
       <br>
       <h1 style="padding-top: 20px; font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
@@ -115,11 +115,13 @@
         </button>
       </div>
     </div>
+    <v-tour name="settings" :steps="tour.steps" :options="tour.options" />
   </div>
 </template>
 
 <script>
 import geo from '~/assets/js/geo'
+import tour from '~/tour/settings'
 
 export default {
   components: {
@@ -137,7 +139,8 @@ export default {
       street: '',
       city: '',
       postcode: '',
-      selectedDeleteYear: 2019
+      selectedDeleteYear: 2019,
+      tour
     }
   },
   notifications: {
@@ -209,6 +212,9 @@ export default {
     } catch (e) {
       console.log(e)
     }
+    this.$bus.$on('tour', () => {
+      this.$tours.settings.start()
+    })
   },
   methods: {
     // get settings object, forward gecode the farm address

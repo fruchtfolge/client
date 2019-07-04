@@ -12,6 +12,11 @@ h2,h3,h4 {
   font-weight: normal;
 }
 
+.v-step {
+  font-family: 'Raleway';
+}
+
+
 input, textarea, select, button, img {
   -webkit-appearance: none;
   -webkit-border-radius: 0px;
@@ -28,6 +33,7 @@ input, textarea, select, button, img {
 input[type='checkbox'] {
   -webkit-appearance: checkbox;
 }
+
 
 .draggable {
   -webkit-app-region: drag;
