@@ -24,7 +24,7 @@
           {{ year.full }}
         </option>
       </select>
-      <button id="help" type="button" name="help" class="help" @click="emitTour">
+      <button id="help" type="button" name="help" class="f-btn help" @click="emitTour">
         HILFE
       </button>
     </div>

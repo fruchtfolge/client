@@ -7,10 +7,13 @@
         <maps @addPlot="openDialogue" />
       </div>
     </div>
+    <v-tour name="maps" :steps="tour.steps" :options="tour.options" />
   </div>
 </template>
 
 <script>
+import tour from '~/tour/maps'
+
 export default {
   components: {
     maps: () => import('~/components/maps.vue'),
@@ -19,9 +22,17 @@ export default {
   },
   data: () => ({
     map: null,
-    addPlot: false
+    addPlot: false,
+    tour
   }),
-  created() {},
+  created() {
+    this.$bus.$on('tour', () => {
+      this.$tours.maps.start()
+    })
+  },
+  destroyed() {
+    this.$bus.$off('tour')
+  },
   methods: {
     openDialogue(data) {
       this.addPlot = true

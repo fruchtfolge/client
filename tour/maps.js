@@ -10,19 +10,21 @@ export default {
   },
   steps: [
     {
-      target: '#settings-city',
+      target:
+        '#map > div.mapboxgl-control-container > div.mapboxgl-ctrl-bottom-left > div:nth-child(1) > button.mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_polygon',
       content:
-        'In den oberen 3 Eingabefeldern können Sie Ihre Betriebsadresse anpassen. Die Änderungen werden beim tippen automatisch gespeichert',
+        'Klicken Sie auf dieses Symbol, um eine neue Fläche einzuzeichnen. Schließen Sie die Zeichnung ab, indem Sie wieder auf den zuerst gezeichneten Punkt des Felds klicken',
       params: {
+        placement: 'right',
         enableScrolling: false
       }
     },
     {
-      target: '#zid',
+      target:
+        '#map > div.mapboxgl-control-container > div.mapboxgl-ctrl-bottom-left > div:nth-child(1) > button.mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_trash',
       content:
-        'Sie können Ihre Betriebsdaten importieren, indem Sie Ihrer ZID-Nummer und PIN eingeben und abschlißend auf den Button "Absenden" drücken',
+        'Sie können ein Feld löschen, indem Sie es in der Karte zunächst anklicken, und anschließend dieses Symbol klicken',
       params: {
-        placement: 'top',
         enableScrolling: false
       }
     },

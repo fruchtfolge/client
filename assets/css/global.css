@@ -12,8 +12,18 @@ h2,h3,h4 {
   font-weight: normal;
 }
 
-.v-step {
-  font-family: 'Raleway';
+f-input {
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+  border-radius: 0px !important;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #CCCCCC;
+  font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
+  letter-spacing: 0.1em;
+  padding-left: 5px;
+  font-size: 14px;
+  -webkit-user-drag: none;
 }
 
 
@@ -30,6 +40,7 @@ input, textarea, select, button, img {
   font-size: 14px;
   -webkit-user-drag: none;
 }
+
 input[type='checkbox'] {
   -webkit-appearance: checkbox;
 }
@@ -82,7 +93,8 @@ td:first-child {
 }
 
 /* Default settings for buttons */
-button {
+
+.f-btn {
     font-family: 'Open Sans Condensed';
     margin: auto;
     text-align: center;
@@ -98,11 +110,11 @@ button {
     padding: 0px;
 }
 
-button:hover {
+.f-btn:hover {
   background-color: rgba(0, 0, 0, .02);
 }
 
-button:focus {outline:0;}
+.f-btn:focus {outline:0;}
 /*
 .page-enter-active, .page-leave-active {
   transition: opacity .5s;

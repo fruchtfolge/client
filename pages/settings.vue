@@ -53,14 +53,14 @@
         <br>
       </div>
       <div style="text-align: center;">
-        <button id="zid-btn" type="button" class="invekosBtn" name="zid-btn" @click="getElan">
+        <button id="zid-btn" type="button" class="f-btn invekosBtn" name="zid-btn" @click="getElan">
           ABSENDEN
         </button>
         <button
           id="zid-btn"
           style="margin-left: 10px"
           type="button"
-          class="invekosBtn"
+          class="f-btn invekosBtn"
           name="zid-btn"
           @click="deleteElanData"
         >
@@ -74,7 +74,13 @@
         </span>
       </div>
       <span>XML-Datei</span>
-      <input id="xml" type="file" accept=".xml" name="xml" @change="processFile($event,'xml')">
+      <input
+        id="xml"
+        type="file"
+        accept=".xml"
+        name="xml"
+        @change="processFile($event,'xml')"
+      >
       <br>
       <span>GML-Datei</span>
       <input id="gml" type="file" accept=".gml" name="gml" @change="processFile($event, 'gml')">
@@ -85,7 +91,7 @@
       <span>Persönlich angelegte Daten, z.B. Flächen, Kulturen oder Nebenbedingungen können an dieser Stelle für einzelne Jahre gelöscht werden. So können Sie beispielsweise verhindern, dass vorherige Planungsdaten als duplikate zu den Elan-Daten auftauchen.</span>
       <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px" />
       <div style="text-align: center;">
-        <select v-model="selectedDeleteYear" class="deleteYear" name="">
+        <select v-model="selectedDeleteYear" class="f-input deleteYear" name="">
           <option value="2016">
             2016
           </option>
@@ -110,7 +116,7 @@
         </select>
       </div>
       <div style="text-align: center;">
-        <button id="zid-btn" type="button" class="invekosBtn" name="zid-btn" @click="deleteYear">
+        <button id="delete-btn" type="button" class="f-btn invekosBtn" name="zid-btn" @click="deleteYear">
           LÖSCHEN
         </button>
       </div>
@@ -215,6 +221,9 @@ export default {
     this.$bus.$on('tour', () => {
       this.$tours.settings.start()
     })
+  },
+  destroyed() {
+    this.$bus.$off('tour')
   },
   methods: {
     // get settings object, forward gecode the farm address
