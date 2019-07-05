@@ -25,15 +25,17 @@ export default {
       content:
         'Sie können ein Feld löschen, indem Sie es in der Karte zunächst anklicken, und anschließend dieses Symbol klicken',
       params: {
+        placement: 'right',
         enableScrolling: false
       }
     },
     {
-      target: '#xml',
+      target:
+        '#map > div.mapboxgl-control-container > div.mapboxgl-ctrl-bottom-left > div:nth-child(1) > button.mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_combine',
       content:
-        'Alternativ können Sie auch die Antragsdaten aus dem <a href="https://www.lwk-verfahren.de/DownloadPortal/pages/index.action">NRW-Downloadportal</a> oder aus <a href="https://www.topfarmplan.de/elan-flaechenantrag-ackerschlagkartei-flaechenimport/#nrw">ELAN-NRW</a> hochladen',
+        'Sie können 2 oder mehr Feld zusammenfügen, indem Sie die strg - Taste auf Ihrer Tastatur gedrückt halten und mehrere Felder auf der Karte auswählen. Anschließend drücken Sie diese Taste zum Zusammenfügen',
       params: {
-        placement: 'top',
+        placement: 'right',
         enableScrolling: false
       }
     },
