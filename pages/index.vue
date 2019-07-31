@@ -24,7 +24,7 @@
               name="password"
               @keyup.enter="login"
             >
-            <button id="login-button" type="button" class="login-button" @click="login">
+            <button id="login-button" type="button" class="f-btn login-button" @click="login">
               ANMELDEN
             </button>
             <a class="forgot" href="index.html">Passwort vergessen?</a>
@@ -63,7 +63,7 @@
                 <span />Ich stimme der Verwendung von Cookies auf der Webseite zu.
               </label>
             </div>
-            <button id="signup" type="button" class="register-button" @click="signup">
+            <button id="signup" type="button" class="f-btn register-button" @click="signup">
               REGISTRIEREN
             </button>
           </div>

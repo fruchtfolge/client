@@ -266,10 +266,10 @@
           <deviationOptimum :shares="shares" :plots="curPlots" :time="curTimeReq" :total="grossMarginCurYear" />
           <grossMarginTimeline :plots="curPlots" />
           <timeRequirement :shares="shares" />
-          <button type="button" name="button" style="margin-top: 20px;" @click="solve(true)">
+          <button class="f-btn" type="button" name="button" style="margin-top: 20px;" @click="solve(true)">
             ZURÜCKSETZEN
           </button>
-          <button type="button" name="button" style="margin-left: 20px;" @click="solve(false)">
+          <button class="f-btn" type="button" name="button" style="margin-left: 20px;" @click="solve(false)">
             ERNEUT LÖSEN
           </button>
         </div>

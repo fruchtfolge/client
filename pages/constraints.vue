@@ -29,10 +29,10 @@
         </table>
       </div>
       <div style="text-align: center; margin-top: 40px;">
-        <button class="addConstraint" style="font-family: 'Open Sans Condensed';" @click="addConstraint = true">
+        <button class="f-btn addConstraint" style="font-family: 'Open Sans Condensed';" @click="addConstraint = true">
           HINZUFÜGEN
         </button>
-        <button class="addConstraint" style="font-family: 'Open Sans Condensed'; margin-left: 20px;" @click="remove">
+        <button class="f-btn addConstraint" style="font-family: 'Open Sans Condensed'; margin-left: 20px;" @click="remove">
           ENTFERNEN
         </button>
       </div>

@@ -133,7 +133,7 @@
         </table>
       </div>
       <div style="text-align:center;margin-top: 40px;">
-        <button type="button" name="button" @click="remove">
+        <button class="f-btn" type="button" name="button" @click="remove">
           ENTFERNEN
         </button>
       </div>
@@ -145,7 +145,7 @@
         <br>
         Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
       </h3>
-      <button style="margin-left: 20px;" @click="importPrev">
+      <button class="f-btn" style="margin-left: 20px;" @click="importPrev">
         IMPORTIEREN
       </button>
     </div>

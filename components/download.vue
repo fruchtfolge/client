@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <button type="button" @click="onexport">
+    <button class="f-btn" type="button" @click="onexport">
       Excel Download
     </button>
   </div>

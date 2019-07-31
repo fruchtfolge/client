@@ -65,10 +65,10 @@
       <p v-if="!crop1" style="text-align: center; margin-top: 30px; color:red;">
         Bitte Kultur auswählen.
       </p>
-      <button v-if="crop1" class="buttonOk" @click="addConstraint">
+      <button v-if="crop1" class="f-btn buttonOk" @click="addConstraint">
         ÜBERNEHMEN
       </button>
-      <button class="buttonCancel" @click="cancel">
+      <button class="f-btn buttonCancel" @click="cancel">
         ABBRECHEN
       </button>
     </div>

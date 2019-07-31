@@ -33,7 +33,7 @@
       Klicken Sie auf den "Hinzufügen" Button um eine neue Kultur für das aktuelle Planungsjahr und Szenario hinzuzufügen
     </div>
     <div style="text-align: center; margin-top: 40px;">
-      <button @click="addCrop">
+      <button class="f-btn" @click="addCrop">
         HINZUFÜGEN
       </button>
     </div>
@@ -184,27 +184,6 @@ export default {
   font-size: 16px;
   letter-spacing: 0.1em;
 }
-
-/*
-.addCrop {
-  padding: 0px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  position: relative;
-  left: 50%;
-  margin-left: -16.5px;
-  margin-bottom: 15px;
-  width: 33px;
-  height: 33px;
-  background: transparent;
-  border: none;
-  background-color: grey;
-  -webkit-mask: url(~assets/img/add.svg), none;
-  -webkit-mask-size: cover;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center center;
-}
-*/
 
 .container {
   width: 100%;

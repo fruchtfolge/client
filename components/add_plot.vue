@@ -43,10 +43,10 @@
           </option>
         </select>
       </div>
-      <button class="buttonOk" @click="addPlot">
+      <button class="f-btn buttonOk" @click="addPlot">
         ÜBERNEHMEN
       </button>
-      <button class="buttonCancel" @click="cancel">
+      <button class="f-btn buttonCancel" @click="cancel">
         ABBRECHEN
       </button>
     </div>

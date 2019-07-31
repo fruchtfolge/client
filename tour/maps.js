@@ -13,7 +13,7 @@ export default {
       target:
         '#map > div.mapboxgl-control-container > div.mapboxgl-ctrl-bottom-left > div:nth-child(1) > button.mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_polygon',
       content:
-        'Klicken Sie auf dieses Symbol, um eine neue Fläche einzuzeichnen. Schließen Sie die Zeichnung ab, indem Sie wieder auf den zuerst gezeichneten Punkt des Felds klicken',
+        'Klicken Sie auf das "Rechteck"-Symbol, um eine neue Fläche einzuzeichnen.',
       params: {
         placement: 'right',
         enableScrolling: false
@@ -23,7 +23,7 @@ export default {
       target:
         '#map > div.mapboxgl-control-container > div.mapboxgl-ctrl-bottom-left > div:nth-child(1) > button.mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_trash',
       content:
-        'Sie können ein Feld löschen, indem Sie es in der Karte zunächst anklicken, und anschließend dieses Symbol klicken',
+        'Um ein Feld zu löschen, wählen Sie es zunächst durch anklicken auf der Karte aus. Drücken Sie nun das "Papierkorb"-Symbol, um den Schlag zu entfernen',
       params: {
         placement: 'right',
         enableScrolling: false
@@ -33,18 +33,26 @@ export default {
       target:
         '#map > div.mapboxgl-control-container > div.mapboxgl-ctrl-bottom-left > div:nth-child(1) > button.mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_combine',
       content:
-        'Sie können 2 oder mehr Feld zusammenfügen, indem Sie die strg - Taste auf Ihrer Tastatur gedrückt halten und mehrere Felder auf der Karte auswählen. Anschließend drücken Sie diese Taste zum Zusammenfügen',
+        'Sie können 2 oder mehr Felder zusammenfügen, indem Sie die "strg"-Taste auf Ihrer Tastatur gedrückt halten und mehrere Felder auf der Karte auswählen. Anschließend drücken Sie auf das "Zusammenfügen"-Symbol, um den Vorgang abzuschließen.',
       params: {
         placement: 'right',
         enableScrolling: false
       }
     },
     {
-      target: '#delete-btn',
+      target: '.sumHa',
       content:
-        'Vor dem Import empfiehlt es sich, Daten die Sie zu Testzwecken angelegt haben (z.B. Flächen oder Kulturen) zu löschen',
+        'Die insgesamt bewirtschaftete Fläche im ausgewählten Wirtschaftsjahr wird Ihnen hier angezeigt',
       params: {
-        placement: 'top',
+        placement: 'left',
+        enableScrolling: false
+      }
+    },
+    {
+      target: '.regionText',
+      content: 'Ihre Flächen werden nach Bewirtschaftungsregionen eingeteilt. ',
+      params: {
+        placement: 'left',
         enableScrolling: false
       }
     }

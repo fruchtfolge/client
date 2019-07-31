@@ -8,12 +8,12 @@
         Aktuell sind keine Arbeitszeit-Restriktionen hinterlegt.<br>
         Sie können durch Klicken auf den 'Hinzufügen'-Button maximale Arbeitsstunden hinzufügen.<br>
       </h3>
-      <button type="button" name="button" @click="add">
+      <button class="f-btn" type="button" name="button" @click="add">
         HINZUFÜGEN
       </button>
     </div>
     <div v-if="stored" style="width:100%;text-align:center;margin-top: 40px;">
-      <button type="button" name="button" @click="remove">
+      <button class="f-btn" type="button" name="button" @click="remove">
         ENTFERNEN
       </button>
     </div>

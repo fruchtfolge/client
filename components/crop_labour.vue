@@ -10,7 +10,7 @@
       <p style="color:grey;">
         Quelle der Daten: KTBL Verfahrensrechner Pflanzenbau
       </p>
-      <button style="margin-top: 10px;" type="button" name="button" @click="remove">
+      <button class="f-btn" style="margin-top: 10px;" type="button" name="button" @click="remove">
         ENTFERNEN
       </button>
     </div>

@@ -46,10 +46,10 @@
       <p v-if="exists" style="text-align: center; margin-top: 30px; color:red;">
         Kultur bereits vorhanden. Bitte anderen Sortennamen wählen.
       </p>
-      <button v-if="!exists" class="buttonOk" @click="addCrop">
+      <button v-if="!exists" class="f-btn buttonOk" @click="addCrop">
         ÜBERNEHMEN
       </button>
-      <button class="buttonCancel" @click="cancel">
+      <button class="f-btn buttonCancel" @click="cancel">
         ABBRECHEN
       </button>
     </div>

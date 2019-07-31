@@ -124,7 +124,7 @@
       </tbody>
     </table>
     <div style="text-align:center;margin-top: 40px">
-      <button type="button" name="button" @click="remove">
+      <button class="f-btn" type="button" name="button" @click="remove">
         ENTFERNEN
       </button>
     </div>

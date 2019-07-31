@@ -6,9 +6,16 @@
 import { area } from '@turf/turf'
 import mapboxgl from 'mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
+import PolygonMode from '../assets/js/polygon_mode'
 
 // load Mapbox Draw configuration file
 import drawConfig from '../assets/js/draw.config.js'
+drawConfig.mode = Object.assign(
+  {
+    draw_polygon: PolygonMode
+  },
+  MapboxDraw.modes
+)
 
 export default {
   name: 'MapBox',
@@ -18,19 +25,25 @@ export default {
     }
   },
   notifications: {
+    showInfo: {
+      title: 'SCHLAG HINZUFÜGEN',
+      message:
+        'Klicken Sie auf einen Punkt in der Karte, um mit der Zeichnung des Schlags zu beginnen',
+      type: 'info'
+    },
     showAddressWarn: {
       title: 'ADRESSE UNVOLLSTÄNDIG',
-      message: 'Bitte füllen Sie das Adressfeld komplett aus.',
+      message: 'Bitte füllen Sie das Adressfeld komplett aus',
       type: 'warn'
     },
     showPlotRemoveSucc: {
       title: 'SCHLAG ENTFERNT',
-      message: 'Schlag wurde erfolgreich entfernt.',
+      message: 'Schlag wurde erfolgreich entfernt',
       type: 'success'
     },
     showError: {
       title: 'FEHLER',
-      message: 'Ein fehler ist aufgetreten.',
+      message: 'Ein fehler ist aufgetreten',
       type: 'error'
     }
   },
@@ -89,6 +102,8 @@ export default {
     })
   },
   destroyed() {
+    // remove map to prevent memory leak
+    this.map.remove()
     this.$bus.$off('changeCurrents')
   },
   methods: {
@@ -116,7 +131,9 @@ export default {
       this.map.on('draw.update', this.update)
       this.map.on('draw.delete', this.delete)
       this.map.on('draw.combine', this.combine)
+      this.map.on('draw.modechange', this.modechange)
       this.map.on('draw.selectionchange', this.select)
+      this.map.on('draw.liveUpdate', this.liveUpdate)
     },
     drawPlots(year, plots) {
       try {
@@ -167,6 +184,24 @@ export default {
       return Number((m2 / 10000).toFixed(2))
     },
     combine() {},
+    modechange(data) {
+      if (data.mode === 'draw_polygon') this.showInfo()
+    },
+    liveUpdate(feature) {
+      if (feature.curPos === 1) {
+        this.showInfo({
+          title: 'WEITERE PUNKTE',
+          message:
+            'Fügen Sie weitere Punkte hinzu, bis Sie die gewünschte Fläche eingezeichnet haben'
+        })
+      } else if (feature.curPos === 3) {
+        this.showInfo({
+          title: 'ZEICHNUNG ABSCHLIEßEN',
+          message:
+            'Klicken Sie erneut auf den ersten Punkt des Schlags, um die Zeichnung abzuschließen'
+        })
+      }
+    },
     create(data) {
       this.$emit('addPlot', data)
       this.Draw.delete(data.features[0].id)
