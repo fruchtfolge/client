@@ -13,6 +13,7 @@
             <th>Bodenart</th>
             <th>Humusgehalt</th>
             <th>Hackfruchtfähig</th>
+            <th>Rotes Gebiet</th>
             <th>Dauergrünland</th>
           </tr>
         </thead>
@@ -50,6 +51,9 @@
             </td>
             <td style="text-align: center;">
               <input type="checkbox" :checked="plot.rootCrops" @change="save($event,plot,'rootCrops')">
+            </td>
+            <td style="text-align: center;">
+              <input type="checkbox" :checked="plot.duevEndangered" @change="save($event,plot,'rootCrops')">
             </td>
             <td style="text-align: center;">
               <input type="checkbox" :checked="plot.permPast" @change="save($event,plot,'permPast')">
