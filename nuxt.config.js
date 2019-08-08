@@ -91,7 +91,7 @@ module.exports = {
   */
   env: {
     baseUrl: 'http://localhost:3001/'
-    // baseUrl: 'http://fruchtfolge.agp.uni-bonn.de/api/' //
+    // baseUrl: 'http://fruchtfolge.agp.uni-bonn.de/api/'
   },
 
   router: {

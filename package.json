@@ -26,7 +26,7 @@
     "cross-env": "^5.2.0",
     "fold-to-ascii": "^4.0.0",
     "fruchtfolge-model": "^1.9.3",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "mapbox-gl": "^0.53.0",
     "mini-toastr": "^0.8.1",
     "nano": "^7.1.1",
