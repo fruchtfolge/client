@@ -484,12 +484,7 @@ export default {
           const store = this.$store
           if (!store.plots[0].matrix || force) {
             // add matrix of gross margins per crop and year to all plots
-            store.plots = await model.buildMatrix(
-              store.plots,
-              store.crops,
-              store.curYear,
-              store.curScenario
-            )
+            store.plots = await model.buildMatrix(store)
             // update current plots with newly created gross margins
             store.curPlots = store.plots.filter(plot => {
               return (

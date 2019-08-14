@@ -114,6 +114,10 @@
           LÖSCHEN
         </button>
       </div>
+      <h1 style="padding-top: 40px; font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
+        DüV 2020
+      </h1>
+      <input type="checkbox" :checked="duev2020" @change="save($event)">
     </div>
   </div>
 </template>
@@ -128,6 +132,7 @@ export default {
   data() {
     return {
       loading: false,
+      duev2020: false,
       status:
         'Flächenanträge werden von der Landwirtschaftskammer heruntergerladen.',
       interval: '',
@@ -201,6 +206,7 @@ export default {
       // allocate settings to reactive properties
       this.zidId = this.settings.zidId
       // this.zidPass = this.settings.zidPass
+      this.duev2020 = this.settings.duev2020
       this.curYear = this.settings.curYear
       this.street = this.settings.street
       this.postcode = this.settings.postcode
@@ -329,6 +335,12 @@ export default {
         this.loading = false
         console.log(e)
       }
+    },
+    async save(e) {
+      this.duev2020 = e.target.checked
+      const settings = await this.$db.get('settings')
+      settings.duev2020 = this.duev2020
+      await this.$db.put(settings)
     },
     getLatestElanYear(year, month) {
       // The Elan Download portal is generally updated on the 1st of September

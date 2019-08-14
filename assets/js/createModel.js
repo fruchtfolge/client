@@ -83,7 +83,11 @@ export default {
     if (curPlot.distance > 2) return value
     return value * -1
   },
-  buildMatrix(plots, crops, curYear, curScenario) {
+  buildMatrix(store) {
+    const plots = store.plots
+    const crops = store.crops
+    const curYear = store.curYear
+    const curScenario = store.curScenario
     // get median yield capacity
     const medianYieldCap = this.getMedianYieldCap(plots)
     // loop over all plots and create 'matrix' property where all
@@ -114,7 +118,10 @@ export default {
             return o.amount.value
           })
         )
-        const duevEndangered = plot.duevEndangered ? crop.yieldRed20 / 100 : 1
+        const duevEndangered =
+          plot.duevEndangered && store.settings.duev2020
+            ? crop.yieldRed20 / 100
+            : 1
         const correctedAmount = _.round(
           amount * cropFactAndRotBreak[0] * yieldCap * duevEndangered,
           2
