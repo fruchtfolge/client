@@ -196,6 +196,27 @@ export default {
     )
     return value
   },
+  avgYield(name) {
+    // find object for crop of last 3 years
+    const data = this.$store.crops.filter(c => {
+      return (
+        c.year >= this.curYear - 3 &&
+        c.scenario === this.$store.curScenario &&
+        c.name === name
+      )
+    })
+    // console.log(data)
+    if (data) {
+      const yieldSum = _.sum(
+        data.map(d => {
+          return _.sumBy(d.contributionMargin.revenues, o => {
+            return o.amount.value
+          })
+        })
+      )
+      return _.round(yieldSum / data.length, 1) * 10
+    }
+  },
   createInclude(properties) {
     let include = `* -------------------------------
 * Fruchtfolge Model - Include file
@@ -206,8 +227,8 @@ export default {
 
 * Static data
 set grossMarginAttr / price,yield,directCosts,variableCosts,fixCosts,grossMargin,revenue,distanceCosts,croppingFactor,yieldCap /;
-set plotAttr / size,distance,quality /;
-set cropAttr / rotBreak, maxShare, minSoilQuality, efaFactor, catchCropAfter, season/;
+set plotAttr / size,distance,quality,humusContent /;
+set cropAttr / rotBreak, maxShare, minSoilQuality, efaFactor, catchCropAfter, season, avgYield, duevYield, nMinAddition,/;
 set symbol / lt,gt /;
 
 set months /jan,feb,mrz,apr,mai,jun,jul,aug,sep,okt,nov,dez/;
@@ -251,6 +272,7 @@ set curYear(years) / ${properties.curYear} /;
     const plots_soilTypes = []
     const plots_rootCropCap = []
     const plots_permPast = []
+    const plots_duevEndangered = []
     const plots_excludedCrops = []
 
     soilTypes = _.uniqBy(properties.plots, 'soilType').map(type => {
@@ -263,7 +285,9 @@ set curYear(years) / ${properties.curYear} /;
         ` '${plot._id}'.size ${plot.size}\n '${plot._id}'.distance ${_.round(
           plot.distance,
           2
-        )}\n '${plot._id}'.quality ${plot.quality || 0}`
+        )}\n '${plot._id}'.quality ${plot.quality || 0} '${
+          plot._id
+        }'.humusContent ${plot.humusContent || 0}\n`
       )
       plots_soilTypes.push(` '${plot._id}'.'${plot.soilType}'`)
       if (plot.rootCrops) {
@@ -271,6 +295,9 @@ set curYear(years) / ${properties.curYear} /;
       }
       if (plot.permPast) {
         plots_permPast.push(` '${plot._id}' 'YES'`)
+      }
+      if (plot.duevEndangered) {
+        plots_duevEndangered.push(` '${plot._id}' 'YES'`)
       }
       if (plot.excludedCrops && plot.excludedCrops.length > 0) {
         plot.excludedCrops.forEach(crop => {
@@ -319,7 +346,13 @@ set curYear(years) / ${properties.curYear} /;
     const permPastCropCodes = [459, 480, 492, 57, 567, 572, 592, 972]
 
     function createCropPropertyString(crop) {
-      let props = ['rotBreak', 'maxShare', 'minSoilQuality', 'efaFactor']
+      let props = [
+        'rotBreak',
+        'maxShare',
+        'minSoilQuality',
+        'efaFactor',
+        'duevYield'
+      ]
       props = props.map(prop => {
         return `'${crop.name}'.${prop} ${crop[prop]}`
       })
@@ -487,6 +520,10 @@ set curYear(years) / ${properties.curYear} /;
     )
     include += this.save('set plots_rootCropCap(curPlots)', plots_rootCropCap)
     include += this.save('set plots_permPast(curPlots)', plots_permPast)
+    include += this.save(
+      'set plots_duevEndangered(curPlots)',
+      plots_duevEndangered
+    )
     /* include += this.save(
       'set plots_excludedCrops(curPlots,crops)',
       plots_excludedCrops
