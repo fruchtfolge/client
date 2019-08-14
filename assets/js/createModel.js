@@ -114,8 +114,9 @@ export default {
             return o.amount.value
           })
         )
+        const duevEndangered = plot.duevEndangered ? crop.yieldRed20 / 100 : 1
         const correctedAmount = _.round(
-          amount * cropFactAndRotBreak[0] * yieldCap,
+          amount * cropFactAndRotBreak[0] * yieldCap * duevEndangered,
           2
         )
         let price
@@ -152,6 +153,7 @@ export default {
         plot.matrix.catchCropCosts = this.catchCropCosts(plot)
         plot.matrix[crop.year][crop.name] = {
           croppingFactor: cropFactAndRotBreak[0],
+          yieldRed20: duevEndangered,
           rotBreakHeld: cropFactAndRotBreak[1],
           name: crop.name,
           active: crop.active,
@@ -196,16 +198,15 @@ export default {
     )
     return value
   },
-  avgYield(name) {
+  avgYield(name, store) {
     // find object for crop of last 3 years
-    const data = this.$store.crops.filter(c => {
+    const data = store.crops.filter(c => {
       return (
-        c.year >= this.curYear - 3 &&
-        c.scenario === this.$store.curScenario &&
+        c.year >= store.curYear - 3 &&
+        c.scenario === store.curScenario &&
         c.name === name
       )
     })
-    // console.log(data)
     if (data) {
       const yieldSum = _.sum(
         data.map(d => {
@@ -228,9 +229,37 @@ export default {
 * Static data
 set grossMarginAttr / price,yield,directCosts,variableCosts,fixCosts,grossMargin,revenue,distanceCosts,croppingFactor,yieldCap /;
 set plotAttr / size,distance,quality,humusContent /;
-set cropAttr / rotBreak, maxShare, minSoilQuality, efaFactor, catchCropAfter, season, avgYield, duevYield, nMinAddition,/;
+set cropAttr / rotBreak, maxShare, minSoilQuality, efaFactor, catchCropAfter, season, duevYieldLvl, nRequirement, nMaxAddition, nMinSubtraction, prevCropEff, pWithdraw, pHarvestLeft, hnv/;
+set cropType / catchCrop, Blattfrucht, Halmfrucht /;
 set symbol / lt,gt /;
+set soilTypes /
+  "Reinsande (ss)"
+  "Lehmsande (ls)"
+  "Schluffsande (us)"
+  "Sandlehme (sl)"
+  "Normallehme (ll)"
+  "Tonlehme (tl)"
+  "Lehmschluffe (lu)"
+  "Tonschluffe (tu)"
+  "Schlufftone (ut)"
+  "Moore (mo)"
+  "Watt"
+  "Siedlung"
+  "Abbauflächen"
+  "Gewässer"
+/;
 
+set humusContents /
+  '1 - <2%'
+  '2 - <3%'
+  '3 - <4%'
+  '4 - <6%'
+  '6 - <8%'
+  '8 - <11,5%'
+  '11,5 - <15%'
+  '15 - <30%'
+  '≥30%'
+/;
 set months /jan,feb,mrz,apr,mai,jun,jul,aug,sep,okt,nov,dez/;
 set halfMonths / jan1,jan2,feb1,feb2,MRZ1,MRZ2,apr1,apr2,mai1,mai2,jun1,jun2,jul1,jul2,aug1,aug2,sep1,sep2,okt1,okt2,nov1,nov2,dez1,dez2 /;
 set months_halfMonths(months,halfMonths) /
@@ -267,17 +296,14 @@ set curYear(years) / ${properties.curYear} /;
 
     // create plot related data
     const curPlots = []
-    let soilTypes = []
+
     const p_plotData = []
     const plots_soilTypes = []
+    const plots_humusContent = []
     const plots_rootCropCap = []
     const plots_permPast = []
     const plots_duevEndangered = []
     const plots_excludedCrops = []
-
-    soilTypes = _.uniqBy(properties.plots, 'soilType').map(type => {
-      return `'${type.soilType}'`
-    })
 
     properties.curPlots.forEach(plot => {
       curPlots.push(` '${plot._id}'`)
@@ -285,10 +311,9 @@ set curYear(years) / ${properties.curYear} /;
         ` '${plot._id}'.size ${plot.size}\n '${plot._id}'.distance ${_.round(
           plot.distance,
           2
-        )}\n '${plot._id}'.quality ${plot.quality || 0} '${
-          plot._id
-        }'.humusContent ${plot.humusContent || 0}\n`
+        )}\n '${plot._id}'.quality ${plot.quality || 0}`
       )
+      plots_humusContent.push(` '${plot._id}'.'${plot.humusContent}'`)
       plots_soilTypes.push(` '${plot._id}'.'${plot.soilType}'`)
       if (plot.rootCrops) {
         plots_rootCropCap.push(` '${plot._id}' 'YES'`)
@@ -312,6 +337,9 @@ set curYear(years) / ${properties.curYear} /;
     const cropGroup = [` ''`]
     const crops_cropGroup = [` ''.''`]
     const p_cropData = []
+    const p_nmin = []
+    const p_avgYield = []
+    const crops_cropType = []
     const crops_rootCrop = []
     const crops_catchCrop = []
     const crops_summer = []
@@ -351,7 +379,14 @@ set curYear(years) / ${properties.curYear} /;
         'maxShare',
         'minSoilQuality',
         'efaFactor',
-        'duevYield'
+        'duevYieldLvl',
+        'nRequirement',
+        'nMaxAddition',
+        'nMinSubtraction',
+        'prevCropEff',
+        'pWithdraw',
+        'pHarvestLeft',
+        'hnv'
       ]
       props = props.map(prop => {
         return `'${crop.name}'.${prop} ${crop[prop]}`
@@ -368,7 +403,8 @@ set curYear(years) / ${properties.curYear} /;
       }
       // add link between crop and crop group
       crops_cropGroup.push(` '${crop.name}'.'${crop.cropGroup}'`)
-
+      p_avgYield.push(` '${crop.name}' ${this.avgYield(crop.name, properties)}`)
+      crops_cropType.push(` '${crop.name}'.'${crop.cropType}'`)
       // add current crop to possible list of crops
       curCrops.push(` '${crop.name}'`)
       // declare crop as a permanent pasture crop if within the range of
@@ -378,6 +414,20 @@ set curYear(years) / ${properties.curYear} /;
       }
       // add all crop properties to p_cropData parameter
       p_cropData.push(createCropPropertyString(crop))
+      console.log(crop)
+      p_nmin.push(
+        Object.keys(crop.nminDefault)
+          .map(soil => {
+            return Object.keys(crop.nminDefault[soil])
+              .map(cropType => {
+                return ` '${crop.name}'.'${soil}'.'${cropType}' ${
+                  crop.nminDefault[soil][cropType]
+                }`
+              })
+              .join('\n')
+          })
+          .join('\n')
+      )
       if (crop.rootCrop) {
         crops_rootCrop.push(` '${crop.name}' YES`)
       }
@@ -510,13 +560,16 @@ set curYear(years) / ${properties.curYear} /;
     }
 
     // build include file
-    include += this.save('set soilTypes', soilTypes)
     include += this.save('set plots', plots)
     include += this.save('set curPlots(plots)', curPlots)
     include += this.save('parameter p_plotData(curPlots,plotAttr)', p_plotData)
     include += this.save(
       'set plots_soilTypes(curPlots,soilTypes)',
       plots_soilTypes
+    )
+    include += this.save(
+      'set plots_humusContent(curPlots,humusContents)',
+      plots_humusContent
     )
     include += this.save('set plots_rootCropCap(curPlots)', plots_rootCropCap)
     include += this.save('set plots_permPast(curPlots)', plots_permPast)
@@ -537,7 +590,16 @@ set curYear(years) / ${properties.curYear} /;
       'set crops_cropGroup(curCrops,cropGroup)',
       crops_cropGroup
     )
+    include += this.save(
+      'set crops_cropType(curCrops,cropType)',
+      crops_cropType
+    )
     include += this.save('parameter p_cropData(curCrops,cropAttr)', p_cropData)
+    include += this.save('parameter p_avgYield(curCrops)', p_avgYield)
+    include += this.save(
+      'parameter p_nmin(curCrops,soilTypes,cropType)',
+      p_nmin
+    )
     include += this.save('set crops_rootCrop(curCrops)', crops_rootCrop)
     include += this.save('set crops_catchCrop(curCrops)', crops_catchCrop)
     include += this.save('set crops_summer(curCrops)', crops_summer)
@@ -580,6 +642,7 @@ set curYear(years) / ${properties.curYear} /;
 
     // load base model from fruchtfolge-model
     const base = require('fruchtfolge-model')
+    console.log(include)
     return include.concat(base)
   }
 }

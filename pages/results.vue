@@ -97,6 +97,16 @@
                           }}
                         </td>
                       </tr>
+                      <tr v-if="plot.duevEndangered">
+                        <td>Korrektur Rotes Gebiet</td>
+                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'yieldRed20', plot)">
+                          {{
+                            ((plot.matrix[curYear][plot.selectedCrop].yieldRed20
+                              * plot.matrix[curYear][plot.selectedCrop].amount)
+                              - plot.matrix[curYear][plot.selectedCrop].amount).toFixed(2)
+                          }}
+                        </td>
+                      </tr>
                       <tr>
                         <td style="font-weight: bold;">
                           Korrigierter Ertrag
@@ -105,7 +115,8 @@
                           {{
                             (plot.matrix[curYear][plot.selectedCrop].amount
                               * plot.matrix[curYear][plot.selectedCrop].yieldCap
-                              * plot.matrix[curYear][plot.selectedCrop].croppingFactor).toFixed(2)
+                              * plot.matrix[curYear][plot.selectedCrop].croppingFactor
+                              * plot.matrix[curYear][plot.selectedCrop].yieldRed20).toFixed(2)
                           }}
                         </td>
                       </tr>

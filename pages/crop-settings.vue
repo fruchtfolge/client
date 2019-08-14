@@ -129,6 +129,12 @@
                 {{ selectedCrop.pHarvestLeft }}
               </td>
             </tr>
+            <tr>
+              <td>Ertragspotenzial bei 20% reduzierter Düngung</td>
+              <td contenteditable="true" @blur="save($event,'yieldRed20')">
+                {{ selectedCrop.yieldRed20 }}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
