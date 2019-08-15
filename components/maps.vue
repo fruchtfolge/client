@@ -90,6 +90,10 @@ export default {
   },
   destroyed() {
     this.$bus.$off('changeCurrents')
+    this.$bus.$off('resize')
+    this.$bus.$off('flyTo')
+    this.$bus.$off('drawPlot')
+    this.map.remove()
   },
   methods: {
     createMap(settings) {

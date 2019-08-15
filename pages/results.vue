@@ -286,6 +286,7 @@
         </div>
       </div>
       <download class="excel-download" :data="curPlots" :year="curYear" />
+      <resultsMap :data="curPlots" :shares="curShares" />
     </div>
     <div v-else style="text-align: center; margin-top: 80px;">
       <h3>
@@ -306,7 +307,8 @@ export default {
     grossMarginTimeline: () => import('~/components/grossMarginTimeline.vue'),
     timeRequirement: () => import('~/components/timeRequirement.vue'),
     deviationOptimum: () => import('~/components/deviation_optimum.vue'),
-    download: () => import('~/components/download.vue')
+    download: () => import('~/components/download.vue'),
+    resultsMap: () => import('~/components/results_map.vue')
   },
   data() {
     return {

@@ -146,7 +146,11 @@ export default {
         const revenue = _.round(price * correctedAmount, 2)
         const directCosts = _.round(
           _.sumBy(crop.contributionMargin.directCosts, o => {
-            return o.total.value
+            if (store.settings.duev2020 && o.name.includes('Kalkammon')) {
+              return o.amount.value * 0.8 * o.price.value
+            } else {
+              return o.total.value
+            }
           }),
           2
         )
