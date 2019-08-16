@@ -7,6 +7,7 @@
 </template>
 <script>
 import Chart from 'chart.js'
+import 'chartjs-plugin-deferred'
 
 export default {
   props: {
@@ -67,6 +68,11 @@ export default {
           responsive: false,
           legend: {
             position: 'bottom'
+          },
+          plugins: {
+            deferred: {
+              delay: 250 // delay of 500 ms after the canvas is considered inside the viewport
+            }
           },
           tooltips: {
             callbacks: {

@@ -7,6 +7,13 @@
         <span :style="{ backgroundColor: crop.backgroundColor}" />
         {{ crop.name }}
       </div>
+      <div v-if="duev2020">
+        <h4 style="margin-top: 10px;">
+          Sonstige
+        </h4>
+        <span style="backgroundColor: #FEE8D7;" />
+        Belastete Gebiete durch Nitrat (§ 13 DüV)
+      </div>
     </div>
   </div>
 </template>
@@ -25,7 +32,9 @@ export default {
       required: true
     }
   },
-  data: () => ({}),
+  data: () => ({
+    duev2020: false
+  }),
   watch: {
     shares(newShares, oldShares) {
       this.removePlots(oldShares)
@@ -34,8 +43,10 @@ export default {
   },
   async mounted() {
     const settings = await this.$db.get('settings')
+    this.duev2020 = settings.duev2020
     this.createMap(settings)
     this.resultsMap.on('load', () => {
+      // if (this.duev2020) this.addDuevEndangered()
       this.drawPlots()
     })
     this.$bus.$on('resize', () => {
@@ -56,11 +67,12 @@ export default {
         center: settings.home || [7.685235, 51.574318],
         zoom: settings.home ? 14 : 8
       })
-
+      /*
       this.resultsMap.addControl(
         new mapboxgl.NavigationControl(),
         'bottom-left'
       )
+      */
     },
     drawPlots() {
       // create a feacture collection out of all plots, add currently
@@ -89,7 +101,7 @@ export default {
           source: 'plots',
           paint: {
             'fill-color': crop.backgroundColor,
-            'fill-opacity': 0.8
+            'fill-opacity': 1
           },
           filter: ['==', 'crop', crop.name]
         })
@@ -128,6 +140,22 @@ export default {
       this.resultsMap.on('mouseleave', crop, () => {
         this.resultsMap.getCanvas().style.cursor = ''
         popup.remove()
+      })
+    },
+    addDuevEndangered() {
+      this.resultsMap.addLayer({
+        id: 'rote-gebiete',
+        type: 'raster',
+        source: {
+          type: 'raster',
+          tiles: [
+            `${
+              process.env.baseUrl
+            }maps/duev?BBOX={bbox-epsg-3857}&FORMAT=image/png&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&CRS=EPSG:25832&TRANSPARENT=TRUE&width=256&height=256&LAYERS=belastete_gebiete_nitrat`
+          ],
+          tileSize: 256
+        },
+        paint: {}
       })
     },
     removePlots(layers) {

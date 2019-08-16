@@ -286,7 +286,7 @@
         </div>
       </div>
       <download class="excel-download" :data="curPlots" :year="curYear" />
-      <resultsMap :data="curPlots" :shares="curShares" />
+      <resultsMap v-if="renderResultsMap" :data="curPlots" :shares="curShares" />
     </div>
     <div v-else style="text-align: center; margin-top: 80px;">
       <h3>
@@ -320,6 +320,7 @@ export default {
       infeasible: false,
       warnings: undefined,
       selection: undefined,
+      renderResultsMap: false,
       totLand: 0,
       sortKey: '',
       shares: {},
@@ -451,6 +452,10 @@ export default {
     setTimeout(() => {
       this.update()
     }, 200)
+
+    setTimeout(() => {
+      this.renderResultsMap = true
+    }, 2000)
 
     this.$bus.$on('changeCurrents', _.debounce(this.update, 200))
   },
