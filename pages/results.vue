@@ -383,6 +383,18 @@ export default {
     },
     curShares() {
       const colors = [
+        '#018571',
+        '#80cdc1',
+        '#dfc27d',
+        '#a6611a',
+        '#BBE29D',
+        '#9DD5C0',
+        '#B5DCE1',
+        '#D0D1D3',
+        '#B5DCE1'
+      ]
+      /*
+      const colors = [
         '#294D4A',
         '#4A6D7C',
         '#7690A5',
@@ -393,6 +405,7 @@ export default {
         '#D0D1D3',
         '#B5DCE1'
       ]
+      */
       // calculate crop shares
       const o = {}
       if (!this.curPlots) return o

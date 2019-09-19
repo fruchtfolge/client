@@ -124,9 +124,12 @@ export default {
         // use crop that was acutally grown over selected crop
         // const cropCode = plot.crop ? plot.crop : plot.selectedCrop
         const cropName = plot.selectedCrop
-        console.log(cropName)
+        const prevCropName = plot[this.curYear - 1]
+        // console.log(cropName)
         const crop = _.find(this.crops, ['name', cropName])
         if (!crop) return
+        const prevCrop = _.find(this.crops, ['name', prevCropName])
+        if (!prevCrop) console.log(prevCropName, cropName)
         const data = {
           avgYield: this.avgYield(cropName)
             ? this.avgYield(cropName)
@@ -137,21 +140,23 @@ export default {
             crop.duevYieldLvl,
             crop
           ),
-          nMinDiff: 0,
+          nMinDiff: this.nmin(plot, crop, prevCrop),
           humusContent: this.humusContent(plot.humusContent),
           nFertPrevYear: 0,
-          nPrevCrop: 0
+          nPrevCrop: prevCrop ? prevCrop.prevCropEff * -1 : 0
         }
-        data.sum =
+        data.sum = _.round(
           data.nReq +
-          data.nYieldDiff +
-          data.nMinDiff +
-          data.humusContent +
-          data.nFertPrevYear +
-          data.nPrevCrop
+            data.nYieldDiff +
+            data.nMinDiff +
+            data.humusContent +
+            data.nFertPrevYear +
+            data.nPrevCrop,
+          0
+        )
 
         this.nData[plot._id] = data
-        console.log(data)
+        // console.log(data)
       })
     },
     humusContent(content) {
@@ -167,6 +172,13 @@ export default {
       } else {
         return -20
       }
+    },
+    nmin(plot, crop, prevCrop) {
+      if ((!prevCrop && !plot.catchCrop) || !plot.soilType) return 0
+      let type = ''
+      if (plot.catchCrop) type = 'catchCrop'
+      else type = prevCrop.cropType
+      return Number(crop.nminDefault[plot.soilType][type]) * -1
     },
     nYieldDiff(avgYield, duevYield, crop) {
       let deviation = 0

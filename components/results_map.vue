@@ -2,17 +2,19 @@
   <div class="results-container">
     <div id="results-map" />
     <div class="legend">
-      <h4>Kulturen</h4>
-      <div v-for="crop in shares" :key="`layer_${crop.name}`">
+      <h4><b>Kulturen</b></h4>
+      <div v-for="crop in shares" :key="`layer_${crop.name}`" class="layer">
         <span :style="{ backgroundColor: crop.backgroundColor}" />
         {{ crop.name }}
       </div>
       <div v-if="duev2020">
         <h4 style="margin-top: 10px;">
-          Sonstige
+          <b>Sonstige</b>
         </h4>
-        <span style="backgroundColor: #FEE8D7;" />
-        Belastete Gebiete durch Nitrat (§ 13 DüV)
+        <div class="layer">
+          <span style="backgroundColor: #FEE8D7;" />
+          Belastete Gebiete durch Nitrat (§ 13 DüV)
+        </div>
       </div>
     </div>
   </div>
@@ -46,7 +48,7 @@ export default {
     this.duev2020 = settings.duev2020
     this.createMap(settings)
     this.resultsMap.on('load', () => {
-      // if (this.duev2020) this.addDuevEndangered()
+      if (this.duev2020) this.addDuevEndangered()
       this.drawPlots()
     })
     this.$bus.$on('resize', () => {
@@ -102,6 +104,17 @@ export default {
           paint: {
             'fill-color': crop.backgroundColor,
             'fill-opacity': 1
+          },
+          filter: ['==', 'crop', crop.name]
+        })
+        // also add an outline
+        this.resultsMap.addLayer({
+          id: crop.name + '_line',
+          type: 'line',
+          source: 'plots',
+          paint: {
+            'line-color': 'white',
+            'line-width': 2
           },
           filter: ['==', 'crop', crop.name]
         })
@@ -161,6 +174,7 @@ export default {
     removePlots(layers) {
       layers.forEach(crop => {
         this.resultsMap.removeLayer(crop.name)
+        this.resultsMap.removeLayer(crop.name + '_line')
       })
       this.resultsMap.removeSource('plots')
     }
@@ -182,12 +196,12 @@ export default {
 }
 
 .legend {
+  /*border-radius: 3px;*/
+  /*box-shadow: 0 1px 2px rgba(0,0,0,0.10);*/
   background-color: #fff;
-  border-radius: 3px;
   top: 10px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.10);
-  font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-  padding: 10px;
+  font: 14px/20px 'Open Sans', Arial, Helvetica, sans-serif;
+  padding: 15px;
   position: absolute;
   left: 10px;
   z-index: 1;
@@ -198,11 +212,16 @@ export default {
 }
  
 .legend div span {
-  border-radius: 50%;
+  /* border-radius: 50%; */
   display: inline-block;
-  height: 10px;
-  margin-right: 5px;
-  width: 10px;
+  height: 15px;
+  margin-right: 10px;
+  width: 15px;
 }
 
+.layer {
+  display: flex;
+  align-items: center;
+  line-height: 25px;
+}
 </style>
