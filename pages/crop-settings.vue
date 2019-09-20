@@ -88,31 +88,37 @@
           </thead>
           <tbody>
             <tr>
-              <td>Ertragsniveau nach Tab. X [dt/ha]</td>
+              <td>Ertragsniveau nach Tab. 2 bzw. 4 [dt/ha]</td>
               <td contenteditable="true" @blur="save($event,'duevYieldLvl')">
                 {{ selectedCrop.duevYieldLvl }}
               </td>
             </tr>
             <tr>
-              <td>N-Düngebedarf nach Tab. X [kg/ha]</td>
+              <td>N-Düngebedarf nach Tab. 2 bzw. 4 [kg/ha]</td>
               <td contenteditable="true" @blur="save($event,'nRequirement')">
                 {{ selectedCrop.nRequirement }}
               </td>
             </tr>
             <tr>
-              <td>Maximaler N-Bedarfszuschlag bei Mehrertrag je dt (Tab. X) [kg/ha]</td>
+              <td>Maximaler N-Bedarfszuschlag bei Mehrertrag je dt (Tab. 3) [kg/ha]</td>
               <td contenteditable="true" @blur="save($event,'nMaxAddition')">
                 {{ selectedCrop.nMaxAddition }}
               </td>
             </tr>
             <tr>
-              <td>Minimaler N-Bedarfsabzug bei Minderertrag je dt (Tab. X) [kg/ha]</td>
+              <td>Minimaler N-Bedarfsabzug bei Minderertrag je dt (Tab. 3) [kg/ha]</td>
               <td contenteditable="true" @blur="save($event,'nMinSubtraction')">
                 {{ selectedCrop.nMinSubtraction }}
               </td>
             </tr>
             <tr>
-              <td>N-Bedarfsabzug wenn Vorfrucht (Tab. X) [kg/ha]</td>
+              <td>Durchschnittliche Menge N aus organischer Düngung [kg/ha]</td>
+              <td contenteditable="true" @blur="save($event,'nFertPrevYear')">
+                {{ selectedCrop.nFertPrevYear || 0 }}
+              </td>
+            </tr>
+            <tr>
+              <td>N-Bedarfsabzug wenn Vorfrucht (Tab. 7 bzw. 4) [kg/ha]</td>
               <td contenteditable="true" @blur="save($event,'prevCropEff')">
                 {{ selectedCrop.prevCropEff }}
               </td>
@@ -130,7 +136,7 @@
               </td>
             </tr>
             <tr>
-              <td>Ertragspotenzial bei 20% reduzierter Düngung</td>
+              <td>Ertragspotenzial bei 20% reduzierter Düngung [%]</td>
               <td contenteditable="true" @blur="save($event,'yieldRed20')">
                 {{ selectedCrop.yieldRed20 }}
               </td>

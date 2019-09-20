@@ -98,6 +98,7 @@ export default {
       if (plot.quality && !isNaN(plot.quality) && plot.quality !== 0) {
         yieldCap = _.round(plot.quality / medianYieldCap, 2)
       }
+      const prevCrop = _.find(crops, ['name', plot[curYear - 1]])
       crops.forEach(crop => {
         // don't consider more than 10 years prior to the optimisation horizon
         if (
@@ -160,7 +161,6 @@ export default {
           }),
           2
         )
-        const prevCrop = 
         const distanceCosts = this.calculateDistanceCosts(plot, correctedAmount)
         plot.matrix.catchCropCosts = this.catchCropCosts(plot)
         plot.matrix[crop.year][crop.name] = {
@@ -198,18 +198,18 @@ export default {
           ),
           size: plot.size,
           // fertilizer ordinance data
-          avgYield: this.avgYield(crop.name)
-            ? this.avgYield(crop.name)
+          avgYield: this.avgYield(crop.name, store)
+            ? this.avgYield(crop.name, store)
             : crop.duevYieldLvl,
           nReq: crop.nRequirement,
           nYieldDiff: this.nYieldDiff(
-            this.avgYield(crop.name),
+            this.avgYield(crop.name, store),
             crop.duevYieldLvl,
             crop
           ),
           nMinDiff: this.nmin(plot, crop, prevCrop),
           humusContent: this.humusContent(plot.humusContent),
-          nFertPrevYear: 0,
+          nFertPrevYear: crop.nFertPrevYear ? crop.nFertPrevYear / -10 : 0,
           nPrevCrop: prevCrop ? prevCrop.prevCropEff * -1 : 0
         }
       })
@@ -246,27 +246,6 @@ export default {
       return _.round(crop.nMaxAddition * deviation, 1)
     } else {
       return _.round(crop.nMinSubtraction * deviation, 1)
-    }
-  },
-  avgYield(name) {
-    // find object for crop of last 3 years
-    const data = this.$store.crops.filter(c => {
-      return (
-        c.year >= this.curYear - 3 &&
-        c.scenario === this.$store.curScenario &&
-        c.name === name
-      )
-    })
-    // console.log(data)
-    if (data) {
-      const yieldSum = _.sum(
-        data.map(d => {
-          return _.sumBy(d.contributionMargin.revenues, o => {
-            return o.amount.value
-          })
-        })
-      )
-      return _.round(yieldSum / data.length, 1) * 10
     }
   },
   catchCropCosts(plot) {

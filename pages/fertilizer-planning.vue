@@ -85,15 +85,10 @@ export default {
   computed: {
     dataAvail() {
       let bool = true
-      console.log(this.nData)
       if (this.nData && this.plots && this.plots.length) {
         this.plots.forEach(p => {
-          if (!this.nData[p._id]) {
+          if (!p.matrix) {
             console.log(p)
-            bool = false
-          }
-          if (!p.crop && !p.selectedCrop) {
-            console.log(p._id, 'crop')
             bool = false
           }
         })
@@ -116,35 +111,13 @@ export default {
       this.$set(this, 'crops', this.$store.curCrops)
       this.$set(this, 'curYear', this.$store.curYear)
       this.calcData()
-      // console.log(this.nData)
     },
     calcData() {
       if (!this.plots) return
       this.plots.forEach(plot => {
         // use crop that was acutally grown over selected crop
         // const cropCode = plot.crop ? plot.crop : plot.selectedCrop
-        const cropName = plot.selectedCrop
-        const prevCropName = plot[this.curYear - 1]
-        // console.log(cropName)
-        const crop = _.find(this.crops, ['name', cropName])
-        if (!crop) return
-        const prevCrop = _.find(this.crops, ['name', prevCropName])
-        if (!prevCrop) console.log(prevCropName, cropName)
-        const data = {
-          avgYield: this.avgYield(cropName)
-            ? this.avgYield(cropName)
-            : crop.duevYieldLvl,
-          nReq: crop.nRequirement,
-          nYieldDiff: this.nYieldDiff(
-            this.avgYield(cropName),
-            crop.duevYieldLvl,
-            crop
-          ),
-          nMinDiff: this.nmin(plot, crop, prevCrop),
-          humusContent: this.humusContent(plot.humusContent),
-          nFertPrevYear: 0,
-          nPrevCrop: prevCrop ? prevCrop.prevCropEff * -1 : 0
-        }
+        const data = plot.matrix[this.curYear][plot.selectedCrop]
         data.sum = _.round(
           data.nReq +
             data.nYieldDiff +
@@ -154,63 +127,8 @@ export default {
             data.nPrevCrop,
           0
         )
-
         this.nData[plot._id] = data
-        // console.log(data)
       })
-    },
-    humusContent(content) {
-      if (
-        !content ||
-        content === '1 - <2%' ||
-        content === '2 - <3%' ||
-        content === '3 - <4%' ||
-        content === 'Siedlungen' ||
-        content === 'nicht bestimmt'
-      ) {
-        return 0
-      } else {
-        return -20
-      }
-    },
-    nmin(plot, crop, prevCrop) {
-      if ((!prevCrop && !plot.catchCrop) || !plot.soilType) return 0
-      let type = ''
-      if (plot.catchCrop) type = 'catchCrop'
-      else type = prevCrop.cropType
-      return Number(crop.nminDefault[plot.soilType][type]) * -1
-    },
-    nYieldDiff(avgYield, duevYield, crop) {
-      let deviation = 0
-      if (avgYield) {
-        deviation = avgYield - duevYield
-      }
-      if (deviation >= 0) {
-        return _.round(crop.nMaxAddition * deviation, 1)
-      } else {
-        return _.round(crop.nMinSubtraction * deviation, 1)
-      }
-    },
-    avgYield(name) {
-      // find object for crop of last 3 years
-      const data = this.$store.crops.filter(c => {
-        return (
-          c.year >= this.curYear - 3 &&
-          c.scenario === this.$store.curScenario &&
-          c.name === name
-        )
-      })
-      // console.log(data)
-      if (data) {
-        const yieldSum = _.sum(
-          data.map(d => {
-            return _.sumBy(d.contributionMargin.revenues, o => {
-              return o.amount.value
-            })
-          })
-        )
-        return _.round(yieldSum / data.length, 1) * 10
-      }
     },
     importPrev() {
       this.waiting = true
