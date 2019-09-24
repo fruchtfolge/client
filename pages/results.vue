@@ -298,7 +298,8 @@
 </template>
 <script>
 import cultures from '~/assets/js/cultures'
-import model from '~/assets/js/createModel.js'
+import buildMatrix from '~/assets/js/model/matrix.js'
+import createInclude from '~/assets/js/model/include.js'
 
 export default {
   components: {
@@ -504,7 +505,7 @@ export default {
           const store = this.$store
           if (!store.plots[0].matrix || force) {
             // add matrix of gross margins per crop and year to all plots
-            store.plots = await model.buildMatrix(store)
+            store.plots = await buildMatrix(store)
             // update current plots with newly created gross margins
             store.curPlots = store.plots.filter(plot => {
               return (
@@ -514,7 +515,7 @@ export default {
             })
           }
           // create single farm model from user data in GAMS format
-          const gams = model.createInclude(store)
+          const gams = createInclude(store)
           console.log({ a: gams })
           // solve the model
           const { data } = await this.$axios.post(

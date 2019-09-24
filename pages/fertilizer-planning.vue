@@ -118,16 +118,7 @@ export default {
         // use crop that was acutally grown over selected crop
         // const cropCode = plot.crop ? plot.crop : plot.selectedCrop
         const data = plot.matrix[this.curYear][plot.selectedCrop]
-        data.sum = _.round(
-          data.nReq +
-            data.nYieldDiff +
-            data.nMinDiff +
-            data.humusContent +
-            data.nFertPrevYear +
-            data.nPrevCrop,
-          0
-        )
-        this.nData[plot._id] = data
+        data.sum = this.nData[plot._id] = data
       })
     },
     importPrev() {
