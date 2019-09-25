@@ -19,7 +19,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(plot, i) in plots" :key="i">
+          <tr v-for="(plot, i) in filteredPlots" :key="i">
             <td style="text-align: center;">
               {{ plot.name }}
             </td>
@@ -48,7 +48,7 @@
               {{ nData[plot._id].nPrevCrop }}
             </td>
             <td style="text-align: center;">
-              {{ nData[plot._id].sum }}
+              {{ nData[plot._id].nSum }}
             </td>
           </tr>
         </tbody>
@@ -88,7 +88,6 @@ export default {
       if (this.nData && this.plots && this.plots.length) {
         this.plots.forEach(p => {
           if (!p.matrix) {
-            console.log(p)
             bool = false
           }
         })
@@ -96,6 +95,13 @@ export default {
         bool = false
       }
       return bool
+    },
+    filteredPlots() {
+      const filtered = this.plots.filter(
+        p => p.matrix[this.curYear][p.selectedCrop].nSum > 0
+      )
+      console.log(filtered)
+      return filtered
     }
   },
   created() {
@@ -117,8 +123,7 @@ export default {
       this.plots.forEach(plot => {
         // use crop that was acutally grown over selected crop
         // const cropCode = plot.crop ? plot.crop : plot.selectedCrop
-        const data = plot.matrix[this.curYear][plot.selectedCrop]
-        data.sum = this.nData[plot._id] = data
+        this.nData[plot._id] = plot.matrix[this.curYear][plot.selectedCrop]
       })
     },
     importPrev() {

@@ -1,12 +1,13 @@
 /* eslint camelcase: 0 */
 import cultures from '~/assets/js/cultures'
+import helpers from '~/assets/js/model/helpers'
 
 export default function createInclude(properties) {
   let include = `* -------------------------------
 * Fruchtfolge Model - Include file
 * Institute for Food an Resource Economics
 * University of Bonn
-* (c) Christoph Pahmeyer, ${this.getYear()}
+* (c) Christoph Pahmeyer, ${helpers.getYear()}
 * -------------------------------
 
 * Static data
@@ -172,6 +173,7 @@ set curYear(years) / ${properties.curYear} /;
       'hnv'
     ]
     props = props.map(prop => {
+      if (!crop[prop]) crop[prop] = 0
       return `'${crop.name}'.${prop} ${crop[prop]}`
     })
     props = props.join('\n')
@@ -186,7 +188,9 @@ set curYear(years) / ${properties.curYear} /;
     }
     // add link between crop and crop group
     crops_cropGroup.push(` '${crop.name}'.'${crop.cropGroup}'`)
-    p_avgYield.push(` '${crop.name}' ${this.avgYield(crop.name, properties)}`)
+    p_avgYield.push(
+      ` '${crop.name}' ${helpers.avgYield(crop.name, properties)}`
+    )
     crops_cropType.push(` '${crop.name}'.'${crop.cropType}'`)
     // add current crop to possible list of crops
     curCrops.push(` '${crop.name}'`)
@@ -343,72 +347,81 @@ set curYear(years) / ${properties.curYear} /;
   }
 
   // build include file
-  include += this.save('set plots', plots)
-  include += this.save('set curPlots(plots)', curPlots)
-  include += this.save('parameter p_plotData(curPlots,plotAttr)', p_plotData)
-  include += this.save(
+  include += helpers.save('set plots', plots)
+  include += helpers.save('set curPlots(plots)', curPlots)
+  include += helpers.save('parameter p_plotData(curPlots,plotAttr)', p_plotData)
+  include += helpers.save(
     'set plots_soilTypes(curPlots,soilTypes)',
     plots_soilTypes
   )
-  include += this.save(
+  include += helpers.save(
     'set plots_humusContent(curPlots,humusContents)',
     plots_humusContent
   )
-  include += this.save('set plots_rootCropCap(curPlots)', plots_rootCropCap)
-  include += this.save('set plots_permPast(curPlots)', plots_permPast)
-  include += this.save(
+  include += helpers.save('set plots_rootCropCap(curPlots)', plots_rootCropCap)
+  include += helpers.save('set plots_permPast(curPlots)', plots_permPast)
+  include += helpers.save(
     'set plots_duevEndangered(curPlots)',
     plots_duevEndangered
   )
-  /* include += this.save(
+  /* include += helpers.save(
     'set plots_excludedCrops(curPlots,crops)',
     plots_excludedCrops
   ) */
 
-  include += this.save('set crops', crops)
-  include += this.save('set curCrops(crops)', curCrops)
-  include += this.save('set permPastCrops(curCrops)', permPastCrops)
-  include += this.save('set cropGroup', cropGroup)
-  include += this.save(
+  include += helpers.save('set crops', crops)
+  include += helpers.save('set curCrops(crops)', curCrops)
+  include += helpers.save('set permPastCrops(curCrops)', permPastCrops)
+  include += helpers.save('set cropGroup', cropGroup)
+  include += helpers.save(
     'set crops_cropGroup(curCrops,cropGroup)',
     crops_cropGroup
   )
-  include += this.save('set crops_cropType(curCrops,cropType)', crops_cropType)
-  include += this.save('parameter p_cropData(curCrops,cropAttr)', p_cropData)
-  include += this.save('parameter p_avgYield(curCrops)', p_avgYield)
-  include += this.save('parameter p_nmin(curCrops,soilTypes,cropType)', p_nmin)
-  include += this.save('set crops_rootCrop(curCrops)', crops_rootCrop)
-  include += this.save('set crops_catchCrop(curCrops)', crops_catchCrop)
-  include += this.save('set crops_summer(curCrops)', crops_summer)
-  include += this.save(
+  include += helpers.save(
+    'set crops_cropType(curCrops,cropType)',
+    crops_cropType
+  )
+  include += helpers.save('parameter p_cropData(curCrops,cropAttr)', p_cropData)
+  include += helpers.save('parameter p_avgYield(curCrops)', p_avgYield)
+  include += helpers.save(
+    'parameter p_nmin(curCrops,soilTypes,cropType)',
+    p_nmin
+  )
+  include += helpers.save('set crops_rootCrop(curCrops)', crops_rootCrop)
+  include += helpers.save('set crops_catchCrop(curCrops)', crops_catchCrop)
+  include += helpers.save('set crops_summer(curCrops)', crops_summer)
+  include += helpers.save(
     'parameter p_croppingFactor(curCrops,curCrops)',
     croppingFactor
   )
 
-  include += this.save(
+  include += helpers.save(
     'set plots_years_cropGroup(plots,years,cropGroup)',
     plots_years_cropGroup
   )
-  include += this.save(
+  include += helpers.save(
     'parameter p_grossMarginData(curPlots,curCrops)',
     p_grossMarginData
   )
-  include += this.save('parameter p_catchCropCosts(curPlots)', p_catchCropCosts)
-  include += this.save('parameter p_laborReq(crops,halfMonths)', laborReq)
+  include += helpers.save(
+    'parameter p_catchCropCosts(curPlots)',
+    p_catchCropCosts
+  )
+  include += helpers.save('parameter p_laborReq(crops,halfMonths)', laborReq)
   if (constraints.length) {
-    include += this.save('set constraints', constraints)
-    include += this.save(
+    include += helpers.save('set constraints', constraints)
+    include += helpers.save(
       'parameter p_constraint(constraints,curCrops,curCrops)',
       p_constraint
     )
-    include += this.save(
+    include += helpers.save(
       'set constraints_lt(constraints,symbol)',
       constraints_lt
     )
   }
   if (p_availLabour.length) {
-    include += this.save('parameter p_availLabour(months)', p_availLabour)
-    include += this.save(
+    include += helpers.save('parameter p_availLabour(months)', p_availLabour)
+    include += helpers.save(
       'parameter p_availFieldWorkDays(months)',
       p_availFieldWorkDays
     )

@@ -94,7 +94,7 @@ export default {
     }
   },
   nmin(plot, crop, prevCrop) {
-    if ((!prevCrop && !plot.catchCrop) || !plot.soilType) return 0
+    if (!prevCrop && !plot.catchCrop) return 0
     let type = ''
     if (plot.catchCrop) type = 'catchCrop'
     else type = prevCrop.cropType

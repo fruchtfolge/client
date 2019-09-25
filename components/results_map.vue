@@ -112,6 +112,7 @@ export default {
           id: crop.name + '_line',
           type: 'line',
           source: 'plots',
+          minzoom: 12,
           paint: {
             'line-color': 'white',
             'line-width': 2
@@ -206,11 +207,11 @@ export default {
   left: 10px;
   z-index: 1;
 }
- 
+
 .legend h4 {
   margin: 0 0 10px;
 }
- 
+
 .legend div span {
   /* border-radius: 50%; */
   display: inline-block;
