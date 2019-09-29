@@ -68,7 +68,6 @@
               <td style="text-align: center;">
                 <b>{{ sumManure.minUsagePercent }}</b>
               </td>
-              <td />
             </tr>
             <tr v-if="hasSolid">
               <td colspan="2">
@@ -89,7 +88,6 @@
               <td style="text-align: center;">
                 <b>{{ sumSolid.minUsagePercent }}</b>
               </td>
-              <td />
             </tr>
           </tbody>
         </table>
