@@ -24,13 +24,10 @@ export default {
 
 <style scoped>
 .container {
+  transform: translate(-20%, 0%);
+  top: calc(50vh - 150px);
+  padding-left: 250px;
   text-align: center;
-  width: 50%;
-  padding: 20px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 .title {
   font-size: 3em;

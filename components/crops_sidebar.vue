@@ -32,7 +32,7 @@
     <div v-else class="helpText">
       Klicken Sie auf den "Hinzufügen" Button um eine neue Kultur für das aktuelle Planungsjahr und Szenario hinzuzufügen
     </div>
-    <div style="text-align: center; margin-top: 40px;">
+    <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
       <button @click="addCrop">
         HINZUFÜGEN
       </button>

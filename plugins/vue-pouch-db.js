@@ -107,6 +107,19 @@ function updateCurrent() {
       Vue.set(Vue.prototype.$store, 'curTimeConstraints', null)
     }
   }
+  if (Vue.prototype.$store.manure && Vue.prototype.$store.settings) {
+    const match = Vue.prototype.$store.manure.filter(manure => {
+      return (
+        manure.year === Vue.prototype.$store.settings.curYear &&
+        manure.scenario === Vue.prototype.$store.settings.curScenario
+      )
+    })
+    if (match.length > 0) {
+      Vue.set(Vue.prototype.$store, 'curManure', match)
+    } else {
+      Vue.set(Vue.prototype.$store, 'curManure', null)
+    }
+  }
   Vue.prototype.$bus.$emit('changeCurrents')
 }
 
@@ -203,6 +216,22 @@ export default ({ app }, inject) => {
       })
       .on('update', (update, aggregate) => {
         Vue.set(Vue.prototype.$store, 'timeConstraints', aggregate)
+        debouncedUpdate()
+      })
+      .on('error', err => {
+        console.log(err)
+      })
+
+    // manure constraints
+    Vue.prototype.$db
+      .liveFind({
+        selector: {
+          type: 'manure'
+        },
+        aggregate: true
+      })
+      .on('update', (update, aggregate) => {
+        Vue.set(Vue.prototype.$store, 'manure', aggregate)
         debouncedUpdate()
       })
       .on('error', err => {

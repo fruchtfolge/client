@@ -290,7 +290,7 @@ html {
   letter-spacing: 0.1em;
   padding-left: 40px;
   top: 60px;
-  line-height: 40px;
+  line-height: 36px;
   font-weight: normal;
   margin-top: 5px;
   margin-bottom: 5px;
@@ -334,7 +334,7 @@ html {
 }
 
 .footer-sidebar {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: #e8e8e8;
   padding: 10px;
   padding-bottom: 10px;
 }

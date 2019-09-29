@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     path: '/',
     name: 'LOGOUT',
@@ -83,6 +83,12 @@ module.exports = [
     icon: 'static/constraints.png'
   },
   {
+    subPage: true,
+    path: '/organic-fert',
+    name: 'Dunganfall',
+    icon: 'static/crops.png'
+  },
+  {
     path: '/results',
     name: 'ERGEBNISSE',
     icon: 'static/results.png'
@@ -90,7 +96,7 @@ module.exports = [
   {
     subPage: true,
     path: '/fertilizer-planning',
-    name: 'N-Düngeplanung',
+    name: 'Düngeplanung',
     icon: 'static/fertPlanning.png'
   }
 ]
