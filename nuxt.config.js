@@ -97,7 +97,6 @@ module.exports = {
     baseUrl: 'https://fruchtfolge.agp.uni-bonn.de/api/'
     // baseUrl: 'http://localhost:3001/'
   },
-
   router: {
     middleware: 'auth'
   },
