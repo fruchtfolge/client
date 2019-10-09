@@ -30,19 +30,19 @@
               <td style="text-align: center;">
                 {{ manure.manType }}
               </td>
-              <td style="text-align: center;">
+              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'sumFertAmount', manure._id)">
                 {{ manure.sumFertAmount }}
               </td>
-              <td style="text-align: center;">
+              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'n', manure._id)">
                 {{ manure.n }}
               </td>
-              <td style="text-align: center;">
+              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'p', manure._id)">
                 {{ manure.p }}
               </td>
-              <td style="text-align: center;">
+              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'k', manure._id)">
                 {{ manure.k }}
               </td>
-              <td style="text-align: center;">
+              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'minUsagePercent', manure._id)">
                 {{ manure.minUsagePercent }}
               </td>
               <td style="background-color: #f5f5f5">
@@ -205,6 +205,16 @@ export default {
     update() {
       this.$set(this, 'manures', this.$store.curManure)
       console.log(this.manures)
+    },
+    async save(e, type, id) {
+      try {
+        const doc = await this.$db.get(id)
+        const newValue = Number(e.target.innerText)
+        doc[type] = newValue
+        await this.$db.put(doc)
+      } catch (e) {
+        console.log(e)
+      }
     },
     async remove() {
       try {

@@ -3088,7 +3088,7 @@ export default [
     nr: 232,
     description:
       'Schweinemast. 700 Tageszunahme.  28 bis 118 kg LM;   210 kg Zuwachs; 2.33 Durchgänge; sehr stark N-/P- reduziert',
-    N: '9.1.',
+    N: 9.1,
     P2O5: 3.4,
     K2O: 4.77,
     manDesc: 'Schweinegülle',
@@ -3176,7 +3176,7 @@ export default [
     nr: 233,
     description:
       'Schweinemast. 750 g Tageszunahme. 28 bis 118 kg LM;   223 kg Zuwachs; 2.47 Durchgänge; sehr stark N-/P- reduziert',
-    N: '9.3.',
+    N: 9.3,
     P2O5: 3.5,
     K2O: 4.93,
     manDesc: 'Schweinegülle',
@@ -3264,7 +3264,7 @@ export default [
     nr: 234,
     description:
       'Schweinemast. 850 g Tageszunahme. 28 bis 118 kg LM;   244 kg Zuwachs; 2.73 Durchgänge; sehr stark N-/P- reduziert',
-    N: '9.5.',
+    N: 9.5,
     P2O5: 3.6,
     K2O: 5.17,
     manDesc: 'Schweinegülle',
@@ -3352,7 +3352,7 @@ export default [
     nr: 235,
     description:
       'Schweinemast. 950 g Tageszunahme; 28 bis 118 kg LM;   267 kg Zuwachs; 2.97 Durchgänge. sehr stark N-/P- reduziert',
-    N: '9.7.',
+    N: 9.7,
     P2O5: 3.6,
     K2O: 5.37,
     manDesc: 'Schweinegülle',
@@ -3528,7 +3528,7 @@ export default [
     nr: 236,
     description:
       'Jungebermast. 850 g Tageszunahme. 28 bis 118 kg LM;   264 kg Zuwachs; Geschlechtsverhältnis wbl.:ml. 50:50; 2.73 Durchgänge; sehr stark N-/P- reduziert',
-    N: '8.7.',
+    N: 8.7,
     P2O5: 3.2,
     K2O: 4.87,
     manDesc: 'Schweinegülle',
@@ -3594,7 +3594,7 @@ export default [
     nr: 221,
     description:
       'Jungebermast. 900 g Tageszunahme. 28 bis 118 kg LM; Geschlechtsverhältnis wbl.:ml. 0:100; 2.85 Durchgänge; sehr stark N-/P- reduziert',
-    N: '8.3.',
+    N: 8.3,
     P2O5: 3,
     K2O: 4.8,
     manDesc: 'Schweinegülle',
