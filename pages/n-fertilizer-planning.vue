@@ -1,54 +1,60 @@
 <template>
   <div>
     <div v-if="dataAvail" class="plotOverview">
-      <table>
+      <table class="table-fert">
         <thead>
           <tr>
-            <th>
-              Name
-            </th>
+            <th>Name</th>
             <th>Kultur</th>
             <th>Ertragsniveau 3 Jahr Ø Betrieb [dt/ha]</th>
             <th>N-Bedarfswert [kg N/ha]</th>
             <th>Zu- oder Abschlag Ertragsdifferenz [kg N/ha]</th>
             <th>Abschlag Nmin-Probe/Richtwert [kg N/ha]</th>
-            <th>Abschlag Standort/Humus [kg N/ha]</th>
+            <th>Abschlag Standort / Humus [kg N/ha]</th>
             <th>Abschlag org. Düngung der Vorjahre [kg N/ha]</th>
-            <th>Abschlag Vorfrucht/ZF [kg N/ha]</th>
+            <th>Abschlag Vorfrucht / ZF [kg N/ha]</th>
             <th>Stickstoffdüngebedarf Vegetation [kg N/ha]</th>
+            <th>Planung Org. Düngung [kg N/ha]</th>
+            <th>Planung Min. Düngung [kg N/ha]</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(plot, i) in filteredPlots" :key="i">
-            <td style="text-align: center;">
+            <td style="width: 100px;" class="cell-text">
               {{ plot.name }}
             </td>
-            <td style="text-align: center;">
+            <td style="width: 100px;" class="cell-text">
               {{ plot.selectedCrop }}
             </td>
-            <td style="text-align: center;">
-              {{ nData[plot._id].avgYield }}
+            <td class="cell-number">
+              {{ plot.selectedOption.avgYield }}
             </td>
-            <td style="text-align: center;">
-              {{ nData[plot._id].nReq }}
+            <td class="cell-number">
+              {{ plot.selectedOption.nReq }}
             </td>
-            <td style="text-align: center;">
-              {{ nData[plot._id].nYieldDiff }}
+            <td class="cell-number">
+              {{ plot.selectedOption.nYieldDiff }}
             </td>
-            <td style="text-align: center;">
-              {{ nData[plot._id].nMinDiff }}
+            <td class="cell-number">
+              {{ plot.selectedOption.nMinDiff }}
             </td>
-            <td style="text-align: center;">
-              {{ nData[plot._id].humusContent }}
+            <td class="cell-number">
+              {{ plot.selectedOption.humusContent }}
             </td>
-            <td style="text-align: center;">
-              {{ nData[plot._id].nFertPrevYear }}
+            <td class="cell-number">
+              {{ plot.selectedOption.nFertPrevYear }}
             </td>
-            <td style="text-align: center;">
-              {{ nData[plot._id].nPrevCrop }}
+            <td class="cell-number">
+              {{ plot.selectedOption.nPrevCrop }}
             </td>
-            <td style="text-align: center;">
-              {{ nData[plot._id].nSum }}
+            <td class="cell-number" style="font-weight: bold;">
+              {{ plot.selectedOption.nSum }}
+            </td>
+            <td class="cell-number">
+              {{ orgN(plot) }}
+            </td>
+            <td class="cell-number" style="padding-right: 10px;">
+              {{ minN(plot) }}
             </td>
           </tr>
         </tbody>
@@ -77,7 +83,6 @@ export default {
     return {
       plots: null,
       crops: null,
-      nData: {},
       curYear: 2019,
       waiting: false
     }
@@ -85,9 +90,9 @@ export default {
   computed: {
     dataAvail() {
       let bool = true
-      if (this.nData && this.plots && this.plots.length) {
+      if (this.plots && this.plots.length) {
         this.plots.forEach(p => {
-          if (!p.matrix) {
+          if (!p.selectedOption) {
             bool = false
           }
         })
@@ -97,10 +102,7 @@ export default {
       return bool
     },
     filteredPlots() {
-      const filtered = this.plots.filter(
-        p => p.matrix[this.curYear][p.selectedCrop].nSum > 0
-      )
-      console.log(filtered)
+      const filtered = this.plots.filter(p => p.selectedOption.nSum > 0)
       return filtered
     }
   },
@@ -116,19 +118,25 @@ export default {
       this.$set(this, 'plots', this.$store.curPlots)
       this.$set(this, 'crops', this.$store.curCrops)
       this.$set(this, 'curYear', this.$store.curYear)
-      this.calcData()
-    },
-    calcData() {
-      if (!this.plots) return
-      this.plots.forEach(plot => {
-        // use crop that was acutally grown over selected crop
-        // const cropCode = plot.crop ? plot.crop : plot.selectedCrop
-        this.nData[plot._id] = plot.matrix[this.curYear][plot.selectedCrop]
-      })
     },
     importPrev() {
       this.waiting = true
       this.$bus.$emit('importPrevYear')
+    },
+    orgN(plot) {
+      if (plot.selectedOption) {
+        return _.round(
+          plot.selectedOption.nSum -
+            plot.selectedOption.minFertRequired.n * 0.27
+        )
+      }
+      return 0
+    },
+    minN(plot) {
+      if (plot.selectedOption) {
+        return _.round(plot.selectedOption.minFertRequired.n * 0.27)
+      }
+      return 0
     }
   }
 }
@@ -137,5 +145,23 @@ export default {
 <style>
 .plotOverview table input {
   -webkit-appearance: checkbox;
+}
+
+.table-fert {
+  table-layout: fixed;
+  min-width: 800px;
+  max-width: 1024px;
+}
+
+.table-fert th {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+.cell-text {
+  text-align: left;
+}
+
+.cell-number {
+  text-align: right;
 }
 </style>

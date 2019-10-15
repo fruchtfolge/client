@@ -95,8 +95,14 @@ export default [
   },
   {
     subPage: true,
-    path: '/fertilizer-planning',
-    name: 'Düngeplanung',
+    path: '/n-fertilizer-planning',
+    name: 'N-Düngebedarf',
+    icon: 'static/fertPlanning.png'
+  },
+  {
+    subPage: true,
+    path: '/p-fertilizer-planning',
+    name: 'P-Düngebedarf',
     icon: 'static/fertPlanning.png'
   }
 ]

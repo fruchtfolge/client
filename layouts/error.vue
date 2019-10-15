@@ -1,14 +1,19 @@
 <template>
   <section class="container">
-    <h1 class="title">
-      {{ error.message }}
-    </h1>
-    <h2 class="info">
-      ERROR {{ error.statusCode }}
-    </h2>
-    <nuxt-link v-if="error.statusCode === 404 || error.statusCode === 403" class="button" to="/">
-      Zurück zur Startseite
-    </nuxt-link>
+    <div class="wrapper">
+      <h1 v-if="error.statusCode === 404" class="title">
+        Diese Seite gibt es leider nicht :(
+      </h1>
+      <h1 v-else class="title">
+        {{ error.message }}
+      </h1>
+      <h2 class="info">
+        ERROR {{ error.statusCode }}
+      </h2>
+      <nuxt-link v-if="error.statusCode === 404 || error.statusCode === 403" class="button" to="/">
+        Zurück zur Startseite
+      </nuxt-link>
+    </div>
   </section>
 </template>
 <script>
@@ -24,14 +29,18 @@ export default {
 
 <style scoped>
 .container {
-  transform: translate(-20%, 0%);
-  top: calc(50vh - 150px);
-  padding-left: 250px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  height: calc(100vh - 120px);
 }
 .title {
   font-size: 3em;
 }
+
+.wrapper {
+  text-align: center;
+}
+
 .info {
   font-weight: 300;
   color: #9aabb1;

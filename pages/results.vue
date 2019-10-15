@@ -6,25 +6,31 @@
         <table class="result-table">
           <thead>
             <tr>
-              <th style="width: 125px;" @click="sortPlots('name')">
+              <th style="min-width: 80px;" @click="sortPlots('name')">
                 Name
               </th>
               <th style="width: 50px;" @click="sortPlots('size')">
-                Größe
+                Größe [ha]
               </th>
               <th style="width: 50px;" @click="sortPlots('distance')">
-                Distanz
+                Distanz [km]
               </th>
-              <th style="min-width: 100px;" @click="sortPlots('prevCrop1')">
+              <th style="min-width: 50px;" @click="sortPlots('prevCrop1')">
                 {{ curYear - 1 }}
               </th>
-              <th style="width: 50px;" @click="sortPlots('prevCrop1')">
+              <th style="width: 40px;" @click="sortPlots('prevCrop1')">
                 Planung ZF
               </th>
-              <th style="min-width: 100px;" @click="sortPlots('selectedCrop')">
+              <th class="plot-selection" @click="sortPlots('selectedCrop')">
                 Planung {{ curYear }}
               </th>
-              <th @click="sortPlots('curGrossMargin')">
+              <th v-if="manure" style="width: 80px;" @click="sortPlots('orgFert')">
+                Org. Düngung
+              </th>
+              <th style="width: 60px;" @click="sortPlots('prevCrop1')">
+                Herbstdüngung
+              </th>
+              <th style="width: 80px;" @click="sortPlots('curGrossMargin')">
                 Deckungsbeitrag
               </th>
             </tr>
@@ -35,29 +41,36 @@
                 <td class="wide-cells">
                   {{ plot.name }}
                 </td>
-                <td class="narrow-cells">
+                <td class="narrow-cells-number">
                   {{ plot.size }}
                 </td>
-                <td class="narrow-cells">
+                <td class="narrow-cells-number">
                   {{ plot.distance }}
                 </td>
-                <td class="wide-cells">
+                <td class="wide-cells" style="padding-left: 10px;">
                   {{ plot.prevCrop1 }}
                 </td>
-                <td class="narrow-cells">
-                  <input type="checkbox" style="-webkit-appearance: checkbox;" :checked="plot.catchCrop" @change="saveCatchCropChange($event,plot)">
+                <td class="narrow-cells-text">
+                  <input v-model="plot.catchCrop" type="checkbox" style="-webkit-appearance: checkbox;" @change="saveCropChange(plot)">
                 </td>
                 <td class="wide-cells">
                   <select v-model="plot.selectedCrop" class="selection" @change="saveCropChange(plot)">
-                    <option v-for="(crop) in plot.matrix[curYear]" :key="`${crop.name}_${plot._id}`" :value="crop.name">
+                    <option v-for="(crop) in curCrops" :key="`${crop.name}_${plot._id}`" :value="crop.name">
                       {{ crop.name }}
                     </option>
                   </select>
                 </td>
-                <td v-if="plot.catchCrop" style="text-align: center;" @click="showPlotInfo(plot.id)">
-                  {{ format(plot.curGrossMargin - plot.matrix.catchCropCosts) }}
+                <td v-if="manure" class="narrow-cells">
+                  <select v-model="plot.selectedOption.manAmount" style="text-align-last: center;" class="selection" @change="saveCropChange(plot)">
+                    <option v-for="(amount) in manAmounts" :key="`${plot._id}_${amount}`" :value="amount">
+                      {{ amount }}m³
+                    </option>
+                  </select>
                 </td>
-                <td v-else style="text-align: center;" @click="showPlotInfo(plot.id)">
+                <td v-if="manure" class="narrow-cells-text">
+                  <input v-model="plot.selectedOption.autumnFert" type="checkbox" style="-webkit-appearance: checkbox;" @change="saveCropChange(plot)">
+                </td>
+                <td class="narrow-cells-number" style="padding-right: 10px;" @click="showPlotInfo(plot.id)">
                   {{ format(plot.curGrossMargin) }}
                 </td>
               </tr>
@@ -73,7 +86,7 @@
                         <td>Durchschnittsertrag</td>
                         <td style="text-align: center;">
                           {{
-                            plot.matrix[curYear][plot.selectedCrop].amount
+                            plot.selectedOption.amount
                           }}
                         </td>
                       </tr>
@@ -81,9 +94,9 @@
                         <td>Korrektur Bodenqualität</td>
                         <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'yieldCap', plot)">
                           {{
-                            ((plot.matrix[curYear][plot.selectedCrop].yieldCap
-                              * plot.matrix[curYear][plot.selectedCrop].amount)
-                              - plot.matrix[curYear][plot.selectedCrop].amount).toFixed(2)
+                            ((plot.selectedOption.yieldCap
+                              * plot.selectedOption.amount)
+                              - plot.selectedOption.amount).toFixed(2)
                           }}
                         </td>
                       </tr>
@@ -91,9 +104,9 @@
                         <td>Korrektur Fruchtfolge</td>
                         <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'croppingFactor', plot)">
                           {{
-                            ((plot.matrix[curYear][plot.selectedCrop].croppingFactor
-                              * plot.matrix[curYear][plot.selectedCrop].amount)
-                              - plot.matrix[curYear][plot.selectedCrop].amount).toFixed(2)
+                            ((plot.selectedOption.croppingFactor
+                              * plot.selectedOption.amount)
+                              - plot.selectedOption.amount).toFixed(2)
                           }}
                         </td>
                       </tr>
@@ -101,9 +114,9 @@
                         <td>Korrektur Rotes Gebiet</td>
                         <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'yieldRed20', plot)">
                           {{
-                            ((plot.matrix[curYear][plot.selectedCrop].yieldRed20
-                              * plot.matrix[curYear][plot.selectedCrop].amount)
-                              - plot.matrix[curYear][plot.selectedCrop].amount).toFixed(2)
+                            ((plot.selectedOption.yieldRed20
+                              * plot.selectedOption.amount)
+                              - plot.selectedOption.amount).toFixed(2)
                           }}
                         </td>
                       </tr>
@@ -113,10 +126,10 @@
                         </td>
                         <td style="text-align:center;font-weight: bold;">
                           {{
-                            (plot.matrix[curYear][plot.selectedCrop].amount
-                              * plot.matrix[curYear][plot.selectedCrop].yieldCap
-                              * plot.matrix[curYear][plot.selectedCrop].croppingFactor
-                              * plot.matrix[curYear][plot.selectedCrop].yieldRed20).toFixed(2)
+                            (plot.selectedOption.amount
+                              * plot.selectedOption.yieldCap
+                              * plot.selectedOption.croppingFactor
+                              * plot.selectedOption.yieldRed20).toFixed(2)
                           }}
                         </td>
                       </tr>
@@ -135,23 +148,23 @@
                         <td>Leistungen</td>
                         <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'price', plot)">
                           {{
-                            format(plot.matrix[curYear][plot.selectedCrop].price)
+                            format(plot.selectedOption.price)
                           }}
                         </td>
                         <td style="text-align:center;">
                           {{
-                            plot.matrix[curYear][plot.selectedCrop].correctedAmount
+                            plot.selectedOption.correctedAmount
                           }}
                         </td>
                         <td style="text-align:center;">
                           {{
-                            format(plot.matrix[curYear][plot.selectedCrop].revenue)
+                            format(plot.selectedOption.revenue)
                           }}
                         </td>
                         <td style="text-align:center;">
                           {{
-                            format(plot.matrix[curYear][plot.selectedCrop].revenue
-                              * plot.matrix[curYear][plot.selectedCrop].size)
+                            format(plot.selectedOption.revenue
+                              * plot.selectedOption.size)
                           }}
                         </td>
                       </tr>
@@ -161,13 +174,13 @@
                         </td>
                         <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'directCosts', plot)">
                           {{
-                            format(plot.matrix[curYear][plot.selectedCrop].directCosts)
+                            format(plot.selectedOption.directCosts)
                           }}
                         </td>
                         <td style="text-align:center;">
                           {{
-                            format(plot.matrix[curYear][plot.selectedCrop].directCosts
-                              * plot.matrix[curYear][plot.selectedCrop].size)
+                            format(plot.selectedOption.directCosts
+                              * plot.selectedOption.size)
                           }}
                         </td>
                       </tr>
@@ -177,29 +190,13 @@
                         </td>
                         <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'machineCosts', plot)">
                           {{
-                            format(plot.matrix[curYear][plot.selectedCrop].variableCosts)
+                            format(plot.selectedOption.variableCosts)
                           }}
                         </td>
                         <td style="text-align:center;">
                           {{
-                            format(plot.matrix[curYear][plot.selectedCrop].variableCosts
-                              * plot.matrix[curYear][plot.selectedCrop].size)
-                          }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colspan="3">
-                          Transportkosten
-                        </td>
-                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'distanceCosts', plot)">
-                          {{
-                            format(plot.matrix[curYear][plot.selectedCrop].distanceCosts)
-                          }}
-                        </td>
-                        <td style="text-align:center;">
-                          {{
-                            format(plot.matrix[curYear][plot.selectedCrop].distanceCosts
-                              * plot.matrix[curYear][plot.selectedCrop].size)
+                            format(plot.selectedOption.variableCosts
+                              * plot.selectedOption.size)
                           }}
                         </td>
                       </tr>
@@ -209,7 +206,7 @@
                         </td>
                         <td v-if="plot.catchCrop" style="text-align:center;" contenteditable="true" @blur="save($event,i,'catchCropCosts', plot)">
                           {{
-                            format(plot.matrix.catchCropCosts / plot.size)
+                            format(plot.selectedOption.catchCropCosts / plot.size)
                           }}
                         </td>
                         <td v-else style="text-align:center;" contenteditable="true" @blur="save($event,i,'catchCropCosts', plot)">
@@ -219,7 +216,7 @@
                         </td>
                         <td v-if="plot.catchCrop" style="text-align:center;">
                           {{
-                            format(plot.matrix.catchCropCosts)
+                            format(plot.selectedOption.catchCropCosts)
                           }}
                         </td>
                         <td v-else style="text-align:center;">
@@ -232,26 +229,15 @@
                         <td colspan="3">
                           Deckungsbeitrag
                         </td>
-                        <td v-if="plot.catchCrop" style="text-align:center;">
+                        <td style="text-align:center;">
                           {{
-                            format(plot.matrix[curYear][plot.selectedCrop].grossMarginHa - (plot.matrix.catchCropCosts / plot.size))
+                            format(plot.selectedOption.grossMarginHa)
                           }}
                         </td>
-                        <td v-else style="text-align:center;">
+                        <td style="text-align:center;">
                           {{
-                            format(plot.matrix[curYear][plot.selectedCrop].grossMarginHa)
-                          }}
-                        </td>
-                        <td v-if="plot.catchCrop" style="text-align:center;">
-                          {{
-                            format(plot.matrix[curYear][plot.selectedCrop].grossMarginHa
-                              * plot.matrix[curYear][plot.selectedCrop].size - plot.matrix.catchCropCosts)
-                          }}
-                        </td>
-                        <td v-else style="text-align:center;">
-                          {{
-                            format(plot.matrix[curYear][plot.selectedCrop].grossMarginHa
-                              * plot.matrix[curYear][plot.selectedCrop].size)
+                            format(plot.selectedOption.grossMarginHa
+                              * plot.selectedOption.size)
                           }}
                         </td>
                       </tr>
@@ -264,9 +250,11 @@
               <td colspan="1" style="font-weight: bold;">
                 Summe
               </td>
-              <td>{{ curTotLand }}</td>
-              <td colspan="4" />
-              <td style="text-align: center;font-weight: bold;">
+              <td class="narrow-cells-number">
+                {{ curTotLand }}
+              </td>
+              <td colspan="6" />
+              <td class="narrow-cells-number" style="font-weight: bold; padding-right: 10px;">
                 {{ format(grossMarginCurYear) }}
               </td>
             </tr>
@@ -298,8 +286,6 @@
 </template>
 <script>
 import cultures from '~/assets/js/cultures'
-import buildMatrix from '~/assets/js/model/matrix.js'
-import createInclude from '~/assets/js/model/include.js'
 
 export default {
   components: {
@@ -315,6 +301,7 @@ export default {
     return {
       loading: true,
       curPlots: undefined,
+      curCrops: undefined,
       plots: undefined,
       curYear: undefined,
       curScenario: 'Standard',
@@ -324,7 +311,9 @@ export default {
       renderResultsMap: false,
       totLand: 0,
       sortKey: '',
+      manure: undefined,
       shares: {},
+      manAmounts: [0, 10, 15, 20, 25, 30, 40, 50, 60],
       sortOrder: 'desc',
       cropColor: {}
     }
@@ -438,7 +427,7 @@ export default {
       if (this.$store && this.curPlots && this.curPlots.length) {
         flag = true
         this.curPlots.forEach(plot => {
-          if (!plot.matrix || !plot.matrix[this.curYear]) {
+          if (!plot.selectedOption) {
             flag = false
           }
         })
@@ -446,17 +435,13 @@ export default {
       return flag
     },
     grossMarginCurYear() {
-      const year = this.curYear
       let sum = 0
       if (!this.curPlots) return 0
       this.curPlots.forEach(plot => {
         const name = plot.selectedCrop
-        if (name && plot.matrix[year] && plot.matrix[year][name]) {
-          const plotData = plot.matrix[year][name]
+        if (name && plot.selectedOption) {
+          const plotData = plot.selectedOption
           sum += plotData.grossMargin
-          if (plot.catchCrop) {
-            sum += -plot.matrix.catchCropCosts
-          }
         }
       })
       return sum
@@ -497,69 +482,51 @@ export default {
   methods: {
     async solve(force) {
       this.loading = true
-      await this.$nextTick()
-      // ugliest hack in existance: for some reason $nextTick is not triggering when
-      // loading is set to true... so do a set timeout of 1ms to trigger the loading animation
-      setTimeout(async () => {
-        try {
-          const store = this.$store
-          if (!store.plots[0].matrix || force) {
-            // add matrix of gross margins per crop and year to all plots
-            store.plots = await buildMatrix(store)
-            // update current plots with newly created gross margins
-            store.curPlots = store.plots.filter(plot => {
-              return (
-                plot.year === store.settings.curYear &&
-                plot.scenario === store.settings.curScenario
-              )
-            })
-          }
-          // create single farm model from user data in GAMS format
-          const gams = createInclude(store)
-          console.log({ a: gams })
-          // solve the model
-          const { data } = await this.$axios.post(
-            process.env.baseUrl + 'model/',
-            { model: gams },
-            { progress: true }
-          )
-          console.log(data)
-          if (data.model_status === 1) {
-            this.warnings = data.warnings
-            store.curPlots.forEach(plot => {
-              plot.recommendation = data.recommendation[plot._id]
-              plot.selectedCrop = plot.recommendation
-              plot.catchCrop = data.catchCrop[plot._id]
-              plot.recommendedCatchCrop = data.catchCrop[plot._id]
-            })
-          } else {
-            this.infeasible = true
-            store.curPlots.forEach(plot => {
-              plot.recommendation = ''
-              plot.recommendedCatchCrop = false
-              if (!plot.selectedCrop) {
-                plot.selectedCrop = Object.keys(plot.matrix[this.curYear])[0]
-              }
-            })
-          }
-          // save results in database
-          await this.$db.bulkDocs(store.plots)
-          if (!this.infeasible && (!this.warnings || !this.warnings.length)) {
-            this.showSolved()
-          } else if (
-            !this.infeasible &&
-            this.warnings &&
-            this.warnings.length
-          ) {
-            const warnings = this.warnings.join('\n')
-            this.showWarnings({ message: warnings })
-          } else {
-            this.showInfeasible()
-          }
-        } catch (e) {
-          console.log(e)
+      try {
+        const store = this.$store
+        // solve the model
+        const { data } = await this.$axios.post(
+          process.env.baseUrl + 'model/create/',
+          { progress: true }
+        )
+        console.log(data)
+        if (data.model_status === 1 || data.model_status === 8) {
+          this.warnings = data.warnings
+          store.curPlots.forEach(plot => {
+            // get recommendation for each plot from GAMS result
+            plot.selectedOption = data.recommendation.find(
+              p => p._id === plot._id
+            )
+            plot.recommendation = plot.selectedOption.name
+            plot.curGrossMargin = plot.selectedOption.grossMargin
+            plot.recommendedGrossMargin = plot.curGrossMargin
+            plot.selectedCrop = plot.recommendation
+            plot.catchCrop = plot.selectedOption.catchCrop
+            plot.recommendedCatchCrop = plot.catchCrop
+          })
+        } else {
+          this.infeasible = true
+          store.curPlots.forEach(plot => {
+            plot.recommendation = ''
+            plot.recommendedCatchCrop = false
+            if (!plot.selectedCrop) {
+              plot.selectedCrop = plot.prevCrop1
+            }
+          })
         }
-      }, 1)
+        // save results in database
+        await this.$db.bulkDocs(store.plots)
+        if (!this.infeasible && (!this.warnings || !this.warnings.length)) {
+          this.showSolved()
+        } else if (!this.infeasible && this.warnings && this.warnings.length) {
+          const warnings = this.warnings.join('\n')
+          this.showWarnings({ message: warnings })
+        } else {
+          this.showInfeasible()
+        }
+      } catch (e) {
+        console.log(e)
+      }
     },
     calcShares() {
       if (!this.$store.plots) return []
@@ -614,13 +581,8 @@ export default {
           plot.prevCrop1 = this.getName(plot.id, this.curYear - 1).name
           plot.prevCrop2 = this.getName(plot.id, this.curYear - 2).name
           plot.prevCrop3 = this.getName(plot.id, this.curYear - 3).name
-          if (
-            plot.matrix &&
-            plot.matrix[this.curYear] &&
-            plot.matrix[this.curYear][plot.selectedCrop]
-          ) {
-            plot.curGrossMargin =
-              plot.matrix[this.curYear][plot.selectedCrop].grossMargin
+          if (plot.selectedOption) {
+            plot.curGrossMargin = plot.selectedOption.grossMargin
           } else {
             plot.curGrossMargin = 0
           }
@@ -632,7 +594,7 @@ export default {
     async save(e, i, type, plot) {
       try {
         const newValue = Number(e.target.innerText)
-        const data = plot.matrix[this.curYear][plot.selectedCrop]
+        const data = plot.selectedOption
         const amount = data.amount
 
         if (type === 'yieldCap' || type === 'croppingFactor') {
@@ -666,7 +628,7 @@ export default {
           (revenue - directCosts - variableCosts - distanceCosts) * plot.size
         )
         // update plot
-        plot.matrix[this.curYear][plot.selectedCrop] = data
+        plot.selectedOption = data
         await this.$db.put(plot)
       } catch (e) {
         console.log(e)
@@ -674,28 +636,29 @@ export default {
     },
     async saveCropChange(plot) {
       try {
-        const id = plot._id
-        const doc = await this.$db.get(id)
+        const _id = plot._id
+        const crop = plot.selectedCrop
+        const manAmount = plot.selectedOption.manAmount
+        const solidAmount = plot.selectedOption.solidAmount
+        const catchCrop = plot.catchCrop
+        const autumnFert = plot.selectedOption.autumnFert
+
+        const doc = await this.$db.get(_id)
+        // get new data from server
+        const { data } = await this.$axios.post(
+          process.env.baseUrl + 'model/update/',
+          { _id, crop, manAmount, solidAmount, catchCrop, autumnFert },
+          { progress: true }
+        )
         doc.selectedCrop = plot.selectedCrop
-        doc.curGrossMargin =
-          plot.matrix[this.curYear][plot.selectedCrop].grossMargin
+        doc.catchCrop = plot.catchCrop
+        doc.selectedOption = data
+        doc.curGrossMargin = data.grossMargin
         await this.$db.put(doc)
       } catch (e) {
         console.log(e)
       }
     },
-
-    async saveCatchCropChange(e, plot) {
-      try {
-        const id = plot._id
-        const doc = await this.$db.get(id)
-        doc.catchCrop = e.target ? e.target.checked : false
-        await this.$db.put(doc)
-      } catch (e) {
-        console.log(e)
-      }
-    },
-
     getName(id, year) {
       const plot = _.find(this.$store.plots, { id: id, year: year })
       if (plot && cultures[plot.crop]) {
@@ -725,6 +688,8 @@ export default {
       console.log('update')
       if (store) {
         this.$set(this, 'curPlots', store.curPlots)
+        this.$set(this, 'curCrops', store.curCrops)
+        this.$set(this, 'manure', store.curManure)
         this.$set(this, 'curYear', store.curYear)
         this.$set(this, 'curScenario', store.curScenario)
         if (
@@ -741,10 +706,10 @@ export default {
         this.updatePrevCrops()
         // update shares
         this.calcShares()
+        console.log(this.manure)
         this.loading = false
       }
     },
-
     format(number) {
       const formatter = new Intl.NumberFormat('de-DE', {
         style: 'currency',
@@ -762,9 +727,10 @@ export default {
 }
 
 .result-wrapper {
-  width: calc(100vw - 200px);
+  /* width: calc(100vw - 200px); */
   min-width: 1024px;
-  display: inline-flex;
+  display: flex;
+  justify-content: space-around;
 }
 
 .plots-wrapper {
@@ -780,7 +746,7 @@ export default {
   margin-top: 20px;
   margin-left: 20px;
   max-width: 50vw;
-  min-width: 600px;
+  min-width: 620px;
   table-layout: fixed;
 }
 .wide-cells {
@@ -789,9 +755,15 @@ export default {
   overflow-x: hidden;
 }
 
-.narrow-cells {
+.narrow-cells-text {
   width: 50px;
   text-align: center;
+  overflow-x: hidden;
+}
+
+.narrow-cells-number {
+  width: 50px;
+  text-align: right;
   overflow-x: hidden;
 }
 
@@ -804,6 +776,10 @@ export default {
 .expand-enter,
 .expand-leave-to {
   height: 0;
+}
+
+.align-dot {
+  text-align: '.' center;
 }
 
 .result-table tr {
@@ -839,20 +815,34 @@ export default {
 .inner-table tr:nth-child(even) {
   background-color: #ececec;
 }
+
 .selection {
   font-size: 14px;
   text-align-last: left;
+  width: 100%;
+  padding-right: calc(10% + 25px);
   font-family: 'Open Sans';
   font-weight: 300;
+  padding-left: 5px;
   letter-spacing: normal;
   border-width: 0px;
   background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
   background-repeat: no-repeat;
-  background-position: 80px 50%;
+  background-position: 90% 50%;
 }
 
 .excel-download {
   margin-top: 40px;
   text-align: center;
+}
+@media (max-width: 1250px) {
+  .plot-selection {
+    width: 125px;
+  }
+}
+@media (min-width: 1251px) {
+  .plot-selection {
+    width: 150px;
+  }
 }
 </style>

@@ -76,54 +76,10 @@ export default {
       }
     },
     deviations() {
-      const deviations = []
-      const permPastCropCodes = [459, 480, 492, 57, 567, 572, 592, 972]
+      let deviations = []
       this.plots.forEach(plot => {
-        const crop = _.find(this.$store.curCrops, ['name', plot.selectedCrop])
-        const cropCode = crop ? crop.code : ''
-        if (
-          !cropCode ||
-          !plot.matrix[this.curYear] ||
-          !plot.matrix[this.curYear][plot.selectedCrop]
-        )
-          return
-        const data = plot.matrix[this.curYear][plot.selectedCrop]
-        // get selected crop and previous crop
-        const croppingFactor = data.croppingFactor
-        // Crop rotational deviations
-        // show warning if cropping factor is below 6
-        if (croppingFactor <= 0.6) {
-          deviations.push(
-            `${plot.name}: ${data.name} ungünstige Nachfrucht von ${
-              plot.prevCrop1
-            }`
-          )
-        } else if (croppingFactor === 0) {
-          deviations.push(
-            `${plot.name}: ${data.name} keine mögliche Nachfrucht von ${
-              plot.prevCrop1
-            }`
-          )
-        }
-        // when rotational break for crop isn't held
-        if (!data.rotBreakHeld) {
-          deviations.push(
-            `${plot.name}: Anbaupause von ${data.name} nicht eingehalten`
-          )
-        }
-        // show warning when perm pasture is recultivated with another crop
-        if (plot.permPast && permPastCropCodes.indexOf(cropCode) === -1) {
-          deviations.push(
-            `${plot.name}: Umbruch von Dauergrünland nicht erlaubt.`
-          )
-        }
-        // show warning when growing catch crop is not possible
-        if (plot.catchCrop) {
-          const catchCropDeviation = this.checkCatchCrop(plot)
-          if (catchCropDeviation) {
-            deviations.push(catchCropDeviation)
-          }
-        }
+        if (!plot.selectedOption) return
+        deviations = deviations.concat(plot.selectedOption.warnings)
       })
       // show warning when crop shares are exceeded
       this.$store.curCrops.forEach(crop => {
@@ -255,22 +211,11 @@ export default {
       return flag
     },
     greeningEfa() {
-      console.log(this.shares)
-      if (!this.shares[this.curYear]) return 0
       let efa = 0
-      const props = Object.keys(this.shares[this.curYear])
-      props.forEach(cropName => {
-        // find crop for the given code
-        const share = this.shares[this.curYear][cropName]
-        const crop = _.find(this.$store.curCrops, ['name', cropName])
-        if (crop && share) {
-          efa += share * crop.efaFactor
-        }
-      })
       // add Ecological focus area from catch crops
       this.plots.forEach(plot => {
-        if (plot.catchCrop) {
-          efa += plot.size
+        if (plot.selectedOption) {
+          efa += plot.size * plot.selectedOption.efaFactor
         }
       })
       return _.round(efa, 2)
@@ -320,14 +265,8 @@ export default {
       let totLand = 0
       let greenLand = 0
       plots.forEach(plot => {
-        const code = plot.recommendation
-        if (code) {
-          const plotData = plot.matrix[this.curYear][code]
-          const grossMargin = plotData.grossMargin
-          optimum += grossMargin
-          if (plot.recommendedCatchCrop) {
-            optimum += -plot.matrix.catchCropCosts
-          }
+        if (plot.recommendedGrossMargin) {
+          optimum += plot.recommendedGrossMargin
         }
         totLand += plot.size
         if (plot.permPast) {
