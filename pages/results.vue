@@ -3,7 +3,7 @@
     <loading v-if="loading" />
     <div v-else-if="resultsAvailable">
       <div class="result-wrapper">
-        <table class="result-table">
+        <table class="table result-table">
           <thead>
             <tr>
               <th style="min-width: 80px;" @click="sortPlots('name')">
@@ -54,14 +54,14 @@
                   <input v-model="plot.catchCrop" type="checkbox" style="-webkit-appearance: checkbox;" @change="saveCropChange(plot)">
                 </td>
                 <td class="wide-cells">
-                  <select v-model="plot.selectedCrop" class="selection" @change="saveCropChange(plot)">
+                  <select v-model="plot.selectedCrop" class="select selection" @change="saveCropChange(plot)">
                     <option v-for="(crop) in curCrops" :key="`${crop.name}_${plot._id}`" :value="crop.name">
                       {{ crop.name }}
                     </option>
                   </select>
                 </td>
                 <td v-if="manure" class="narrow-cells">
-                  <select v-model="plot.selectedOption.manAmount" style="text-align-last: center;" class="selection" @change="saveCropChange(plot)">
+                  <select v-model="plot.selectedOption.manAmount" style="text-align-last: center;" class="select selection" @change="saveCropChange(plot)">
                     <option v-for="(amount) in manAmounts" :key="`${plot._id}_${amount}`" :value="amount">
                       {{ amount }}m³
                     </option>
@@ -263,18 +263,28 @@
         <div class="plots-wrapper">
           <cropShares :shares="curShares" />
           <deviationOptimum :shares="shares" :plots="curPlots" :time="curTimeReq" :total="grossMarginCurYear" />
-          <carousel :perPage="1" :navigationEnabled="true">
-            <slide>
-              <timeRequirement :shares="shares" />
-            </slide>
-            <slide>
-              <grossMarginTimeline :plots="curPlots" />
-            </slide>
-          </carousel>
-          <button type="button" name="button" style="margin-top: 20px;" @click="solve(true)">
+          <div style="width: 400px;">
+            <carousel
+              :perPage="1"
+              :autoplay="true"
+              :loop="true"
+              :autoplayTimeout="10000"
+              :speed="2000"
+              paginationActiveColor="#79ae98"
+              paginationColor="#e8e8e8"
+            >
+              <slide>
+                <timeRequirement :shares="shares" />
+              </slide>
+              <slide>
+                <grossMarginTimeline :plots="curPlots" />
+              </slide>
+            </carousel>
+          </div>
+          <button class="button" type="button" name="button" style="margin-top: 20px;" @click="solve(true)">
             ZURÜCKSETZEN
           </button>
-          <button type="button" name="button" style="margin-left: 20px;" @click="solve(false)">
+          <button class="button" type="button" name="button" style="margin-left: 20px;" @click="solve(false)">
             ERNEUT LÖSEN
           </button>
           </carousel>

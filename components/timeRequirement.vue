@@ -173,6 +173,10 @@ export default {
           labels: this.labels
         },
         options: {
+          title: {
+            display: true,
+            text: 'Arbeitszeitbedarf'
+          },
           responsive: false,
           legend: {
             position: 'bottom'
@@ -215,6 +219,6 @@ export default {
 .timeRequirement-wrapper {
   text-align: center;
   margin: auto;
-  margin-top: 80px;
+  margin-top: 60px;
 }
 </style>

@@ -6,7 +6,7 @@
         FRUCHTFOLGE
       </div>
       <!-- Scenario selector -->
-      <select v-model="settings.curScenario" class="planYear scenario" type="button" value="Standard" @change="saveSettings">
+      <select v-model="settings.curScenario" class="select planYear scenario" type="button" value="Standard" @change="saveSettings">
         <option disabled value="">
           Szenario
         </option>
@@ -16,7 +16,7 @@
         <!-- <option>Neues Szenario</option> -->
       </select>
       <!-- Planning year selector -->
-      <select v-model="settings.curYear" class="planYear" type="button" value="2019" @change="saveSettings">
+      <select v-model="settings.curYear" class="select planYear" type="button" value="2019" @change="saveSettings">
         <option disabled value="">
           Planungsjahr
         </option>

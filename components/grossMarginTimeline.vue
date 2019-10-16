@@ -7,7 +7,6 @@
 </template>
 <script>
 import Chart from 'chart.js'
-import 'chartjs-plugin-deferred'
 
 export default {
   props: {
@@ -141,15 +140,13 @@ export default {
           labels: this.labels
         },
         options: {
+          title: {
+            display: true,
+            text: 'Gesamtdeckungsbeitrag im Zeitverlauf'
+          },
           responsive: false,
           legend: {
             position: 'bottom'
-          },
-          plugins: {
-            deferred: {
-              yOffset: '50%', // defer until 50% of the canvas height are inside the viewport
-              delay: 500 // delay of 500 ms after the canvas is considered inside the viewport
-            }
           },
           tooltips: {
             xPadding: 6,
@@ -184,6 +181,6 @@ export default {
 .grossMarginTimeline-wrapper {
   text-align: center;
   margin: auto;
-  margin-top: 80px;
+  margin-top: 60px;
 }
 </style>
