@@ -2,10 +2,10 @@
   <div class="results-container">
     <div id="results-map" />
     <div class="legend">
-      <h4><b>Kulturen</b></h4>
-      <div v-for="crop in shares" :key="`layer_${crop.name}`" class="layer">
-        <span :style="{ backgroundColor: crop.backgroundColor}" />
-        {{ crop.name }}
+      <h4><b>{{ selection }}</b></h4>
+      <div v-for="elem in iteratee" :key="`layer_${elem.name}`" class="layer">
+        <span :style="{ backgroundColor: elem.backgroundColor}" />
+        {{ elem.name }}
       </div>
       <div v-if="duev2020">
         <h4 style="margin-top: 10px;">
@@ -35,11 +35,14 @@ export default {
     }
   },
   data: () => ({
-    duev2020: false
+    selection: 'Org. Düngung',
+    duev2020: false,
+    curLayers: [],
+    iteratee: []
   }),
   watch: {
     shares(newShares, oldShares) {
-      this.removePlots(oldShares)
+      this.removePlots()
       this.drawPlots()
     }
   },
@@ -81,11 +84,15 @@ export default {
       // selected crop to geometry properties, also a description (plot + crops)
       // and the center of the plot in order to show a popup
       let fc = this.data.map(plot => {
-        plot.geometry.properties.crop = plot.selectedCrop
         plot.geometry.properties.center = plot.center
-        plot.geometry.properties.description = `${plot.name}: ${
-          plot.selectedCrop
-        }`
+        if (this.selection === 'Org. Düngung') {
+          plot.geometry.properties.elem = plot.selectedOption.manAmount + 'm³'
+        } else {
+          plot.geometry.properties.elem = plot.selectedCrop
+        }
+        plot.geometry.properties.description = `${
+          plot.name
+        }: ${plot.selectedCrop + ', ' + plot.selectedOption.manAmount + 'm³'}`
         return plot.geometry
       })
       fc = featureCollection(fc)
@@ -95,21 +102,50 @@ export default {
         data: fc
       })
 
-      // add a layer for each crop
-      this.shares.forEach(crop => {
+      // add a layer for each crop / man amount
+      if (this.selection === 'Org. Düngung') {
+        // get unique manure values
+        const manColors = {
+          '0': '#fff',
+          '10': '#eef5f2',
+          '15': '#deebe5',
+          '20': '#cde1d8',
+          '25': '#bcd7cc',
+          '30': '#abccbf',
+          '40': '#9bc2b2',
+          '50': '#8ab8a5',
+          '60': '#5a8271'
+        }
+        this.iteratee = [
+          ...new Set(this.data.map(p => p.selectedOption.manAmount))
+        ]
+          .sort((a, b) => a - b)
+          .map((a, i) => {
+            return {
+              name: a + 'm³',
+              backgroundColor: manColors[a]
+            }
+          })
+      } else {
+        this.iteratee = this.shares
+      }
+      this.iteratee.forEach(elem => {
+        this.curLayers.push(elem.name)
+        this.curLayers.push(elem.name + '_line')
+
         this.resultsMap.addLayer({
-          id: crop.name,
+          id: elem.name,
           type: 'fill',
           source: 'plots',
           paint: {
-            'fill-color': crop.backgroundColor,
+            'fill-color': elem.backgroundColor,
             'fill-opacity': 1
           },
-          filter: ['==', 'crop', crop.name]
+          filter: ['==', 'elem', elem.name]
         })
         // also add an outline
         this.resultsMap.addLayer({
-          id: crop.name + '_line',
+          id: elem.name + '_line',
           type: 'line',
           source: 'plots',
           minzoom: 12,
@@ -117,11 +153,12 @@ export default {
             'line-color': 'white',
             'line-width': 2
           },
-          filter: ['==', 'crop', crop.name]
+          filter: ['==', 'elem', elem.name]
         })
         // add a popup on hover for each plot
-        this.addPopUp(crop.name)
+        this.addPopUp(elem.name)
       })
+
       // fit the map to the extent of all plots
       this.resultsMap.fitBounds(bbox(fc), { duration: 0, padding: 20 })
     },
@@ -172,11 +209,11 @@ export default {
         paint: {}
       })
     },
-    removePlots(layers) {
-      layers.forEach(crop => {
-        this.resultsMap.removeLayer(crop.name)
-        this.resultsMap.removeLayer(crop.name + '_line')
+    removePlots() {
+      this.curLayers.forEach(layer => {
+        this.resultsMap.removeLayer(layer)
       })
+      this.curLayers = []
       this.resultsMap.removeSource('plots')
     }
   }

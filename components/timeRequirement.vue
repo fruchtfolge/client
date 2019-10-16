@@ -60,7 +60,7 @@ export default {
       ]
       const store = this.$store
       const colors = ['#294D4A', '#4A6D7C', '#7690A5']
-      const curYear = this.$store.curYear
+      const curYear = store.curYear
       const months = [
         ['JAN1', 'JAN2'],
         ['FEB1', 'FEB2'],
@@ -79,55 +79,66 @@ export default {
 
       for (let i = 0; i < 3; i++) {
         const croppingYear = curYear - i
-        if (!this.shares[croppingYear]) continue
-        const cropsGrown = Object.keys(this.shares[croppingYear])
-        const crops = store.crops.filter(crop => {
-          if (crop.name) {
-            return (
-              cropsGrown.indexOf(crop.name) > -1 &&
-              crop.year === croppingYear &&
-              crop.scenario === store.curScenario
-            )
-          } else {
-            return false
-          }
-        })
-        const data = months.map(month => {
-          let time = 0
-          crops.forEach(crop => {
-            const share = this.shares[croppingYear][crop.name]
-            let steps = crop.workingSteps.filter(o => {
-              return month[0] === o.month || month[1] === o.month
-            })
-            if (steps && steps.length > 0 && share) {
-              steps = steps.map(step => {
-                return _.sumBy(step.steps, 'time')
+        if (i === 0) {
+          this.datasets.push({
+            data: store.curPlots
+              .map(p => (p.selectedOption ? p.selectedOption.time : []))
+              .reduce((acc, itt) => acc.map((m, i) => m + itt[i])),
+            label: `Anbauplan ${croppingYear}`,
+            borderColor: colors[i],
+            backgroundColor: this.gradient[i]
+          })
+        } else {
+          if (!this.shares[croppingYear]) continue
+          const cropsGrown = Object.keys(this.shares[croppingYear])
+          const crops = store.crops.filter(crop => {
+            if (crop.name) {
+              return (
+                cropsGrown.indexOf(crop.name) > -1 &&
+                crop.year === croppingYear &&
+                crop.scenario === store.curScenario
+              )
+            } else {
+              return false
+            }
+          })
+          const data = months.map(month => {
+            let time = 0
+            crops.forEach(crop => {
+              const share = this.shares[croppingYear][crop.name]
+              let steps = crop.workingSteps.filter(o => {
+                return month[0] === o.month || month[1] === o.month
               })
-              time += _.sum(steps) * share
-            }
+              if (steps && steps.length > 0 && share) {
+                steps = steps.map(step => {
+                  return _.sumBy(step.steps, 'time')
+                })
+                time += _.sum(steps) * share
+              }
+            })
+            store.curPlots.forEach(plot => {
+              if (
+                (plot.catchCrop && catchCropMonths.indexOf(month[0]) > -1) ||
+                catchCropMonths.indexOf(month[1]) > -1
+              ) {
+                // Source: Own regression made from KTBL - Verfahrensrechner Pflanze data
+                // Based on crop "Zwischenfrucht Senf"
+                time +=
+                  (0.04827586207 * plot.distance -
+                    0.1 * plot.size +
+                    4.191724138) /
+                  catchCropMonths.length
+              }
+            })
+            return _.round(time, 2)
           })
-          store.curPlots.forEach(plot => {
-            if (
-              (plot.catchCrop && catchCropMonths.indexOf(month[0]) > -1) ||
-              catchCropMonths.indexOf(month[1]) > -1
-            ) {
-              // Source: Own regression made from KTBL - Verfahrensrechner Pflanze data
-              // Based on crop "Zwischenfrucht Senf"
-              time +=
-                (0.04827586207 * plot.distance -
-                  0.1 * plot.size +
-                  4.191724138) /
-                catchCropMonths.length
-            }
+          this.datasets.push({
+            data: data,
+            label: `Anbauplan ${croppingYear}`,
+            borderColor: colors[i],
+            backgroundColor: this.gradient[i]
           })
-          return _.round(time, 2)
-        })
-        this.datasets.push({
-          data: data,
-          label: `Anbauplan ${croppingYear}`,
-          borderColor: colors[i],
-          backgroundColor: this.gradient[i]
-        })
+        }
       }
     },
     createGradient(chartId) {

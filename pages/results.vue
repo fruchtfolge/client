@@ -75,7 +75,7 @@
                 </td>
               </tr>
               <tr v-if="plot.id === selection" :key="`detail_${plot._id}`">
-                <td colspan="7" class="inner-table-wrapper" align="right">
+                <td colspan="9" class="inner-table-wrapper" align="right">
                   <table class="inner-table">
                     <thead>
                       <th />
@@ -263,14 +263,21 @@
         <div class="plots-wrapper">
           <cropShares :shares="curShares" />
           <deviationOptimum :shares="shares" :plots="curPlots" :time="curTimeReq" :total="grossMarginCurYear" />
-          <grossMarginTimeline :plots="curPlots" />
-          <timeRequirement :shares="shares" />
+          <carousel :perPage="1" :navigationEnabled="true">
+            <slide>
+              <timeRequirement :shares="shares" />
+            </slide>
+            <slide>
+              <grossMarginTimeline :plots="curPlots" />
+            </slide>
+          </carousel>
           <button type="button" name="button" style="margin-top: 20px;" @click="solve(true)">
             ZURÜCKSETZEN
           </button>
           <button type="button" name="button" style="margin-left: 20px;" @click="solve(false)">
             ERNEUT LÖSEN
           </button>
+          </carousel>
         </div>
       </div>
       <download class="excel-download" :data="curPlots" :year="curYear" />
@@ -285,10 +292,13 @@
   </div>
 </template>
 <script>
+import { Carousel, Slide } from 'vue-carousel'
 import cultures from '~/assets/js/cultures'
 
 export default {
   components: {
+    Carousel,
+    Slide,
     loading: () => import('~/components/loading.vue'),
     cropShares: () => import('~/components/cropShares.vue'),
     grossMarginTimeline: () => import('~/components/grossMarginTimeline.vue'),
