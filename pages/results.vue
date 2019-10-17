@@ -270,6 +270,7 @@
               :loop="true"
               :autoplayTimeout="10000"
               :speed="2000"
+              :navigationEnabled="true"
               paginationActiveColor="#79ae98"
               paginationColor="#e8e8e8"
             >
@@ -290,7 +291,11 @@
           </carousel>
         </div>
       </div>
-      <download class="excel-download" :data="curPlots" :year="curYear" />
+      <download
+        class="excel-download"
+        :data="curPlots"
+        :year="curYear"
+      />
       <resultsMap v-if="renderResultsMap" :data="curPlots" :shares="curShares" />
     </div>
     <div v-else style="text-align: center; margin-top: 80px;">
@@ -392,6 +397,7 @@ export default {
       return data
     },
     curShares() {
+      /*
       const colors = [
         '#018571',
         '#80cdc1',
@@ -403,7 +409,8 @@ export default {
         '#D0D1D3',
         '#B5DCE1'
       ]
-      /*
+      */
+
       const colors = [
         '#294D4A',
         '#4A6D7C',
@@ -415,7 +422,7 @@ export default {
         '#D0D1D3',
         '#B5DCE1'
       ]
-      */
+
       // calculate crop shares
       const o = {}
       if (!this.curPlots) return o
