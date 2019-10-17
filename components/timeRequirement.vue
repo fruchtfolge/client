@@ -59,7 +59,11 @@ export default {
         'Dezember'
       ]
       const store = this.$store
-      const colors = ['#294D4A', '#4A6D7C', '#7690A5']
+      const colors = [
+        'rgb(121, 173, 151)',
+        'rgb(236, 203, 137)',
+        'rgb(212, 133, 68)'
+      ]
       const curYear = store.curYear
       const months = [
         ['JAN1', 'JAN2'],
@@ -150,17 +154,18 @@ export default {
       this.gradient[1] = ctx.createLinearGradient(0, 0, 0, 450)
       this.gradient[2] = ctx.createLinearGradient(0, 0, 0, 450)
 
-      this.gradient[0].addColorStop(0, 'rgba(41,77,74, 0.5)')
-      this.gradient[0].addColorStop(0.5, 'rgba(41,77,74, 0.25)')
-      this.gradient[0].addColorStop(1, 'rgba(41,77,74, 0)')
-
-      this.gradient[1].addColorStop(0, 'rgba(74,109,124, 0.9)')
-      this.gradient[1].addColorStop(0.5, 'rgba(74,109,124, 0.25)')
-      this.gradient[1].addColorStop(1, 'rgba(74,109,124, 0)')
-
-      this.gradient[2].addColorStop(0, 'rgba(118,144,165, 0.9)')
-      this.gradient[2].addColorStop(0.5, 'rgba(118,144,165, 0.25)')
-      this.gradient[2].addColorStop(1, 'rgba(118,144,165, 0)')
+      // rgb(121, 173, 151)
+      this.gradient[0].addColorStop(0, 'rgba(121, 173, 151, 0.5)')
+      this.gradient[0].addColorStop(0.5, 'rgba(121, 173, 151, 0)')
+      this.gradient[0].addColorStop(1, 'rgba(121, 173, 151, 0)')
+      // rgb(236, 203, 137)
+      this.gradient[1].addColorStop(0, 'rgba(236, 203, 137, 0.7)')
+      this.gradient[1].addColorStop(0.5, 'rgba(236, 203, 137, 0)')
+      this.gradient[1].addColorStop(1, 'rgba(236, 203, 137, 0)')
+      // rgb(214, 230, 205)
+      this.gradient[2].addColorStop(0, 'rgba(212, 133, 68, 0.9)')
+      this.gradient[2].addColorStop(0.5, 'rgba(212, 133, 68, 0)')
+      this.gradient[2].addColorStop(1, 'rgba(212, 133, 68, 0)')
     },
     createChart(chartId, chartData) {
       Chart.defaults.global.defaultFontFamily = 'Open Sans'

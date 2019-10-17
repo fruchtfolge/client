@@ -27,7 +27,7 @@
               <th v-if="manure" style="width: 80px;" @click="sortPlots('orgFert')">
                 Org. Düngung
               </th>
-              <th style="width: 60px;" @click="sortPlots('prevCrop1')">
+              <th v-if="manure" style="width: 60px;" @click="sortPlots('prevCrop1')">
                 Herbstdüngung
               </th>
               <th style="width: 80px;" @click="sortPlots('curGrossMargin')">
@@ -327,6 +327,7 @@ export default {
       loading: true,
       curPlots: undefined,
       curCrops: undefined,
+      curStorage: undefined,
       plots: undefined,
       curYear: undefined,
       curScenario: 'Standard',
@@ -412,6 +413,18 @@ export default {
       */
 
       const colors = [
+        '#79AE98',
+        '#D6E5CD',
+        '#ECCB89',
+        '#D48544',
+        '#9B643B',
+        '#9DD5C0',
+        '#B5DCE1',
+        '#D0D1D3',
+        '#B5DCE1'
+      ]
+      /*
+      const colors = [
         '#294D4A',
         '#4A6D7C',
         '#7690A5',
@@ -422,7 +435,7 @@ export default {
         '#D0D1D3',
         '#B5DCE1'
       ]
-
+      */
       // calculate crop shares
       const o = {}
       if (!this.curPlots) return o
@@ -531,6 +544,15 @@ export default {
             plot.catchCrop = plot.selectedOption.catchCrop
             plot.recommendedCatchCrop = plot.catchCrop
           })
+          const storage = this.curStorage || {
+            _id: `${this.curYear}_storage`,
+            type: 'storage',
+            year: this.curYear,
+            scenario: this.curScenario
+          }
+          storage.storage = data.storage
+          storage.exports = data.exports
+          await this.$db.put(storage)
         } else {
           this.infeasible = true
           store.curPlots.forEach(plot => {
@@ -717,6 +739,7 @@ export default {
         this.$set(this, 'curPlots', store.curPlots)
         this.$set(this, 'curCrops', store.curCrops)
         this.$set(this, 'manure', store.curManure)
+        this.$set(this, 'curStorage', store.curStorage)
         this.$set(this, 'curYear', store.curYear)
         this.$set(this, 'curScenario', store.curScenario)
         if (

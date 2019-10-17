@@ -211,6 +211,7 @@ export default {
     },
     removePlots() {
       this.curLayers.forEach(layer => {
+        console.log(layer)
         this.resultsMap.removeLayer(layer)
       })
       this.curLayers = []

@@ -6,7 +6,7 @@
         FRUCHTFOLGE
       </nuxt-link>
       <!-- Switch between register and login -->
-      <button v-if="$nuxt.$route.path === '/'" class="register" @click="flip">
+      <button v-if="$nuxt.$route.path === '/'" class="register button" @click="flip">
         {{ buttonText }}
       </button>
     </div>

@@ -33,7 +33,7 @@
       Klicken Sie auf den "Hinzufügen" Button um eine neue Kultur für das aktuelle Planungsjahr und Szenario hinzuzufügen
     </div>
     <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
-      <button @click="addCrop">
+      <button class="button" @click="addCrop">
         HINZUFÜGEN
       </button>
     </div>

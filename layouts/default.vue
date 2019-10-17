@@ -210,6 +210,9 @@ html {
   background: white;
   z-index: 97;
   line-height: 60px;
+  border-bottom: #ececec;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
 }
 
 .logo {

@@ -3,12 +3,15 @@
     <div>
       <addManure v-if="addManure" @closeAddManure="addManure = false" />
       <div v-if="manures" style="width: 100%;">
-        <table>
+        <table class="table">
+          <caption class="caption">
+            Nährstoffanfall
+          </caption>
           <thead>
             <tr>
               <th colspan="3" />
               <th colspan="3">
-                Nährstoffgehalte [kg/m<sup>3</sup>]
+                Nährstoffgehalte [kg/m³]
               </th>
               <th />
               <th style="background-color: #f5f5f5" />
@@ -16,7 +19,7 @@
             <tr>
               <th>Name</th>
               <th>Kategorie</th>
-              <th>Menge [m<sup>3</sup>/a]</th>
+              <th>Menge [m³/a]</th>
               <th>N</th>
               <th>P<sub>2</sub>O<sub>5</sub></th>
               <th>K<sub>2</sub>O</th>
@@ -91,15 +94,71 @@
             </tr>
           </tbody>
         </table>
+        <table v-if="hasManure" class="table">
+          <caption class="caption">
+            Gülle: Exportkosten und Lagerung
+          </caption>
+          <thead>
+            <tr>
+              <th>Bezeichnung</th>
+              <th>Wert</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Gülle Lagerkapazität [m³]</td>
+              <td contenteditable="true" @blur="save($event, 'manStorage', 'settings')">
+                {{ settings.manStorage || sumManure.amount / 2 }}
+              </td>
+            </tr>
+            <tr>
+              <td>Gülle Exportkosten Frühjahr (bis Mai) [€/m³]</td>
+              <td contenteditable="true" @blur="save($event, 'manPriceSpring', 'settings')">
+                {{ settings.manPriceSpring || 15 }}
+              </td>
+            </tr>
+            <tr>
+              <td>Gülle Exportkosten Herbst (ab Mai) [€/m³]</td>
+              <td contenteditable="true" @blur="save($event, 'manPriceAutumn', 'settings')">
+                {{ settings.manPriceAutumn || 30 }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table v-if="hasSolid" class="table">
+          <caption class="caption">
+            Festmist: Exportkosten und Lagerung
+          </caption>
+          <thead>
+            <tr>
+              <th>Bezeichnung</th>
+              <th>Wert</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mist Lagerkapazität [m³]</td>
+              <td>3000</td>
+            </tr>
+            <tr>
+              <td>Mist Exportkosten Frühjahr (bis Mai) [€/m³]</td>
+              <td>15</td>
+            </tr>
+            <tr>
+              <td>Mist Exportkosten Herbst (ab Mai) [€/m³]</td>
+              <td>30</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <div v-else style="text-align: center; margin-top: 100px;">
         <h3>Fügen Sie organischen Dünger durch Klicken auf den 'Hinzufügen'-Button hinzu.</h3>
       </div>
       <div style="text-align: center; margin-top: 40px;">
-        <button class="addConstraint" style="font-family: 'Open Sans Condensed';" @click="addManure = true">
+        <button class="addConstraint button" style="font-family: 'Open Sans Condensed';" @click="addManure = true">
           HINZUFÜGEN
         </button>
-        <button v-if="manures" class="addConstraint" style="font-family: 'Open Sans Condensed'; margin-left: 20px;" @click="remove">
+        <button v-if="manures" class="addConstraint button" style="font-family: 'Open Sans Condensed'; margin-left: 20px;" @click="remove">
           ENTFERNEN
         </button>
       </div>
@@ -116,7 +175,8 @@ export default {
       addManure: false,
       crops: null,
       constraints: null,
-      manures: null
+      manures: null,
+      settings: null
     }
   },
   computed: {
@@ -204,7 +264,7 @@ export default {
     },
     update() {
       this.$set(this, 'manures', this.$store.curManure)
-      console.log(this.manures)
+      this.$set(this, 'settings', this.$store.settings)
     },
     async save(e, type, id) {
       try {

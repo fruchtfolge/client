@@ -4,7 +4,7 @@
     <cropsSidebar :crops="crops" :selected-crop="selectedCrop" @showAddCrop="addCrop = true" @changeCrop="changeCrop" />
     <div v-if="selectedCrop" class="cropSettings">
       <div class="subseqCrops">
-        <table>
+        <table class="table">
           <caption class="caption">
             Nachfruchtwirkungen
           </caption>
@@ -25,7 +25,7 @@
         </table>
       </div>
       <div class="settings">
-        <table>
+        <table class="table">
           <caption class="caption">
             Fruchtfolge Eigenschaften
           </caption>
@@ -76,7 +76,7 @@
         </table>
       </div>
       <div class="duevSettings">
-        <table>
+        <table class="table">
           <caption class="caption">
             Einstellungen Düngeverordnung 2017
           </caption>
@@ -145,7 +145,7 @@
         </table>
       </div>
       <div style="text-align:center;margin-top: 40px;">
-        <button type="button" name="button" @click="remove">
+        <button class="button" type="button" name="button" @click="remove">
           ENTFERNEN
         </button>
       </div>
@@ -157,7 +157,7 @@
         <br>
         Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
       </h3>
-      <button style="margin-left: 20px;" @click="importPrev">
+      <button class="button" style="margin-left: 20px;" @click="importPrev">
         IMPORTIEREN
       </button>
     </div>

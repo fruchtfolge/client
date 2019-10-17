@@ -120,6 +120,19 @@ function updateCurrent() {
       Vue.set(Vue.prototype.$store, 'curManure', null)
     }
   }
+  if (Vue.prototype.$store.storage && Vue.prototype.$store.settings) {
+    const match = Vue.prototype.$store.storage.filter(storage => {
+      return (
+        storage.year === Vue.prototype.$store.settings.curYear &&
+        storage.scenario === Vue.prototype.$store.settings.curScenario
+      )
+    })
+    if (match.length > 0) {
+      Vue.set(Vue.prototype.$store, 'curStorage', match[0])
+    } else {
+      Vue.set(Vue.prototype.$store, 'curStorage', null)
+    }
+  }
   Vue.prototype.$bus.$emit('changeCurrents')
 }
 
@@ -237,7 +250,21 @@ export default ({ app }, inject) => {
       .on('error', err => {
         console.log(err)
       })
-
+    // storage results
+    Vue.prototype.$db
+      .liveFind({
+        selector: {
+          type: 'storage'
+        },
+        aggregate: true
+      })
+      .on('update', (update, aggregate) => {
+        Vue.set(Vue.prototype.$store, 'storage', aggregate)
+        debouncedUpdate()
+      })
+      .on('error', err => {
+        console.log(err)
+      })
     inject('db', Vue.prototype.$db)
   })
 }
