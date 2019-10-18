@@ -51,24 +51,24 @@
                   {{ plot.prevCrop1 }}
                 </td>
                 <td class="narrow-cells-text">
-                  <input v-model="plot.catchCrop" type="checkbox" style="-webkit-appearance: checkbox;" @change="saveCropChange(plot)">
+                  <input v-model="plot.selectedOption.catchCrop" type="checkbox" style="-webkit-appearance: checkbox;" @change="saveChange(plot)">
                 </td>
                 <td class="wide-cells">
-                  <select v-model="plot.selectedCrop" class="select selection" @change="saveCropChange(plot)">
+                  <select v-model="plot.selectedCrop" class="select selection" @change="saveChange(plot)">
                     <option v-for="(crop) in curCrops" :key="`${crop.name}_${plot._id}`" :value="crop.name">
                       {{ crop.name }}
                     </option>
                   </select>
                 </td>
                 <td v-if="manure" class="narrow-cells">
-                  <select v-model="plot.selectedOption.manAmount" style="text-align-last: center;" class="select selection" @change="saveCropChange(plot)">
+                  <select v-model="plot.selectedOption.manAmount" style="text-align-last: center;" class="select selection" @change="saveChange(plot)">
                     <option v-for="(amount) in manAmounts" :key="`${plot._id}_${amount}`" :value="amount">
                       {{ amount }}m³
                     </option>
                   </select>
                 </td>
                 <td v-if="manure" class="narrow-cells-text">
-                  <input v-model="plot.selectedOption.autumnFert" type="checkbox" style="-webkit-appearance: checkbox;" @change="saveCropChange(plot)">
+                  <input v-model="plot.selectedOption.autumnFert" type="checkbox" style="-webkit-appearance: checkbox;" @change="saveChange(plot)">
                 </td>
                 <td class="narrow-cells-number" style="padding-right: 10px;" @click="showPlotInfo(plot.id)">
                   {{ format(plot.curGrossMargin) }}
@@ -76,7 +76,7 @@
               </tr>
               <tr v-if="plot.id === selection" :key="`detail_${plot._id}`">
                 <td colspan="9" class="inner-table-wrapper" align="right">
-                  <table class="inner-table">
+                  <table class="inner-table table">
                     <thead>
                       <th />
                       <th>Ertragskorrektur</th>
@@ -135,7 +135,7 @@
                       </tr>
                     </tbody>
                   </table>
-                  <table>
+                  <table class="table">
                     <thead>
                       <th />
                       <th>Preis [1/ha]</th>
@@ -204,7 +204,7 @@
                         <td colspan="3">
                           Zwischenfruchtanbau
                         </td>
-                        <td v-if="plot.catchCrop" style="text-align:center;" contenteditable="true" @blur="save($event,i,'catchCropCosts', plot)">
+                        <td v-if="plot.selectedOption.catchCrop" style="text-align:center;" contenteditable="true" @blur="save($event,i,'catchCropCosts', plot)">
                           {{
                             format(plot.selectedOption.catchCropCosts / plot.size)
                           }}
@@ -214,7 +214,7 @@
                             format(0)
                           }}
                         </td>
-                        <td v-if="plot.catchCrop" style="text-align:center;">
+                        <td v-if="plot.selectedOption.catchCrop" style="text-align:center;">
                           {{
                             format(plot.selectedOption.catchCropCosts)
                           }}
@@ -255,19 +255,40 @@
               </td>
               <td colspan="6" />
               <td class="narrow-cells-number" style="font-weight: bold; padding-right: 10px;">
-                {{ format(grossMarginCurYear) }}
+                {{ format(grossMarginArab) }}
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4">
+                Dungexport Frühjahr
+              </td>
+              <td colspan="3" />
+              <td class="narrow-cells-number">
+                {{ manExportVolSpring }}m³
+              </td>
+              <td class="narrow-cells-number" style="padding-right: 10px;">
+                {{ format(manExportCostsSpring) }}
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4">
+                Dungexport Herbst
+              </td>
+              <td colspan="3" />
+              <td class="narrow-cells-number">
+                {{ manExportVolAutumn }}m³
+              </td>
+              <td class="narrow-cells-number" style="padding-right: 10px;">
+                {{ format(manExportCostsAutumn) }}
               </td>
             </tr>
             <tr>
               <td colspan="1" style="font-weight: bold;">
-                Dungexport Früjhar
+                Summe
               </td>
-              <td colspan="6" />
-              <td class="narrow-cells-number">
-                {{ manExportVolSpring }}m3
-              </td>
-              <td class="narrow-cells-number" style="padding-right: 10px;">
-                {{ manExportCostsSpring }}
+              <td colspan="7" />
+              <td class="narrow-cells-number" style="font-weight: bold; padding-right: 10px;">
+                {{ format(grossMarginCurYear - manExportCostsSpring - manExportCostsAutumn) }}
               </td>
             </tr>
           </tbody>
@@ -278,12 +299,8 @@
           <div style="width: 400px;">
             <carousel
               :perPage="1"
-              :autoplay="true"
               :loop="true"
-              :autoplayTimeout="10000"
-              :speed="2000"
               :navigationEnabled="true"
-              paginationActiveColor="#79ae98"
               paginationColor="#e8e8e8"
             >
               <slide>
@@ -291,6 +308,9 @@
               </slide>
               <slide>
                 <grossMarginTimeline :plots="curPlots" />
+              </slide>
+              <slide v-if="manure">
+                <storage :curStorage="curStorage.storage" />
               </slide>
             </carousel>
           </div>
@@ -330,6 +350,7 @@ export default {
     cropShares: () => import('~/components/crop_shares.vue'),
     grossMarginTimeline: () => import('~/components/gross_margin_timeline.vue'),
     timeRequirement: () => import('~/components/time_requirement.vue'),
+    storage: () => import('~/components/storage.vue'),
     deviationOptimum: () => import('~/components/deviation_optimum.vue'),
     download: () => import('~/components/download.vue'),
     resultsMap: () => import('~/components/results_map.vue')
@@ -362,7 +383,7 @@ export default {
     },
     manExportVolSpring() {
       let exports = 0
-      if (this.curStorage) {
+      if (this.curStorage && this.curStorage.exports) {
         exports += this.curStorage.exports.manure.reduce(
           (acc, ind, i) => (acc += i < 5 ? ind : 0)
         )
@@ -373,18 +394,28 @@ export default {
       return exports
     },
     manExportCostsSpring() {
-      let costs = 0
-      if (this.curStorage) {
-        costs += this.curStorage.exports.manure.reduce(
-          (acc, ind, i) =>
-            i < 5 ? (acc += ind * this.$store.settings.manPriceSpring) : 0
+      const price = this.$store.settings.manPriceSpring
+        ? this.$store.settings.manPriceSpring
+        : 15
+      return _.round(this.manExportVolSpring * price)
+    },
+    manExportVolAutumn() {
+      let exports = 0
+      if (this.curStorage && this.curStorage.exports) {
+        exports += this.curStorage.exports.manure.reduce(
+          (acc, ind, i) => (acc += i > 4 ? ind : 0)
         )
-        costs += this.curStorage.exports.solid.reduce(
-          (acc, ind, i) =>
-            (acc += ind * i < 5 ? this.$store.settings.manPriceSpring : 0)
+        exports += this.curStorage.exports.solid.reduce(
+          (acc, ind, i) => (acc += i > 4 ? ind : 0)
         )
       }
-      return costs
+      return exports
+    },
+    manExportCostsAutumn() {
+      const price = this.$store.settings.manPriceAutumn
+        ? this.$store.settings.manPriceAutumn
+        : 15
+      return _.round(this.manExportVolAutumn * price)
     },
     curTimeReq() {
       const months = [
@@ -420,7 +451,7 @@ export default {
         })
         this.curPlots.forEach(plot => {
           if (
-            plot.catchCrop &&
+            plot.selectedOption.catchCrop &&
             (catchCropMonths.indexOf(month[0]) > -1 ||
               catchCropMonths.indexOf(month[1]) > -1)
           ) {
@@ -512,7 +543,7 @@ export default {
       }
       return flag
     },
-    grossMarginCurYear() {
+    grossMarginArab() {
       let sum = 0
       if (!this.curPlots) return 0
       this.curPlots.forEach(plot => {
@@ -523,6 +554,13 @@ export default {
         }
       })
       return sum
+    },
+    grossMarginCurYear() {
+      return (
+        this.grossMarginArab -
+        this.manExportCostsSpring -
+        this.manExportCostsAutumn
+      )
     }
   },
   created() {
@@ -561,58 +599,60 @@ export default {
     async solve(force) {
       this.loading = true
       try {
-        const store = this.$store
         // solve the model
         const { data } = await this.$axios.post(
           process.env.baseUrl + 'model/create/',
           { progress: true }
         )
         console.log(data)
-        if (data.model_status === 1 || data.model_status === 8) {
-          this.warnings = data.warnings
-          store.curPlots.forEach(plot => {
-            // get recommendation for each plot from GAMS result
-            plot.selectedOption = data.recommendation.find(
-              p => p._id === plot._id
-            )
-            plot.recommendation = plot.selectedOption.name
-            plot.curGrossMargin = plot.selectedOption.grossMargin
-            plot.recommendedGrossMargin = plot.curGrossMargin
-            plot.selectedCrop = plot.recommendation
-            plot.catchCrop = plot.selectedOption.catchCrop
-            plot.recommendedCatchCrop = plot.catchCrop
-          })
-          const storage = this.curStorage || {
-            _id: `${this.curYear}_storage`,
-            type: 'storage',
-            year: this.curYear,
-            scenario: this.curScenario
-          }
-          storage.storage = data.storage
-          storage.exports = data.exports
-          await this.$db.put(storage)
-        } else {
-          this.infeasible = true
-          store.curPlots.forEach(plot => {
-            plot.recommendation = ''
-            plot.recommendedCatchCrop = false
-            if (!plot.selectedCrop) {
-              plot.selectedCrop = plot.prevCrop1
-            }
-          })
-        }
-        // save results in database
-        await this.$db.bulkDocs(store.plots)
-        if (!this.infeasible && (!this.warnings || !this.warnings.length)) {
-          this.showSolved()
-        } else if (!this.infeasible && this.warnings && this.warnings.length) {
-          const warnings = this.warnings.join('\n')
-          this.showWarnings({ message: warnings })
-        } else {
-          this.showInfeasible()
-        }
+        await this.storeResults(data)
       } catch (e) {
         console.log(e)
+      }
+    },
+    async storeResults(data) {
+      console.log(data)
+      if (data.model_status === 1 || data.model_status === 8) {
+        this.warnings = data.warnings
+        this.curPlots.forEach(plot => {
+          // get recommendation for each plot from GAMS result
+          plot.selectedOption = data.recommendation.find(
+            p => p._id === plot._id
+          )
+          plot.recommendation = plot.selectedOption.name
+          plot.curGrossMargin = plot.selectedOption.grossMargin
+          plot.recommendedGrossMargin = plot.curGrossMargin
+          plot.selectedCrop = plot.recommendation
+          plot.recommendedCatchCrop = plot.catchCrop
+        })
+        const storage = this.curStorage || {
+          _id: `${this.curYear}_storage`,
+          type: 'storage',
+          year: this.curYear,
+          scenario: this.curScenario
+        }
+        storage.storage = data.storage
+        storage.exports = data.exports
+        await this.$db.put(storage)
+      } else {
+        this.infeasible = true
+        this.curPlots.forEach(plot => {
+          plot.recommendation = ''
+          plot.recommendedCatchCrop = false
+          if (!plot.selectedCrop) {
+            plot.selectedCrop = plot.prevCrop1
+          }
+        })
+      }
+      // save results in database
+      await this.$db.bulkDocs(this.curPlots)
+      if (!this.infeasible && (!this.warnings || !this.warnings.length)) {
+        this.showSolved()
+      } else if (!this.infeasible && this.warnings && this.warnings.length) {
+        const warnings = this.warnings.join('\n')
+        this.showWarnings({ message: warnings })
+      } else {
+        this.showInfeasible()
       }
     },
     calcShares() {
@@ -652,19 +692,9 @@ export default {
     },
     updatePrevCrops() {
       if (this.curPlots && this.curPlots.length > 0) {
-        let debugBounds = ''
         this.totLand = 0
         this.curPlots = this.curPlots.map(plot => {
           this.totLand += plot.size
-          debugBounds += `v_binCropPlot.fx('${plot.selectedCrop}','${
-            plot._id
-          }') = 1;\n`
-          if (plot.catchCrop) {
-            debugBounds += `v_binCatchCrop.fx('${plot.selectedCrop}','${
-              plot._id
-            }') = 1;\n`
-          }
-
           plot.prevCrop1 = this.getName(plot.id, this.curYear - 1).name
           plot.prevCrop2 = this.getName(plot.id, this.curYear - 2).name
           plot.prevCrop3 = this.getName(plot.id, this.curYear - 3).name
@@ -675,7 +705,6 @@ export default {
           }
           return plot
         })
-        console.log({ a: debugBounds })
       }
     },
     async save(e, i, type, plot) {
@@ -721,7 +750,65 @@ export default {
         console.log(e)
       }
     },
-    async saveCropChange(plot) {
+    async saveChange() {
+      try {
+        const req = this.curPlots.map(plot => {
+          return {
+            _id: plot._id,
+            crop: plot.selectedCrop,
+            manAmount: plot.selectedOption.manAmount,
+            solidAmount: plot.selectedOption.solidAmount,
+            catchCrop: plot.selectedOption.catchCrop,
+            autumnFert: plot.selectedOption.autumnFert
+          }
+        })
+        console.log(req)
+        const { data } = await this.$axios.post(
+          process.env.baseUrl + 'model/update/',
+          req,
+          { progress: true }
+        )
+        await this.storeResults(data)
+        /*
+        
+        
+        if (data.model_status === 1 || data.model_status === 8) {
+          this.warnings = data.warnings
+          this.curPlots.forEach(plot => {
+            // get recommendation for each plot from GAMS result
+            plot.selectedOption = data.recommendation.find(
+              p => p._id === plot._id
+            )
+            plot.recommendation = plot.selectedOption.name
+            plot.curGrossMargin = plot.selectedOption.grossMargin
+            plot.recommendedGrossMargin = plot.curGrossMargin
+            plot.selectedCrop = plot.recommendation
+            plot.catchCrop = plot.selectedOption.catchCrop
+            plot.recommendedCatchCrop = plot.catchCrop
+          })
+          const storage = this.curStorage || {
+            _id: `${this.curYear}_storage`,
+            type: 'storage',
+            year: this.curYear,
+            scenario: this.curScenario
+          }
+          storage.storage = data.storage
+          storage.exports = data.exports
+          await this.$db.put(storage)
+        } else {
+          this.infeasible = true
+          this.curPlots.forEach(plot => {
+            plot.recommendation = ''
+            plot.recommendedCatchCrop = false
+            if (!plot.selectedCrop) {
+              plot.selectedCrop = plot.prevCrop1
+            }
+          })
+        }
+        // save results in database
+        await this.$db.bulkDocs(this.curPlots)
+        */
+        /*
       try {
         const _id = plot._id
         const crop = plot.selectedCrop
@@ -742,6 +829,7 @@ export default {
         doc.selectedOption = data
         doc.curGrossMargin = data.grossMargin
         await this.$db.put(doc)
+      */
       } catch (e) {
         console.log(e)
       }

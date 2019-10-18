@@ -35,7 +35,7 @@ export default {
     }
   },
   data: () => ({
-    selection: 'Kulturen',
+    selection: 'Kulturen', // Kulturen,Org. Düngung
     duev2020: false,
     curLayers: [],
     iteratee: []
