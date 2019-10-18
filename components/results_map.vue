@@ -210,12 +210,16 @@ export default {
       })
     },
     removePlots() {
-      this.curLayers.forEach(layer => {
-        console.log(layer)
-        this.resultsMap.removeLayer(layer)
-      })
-      this.curLayers = []
-      this.resultsMap.removeSource('plots')
+      try {
+        this.curLayers.forEach(layer => {
+          console.log(layer)
+          this.resultsMap.removeLayer(layer)
+        })
+        this.curLayers = []
+        this.resultsMap.removeSource('plots')
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }

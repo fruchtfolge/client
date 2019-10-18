@@ -248,7 +248,7 @@
             </template>
             <tr>
               <td colspan="1" style="font-weight: bold;">
-                Summe
+                Summe Ackerbau
               </td>
               <td class="narrow-cells-number">
                 {{ curTotLand }}
@@ -256,6 +256,18 @@
               <td colspan="6" />
               <td class="narrow-cells-number" style="font-weight: bold; padding-right: 10px;">
                 {{ format(grossMarginCurYear) }}
+              </td>
+            </tr>
+            <tr>
+              <td colspan="1" style="font-weight: bold;">
+                Dungexport Früjhar
+              </td>
+              <td colspan="6" />
+              <td class="narrow-cells-number">
+                {{ manExportVolSpring }}m3
+              </td>
+              <td class="narrow-cells-number" style="padding-right: 10px;">
+                {{ manExportCostsSpring }}
               </td>
             </tr>
           </tbody>
@@ -315,9 +327,9 @@ export default {
     Carousel,
     Slide,
     loading: () => import('~/components/loading.vue'),
-    cropShares: () => import('~/components/cropShares.vue'),
-    grossMarginTimeline: () => import('~/components/grossMarginTimeline.vue'),
-    timeRequirement: () => import('~/components/timeRequirement.vue'),
+    cropShares: () => import('~/components/crop_shares.vue'),
+    grossMarginTimeline: () => import('~/components/gross_margin_timeline.vue'),
+    timeRequirement: () => import('~/components/time_requirement.vue'),
     deviationOptimum: () => import('~/components/deviation_optimum.vue'),
     download: () => import('~/components/download.vue'),
     resultsMap: () => import('~/components/results_map.vue')
@@ -347,6 +359,32 @@ export default {
   computed: {
     curTotLand() {
       return _.round(this.totLand, 2)
+    },
+    manExportVolSpring() {
+      let exports = 0
+      if (this.curStorage) {
+        exports += this.curStorage.exports.manure.reduce(
+          (acc, ind, i) => (acc += i < 5 ? ind : 0)
+        )
+        exports += this.curStorage.exports.solid.reduce(
+          (acc, ind, i) => (acc += i < 5 ? ind : 0)
+        )
+      }
+      return exports
+    },
+    manExportCostsSpring() {
+      let costs = 0
+      if (this.curStorage) {
+        costs += this.curStorage.exports.manure.reduce(
+          (acc, ind, i) =>
+            i < 5 ? (acc += ind * this.$store.settings.manPriceSpring) : 0
+        )
+        costs += this.curStorage.exports.solid.reduce(
+          (acc, ind, i) =>
+            (acc += ind * i < 5 ? this.$store.settings.manPriceSpring : 0)
+        )
+      }
+      return costs
     },
     curTimeReq() {
       const months = [
@@ -756,7 +794,7 @@ export default {
         this.updatePrevCrops()
         // update shares
         this.calcShares()
-        console.log(this.manure)
+        // console.log(this.manure)
         this.loading = false
       }
     },
