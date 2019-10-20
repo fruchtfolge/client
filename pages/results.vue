@@ -288,7 +288,7 @@
               </td>
               <td colspan="7" />
               <td class="narrow-cells-number" style="font-weight: bold; padding-right: 10px;">
-                {{ format(grossMarginCurYear - manExportCostsSpring - manExportCostsAutumn) }}
+                {{ format(grossMarginCurYear) }}
               </td>
             </tr>
           </tbody>
@@ -770,8 +770,8 @@ export default {
         )
         await this.storeResults(data)
         /*
-        
-        
+
+
         if (data.model_status === 1 || data.model_status === 8) {
           this.warnings = data.warnings
           this.curPlots.forEach(plot => {
