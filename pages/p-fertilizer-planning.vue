@@ -125,16 +125,13 @@ export default {
     },
     orgP(plot) {
       if (plot.selectedOption) {
-        return _.round(
-          plot.selectedOption.pSum -
-            plot.selectedOption.minFertRequired.p * 0.12
-        )
+        return _.round(plot.selectedOption.orgPAmount * 0.12)
       }
       return 0
     },
     minP(plot) {
       if (plot.selectedOption) {
-        return _.round(plot.selectedOption.minFertRequired.p * 0.12)
+        return _.round(plot.selectedOption.minPAmount * 0.12)
       }
       return 0
     }

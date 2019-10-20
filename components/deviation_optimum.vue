@@ -276,6 +276,9 @@ export default {
         }
       })
       this.optimum = optimum
+      if (this.$store.settings['grossMargin' + this.curYear]) {
+        this.optimum = this.$store.settings['grossMargin' + this.curYear]
+      }
       this.totLand = totLand
       this.greenLand = greenLand
       this.arableLand = arableLand

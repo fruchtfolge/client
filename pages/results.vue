@@ -51,24 +51,24 @@
                   {{ plot.prevCrop1 }}
                 </td>
                 <td class="narrow-cells-text">
-                  <input v-model="plot.selectedOption.catchCrop" type="checkbox" style="-webkit-appearance: checkbox;" @change="saveChange(plot)">
+                  <input v-model="plot.selectedOption.catchCrop" type="checkbox" style="-webkit-appearance: checkbox;" @change="saveCropChange(plot)">
                 </td>
                 <td class="wide-cells">
-                  <select v-model="plot.selectedCrop" class="select selection" @change="saveChange(plot)">
+                  <select v-model="plot.selectedCrop" class="select selection" @change="saveCropChange(plot)">
                     <option v-for="(crop) in curCrops" :key="`${crop.name}_${plot._id}`" :value="crop.name">
                       {{ crop.name }}
                     </option>
                   </select>
                 </td>
                 <td v-if="manure" class="narrow-cells">
-                  <select v-model="plot.selectedOption.manAmount" style="text-align-last: center;" class="select selection" @change="saveChange(plot)">
+                  <select v-model="plot.selectedOption.manAmount" style="text-align-last: center;" class="select selection" @change="saveManureChange()">
                     <option v-for="(amount) in manAmounts" :key="`${plot._id}_${amount}`" :value="amount">
                       {{ amount }}m³
                     </option>
                   </select>
                 </td>
                 <td v-if="manure" class="narrow-cells-text">
-                  <input v-model="plot.selectedOption.autumnFert" type="checkbox" style="-webkit-appearance: checkbox;" @change="saveChange(plot)">
+                  <input v-model="plot.selectedOption.autumnFert" type="checkbox" style="-webkit-appearance: checkbox;" @change="saveManureChange()">
                 </td>
                 <td class="narrow-cells-number" style="padding-right: 10px;" @click="showPlotInfo(plot.id)">
                   {{ format(plot.curGrossMargin) }}
@@ -190,12 +190,28 @@
                         </td>
                         <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'machineCosts', plot)">
                           {{
-                            format(plot.selectedOption.variableCosts)
+                            format(plot.selectedOption.variableCostsMech)
                           }}
                         </td>
                         <td style="text-align:center;">
                           {{
-                            format(plot.selectedOption.variableCosts
+                            format(plot.selectedOption.variableCostsMech
+                              * plot.selectedOption.size)
+                          }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="3">
+                          Düngeausbringung
+                        </td>
+                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'machineCosts', plot)">
+                          {{
+                            format(plot.selectedOption.fertMachCosts)
+                          }}
+                        </td>
+                        <td style="text-align:center;">
+                          {{
+                            format(plot.selectedOption.fertMachCosts
                               * plot.selectedOption.size)
                           }}
                         </td>
@@ -323,6 +339,11 @@
           </carousel>
         </div>
       </div>
+      <dropdown class="dropdown-container">
+        <a class="dropdown-item" href="#">bla</a>
+        <hr>
+        <a class="dropdown-item" href="#">test</a>
+      </dropdown>
       <download
         class="excel-download"
         :data="curPlots"
@@ -353,6 +374,7 @@ export default {
     storage: () => import('~/components/storage.vue'),
     deviationOptimum: () => import('~/components/deviation_optimum.vue'),
     download: () => import('~/components/download.vue'),
+    dropdown: () => import('~/components/dropdown.vue'),
     resultsMap: () => import('~/components/results_map.vue')
   },
   data() {
@@ -605,12 +627,12 @@ export default {
           { progress: true }
         )
         console.log(data)
-        await this.storeResults(data)
+        await this.storeResults(data, true)
       } catch (e) {
         console.log(e)
       }
     },
-    async storeResults(data) {
+    async storeResults(data, newRun) {
       console.log(data)
       if (data.model_status === 1 || data.model_status === 8) {
         this.warnings = data.warnings
@@ -634,6 +656,12 @@ export default {
         storage.storage = data.storage
         storage.exports = data.exports
         await this.$db.put(storage)
+        if (newRun) {
+          this.$store.settings[
+            'grossMargin' + this.curYear
+          ] = this.grossMarginCurYear
+          await this.$db.put(this.$store.settings)
+        }
       } else {
         this.infeasible = true
         this.curPlots.forEach(plot => {
@@ -750,7 +778,7 @@ export default {
         console.log(e)
       }
     },
-    async saveChange() {
+    async saveManureChange() {
       try {
         const req = this.curPlots.map(plot => {
           return {
@@ -764,57 +792,22 @@ export default {
         })
         console.log(req)
         const { data } = await this.$axios.post(
-          process.env.baseUrl + 'model/update/',
+          process.env.baseUrl + 'model/update-manure/',
           req,
           { progress: true }
         )
         await this.storeResults(data)
-        /*
-
-
-        if (data.model_status === 1 || data.model_status === 8) {
-          this.warnings = data.warnings
-          this.curPlots.forEach(plot => {
-            // get recommendation for each plot from GAMS result
-            plot.selectedOption = data.recommendation.find(
-              p => p._id === plot._id
-            )
-            plot.recommendation = plot.selectedOption.name
-            plot.curGrossMargin = plot.selectedOption.grossMargin
-            plot.recommendedGrossMargin = plot.curGrossMargin
-            plot.selectedCrop = plot.recommendation
-            plot.catchCrop = plot.selectedOption.catchCrop
-            plot.recommendedCatchCrop = plot.catchCrop
-          })
-          const storage = this.curStorage || {
-            _id: `${this.curYear}_storage`,
-            type: 'storage',
-            year: this.curYear,
-            scenario: this.curScenario
-          }
-          storage.storage = data.storage
-          storage.exports = data.exports
-          await this.$db.put(storage)
-        } else {
-          this.infeasible = true
-          this.curPlots.forEach(plot => {
-            plot.recommendation = ''
-            plot.recommendedCatchCrop = false
-            if (!plot.selectedCrop) {
-              plot.selectedCrop = plot.prevCrop1
-            }
-          })
-        }
-        // save results in database
-        await this.$db.bulkDocs(this.curPlots)
-        */
-        /*
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async saveCropChange(plot) {
       try {
         const _id = plot._id
         const crop = plot.selectedCrop
         const manAmount = plot.selectedOption.manAmount
         const solidAmount = plot.selectedOption.solidAmount
-        const catchCrop = plot.catchCrop
+        const catchCrop = plot.selectedOption.catchCrop
         const autumnFert = plot.selectedOption.autumnFert
 
         const doc = await this.$db.get(_id)
@@ -825,11 +818,10 @@ export default {
           { progress: true }
         )
         doc.selectedCrop = plot.selectedCrop
-        doc.catchCrop = plot.catchCrop
+        doc.catchCrop = plot.selectedOption.catchCrop
         doc.selectedOption = data
         doc.curGrossMargin = data.grossMargin
         await this.$db.put(doc)
-      */
       } catch (e) {
         console.log(e)
       }
@@ -1005,6 +997,13 @@ export default {
   background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
   background-repeat: no-repeat;
   background-position: 90% 50%;
+}
+
+.dropdown-container {
+  position: fixed;
+  right: 175px;
+  top: 10px;
+  z-index: 1110;
 }
 
 .excel-download {

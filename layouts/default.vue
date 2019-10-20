@@ -5,16 +5,6 @@
       <div class="logo">
         FRUCHTFOLGE
       </div>
-      <!-- Scenario selector -->
-      <select v-model="settings.curScenario" class="select planYear scenario" type="button" value="Standard" @change="saveSettings">
-        <option disabled value="">
-          Szenario
-        </option>
-        <option v-for="(scenario,j) in scenarios" :key="j" :value="scenario.name">
-          {{ scenario.name }}
-        </option>
-        <!-- <option>Neues Szenario</option> -->
-      </select>
       <!-- Planning year selector -->
       <select v-model="settings.curYear" class="select planYear" type="button" value="2019" @change="saveSettings">
         <option disabled value="">

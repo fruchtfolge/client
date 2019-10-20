@@ -34,6 +34,7 @@
     "pouchdb-find": "^7.1.1",
     "pouchdb-live-find": "^0.4.0",
     "vue-carousel": "^0.18.0",
+    "vue-clickaway": "^2.2.2",
     "vue-notifications": "^0.9.0",
     "xlsx": "^0.14.5",
     "xml2js": "^0.4.22"
