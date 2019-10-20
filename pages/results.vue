@@ -330,26 +330,25 @@
               </slide>
             </carousel>
           </div>
-          <button class="button" type="button" name="button" style="margin-top: 20px;" @click="solve(true)">
-            ZURÜCKSETZEN
-          </button>
-          <button class="button" type="button" name="button" style="margin-left: 20px;" @click="solve(false)">
-            ERNEUT LÖSEN
-          </button>
           </carousel>
         </div>
       </div>
       <dropdown class="dropdown-container">
-        <a class="dropdown-item" href="#">bla</a>
+        <a
+          class="dropdown-item"
+          @click="solve(true)"
+        >Erneut lösen</a>
         <hr>
-        <a class="dropdown-item" href="#">test</a>
+        <download
+          class="
+            dropdown-item"
+          :data="curPlots"
+          :year="curYear"
+        />
       </dropdown>
-      <download
-        class="excel-download"
-        :data="curPlots"
-        :year="curYear"
-      />
+
       <resultsMap v-if="renderResultsMap" :data="curPlots" :shares="curShares" />
+      </dropdown>
     </div>
     <div v-else style="text-align: center; margin-top: 80px;">
       <h3>
@@ -1010,6 +1009,26 @@ export default {
   margin-top: 40px;
   text-align: center;
 }
+
+.VueCarousel-navigation-prev {
+  background-image: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
+  width: 24px;
+  height: 24px;
+  font-size: 0px;
+  margin-right: -8px;
+  transform-origin: left top;
+  transform: translate(0%, -50%) rotate(90deg) !important;
+}
+.VueCarousel-navigation-next {
+  background-image: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
+  width: 24px;
+  height: 24px;
+  font-size: 0px;
+  margin-right: -8px;
+  transform-origin: left top;
+  transform: translate(100%, 50%) rotate(-90deg) !important;
+}
+
 @media (max-width: 1250px) {
   .plot-selection {
     width: 125px;

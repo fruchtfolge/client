@@ -2,7 +2,7 @@
   <div>
     <loading v-if="loading" />
     <div v-if="!loading && curPlots && curPlots.length > 0" class="plotOverview">
-      <table>
+      <table class="table">
         <thead>
           <tr>
             <th style="min-width: 250px;">
@@ -37,7 +37,7 @@
               </td>
 
               <td :key="`${year}_${m}`" style="text-align: center;">
-                <select v-model="plot[year]" class="selection" @change="saveCropChange(plot,year)">
+                <select v-model="plot[year]" class="selection select" @change="saveCropChange(plot,year)">
                   <option v-for="(crop) in crops" :key="`${crop.code}_${crop.name}`" :value="crop.name">
                     {{ crop.name }}
                   </option>

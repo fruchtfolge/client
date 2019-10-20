@@ -328,6 +328,7 @@ html {
 
 .footer-sidebar {
   background-color: #e8e8e8;
+  width: 250px;
   padding: 10px;
   padding-bottom: 10px;
 }

@@ -18,7 +18,7 @@ export default {
   mixins: [clickaway],
   data() {
     return {
-      clicked: true
+      clicked: false
     }
   },
   methods: {

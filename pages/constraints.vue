@@ -3,7 +3,7 @@
     <div v-if="crops && crops.length > 0">
       <addConstraint v-if="addConstraint" :crops="crops" @closeAddConstraint="addConstraint = false" />
       <div style="width: 100%;">
-        <table>
+        <table class="table">
           <thead>
             <tr>
               <th>Name</th>
@@ -29,10 +29,10 @@
         </table>
       </div>
       <div style="text-align: center; margin-top: 40px;">
-        <button class="addConstraint" style="font-family: 'Open Sans Condensed';" @click="addConstraint = true">
+        <button class="addConstraint button" style="font-family: 'Open Sans Condensed';" @click="addConstraint = true">
           HINZUFÜGEN
         </button>
-        <button class="addConstraint" style="font-family: 'Open Sans Condensed'; margin-left: 20px;" @click="remove">
+        <button class="addConstraint button" style="font-family: 'Open Sans Condensed'; margin-left: 20px;" @click="remove">
           ENTFERNEN
         </button>
       </div>

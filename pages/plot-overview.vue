@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="plots && plots.length > 0" class="plotOverview">
-      <table>
+      <table class="table">
         <thead>
           <tr>
             <th style="min-width: 250px;">
@@ -36,14 +36,14 @@
               {{ plot.quality }}
             </td>
             <td style="text-align: center;">
-              <select v-model="plot.soilType" class="selection" @change="save(null,plot,'soilType')">
+              <select v-model="plot.soilType" class="selection select" @change="save(null,plot,'soilType')">
                 <option v-for="(soilType) in soilTypes" :key="soilType" :value="soilType">
                   {{ soilType }}
                 </option>
               </select>
             </td>
             <td style="text-align: center;">
-              <select v-model="plot.humusContent" class="selection" @change="save(null,plot,'humusContent')">
+              <select v-model="plot.humusContent" class="selection select" @change="save(null,plot,'humusContent')">
                 <option v-for="(humusContent) in humusContents" :key="humusContent" :value="humusContent">
                   {{ humusContent }}
                 </option>

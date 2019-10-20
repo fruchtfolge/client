@@ -1,8 +1,8 @@
 <template>
   <div class="">
-    <button class="button" type="button" @click="onexport">
+    <a @click="onexport">
       Excel Download
-    </button>
+    </a>
   </div>
 </template>
 
@@ -37,11 +37,7 @@ export default {
       this.fields.forEach(field => {
         const displayName = field[0]
         if (entry[field[1]]) {
-          if (field[1] === 'curGrossMargin' && entry.catchCrop) {
-            output[displayName] = entry[field[1]] - entry.matrix.catchCropCosts
-          } else {
-            output[displayName] = entry[field[1]]
-          }
+          output[displayName] = entry[field[1]]
         } else {
           output[displayName] = ''
         }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="dataAvail" class="plotOverview">
-      <table class="table-fert">
+      <table class="table-fert table">
         <thead>
           <tr>
             <th>Name</th>

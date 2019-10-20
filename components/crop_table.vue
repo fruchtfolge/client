@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="cropsTable">
-    <table>
+    <table class="table">
       <thead>
         <tr>
           <th>Leistungs-/Kostenart</th>
