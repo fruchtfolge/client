@@ -53,7 +53,7 @@
               <input type="checkbox" :checked="plot.rootCrops" @change="save($event,plot,'rootCrops')">
             </td>
             <td style="text-align: center;">
-              <input type="checkbox" :checked="plot.duevEndangered" @change="save($event,plot,'rootCrops')">
+              <input type="checkbox" :checked="plot.duevEndangered" @change="save($event,plot,'duevEndangered')">
             </td>
             <td style="text-align: center;">
               <input type="checkbox" :checked="plot.permPast" @change="save($event,plot,'permPast')">
@@ -137,7 +137,10 @@ export default {
         let newValue = ''
         if (e && prop === 'name') {
           newValue = e.target.innerText
-        } else if (e && (prop === 'rootCrops' || prop === 'permPast')) {
+        } else if (
+          (e && (prop === 'rootCrops' || prop === 'permPast')) ||
+          prop === 'duevEndangered'
+        ) {
           newValue = e.target.checked
         } else if (e) {
           newValue = Number(e.target.innerText)

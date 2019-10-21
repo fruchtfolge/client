@@ -7,7 +7,7 @@
 </template>
 
 <script>
-// import XLSX from 'xlsx'
+import XLSX from 'xlsx'
 
 export default {
   props: {
@@ -38,13 +38,16 @@ export default {
         const displayName = field[0]
         if (entry[field[1]]) {
           output[displayName] = entry[field[1]]
+        } else if (field[1].split('.')[1]) {
+          output[displayName] =
+            entry[field[1].split('.')[0]][field[1].split('.')[1]]
         } else {
           output[displayName] = ''
         }
       })
       return output
     },
-    async onexport() {
+    onexport() {
       this.fields = [
         ['Name', 'name'],
         ['Nummer', 'id'],
@@ -57,11 +60,25 @@ export default {
         ['Bodenart', 'soilType'],
         ['Bodenqualität', 'quality'],
         ['Humusgehalt', 'humusContent'],
+        ['Rotes Gebiet', 'duevEndangered'],
         [`${this.year - 3}`, 'prevCrop3'],
         [`${this.year - 2}`, 'prevCrop2'],
         [`${this.year - 1}`, 'prevCrop1'],
         ['Zwischenfrucht', 'catchCrop'],
         [`Planung ${this.year}`, 'selectedCrop'],
+        ['Org. Düngung', 'selectedOption.manAmount'],
+        ['Herbstdüngung', 'selectedOption.autumnFert'],
+        ['Ertrag [dt/ha]', 'selectedOption.correctedAmount'],
+        ['Preis [dt/ha]', 'selectedOption.price'],
+        ['Leistung [€/ha]', 'selectedOption.revenue'],
+        ['Direktkosten [€/ha]', 'selectedOption.directCosts'],
+        ['davon min. Düngerkosten [€/ha]', 'selectedOption.fertCosts'],
+        ['Kosten Zwischenfrucht [€/ha]', 'selectedOption.catchCropCosts'],
+        ['Var. Maschinenkosten [€/ha]', 'selectedOption.variableCosts'],
+        [
+          'davon Ausbringungskosten org. Dünger [€/ha]',
+          'selectedOption.fertMachCosts'
+        ],
         ['Deckungsbeitrag Planungjahr', 'curGrossMargin']
       ]
       const order = this.fields.map(a => {
@@ -69,26 +86,13 @@ export default {
       })
       // create intermediate JSON in order to be able to export
       const exportData = this.data.map(this.prepare)
-      // let backend create excel workbook and store it
-      await this.$axios.post(
-        process.env.baseUrl + 'excel/excel/',
-        { data: exportData, columns: order },
-        { progress: true }
-      )
-      // finally request workbook and download
-      const data = await this.$axios.get(process.env.baseUrl + 'excel/excel/', {
-        progress: true,
-        responseType: 'blob'
-      })
-      const url = window.URL.createObjectURL(new Blob([data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute(
-        'download',
-        `Fruchtfolge - Planung ${this.curYear}.xlsx`
-      )
-      document.body.appendChild(link)
-      link.click()
+      const exportWS = XLSX.utils.json_to_sheet(exportData, { header: order })
+      const wb = XLSX.utils.book_new() // make Workbook of Excel
+      // add Worksheet to Workbook
+      XLSX.utils.book_append_sheet(wb, exportWS, 'Fruchtfolge')
+      console.log('test')
+      // export Excel file
+      XLSX.writeFile(wb, `Fruchtfolge - Planung ${this.year}.xlsx`)
     }
   }
 }

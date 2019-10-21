@@ -125,7 +125,7 @@ export default {
     },
     orgP(plot) {
       if (plot.selectedOption) {
-        return _.round(plot.selectedOption.orgPAmount * 0.12)
+        return _.round(plot.selectedOption.orgPAmount)
       }
       return 0
     },

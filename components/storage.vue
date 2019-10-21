@@ -1,7 +1,7 @@
 <template lang="html">
   <div>
     <div class="storage-wrapper">
-      <canvas id="storage-chart" width="380" height="320" style="display: unset;" />
+      <canvas id="storage-chart" width="380" height="320" />
     </div>
   </div>
 </template>
@@ -28,7 +28,6 @@ export default {
         this.prepareData()
         this.storage.data.datasets[0].data = this.datasets[0].data
         this.storage.data.datasets[1].data = this.datasets[1].data
-        // this.storage.data.labels = this.labels
         this.storage.update()
       },
       deep: true

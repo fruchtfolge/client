@@ -70,7 +70,7 @@
                 <td v-if="manure" class="narrow-cells-text">
                   <input v-model="plot.selectedOption.autumnFert" type="checkbox" style="-webkit-appearance: checkbox;" @change="saveManureChange()">
                 </td>
-                <td class="narrow-cells-number" style="padding-right: 10px;" @click="showPlotInfo(plot.id)">
+                <td class="narrow-cells-number" style="padding-right: 10px;" @click="showPlotInfo(plot)">
                   {{ format(plot.curGrossMargin) }}
                 </td>
               </tr>
@@ -186,6 +186,22 @@
                       </tr>
                       <tr>
                         <td colspan="3">
+                          Davon min. Düngekosten
+                        </td>
+                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'directCosts', plot)">
+                          {{
+                            format(plot.selectedOption.fertCosts)
+                          }}
+                        </td>
+                        <td style="text-align:center;">
+                          {{
+                            format(plot.selectedOption.fertCosts
+                              * plot.selectedOption.size)
+                          }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="3">
                           Maschinenkosten
                         </td>
                         <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'machineCosts', plot)">
@@ -269,12 +285,13 @@
               <td class="narrow-cells-number">
                 {{ curTotLand }}
               </td>
-              <td colspan="6" />
+              <td v-if="manure" colspan="6" />
+              <td v-else colspan="4" />
               <td class="narrow-cells-number" style="font-weight: bold; padding-right: 10px;">
                 {{ format(grossMarginArab) }}
               </td>
             </tr>
-            <tr>
+            <tr v-if="manure">
               <td colspan="4">
                 Dungexport Frühjahr
               </td>
@@ -286,7 +303,7 @@
                 {{ format(manExportCostsSpring) }}
               </td>
             </tr>
-            <tr>
+            <tr v-if="manure">
               <td colspan="4">
                 Dungexport Herbst
               </td>
@@ -302,7 +319,8 @@
               <td colspan="1" style="font-weight: bold;">
                 Summe
               </td>
-              <td colspan="7" />
+              <td v-if="manure" colspan="7" />
+              <td v-else colspan="5" />
               <td class="narrow-cells-number" style="font-weight: bold; padding-right: 10px;">
                 {{ format(grossMarginCurYear) }}
               </td>
@@ -848,11 +866,12 @@ export default {
       }
     },
 
-    showPlotInfo(id) {
-      if (this.selection === id) {
+    showPlotInfo(plot) {
+      console.log(plot)
+      if (this.selection === plot.id) {
         this.selection = ''
       } else {
-        this.selection = id
+        this.selection = plot.id
       }
     },
 
