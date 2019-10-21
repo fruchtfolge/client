@@ -346,8 +346,15 @@
           :year="curYear"
         />
       </dropdown>
-
-      <resultsMap v-if="renderResultsMap" :data="curPlots" :shares="curShares" />
+      <select v-model="resultMapSwitcher" class="selection select result-map-switcher " name="">
+        <option value="Kulturen">
+          Kulturen
+        </option>
+        <option value="Org. Düngung">
+          Org. Düngung
+        </option>
+      </select>
+      <resultsMap v-if="renderResultsMap" :data="curPlots" :shares="curShares" :selection="resultMapSwitcher" />
       </dropdown>
     </div>
     <div v-else style="text-align: center; margin-top: 80px;">
@@ -393,6 +400,7 @@ export default {
       sortKey: '',
       manure: undefined,
       shares: {},
+      resultMapSwitcher: 'Kulturen',
       manAmounts: [0, 10, 15, 20, 25, 30, 40, 50, 60],
       sortOrder: 'desc',
       cropColor: {}
@@ -987,7 +995,7 @@ export default {
   font-size: 14px;
   text-align-last: left;
   width: 100%;
-  padding-right: calc(10% + 25px);
+  padding-right: 40px;
   font-family: 'Open Sans';
   font-weight: 300;
   padding-left: 5px;
@@ -1026,7 +1034,19 @@ export default {
   font-size: 0px;
   margin-right: -8px;
   transform-origin: left top;
-  transform: translate(100%, 50%) rotate(-90deg) !important;
+  transform: translate(100%, 60%) rotate(-90deg) !important;
+}
+
+.VueCarousel-dot-container {
+  margin-top: 0px !important;
+}
+
+.result-map-switcher {
+  margin-top: 50px;
+  width: 175px;
+  margin-left: 25px;
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
 @media (max-width: 1250px) {

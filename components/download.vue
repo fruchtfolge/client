@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import XLSX from 'xlsx'
+// import XLSX from 'xlsx'
 
 export default {
   props: {
@@ -44,7 +44,7 @@ export default {
       })
       return output
     },
-    onexport() {
+    async onexport() {
       this.fields = [
         ['Name', 'name'],
         ['Nummer', 'id'],
@@ -69,15 +69,26 @@ export default {
       })
       // create intermediate JSON in order to be able to export
       const exportData = this.data.map(this.prepare)
-
-      const exportWS = XLSX.utils.json_to_sheet(exportData, { header: order })
-      const wb = XLSX.utils.book_new() // make Workbook of Excel
-
-      // add Worksheet to Workbook
-      XLSX.utils.book_append_sheet(wb, exportWS, 'Fruchtfolge')
-      console.log('test')
-      // export Excel file
-      XLSX.writeFile(wb, `Fruchtfolge - Planung ${this.year}.xlsx`)
+      // let backend create excel workbook and store it
+      await this.$axios.post(
+        process.env.baseUrl + 'excel/excel/',
+        { data: exportData, columns: order },
+        { progress: true }
+      )
+      // finally request workbook and download
+      const data = await this.$axios.get(process.env.baseUrl + 'excel/excel/', {
+        progress: true,
+        responseType: 'blob'
+      })
+      const url = window.URL.createObjectURL(new Blob([data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute(
+        'download',
+        `Fruchtfolge - Planung ${this.curYear}.xlsx`
+      )
+      document.body.appendChild(link)
+      link.click()
     }
   }
 }

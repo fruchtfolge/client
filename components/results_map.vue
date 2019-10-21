@@ -32,16 +32,23 @@ export default {
     shares: {
       type: Array,
       required: true
+    },
+    selection: {
+      type: String,
+      required: true
     }
   },
   data: () => ({
-    selection: 'Kulturen', // Kulturen,Org. Düngung
     duev2020: false,
     curLayers: [],
     iteratee: []
   }),
   watch: {
     shares(newShares, oldShares) {
+      this.removePlots()
+      this.drawPlots()
+    },
+    selection() {
       this.removePlots()
       this.drawPlots()
     }
@@ -229,7 +236,6 @@ export default {
   width: 100%;
   height: calc(60vh - 60px);
   position: relative;
-  margin-top: 50px;
   margin-bottom: -50px;
 }
 

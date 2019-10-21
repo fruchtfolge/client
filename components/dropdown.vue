@@ -52,6 +52,10 @@ export default {
   padding-left: 12px;
 }
 
+.dropdown:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
 .dropdown-item {
   color: #4a4a4a;
   display: block;
