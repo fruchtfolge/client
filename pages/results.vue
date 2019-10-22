@@ -528,6 +528,14 @@ export default {
       ]
       */
 
+      const cultures = {
+        'Winterweizen - Brotweizen': '#79AE98',
+        Stärkekartoffeln: '#D6E5CD',
+        Zuckerrüben: '#ECCB89',
+        'Mais - Silomais': '#D48544',
+        Winterraps: '#9B643B',
+        Wintergerste: '#9DD5C0'
+      }
       const colors = [
         '#79AE98',
         '#D6E5CD',
@@ -573,7 +581,11 @@ export default {
       })
       a = _.orderBy(a, ['data'], ['desc'])
       a = a.map((crop, i) => {
-        crop.backgroundColor = colors[i]
+        if (cultures[crop.name]) {
+          crop.backgroundColor = cultures[crop.name]
+        } else {
+          crop.backgroundColor = colors[i]
+        }
         return crop
       })
       return a

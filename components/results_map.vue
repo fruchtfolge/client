@@ -87,87 +87,92 @@ export default {
       */
     },
     drawPlots() {
-      // create a feacture collection out of all plots, add currently
-      // selected crop to geometry properties, also a description (plot + crops)
-      // and the center of the plot in order to show a popup
-      let fc = this.data.map(plot => {
-        plot.geometry.properties.center = plot.center
+      try {
+        if (!this.resultsMap) return
+        // create a feacture collection out of all plots, add currently
+        // selected crop to geometry properties, also a description (plot + crops)
+        // and the center of the plot in order to show a popup
+        let fc = this.data.map(plot => {
+          plot.geometry.properties.center = plot.center
+          if (this.selection === 'Org. Düngung') {
+            plot.geometry.properties.elem = plot.selectedOption.manAmount + 'm³'
+          } else {
+            plot.geometry.properties.elem = plot.selectedCrop
+          }
+          plot.geometry.properties.description = `${
+            plot.name
+          }: ${plot.selectedCrop + ', ' + plot.selectedOption.manAmount + 'm³'}`
+          return plot.geometry
+        })
+        fc = featureCollection(fc)
+
+        this.resultsMap.addSource('plots', {
+          type: 'geojson',
+          data: fc
+        })
+
+        // add a layer for each crop / man amount
         if (this.selection === 'Org. Düngung') {
-          plot.geometry.properties.elem = plot.selectedOption.manAmount + 'm³'
+          // get unique manure values
+          const manColors = {
+            '0': '#fff',
+            '10': '#eef5f2',
+            '15': '#deebe5',
+            '20': '#cde1d8',
+            '25': '#bcd7cc',
+            '30': '#abccbf',
+            '40': '#9bc2b2',
+            '50': '#8ab8a5',
+            '60': '#5a8271'
+          }
+          this.iteratee = [
+            ...new Set(this.data.map(p => p.selectedOption.manAmount))
+          ]
+            .sort((a, b) => a - b)
+            .map((a, i) => {
+              return {
+                name: a + 'm³',
+                backgroundColor: manColors[a]
+              }
+            })
         } else {
-          plot.geometry.properties.elem = plot.selectedCrop
+          this.iteratee = this.shares
         }
-        plot.geometry.properties.description = `${
-          plot.name
-        }: ${plot.selectedCrop + ', ' + plot.selectedOption.manAmount + 'm³'}`
-        return plot.geometry
-      })
-      fc = featureCollection(fc)
+        this.iteratee.forEach(elem => {
+          this.curLayers.push(elem.name)
+          this.curLayers.push(elem.name + '_line')
 
-      this.resultsMap.addSource('plots', {
-        type: 'geojson',
-        data: fc
-      })
-
-      // add a layer for each crop / man amount
-      if (this.selection === 'Org. Düngung') {
-        // get unique manure values
-        const manColors = {
-          '0': '#fff',
-          '10': '#eef5f2',
-          '15': '#deebe5',
-          '20': '#cde1d8',
-          '25': '#bcd7cc',
-          '30': '#abccbf',
-          '40': '#9bc2b2',
-          '50': '#8ab8a5',
-          '60': '#5a8271'
-        }
-        this.iteratee = [
-          ...new Set(this.data.map(p => p.selectedOption.manAmount))
-        ]
-          .sort((a, b) => a - b)
-          .map((a, i) => {
-            return {
-              name: a + 'm³',
-              backgroundColor: manColors[a]
-            }
+          this.resultsMap.addLayer({
+            id: elem.name,
+            type: 'fill',
+            source: 'plots',
+            paint: {
+              'fill-color': elem.backgroundColor,
+              'fill-opacity': 1
+            },
+            filter: ['==', 'elem', elem.name]
           })
-      } else {
-        this.iteratee = this.shares
+          // also add an outline
+          this.resultsMap.addLayer({
+            id: elem.name + '_line',
+            type: 'line',
+            source: 'plots',
+            minzoom: 12,
+            paint: {
+              'line-color': 'white',
+              'line-width': 2
+            },
+            filter: ['==', 'elem', elem.name]
+          })
+          // add a popup on hover for each plot
+          this.addPopUp(elem.name)
+        })
+
+        // fit the map to the extent of all plots
+        this.resultsMap.fitBounds(bbox(fc), { duration: 0, padding: 20 })
+      } catch (e) {
+        console.log(e)
       }
-      this.iteratee.forEach(elem => {
-        this.curLayers.push(elem.name)
-        this.curLayers.push(elem.name + '_line')
-
-        this.resultsMap.addLayer({
-          id: elem.name,
-          type: 'fill',
-          source: 'plots',
-          paint: {
-            'fill-color': elem.backgroundColor,
-            'fill-opacity': 1
-          },
-          filter: ['==', 'elem', elem.name]
-        })
-        // also add an outline
-        this.resultsMap.addLayer({
-          id: elem.name + '_line',
-          type: 'line',
-          source: 'plots',
-          minzoom: 12,
-          paint: {
-            'line-color': 'white',
-            'line-width': 2
-          },
-          filter: ['==', 'elem', elem.name]
-        })
-        // add a popup on hover for each plot
-        this.addPopUp(elem.name)
-      })
-
-      // fit the map to the extent of all plots
-      this.resultsMap.fitBounds(bbox(fc), { duration: 0, padding: 20 })
     },
     addPopUp(crop) {
       const popup = new mapboxgl.Popup({
