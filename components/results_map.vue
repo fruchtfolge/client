@@ -53,6 +53,9 @@ export default {
       this.drawPlots()
     }
   },
+  destroyed() {
+    this.resultsMap.remove()
+  },
   async mounted() {
     const settings = await this.$db.get('settings')
     this.duev2020 = settings.duev2020

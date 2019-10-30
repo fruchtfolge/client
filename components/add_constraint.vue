@@ -7,7 +7,7 @@
           NEUE NEBENBEDINGUNG HINZUFÜGEN
         </h2>
         <label for="add.constraint.crop1">Kultur</label>
-        <select id="add.constraint.crop1" v-model="crop1" class="dropdown">
+        <select id="add.constraint.crop1" v-model="crop1" class="dropdown select">
           <option disabled value="">
             Kultur
           </option>
@@ -27,7 +27,7 @@
         -->
         </select>
         <label for="add.constraint.crop2">und Kultur (optional)</label>
-        <select id="add.constraint.crop2" v-model="crop2" class="dropdown">
+        <select id="add.constraint.crop2" v-model="crop2" class="dropdown select">
           <option disabled value="">
             Kultur
           </option>
@@ -37,7 +37,7 @@
           </option>
         </select>
         <label for="add.constraint.crop4">weniger/mehr</label>
-        <select id="add.constraint.crop4" v-model="operator" class="dropdown">
+        <select id="add.constraint.crop4" v-model="operator" class="dropdown select">
           <option disabled value="">
             weniger/mehr
           </option>
@@ -49,7 +49,7 @@
           </option>
         </select>
         <label for="add.constraint.crop4">Flächeneinheit</label>
-        <select id="add.constraint.crop4" v-model="sizeType" class="dropdown">
+        <select id="add.constraint.crop4" v-model="sizeType" class="dropdown select">
           <option value="ha">
             ha
           </option>
@@ -65,10 +65,10 @@
       <p v-if="!crop1" style="text-align: center; margin-top: 30px; color:red;">
         Bitte Kultur auswählen.
       </p>
-      <button v-if="crop1" class="buttonOk" @click="addConstraint">
+      <button v-if="crop1" class="buttonOk button" @click="addConstraint">
         ÜBERNEHMEN
       </button>
-      <button class="buttonCancel" @click="cancel">
+      <button class="buttonCancel button" @click="cancel">
         ABBRECHEN
       </button>
     </div>
@@ -196,6 +196,7 @@ export default {
   background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
   background-position: 100% 50%;
   background-repeat: no-repeat;
+  border-color: rgb(193, 187, 187);
   padding-right: 25px;
 }
 

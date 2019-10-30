@@ -102,16 +102,18 @@ export default {
       })
       // show warnings when user defined constraints are not met
       if (this.$store.curConstraints) {
+        console.log(this.shares)
+
         this.$store.curConstraints.forEach(constraint => {
           const area = Number(constraint.area)
           let share = this.shares[this.curYear]
-            ? this.shares[this.curYear][constraint.crop1Code]
+            ? this.shares[this.curYear][constraint.crop1]
             : 0
           let crop = constraint.crop1
           if (constraint.crop2Code) {
             crop += ' + ' + constraint.crop2
             share += this.shares[this.curYear]
-              ? this.shares[this.curYear][constraint.crop2Code]
+              ? this.shares[this.curYear][constraint.crop2]
               : 0
           }
           if (share > area && constraint.operator === '<') {

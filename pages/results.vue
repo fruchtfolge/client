@@ -186,7 +186,7 @@
                       </tr>
                       <tr>
                         <td colspan="3">
-                          Davon min. Düngekosten
+                          Davon Kosten Mineraldünger
                         </td>
                         <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'directCosts', plot)">
                           {{
@@ -218,7 +218,7 @@
                       </tr>
                       <tr>
                         <td colspan="3">
-                          Düngeausbringung
+                          Davon Kosten Düngeausbringung
                         </td>
                         <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'machineCosts', plot)">
                           {{

@@ -117,7 +117,7 @@ export default {
 </script>
 <style>
 #cropShares-chart {
-  display: unset;
+  margin: auto;
 }
 
 .cropShares-wrapper {

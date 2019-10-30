@@ -53,14 +53,14 @@
         <br>
       </div>
       <div style="text-align: center;">
-        <button id="zid-btn" type="button" class="invekosBtn" name="zid-btn" @click="getElan">
+        <button id="zid-btn" type="button" class="invekosBtn button" name="zid-btn" @click="getElan">
           ABSENDEN
         </button>
         <button
           id="zid-btn"
           style="margin-left: 10px"
           type="button"
-          class="invekosBtn"
+          class="invekosBtn button"
           name="zid-btn"
           @click="deleteElanData"
         >
@@ -85,7 +85,7 @@
       <span>Persönlich angelegte Daten, z.B. Flächen, Kulturen oder Nebenbedingungen können an dieser Stelle für einzelne Jahre gelöscht werden. So können Sie beispielsweise verhindern, dass vorherige Planungsdaten als duplikate zu den Elan-Daten auftauchen.</span>
       <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px" />
       <div style="text-align: center;">
-        <select v-model="selectedDeleteYear" class="deleteYear" name="">
+        <select v-model="selectedDeleteYear" class="deleteYear select" name="">
           <option value="2016">
             2016
           </option>
@@ -110,12 +110,12 @@
         </select>
       </div>
       <div style="text-align: center;">
-        <button id="zid-btn" type="button" class="invekosBtn" name="zid-btn" @click="deleteYear">
+        <button id="zid-btn" type="button" class="invekosBtn button" name="zid-btn" @click="deleteYear">
           LÖSCHEN
         </button>
       </div>
       <h1 style="padding-top: 40px; font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
-        DüV 2020
+        Düngeverordnung 2020
       </h1>
       <input type="checkbox" :checked="duev2020" @change="save($event)">
     </div>

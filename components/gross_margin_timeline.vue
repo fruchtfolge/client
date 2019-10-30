@@ -82,20 +82,14 @@ export default {
               crop = plot.selectedCrop
             }
             if (plotData[crop]) {
-              let catchCropCosts = 0
-              if (plot.catchCrop) {
-                catchCropCosts = plot.matrix.catchCropCosts
-              }
               if (o[crop]) o[crop] += plotData[crop].size
               else o[crop] = plotData[crop].size
               o.sum += plotData[crop].size
+              /*
               if (i === 0) {
                 return plotData[crop].grossMargin - catchCropCosts
-              }
-              return (
-                plotData[crop].grossMarginNoCropEff * plotData[crop].size -
-                catchCropCosts
-              )
+              } */
+              return plotData[crop].grossMarginNoCropEff * plotData[crop].size
             }
           })
 

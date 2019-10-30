@@ -130,6 +130,9 @@ export default {
                 }
               }
             ]
+          },
+          plugins: {
+            deferred: false
           }
         }
       }

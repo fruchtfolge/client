@@ -7,7 +7,7 @@
           NEUE KULTUR HINZUFÜGEN
         </h2>
         <label for="add.crop.farmingType">Anbauverfahren</label>
-        <select id="add.crop.farmingType" v-model="farmingType" class="dropdown">
+        <select id="add.crop.farmingType" v-model="farmingType" class="dropdown select">
           <option disabled value="">
             Anbauverfahren
           </option>
@@ -16,7 +16,7 @@
           </option>
         </select>
         <label for="add.crop.crop">Kultur</label>
-        <select id="add.crop.crop" v-model="crop" class="dropdown">
+        <select id="add.crop.crop" v-model="crop" class="dropdown select">
           <option disabled value="">
             Kultur
           </option>
@@ -25,7 +25,7 @@
           </option>
         </select>
         <label for="add.crop.system">System</label>
-        <select id="add.crop.system" v-model="system" class="dropdown">
+        <select id="add.crop.system" v-model="system" class="dropdown select">
           <option disabled value="">
             System
           </option>
@@ -46,10 +46,10 @@
       <p v-if="exists" style="text-align: center; margin-top: 30px; color:red;">
         Kultur bereits vorhanden. Bitte anderen Sortennamen wählen.
       </p>
-      <button v-if="!exists" class="buttonOk" @click="addCrop">
+      <button v-if="!exists" class="buttonOk button" @click="addCrop">
         ÜBERNEHMEN
       </button>
-      <button class="buttonCancel" @click="cancel">
+      <button class="buttonCancel button" @click="cancel">
         ABBRECHEN
       </button>
     </div>

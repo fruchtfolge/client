@@ -7,7 +7,7 @@
       <p style="color:grey;">
         Quelle der Daten: KTBL Standarddeckungsbeiträge Datenbank
       </p>
-      <button style="margin-top: 10px;" type="button" name="button" @click="remove">
+      <button class="button" style="margin-top: 10px;" type="button" name="button" @click="remove">
         ENTFERNEN
       </button>
     </div>
