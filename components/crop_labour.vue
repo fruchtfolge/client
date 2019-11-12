@@ -1,7 +1,7 @@
 <template lang="html">
   <div>
     <h2 style="width:calc(100% - 275px);text-align: center;margin-top: 40px;">
-      Gesamtarbeitsbedarf: {{ total }}h/ha
+      Gesamtarbeitszeitbedarf: {{ total }}h/ha
     </h2>
     <div class="cropLabour-wrapper">
       <canvas id="cropLabour-chart" />
@@ -114,7 +114,7 @@ export default {
 
       this.dataset = {
         data: data,
-        label: `Arbeitsbedarf [h/ha]`,
+        label: `Arbeitszeitbedarf [h/ha]`,
         borderColor: 'rgb(121, 173, 151)'
       }
       this.calcTotal()

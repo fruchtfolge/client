@@ -56,7 +56,7 @@ export default [
   {
     subPage: true,
     path: '/crop-labour-requirement',
-    name: 'Arbeitsbedarf',
+    name: 'Arbeitszeitbedarf',
     icon: 'static/crops.png'
   },
   {

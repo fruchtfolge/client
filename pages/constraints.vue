@@ -2,8 +2,11 @@
   <div>
     <div v-if="crops && crops.length > 0">
       <addConstraint v-if="addConstraint" :crops="crops" @closeAddConstraint="addConstraint = false" />
-      <div style="width: 100%;">
+      <div v-if="constraints" style="width: 100%;">
         <table class="table">
+          <caption class="caption">
+            Minimale/Maximale Kulturanteile
+          </caption>
           <thead>
             <tr>
               <th>Name</th>
@@ -28,11 +31,14 @@
           </tbody>
         </table>
       </div>
+      <div v-else style="text-align: center; margin-top: 100px;">
+        <h3>Fügen Sie Anbaurestriktionen durch Klicken auf den 'Hinzufügen'-Button hinzu.</h3>
+      </div>
       <div style="text-align: center; margin-top: 40px;">
         <button class="addConstraint button" style="font-family: 'Open Sans Condensed';" @click="addConstraint = true">
           HINZUFÜGEN
         </button>
-        <button class="addConstraint button" style="font-family: 'Open Sans Condensed'; margin-left: 20px;" @click="remove">
+        <button v-if="constraints" class="addConstraint button" style="font-family: 'Open Sans Condensed'; margin-left: 20px;" @click="remove">
           ENTFERNEN
         </button>
       </div>

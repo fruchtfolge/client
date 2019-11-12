@@ -102,13 +102,6 @@ html {
   top: 10px;
 }
 
-.nuxt {
-  position: relative;
-  top: 60px;
-  transition: margin-left 0.5s;
-  padding-bottom: 50px;
-}
-
 .footer {
   position: fixed;
   text-align: right;

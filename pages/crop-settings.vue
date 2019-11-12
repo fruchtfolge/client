@@ -6,7 +6,7 @@
       <div class="subseqCrops">
         <table class="table">
           <caption class="caption">
-            Nachfruchtwirkungen
+            Vorfruchtwirkungen von {{ selectedCrop.name }} auf Nachfrüchte
           </caption>
           <thead>
             <tr>
@@ -78,7 +78,7 @@
       <div class="duevSettings">
         <table class="table">
           <caption class="caption">
-            Einstellungen Düngeverordnung 2017
+            Einstellungen Düngeverordnung 2017/2020
           </caption>
           <thead>
             <tr>
@@ -112,7 +112,7 @@
               </td>
             </tr>
             <tr>
-              <td>Durchschnittliche Menge N aus organischer Düngung [kg/ha]</td>
+              <td>Durchschnittliche Menge N aus organischer Düngung der Vorjahre [kg/ha]</td>
               <td contenteditable="true" @blur="save($event,'nFertPrevYear')">
                 {{ selectedCrop.nFertPrevYear || 0 }}
               </td>
@@ -124,7 +124,7 @@
               </td>
             </tr>
             <tr>
-              <td>P-Entzug (Tab. X) [kg/ha]</td>
+              <td>P-Entzug (nach §4(3)) [kg/ha]</td>
               <td contenteditable="true" @blur="save($event,'pWithdraw')">
                 {{ selectedCrop.pWithdraw }}
               </td>
@@ -134,6 +134,10 @@
               <td contenteditable="true" @blur="save($event,'pHarvestLeft')">
                 {{ selectedCrop.pHarvestLeft }}
               </td>
+            </tr>
+            <tr>
+              <td>Erntereste werden abgefahren</td>
+              <td><input type="checkbox" :checked="selectedCrop.harvestLeft" @change="saveCheckbox($event,'harvestLeft')"></td>
             </tr>
             <tr>
               <td>Ertragspotenzial bei 20% reduzierter Düngung [%]</td>

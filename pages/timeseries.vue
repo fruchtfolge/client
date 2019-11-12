@@ -10,7 +10,7 @@
         <br>
         Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
       </h3>
-      <button style="margin-left: 20px;" @click="importPrev">
+      <button class="button" style="margin-left: 20px;" @click="importPrev">
         IMPORTIEREN
       </button>
     </div>

@@ -110,10 +110,10 @@ export default {
       if (this.$store && this.$store.curCrops && this.$store.curCrops.length) {
         this.$store.curCrops.forEach(crop => {
           if (
-            crop.name === this.crop ||
-            crop.name === this.variety ||
-            (crop.variety && crop.variety === this.variety)
+            (crop.name === this.crop || crop.name === this.variety) &&
+            crop.variety === this.variety
           ) {
+            console.log(crop)
             bool = true
           }
         })

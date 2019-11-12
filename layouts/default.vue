@@ -245,13 +245,6 @@ html {
   right: 175px;
 }
 
-.nuxt {
-  position: relative;
-  top: 60px;
-  transition: margin-left 0.5s;
-  padding-bottom: 50px;
-}
-
 .sidenav {
   height: 100%;
   width: 0;
@@ -297,8 +290,12 @@ html {
 }
 
 .subPage {
-  padding-left: 60px;
+  padding-left: 50px;
   margin-top: -5px;
+  font-family: 'Open Sans';
+  letter-spacing: 0px;
+  font-size: 14px;
+  font-weight: 300;
 }
 
 .navIcon {

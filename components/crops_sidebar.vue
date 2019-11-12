@@ -151,12 +151,13 @@ export default {
 }
 
 .cropsText {
-  font-size: 16px;
-  letter-spacing: 0.1em;
+  font-size: 14px;
   padding-left: 45px;
   padding-top: 5px;
   padding-bottom: 5px;
   margin: 0px;
+  font-family: 'Open Sans';
+  font-weight: 300;
 }
 
 .groupText {
