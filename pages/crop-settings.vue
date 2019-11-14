@@ -1,169 +1,171 @@
 <template>
   <div>
-    <addCrop v-if="addCrop" @closeAddCrop="addCrop = false" />
-    <cropsSidebar :crops="crops" :selected-crop="selectedCrop" @showAddCrop="addCrop = true" @changeCrop="changeCrop" />
-    <div v-if="selectedCrop" class="cropSettings">
-      <div class="subseqCrops">
-        <table class="table">
-          <caption class="caption">
-            Vorfruchtwirkungen von {{ selectedCrop.name }} auf Nachfrüchte
-          </caption>
-          <thead>
-            <tr>
-              <th>Nachfrucht</th>
-              <th>Wirkungsfaktor (0 - 10)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(subseq) in crops" :key="subseq._id">
-              <td>{{ subseq.name }}</td>
-              <td contenteditable="true" @blur="save($event, 'subseqCrops', subseq.cropGroup)">
-                {{ selectedCrop.subseqCrops[subseq.cropGroup] }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="page-container">
+      <addCrop v-if="addCrop" @closeAddCrop="addCrop = false" />
+      <cropsSidebar :crops="crops" :selected-crop="selectedCrop" @showAddCrop="addCrop = true" @changeCrop="changeCrop" />
+      <div v-if="selectedCrop" class="cropSettings">
+        <div class="subseqCrops">
+          <table class="table">
+            <caption class="caption">
+              Vorfruchtwirkungen von {{ selectedCrop.name }} auf Nachfrüchte
+            </caption>
+            <thead>
+              <tr>
+                <th>Nachfrucht</th>
+                <th>Wirkungsfaktor (0 - 10)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(subseq) in crops" :key="subseq._id">
+                <td>{{ subseq.name }}</td>
+                <td contenteditable="true" @blur="save($event, 'subseqCrops', subseq.cropGroup)">
+                  {{ selectedCrop.subseqCrops[subseq.cropGroup] }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="settings">
+          <table class="table">
+            <caption class="caption">
+              Fruchtfolge Eigenschaften
+            </caption>
+            <thead>
+              <tr>
+                <th>Eigenschaft</th>
+                <th>Wert</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Anbauspause in Jahren</td>
+                <td contenteditable="true" @blur="save($event, 'rotBreak')">
+                  {{ selectedCrop.rotBreak }}
+                </td>
+              </tr>
+              <tr>
+                <td>Max. Anteil Anbaufläche [%]</td>
+                <td contenteditable="true" @blur="save($event, 'maxShare')">
+                  {{ selectedCrop.maxShare }}
+                </td>
+              </tr>
+              <tr>
+                <td>Mindestanforderung Bodenqualität</td>
+                <td contenteditable="true" @blur="save($event, 'minSoilQuality')">
+                  {{ selectedCrop.minSoilQuality }}
+                </td>
+              </tr>
+              <tr>
+                <td>Hackfrucht</td>
+                <td><input type="checkbox" :checked="selectedCrop.rootCrop" @change="saveCheckbox($event,'rootCrop')"></td>
+              </tr>
+              <tr>
+                <td>Sommerung</td>
+                <td><input type="checkbox" :checked="selectedCrop.season === 'Sommer'" @change="saveCheckbox($event,'season')"></td>
+              </tr>
+              <tr>
+                <td>Zwischenfrucht anschließend möglich</td>
+                <td><input type="checkbox" :checked="selectedCrop.catchCropAfter" @change="saveCheckbox($event,'catchCropAfter')"></td>
+              </tr>
+              <tr>
+                <td>Faktor für Öko. Vorrangfläche (Greening)</td>
+                <td contenteditable="true" @blur="save($event,'efaFactor')">
+                  {{ selectedCrop.efaFactor }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="duevSettings">
+          <table class="table">
+            <caption class="caption">
+              Einstellungen Düngeverordnung 2017/2020
+            </caption>
+            <thead>
+              <tr>
+                <th>Eigenschaft</th>
+                <th>Wert</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ertragsniveau nach Tab. 2 bzw. 4 [dt/ha]</td>
+                <td contenteditable="true" @blur="save($event,'duevYieldLvl')">
+                  {{ selectedCrop.duevYieldLvl }}
+                </td>
+              </tr>
+              <tr>
+                <td>N-Düngebedarf nach Tab. 2 bzw. 4 [kg/ha]</td>
+                <td contenteditable="true" @blur="save($event,'nRequirement')">
+                  {{ selectedCrop.nRequirement }}
+                </td>
+              </tr>
+              <tr>
+                <td>Maximaler N-Bedarfszuschlag bei Mehrertrag je dt (Tab. 3) [kg/ha]</td>
+                <td contenteditable="true" @blur="save($event,'nMaxAddition')">
+                  {{ selectedCrop.nMaxAddition }}
+                </td>
+              </tr>
+              <tr>
+                <td>Minimaler N-Bedarfsabzug bei Minderertrag je dt (Tab. 3) [kg/ha]</td>
+                <td contenteditable="true" @blur="save($event,'nMinSubtraction')">
+                  {{ selectedCrop.nMinSubtraction }}
+                </td>
+              </tr>
+              <tr>
+                <td>Durchschnittliche Menge N aus organischer Düngung der Vorjahre [kg/ha]</td>
+                <td contenteditable="true" @blur="save($event,'nFertPrevYear')">
+                  {{ selectedCrop.nFertPrevYear || 0 }}
+                </td>
+              </tr>
+              <tr>
+                <td>N-Bedarfsabzug wenn Vorfrucht (Tab. 7 bzw. 4) [kg/ha]</td>
+                <td contenteditable="true" @blur="save($event,'prevCropEff')">
+                  {{ selectedCrop.prevCropEff }}
+                </td>
+              </tr>
+              <tr>
+                <td>P-Entzug (nach §4(3)) [kg/ha]</td>
+                <td contenteditable="true" @blur="save($event,'pWithdraw')">
+                  {{ selectedCrop.pWithdraw }}
+                </td>
+              </tr>
+              <tr>
+                <td>P-Rückstände Erntereste [kg/ha]</td>
+                <td contenteditable="true" @blur="save($event,'pHarvestLeft')">
+                  {{ selectedCrop.pHarvestLeft }}
+                </td>
+              </tr>
+              <tr>
+                <td>Erntereste werden abgefahren</td>
+                <td><input type="checkbox" :checked="selectedCrop.harvestLeft" @change="saveCheckbox($event,'harvestLeft')"></td>
+              </tr>
+              <tr>
+                <td>Ertragspotenzial bei 20% reduzierter Düngung [%]</td>
+                <td contenteditable="true" @blur="save($event,'yieldRed20')">
+                  {{ selectedCrop.yieldRed20 }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="text-align:center;margin-top: 40px;">
+          <button class="button" type="button" name="button" @click="remove">
+            ENTFERNEN
+          </button>
+        </div>
       </div>
-      <div class="settings">
-        <table class="table">
-          <caption class="caption">
-            Fruchtfolge Eigenschaften
-          </caption>
-          <thead>
-            <tr>
-              <th>Eigenschaft</th>
-              <th>Wert</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Anbauspause in Jahren</td>
-              <td contenteditable="true" @blur="save($event, 'rotBreak')">
-                {{ selectedCrop.rotBreak }}
-              </td>
-            </tr>
-            <tr>
-              <td>Max. Anteil Anbaufläche [%]</td>
-              <td contenteditable="true" @blur="save($event, 'maxShare')">
-                {{ selectedCrop.maxShare }}
-              </td>
-            </tr>
-            <tr>
-              <td>Mindestanforderung Bodenqualität</td>
-              <td contenteditable="true" @blur="save($event, 'minSoilQuality')">
-                {{ selectedCrop.minSoilQuality }}
-              </td>
-            </tr>
-            <tr>
-              <td>Hackfrucht</td>
-              <td><input type="checkbox" :checked="selectedCrop.rootCrop" @change="saveCheckbox($event,'rootCrop')"></td>
-            </tr>
-            <tr>
-              <td>Sommerung</td>
-              <td><input type="checkbox" :checked="selectedCrop.season === 'Sommer'" @change="saveCheckbox($event,'season')"></td>
-            </tr>
-            <tr>
-              <td>Zwischenfrucht anschließend möglich</td>
-              <td><input type="checkbox" :checked="selectedCrop.catchCropAfter" @change="saveCheckbox($event,'catchCropAfter')"></td>
-            </tr>
-            <tr>
-              <td>Faktor für Öko. Vorrangfläche (Greening)</td>
-              <td contenteditable="true" @blur="save($event,'efaFactor')">
-                {{ selectedCrop.efaFactor }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="duevSettings">
-        <table class="table">
-          <caption class="caption">
-            Einstellungen Düngeverordnung 2017/2020
-          </caption>
-          <thead>
-            <tr>
-              <th>Eigenschaft</th>
-              <th>Wert</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Ertragsniveau nach Tab. 2 bzw. 4 [dt/ha]</td>
-              <td contenteditable="true" @blur="save($event,'duevYieldLvl')">
-                {{ selectedCrop.duevYieldLvl }}
-              </td>
-            </tr>
-            <tr>
-              <td>N-Düngebedarf nach Tab. 2 bzw. 4 [kg/ha]</td>
-              <td contenteditable="true" @blur="save($event,'nRequirement')">
-                {{ selectedCrop.nRequirement }}
-              </td>
-            </tr>
-            <tr>
-              <td>Maximaler N-Bedarfszuschlag bei Mehrertrag je dt (Tab. 3) [kg/ha]</td>
-              <td contenteditable="true" @blur="save($event,'nMaxAddition')">
-                {{ selectedCrop.nMaxAddition }}
-              </td>
-            </tr>
-            <tr>
-              <td>Minimaler N-Bedarfsabzug bei Minderertrag je dt (Tab. 3) [kg/ha]</td>
-              <td contenteditable="true" @blur="save($event,'nMinSubtraction')">
-                {{ selectedCrop.nMinSubtraction }}
-              </td>
-            </tr>
-            <tr>
-              <td>Durchschnittliche Menge N aus organischer Düngung der Vorjahre [kg/ha]</td>
-              <td contenteditable="true" @blur="save($event,'nFertPrevYear')">
-                {{ selectedCrop.nFertPrevYear || 0 }}
-              </td>
-            </tr>
-            <tr>
-              <td>N-Bedarfsabzug wenn Vorfrucht (Tab. 7 bzw. 4) [kg/ha]</td>
-              <td contenteditable="true" @blur="save($event,'prevCropEff')">
-                {{ selectedCrop.prevCropEff }}
-              </td>
-            </tr>
-            <tr>
-              <td>P-Entzug (nach §4(3)) [kg/ha]</td>
-              <td contenteditable="true" @blur="save($event,'pWithdraw')">
-                {{ selectedCrop.pWithdraw }}
-              </td>
-            </tr>
-            <tr>
-              <td>P-Rückstände Erntereste [kg/ha]</td>
-              <td contenteditable="true" @blur="save($event,'pHarvestLeft')">
-                {{ selectedCrop.pHarvestLeft }}
-              </td>
-            </tr>
-            <tr>
-              <td>Erntereste werden abgefahren</td>
-              <td><input type="checkbox" :checked="selectedCrop.harvestLeft" @change="saveCheckbox($event,'harvestLeft')"></td>
-            </tr>
-            <tr>
-              <td>Ertragspotenzial bei 20% reduzierter Düngung [%]</td>
-              <td contenteditable="true" @blur="save($event,'yieldRed20')">
-                {{ selectedCrop.yieldRed20 }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div style="text-align:center;margin-top: 40px;">
-        <button class="button" type="button" name="button" @click="remove">
-          ENTFERNEN
+      <div v-else style="text-align: center; margin-top: 100px; width: calc(100% - 275px);">
+        <h3>Noch keine Kulturen für das ausgewähle Planungsjahr und Szenario vorhanden.</h3>
+        <h3>
+          Sie können neue Kulturen durch klicken auf den 'Hinzufügen'-Button in der rechten Seitenleiste hinzufügen.
+          <br>
+          Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
+        </h3>
+        <button class="button" style="margin-left: 20px;" @click="importPrev">
+          IMPORTIEREN
         </button>
       </div>
-    </div>
-    <div v-else style="text-align: center; margin-top: 100px; width: calc(100% - 275px);">
-      <h3>Noch keine Kulturen für das ausgewähle Planungsjahr und Szenario vorhanden.</h3>
-      <h3>
-        Sie können neue Kulturen durch klicken auf den 'Hinzufügen'-Button in der rechten Seitenleiste hinzufügen.
-        <br>
-        Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
-      </h3>
-      <button class="button" style="margin-left: 20px;" @click="importPrev">
-        IMPORTIEREN
-      </button>
     </div>
   </div>
 </template>

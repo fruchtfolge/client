@@ -1,7 +1,7 @@
 <template lang="html">
   <div>
     <div class="blur" />
-    <div class="constraintBox">
+    <div class="constraintBox box">
       <div class="inputs">
         <h2 class="infoText">
           NEUE NEBENBEDINGUNG HINZUFÜGEN
@@ -138,29 +138,9 @@ export default {
 </script>
 
 <style scoped>
-.blur {
-  background: #f5f5f5;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 95;
-  transition: all 0.8s ease-in-out;
-  opacity: 0.95;
-  visibility: visible;
-}
-
 .constraintBox {
-  position: absolute;
   width: 400px;
   height: 580px;
-  top: calc(50vh - 120px);
-  margin-top: -250px;
-  left: 50%;
-  margin-left: -200px;
-  background-color: white;
-  border: 1px solid;
-  border-color: #cccccc;
-  z-index: 99;
 }
 
 .inputs {

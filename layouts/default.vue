@@ -56,7 +56,7 @@
 <script>
 import Setting from '~/constructors/Settings'
 import routes from '~/assets/js/routes.js'
-// console.log(routes);
+
 export default {
   data() {
     return {
