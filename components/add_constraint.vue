@@ -36,10 +36,10 @@
             {{ crop.name }}
           </option>
         </select>
-        <label for="add.constraint.crop4">weniger/mehr</label>
+        <label for="add.constraint.crop4">soll(en) insgesamt weniger/mehr als</label>
         <select id="add.constraint.crop4" v-model="operator" class="dropdown select">
           <option disabled value="">
-            weniger/mehr
+            maximal/mehr
           </option>
           <option value="<">
             weniger als
@@ -48,6 +48,8 @@
             mehr als
           </option>
         </select>
+        <label for="add.constraint.name">Fläche in {{ sizeType }} betragen.</label>
+        <input id="add.constraint.name" v-model="area" type="number" class="input" @keyup.enter="addConstraint">
         <label for="add.constraint.crop4">Flächeneinheit</label>
         <select id="add.constraint.crop4" v-model="sizeType" class="dropdown select">
           <option value="ha">
@@ -59,8 +61,6 @@
           </option>
         -->
         </select>
-        <label for="add.constraint.name">Fläche in {{ sizeType }}</label>
-        <input id="add.constraint.name" v-model="area" type="number" class="input" @keyup.enter="addConstraint">
       </div>
       <p v-if="!crop1" style="text-align: center; margin-top: 30px; color:red;">
         Bitte Kultur auswählen.

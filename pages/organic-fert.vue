@@ -3,7 +3,7 @@
     <div>
       <addManure v-if="addManure" @closeAddManure="addManure = false" />
       <div v-if="manures" style="width: 100%;">
-        <table class="table">
+        <table class="table fert-tables">
           <caption class="caption">
             Nährstoffanfall
           </caption>
@@ -94,7 +94,7 @@
             </tr>
           </tbody>
         </table>
-        <table v-if="hasManure" class="table">
+        <table v-if="hasManure" class="table fert-table">
           <caption class="caption">
             Gülle: Exportkosten und Lagerung
           </caption>
@@ -292,4 +292,7 @@ export default {
 }
 </script>
 <style>
+.fert-tables {
+  width: 100%;
+}
 </style>
