@@ -1005,13 +1005,6 @@ export default {
   background-color: #ececec;
 }
 
-.dropdown-container {
-  position: fixed;
-  right: 175px;
-  top: 10px;
-  z-index: 1110;
-}
-
 .excel-download {
   margin-top: 40px;
   text-align: center;

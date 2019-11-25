@@ -2,7 +2,7 @@
   <div>
     <loading v-if="loading" />
     <div v-if="!loading && curPlots && curPlots.length > 0" class="plotOverview">
-      <table class="table plotOverview-table">
+      <table class="table plotPlanOverview-table">
         <thead>
           <tr>
             <th style="width: 125px;">
@@ -14,11 +14,11 @@
             <th style="width: 50px;">
               Hof-Feld-Distanz
             </th>
-            <th v-for="(year) in prevYears" :key="year" style="width: 125px;">
+            <th v-for="(year) in prevYears" :key="year" class="wide-cells">
               {{ year }}
             </th>
-            <th style="width: 125px;">
-              {{ curYear }}
+            <th style="width: 250px;">
+              Planung {{ curYear }}
             </th>
           </tr>
         </thead>
@@ -34,20 +34,41 @@
               {{ plot.distance }}
             </td>
             <template v-for="(year,m) in prevYears">
-              <td :key="`${year}_${m}`" style="wide-cells">
+              <td :key="`${year}_${m}`" class="wide-cells">
                 {{ plot[year] }}
               </td>
             </template>
-            <td>
-              <select v-model="plot[year]" class="selection select" @change="saveCropChange(plot,year)">
-                <option v-for="(crop) in crops" :key="`${crop.code}_${crop.name}`" :value="crop.name">
-                  {{ crop.name }}
-                </option>
-              </select>
+            <td class="multi-select-crops">
+              <multiselect
+                v-model="plot.allowedCrops"
+                :options="crops"
+                :multiple="true"
+                :close-on-select="false"
+                :clear-on-select="false"
+                :preserve-search="true"
+                :searchable="false"
+                selectLabel="Enter zum auswählen"
+                selectedLabel="Auwgewählt"
+                deselectLabel="Enter zum entfernen"
+                placeholder="Auwählen"
+                :preselect-first="false"
+                @input="changeAllowed(plot)"
+              />
             </td>
           </tr>
         </tbody>
       </table>
+      <dropdown class="dropdown-container">
+        <a
+          class="dropdown-item"
+          @click="bulkSelect('selectAll')"
+        >Alle auswählen</a>
+        <hr>
+        <a
+          class="dropdown-item"
+          @click="bulkSelect('unselectAll')"
+        >Alle löschen</a>
+      </dropdown>
     </div>
     <div v-else style="text-align: center; margin-top: 100px;">
       <h3>Noch keine Schläge für das ausgewähle Planungsjahr und Szenario vorhanden.</h3>
@@ -67,22 +88,26 @@
 </template>
 
 <script>
+import Multiselect from 'vue-multiselect'
 import cultures from '~/assets/js/cultures'
 
 export default {
   components: {
-    loading: () => import('~/components/loading.vue')
+    Multiselect,
+    loading: () => import('~/components/loading.vue'),
+    dropdown: () => import('~/components/dropdown.vue')
   },
   data() {
     return {
       loading: true,
       curPlots: null,
-      crops: null,
+      curCrops: null,
+      crops: [],
       cultures: null,
       curScenario: 'Standard',
       selectedPlot: null,
       prevYears: [2018, 2019],
-      curYear: 2020,
+      curYear: 2019,
       waiting: false
     }
   },
@@ -109,8 +134,8 @@ export default {
       if (plot && cultures[plot.crop]) {
         // check if crop has a different name from the farmer
         let name = cultures[plot.crop].variety
-        if (this.crops) {
-          const match = _.find(this.crops, ['code', plot.crop])
+        if (this.curCrops) {
+          const match = _.find(this.curCrops, ['code', plot.crop])
           if (match) {
             name = match.variety || match.name
           }
@@ -119,24 +144,15 @@ export default {
       }
     },
     update() {
-      this.loading = true
+      // this.loading = true
       // set short timeout in order for Vue to render the loading bar
       setTimeout(() => {
         const store = this.$store
         this.$set(this, 'curPlots', store.curPlots)
         this.$set(this, 'curYear', store.curYear)
-
-        // add presonal crops to default NRW crops
-        if (store.crops) {
-          const crops = _.uniqBy(
-            store.crops.filter(c => {
-              return c.scenario === this.curScenario && c.active
-            }),
-            'code'
-          )
-
-          this.$set(this, 'crops', crops)
-          console.log(this.curYear, this.maxRotBreak)
+        this.$set(this, 'curCrops', store.curCrops)
+        if (this.curCrops) {
+          this.$set(this, 'crops', this.curCrops.map(c => c.name))
         }
         // create array of previous years
         const prevYears = Array(this.curYear - (this.curYear - 2))
@@ -153,12 +169,8 @@ export default {
     plotsPrevCrops() {
       if (this.curPlots && this.curPlots.length > 0) {
         this.curPlots.forEach(plot => {
-          for (let i = 1; i < this.maxRotBreak + 1; i++) {
+          for (let i = 1; i < 2 + 1; i++) {
             plot[this.curYear - i] = this.getCrop(plot.id, this.curYear - i)
-            plot[this.curYear - i + 'catchCrop'] = this.getCatchCrop(
-              plot.id,
-              this.curYear - i
-            )
           }
         })
       }
@@ -166,13 +178,45 @@ export default {
     importPrev() {
       this.loading = true
       this.$bus.$emit('importPrevYear')
+    },
+    async changeAllowed(changedPlot) {
+      try {
+        console.log(changedPlot)
+        // get plot from db
+        const plot = await this.$db.get(changedPlot._id)
+        // change allowed crops
+        plot.allowedCrops = changedPlot.allowedCrops
+        // store again
+        await this.$db.put(plot)
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async bulkSelect(type) {
+      try {
+        this.loading = true
+        this.curPlots = this.curPlots.map(p => {
+          if (type === 'selectAll') {
+            p.allowedCrops = this.crops
+          } else {
+            p.allowedCrops = []
+          }
+          return p
+        })
+        await this.$db.bulkDocs(this.curPlots)
+        this.loading = false
+      } catch (e) {
+        this.loading = false
+        console.log(e)
+      }
     }
   }
 }
 </script>
-
+<style src="vue-multiselect/dist/vue-multiselect.min.css">
+</style>
 <style>
-.plotOverview-table {
+.plotPlanOverview-table {
   /* float: left; */
   /* margin: 0; */
   margin-top: 20px;
@@ -181,7 +225,33 @@ export default {
   table-layout: fixed;
 }
 
-.plotOverview table input {
-  -webkit-appearance: checkbox;
+.plotPlanOverview-table .wide-cells {
+  padding-left: 10px;
+}
+
+.multiselect__tags {
+  border-radius: 0px;
+  border: none;
+  background: none;
+}
+
+.multiselect__tag,
+.multiselect__option--highlight,
+.multiselect__option--highlight::after {
+  background-color: rgb(121, 173, 151);
+}
+
+.multiselect__option--selected.multiselect__option--highlight,
+.multiselect__option--selected.multiselect__option--highlight::after {
+  background-color: rgb(198, 88, 59);
+}
+
+.multiselect,
+.multiselect__input,
+.multiselect__single,
+.multi-select-crops {
+  font-family: 'Open Sans';
+  background: none;
+  font-size: 14px;
 }
 </style>

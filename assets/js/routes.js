@@ -89,6 +89,12 @@ export default [
     icon: 'static/crops.png'
   },
   {
+    subPage: true,
+    path: '/plots-planned-crops',
+    name: 'Planung',
+    icon: 'static/crops.png'
+  },
+  {
     path: '/results',
     name: 'ERGEBNISSE',
     icon: 'static/results.png'

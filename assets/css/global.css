@@ -175,3 +175,10 @@ h2,h3,h4 {
   border-color: #cccccc;
   z-index: 96;
 }
+
+.dropdown-container {
+  position: fixed;
+  right: 175px;
+  top: 10px;
+  z-index: 1110;
+}

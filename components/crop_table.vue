@@ -235,13 +235,13 @@ export default {
 }
 </script>
 <style>
-td:nth-child(2) {
+.cropsTable td:nth-child(2) {
   text-align: right;
 }
-td:nth-child(4) {
+.cropsTable td:nth-child(4) {
   text-align: right;
 }
-td:nth-child(6) {
+.cropsTable td:nth-child(6) {
   text-align: right;
 }
 
