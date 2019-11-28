@@ -13,6 +13,9 @@
       </button>
     </div>
     <div v-if="stored" style="width:100%;text-align:center;margin-top: 40px;">
+      <p class="graph-description">
+        Klicken und ziehen Sie die Datenpunkte an die gewünschte Position.
+      </p>
       <button class="button" type="button" name="button" @click="remove">
         ENTFERNEN
       </button>
@@ -58,7 +61,21 @@ export default {
 
       chartData.data.datasets[0].backgroundColor = gradient1
       chartData.data.datasets[1].backgroundColor = gradient2
+      chartData.options.onDragStart = e => {
+        e.target.style.cursor = 'grabbing'
+      }
+      chartData.options.onDrag = e => {
+        e.target.style.cursor = 'grabbing'
+      }
       chartData.options.onDragEnd = this.saveChanges
+
+      chartData.options.hover = {
+        onHover: function(e) {
+          const point = this.getElementAtEvent(e)
+          if (point.length) e.target.style.cursor = 'grab'
+          else e.target.style.cursor = 'default'
+        }
+      }
 
       this.labourChart = new Chart(ctx, {
         type: chartData.chartType,
@@ -81,6 +98,7 @@ export default {
       chartData.data.datasets[datasetIndex].data[index] = value
       const update = await this.$db.put(chartData)
       this.chartDefaults._rev = update.rev
+      e.target.style.cursor = 'default'
     },
     update() {
       if (!this.chartDefaults) {

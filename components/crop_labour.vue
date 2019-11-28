@@ -7,7 +7,9 @@
       <canvas id="cropLabour-chart" />
     </div>
     <div style="width:calc(100% - 275px);text-align:center;margin-top: 20px;">
-      <p style="color:grey;">
+      <p class="graph-description">
+        Klicken und ziehen Sie die Datenpunkte an die gewünschte Position.
+        <br>
         Quelle der Daten: KTBL Verfahrensrechner Pflanzenbau
       </p>
       <button class="button" style="margin-top: 10px;" type="button" name="button" @click="remove">
@@ -93,6 +95,12 @@ export default {
       cropLabourReq.data.datasets[0].data = this.dataset.data
       cropLabourReq.data.datasets[0].label = this.dataset.label
       cropLabourReq.data.datasets[0].borderColor = this.dataset.borderColor
+      cropLabourReq.options.onDragStart = e => {
+        e.target.style.cursor = 'grabbing'
+      }
+      cropLabourReq.options.onDrag = e => {
+        e.target.style.cursor = 'grabbing'
+      }
       cropLabourReq.options.onDragEnd = this.saveChanges
 
       this.cropLabourChart = new Chart(ctx, {
@@ -159,6 +167,7 @@ export default {
 
         const update = await this.$db.put(this.crop)
         this.crop._rev = update.rev
+        e.target.style.cursor = 'default'
       } catch (e) {
         console.log(e)
       }

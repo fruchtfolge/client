@@ -4,7 +4,9 @@
       <canvas id="timeseries-chart" />
     </div>
     <div style="width:calc(100% - 275px);text-align:center;margin-top: 30px;">
-      <p style="color:grey;">
+      <p class="graph-description">
+        Klicken und ziehen Sie die Datenpunkte an die gewünschte Position.
+        <br>
         Quelle der Daten: KTBL Standarddeckungsbeiträge Datenbank
       </p>
       <button class="button" style="margin-top: 10px;" type="button" name="button" @click="remove">
@@ -135,7 +137,12 @@ export default {
           highestC * 1.5,
           -2
         )
-
+        timeseries.options.onDragStart = e => {
+          e.target.style.cursor = 'grabbing'
+        }
+        timeseries.options.onDrag = e => {
+          e.target.style.cursor = 'grabbing'
+        }
         timeseries.options.onDragEnd = this.saveChanges
       }
     },
@@ -219,6 +226,7 @@ export default {
         const update = await this.$db.put(crop)
         // console.log(update)
         crop._rev = update.rev
+        e.target.style.cursor = 'default'
       } catch (e) {
         console.log(e)
       }

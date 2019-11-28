@@ -22,6 +22,7 @@ h2,h3,h4 {
 .page-container {
   position: absolute;
   width: 100%;
+  padding-bottom: 30px;
 }
 
 /* Adjust styling of default inputs */
@@ -181,4 +182,10 @@ h2,h3,h4 {
   right: 175px;
   top: 10px;
   z-index: 1110;
+}
+
+.graph-description {
+  font-family: "Open Sans";
+  font-weight: 300;
+  color: grey;
 }
