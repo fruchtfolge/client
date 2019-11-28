@@ -52,48 +52,20 @@ export default {
         'rgb(212, 133, 68)'
       ]
       const curYear = store.curYear
-      const scenario = store.curScenario
       const years = Array(curYear - (curYear - 10))
         .fill(0)
         .map((e, i) => i + (curYear - 9))
 
       for (let i = 0; i < 3; i++) {
         const croppingYear = curYear - i
-        const plots = store.plots.filter(plot => {
-          return plot.year === croppingYear && plot.scenario === scenario
-        })
 
         const data = []
         const shares = []
+
         years.forEach(year => {
           const o = { year: croppingYear, sum: 0 }
           // calculate total db for cropping plan of curYear - i under prices/yields/directCosts of year
-          let grossMargins = []
-          let grossMargin = 0
-          grossMargins = plots.map(plot => {
-            const plotData = plot.matrix[year]
-            if (!plotData) return
-            const cropCode = plot.crop
-            let crop = _.find(this.$store.crops, ['code', cropCode])
-            if (crop) {
-              crop = crop.name
-            }
-            if (i === 0) {
-              crop = plot.selectedCrop
-            }
-            if (plotData[crop]) {
-              if (o[crop]) o[crop] += plotData[crop].size
-              else o[crop] = plotData[crop].size
-              o.sum += plotData[crop].size
-              /*
-              if (i === 0) {
-                return plotData[crop].grossMargin - catchCropCosts
-              } */
-              return plotData[crop].grossMarginNoCropEff * plotData[crop].size
-            }
-          })
-
-          grossMargin = _.round(_.sum(grossMargins), 2)
+          const grossMargin = 0
           data.push(grossMargin)
           shares.push(o)
           if (this.labels.indexOf(year) === -1) this.labels.push(year)
@@ -106,6 +78,48 @@ export default {
           backgroundColor: this.gradient[i]
         })
       }
+    },
+    amount(crop) {
+      return _.round(
+        _.sumBy(crop.contributionMargin.revenues, o => {
+          return o.amount.value
+        })
+      )
+    },
+    price(crop, amount) {
+      let price
+      if (amount > 0) {
+        price = _.round(
+          _.sumBy(crop.contributionMargin.revenues, o => {
+            return o.total.value
+          }) / amount,
+          2
+        )
+      } else {
+        price = _.round(
+          _.sumBy(crop.contributionMargin.revenues, o => {
+            return o.total.value
+          }),
+          2
+        )
+      }
+      return price
+    },
+    variableCosts(crop) {
+      return _.round(
+        _.sumBy(crop.contributionMargin.variableCosts, o => {
+          return o.total.value
+        }),
+        2
+      )
+    },
+    directCosts(crop) {
+      return _.round(
+        _.sumBy(crop.contributionMargin.directCosts, o => {
+          return o.total.value
+        }),
+        2
+      )
     },
     createGradient(chartId) {
       const ctx = document.getElementById(chartId).getContext('2d')

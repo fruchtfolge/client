@@ -338,7 +338,7 @@
               paginationColor="#e8e8e8"
             >
               <slide>
-                <timeRequirement :shares="shares" />
+                <timeRequirement :shares="shares" :time="curTimeReq" />
               </slide>
               <slide>
                 <grossMarginTimeline :plots="curPlots" />
@@ -465,53 +465,10 @@ export default {
       return _.round(this.manExportVolAutumn * price)
     },
     curTimeReq() {
-      const months = [
-        ['JAN1', 'JAN2'],
-        ['FEB1', 'FEB2'],
-        ['MRZ1', 'MRZ2'],
-        ['APR1', 'APR2'],
-        ['MAI1', 'MAI2'],
-        ['JUN1', 'JUN2'],
-        ['JUL1', 'JUL2'],
-        ['AUG1', 'AUG2'],
-        ['SEP1', 'SEP2'],
-        ['OKT1', 'OKT2'],
-        ['NOV1', 'NOV2'],
-        ['DEZ1', 'DEZ2']
-      ]
-      const catchCropMonths = ['AUG2', 'SEP1', 'SEP2', 'FEB2']
-      if (!this.$store || !this.$store.curCrops) return []
-
-      const data = months.map(month => {
-        let time = 0
-        this.$store.curCrops.forEach(crop => {
-          const share = this.shares[this.curYear][crop.name]
-          let steps = crop.workingSteps.filter(o => {
-            return month[0] === o.month || month[1] === o.month
-          })
-          if (steps && steps.length > 0 && share) {
-            steps = steps.map(step => {
-              return _.sumBy(step.steps, 'time')
-            })
-            time += _.sum(steps) * share
-          }
-        })
-        this.curPlots.forEach(plot => {
-          if (
-            plot.selectedOption.catchCrop &&
-            (catchCropMonths.indexOf(month[0]) > -1 ||
-              catchCropMonths.indexOf(month[1]) > -1)
-          ) {
-            // Source: Own regression made from KTBL - Verfahrensrechner Pflanze data
-            // Based on crop "Zwischenfrucht Senf"
-            time +=
-              (0.04827586207 * plot.distance - 0.1 * plot.size + 4.191724138) /
-              catchCropMonths.length
-          }
-        })
-        return _.round(time, 2)
-      })
-      return data
+      const time = this.curPlots
+        .map(p => (p.selectedOption ? p.selectedOption.time : []))
+        .reduce((acc, itt) => acc.map((m, i) => _.round(m + itt[i])))
+      return time
     },
     curShares() {
       /*

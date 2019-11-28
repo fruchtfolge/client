@@ -14,6 +14,10 @@ export default {
     shares: {
       type: Object,
       required: true
+    },
+    time: {
+      type: Array,
+      required: true
     }
   },
   data() {
@@ -31,6 +35,7 @@ export default {
         this.timeRequirement.data.datasets[1].data = this.datasets[1].data
         this.timeRequirement.data.datasets[2].data = this.datasets[2].data
         // this.timeRequirement.data.labels = this.labels
+
         this.timeRequirement.update()
       },
       deep: true
@@ -85,9 +90,7 @@ export default {
         const croppingYear = curYear - i
         if (i === 0) {
           this.datasets.push({
-            data: store.curPlots
-              .map(p => (p.selectedOption ? p.selectedOption.time : []))
-              .reduce((acc, itt) => acc.map((m, i) => m + itt[i])),
+            data: this.time,
             label: `Anbauplan ${croppingYear}`,
             borderColor: colors[i],
             backgroundColor: this.gradient[i]
