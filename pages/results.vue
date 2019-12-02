@@ -75,7 +75,7 @@
                 </td>
               </tr>
               <tr v-if="plot.id === selection" :key="`detail_${plot._id}`">
-                <td colspan="9" class="inner-table-wrapper" align="right">
+                <td :colspan="colspan" class="inner-table-wrapper" align="right">
                   <table class="inner-table table">
                     <thead>
                       <th />
@@ -440,6 +440,10 @@ export default {
       }
       return exports
     },
+    colspan() {
+      if (this.manure) return 9
+      else return 7
+    },
     manExportCostsSpring() {
       const price = this.$store.settings.manPriceSpring
         ? this.$store.settings.manPriceSpring
@@ -484,15 +488,18 @@ export default {
         '#B5DCE1'
       ]
       */
-
+      /*
       const cultures = {
         'Winterweizen - Brotweizen': '#79AE98',
+        Kartoffeln: '#D6E5CD',
         Stärkekartoffeln: '#D6E5CD',
         Zuckerrüben: '#ECCB89',
-        'Mais - Silomais': '#D48544',
+        'Silomais (als Hauptfutter)': '#D48544',
         Winterraps: '#9B643B',
-        Wintergerste: '#9DD5C0'
+        Wintergerste: '#9DD5C0',
+        Winterroggen: '#B5DCE1'
       }
+      */
       const colors = [
         '#79AE98',
         '#D6E5CD',
@@ -521,7 +528,7 @@ export default {
       const o = {}
       if (!this.curPlots) return o
       this.curPlots.forEach(plot => {
-        const selectedCrop = plot.selectedCrop
+        const selectedCrop = plot.selectedCrop // plot.prevCrop1
         if (!selectedCrop) return
         if (!o[selectedCrop]) {
           o[selectedCrop] = {

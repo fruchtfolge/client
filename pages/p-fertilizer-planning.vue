@@ -102,7 +102,7 @@ export default {
       return bool
     },
     filteredPlots() {
-      const filtered = this.plots.filter(p => p.selectedOption.nSum > 0)
+      const filtered = this.plots.filter(p => p.selectedOption.nReq)
       return filtered
     }
   },
