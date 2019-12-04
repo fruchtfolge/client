@@ -144,6 +144,20 @@ export default {
           e.target.style.cursor = 'grabbing'
         }
         timeseries.options.onDragEnd = this.saveChanges
+
+        timeseries.options.tooltips = {
+          callbacks: {
+            label: function(tooltipItem, data) {
+              let label = data.datasets[tooltipItem.datasetIndex].label || ''
+
+              if (label) {
+                label += ': '
+              }
+              label += Math.round(tooltipItem.yLabel * 100) / 100
+              return label
+            }
+          }
+        }
       }
     },
     getData(data, category, type) {

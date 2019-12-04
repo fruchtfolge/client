@@ -85,10 +85,10 @@
         <br>
         Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
       </h3>
-      <button @click="$nuxt.$router.replace({path: 'maps'})">
+      <button class="button" @click="$nuxt.$router.replace({path: 'maps'})">
         ZUR KARTE
       </button>
-      <button style="margin-left: 20px;" @click="importPrev">
+      <button style="margin-left: 20px;" class="button" @click="importPrev">
         IMPORTIEREN
       </button>
     </div>

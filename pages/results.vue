@@ -328,6 +328,14 @@
           </tbody>
         </table>
         <div class="plots-wrapper">
+          <select v-model="cropYearSwitcher" class="selection select crop-year-switcher" name="">
+            <option value="selectedCrop">
+              Planungsjahr
+            </option>
+            <option value="prevCrop1">
+              Vorjahr
+            </option>
+          </select>
           <cropShares :shares="curShares" />
           <deviationOptimum :shares="shares" :plots="curPlots" :time="curTimeReq" :total="grossMarginCurYear" />
           <div style="width: 400px;">
@@ -416,6 +424,7 @@ export default {
       renderResultsMap: false,
       totLand: 0,
       sortKey: '',
+      cropYearSwitcher: 'selectedCrop',
       manure: undefined,
       shares: {},
       resultMapSwitcher: 'Kulturen',
@@ -501,15 +510,19 @@ export default {
       }
       */
       const colors = [
-        '#79AE98',
-        '#D6E5CD',
-        '#ECCB89',
-        '#D48544',
-        '#9B643B',
-        '#9DD5C0',
-        '#B5DCE1',
-        '#D0D1D3',
-        '#B5DCE1'
+        '#79ae98',
+        '#d6e5cd',
+        '#eccb89',
+        '#d48544',
+        '#9b643b',
+        '#8db867',
+        '#9dd5c0',
+        '#a9dbd4',
+        '#b5dce1',
+        '#c3d1da',
+        '#d0d1d3',
+        '#daccc3',
+        '#b5dce1'
       ]
       /*
       const colors = [
@@ -528,7 +541,7 @@ export default {
       const o = {}
       if (!this.curPlots) return o
       this.curPlots.forEach(plot => {
-        const selectedCrop = plot.selectedCrop // plot.prevCrop1
+        const selectedCrop = plot[this.cropYearSwitcher] // plot.prevCrop1
         if (!selectedCrop) return
         if (!o[selectedCrop]) {
           o[selectedCrop] = {
@@ -1005,6 +1018,13 @@ export default {
   margin-bottom: 10px;
 }
 
+.crop-year-switcher {
+  margin-top: 50px;
+  width: 175px;
+  margin-left: 25px;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
 @media (max-width: 1250px) {
   .plot-selection {
     width: 125px;
