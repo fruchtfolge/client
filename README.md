@@ -1,4 +1,5 @@
 # Fruchtfolge
+[![DOI](https://zenodo.org/badge/173977199.svg)](https://zenodo.org/badge/latestdoi/173977199)
 
 Fruchtfolge is an open-source crop planning optimization tool. It's main focus are usability and data security.
 
