@@ -2,8 +2,10 @@
   <div>
     <div>
       <div v-show="shown">
-        <div v-if="difference !== 0">
-          <h2>Differenz zum Optimum</h2>
+        <div v-if="difference !== 0" class="difference-wrapper">
+          <h2 class="dev-header">
+            Differenz zum Optimum
+          </h2>
           <h2 class="number" :class="{ positive: difference > 0 }">
             {{ format(difference) }}
           </h2>
@@ -16,7 +18,9 @@
       </div>
     </div>
     <div v-if="arableLand >= 10" class="greening-check">
-      <h2>Greening</h2>
+      <h2 class="dev-header">
+        Greening
+      </h2>
       <div style="display: inline-block;">
         <div v-if="arableLand >= 15" class="greening-entries">
           <div :class="{ check: !brokeEfa, fail: brokeEfa }" />
@@ -298,7 +302,18 @@ export default {
 }
 </script>
 <style>
+.difference-wrapper {
+  margin-top: 30px;
+}
+
+.dev-header {
+  font-family: 'Open Sans';
+  font-weight: 300;
+  letter-spacing: normal;
+  font-size: 18px;
+}
 .greening-check {
+  margin-top: 40px;
   margin-bottom: 0px;
 }
 
@@ -328,7 +343,6 @@ export default {
   background: url('~assets/img/fail.svg');
 }
 .number {
-  margin-top: -20px;
   letter-spacing: 0.05em;
   color: rgb(187, 67, 29);
 }

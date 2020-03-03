@@ -219,14 +219,11 @@ export default {
       return flag
     },
     sumSolid() {
-      if (this.hasManure) {
+      if (this.hasSolid) {
+        console.log(this.manures)
         return {
           amount: _.sumBy(this.manures, m => {
-            if (
-              m.manType.includes('Festmist') ||
-              m.manType.includes('Festmist')
-            )
-              return m.sumFertAmount
+            if (m.manType.includes('Festmist')) return m.sumFertAmount
           }),
           n: this.calcAverageNut('n', 'Festmist', 'Festmist'),
           p: this.calcAverageNut('p', 'Festmist', 'Festmist'),
