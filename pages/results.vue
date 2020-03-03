@@ -27,6 +27,9 @@
               <th v-if="manure" style="width: 80px;" @click="sortPlots('orgFert')">
                 Org. Düngung
               </th>
+              <th v-if="manure" style="width: 80px;" @click="sortPlots('orgFert')">
+                N-Reduzierung
+              </th>
               <th v-if="manure" style="width: 60px;" @click="sortPlots('prevCrop1')">
                 Herbstdüngung
               </th>
@@ -64,6 +67,13 @@
                   <select v-model="plot.selectedOption.manAmount" style="text-align-last: center;" class="select selection" @change="saveManureChange()">
                     <option v-for="(amount) in manAmounts" :key="`${plot._id}_${amount}`" :value="amount">
                       {{ amount }}m³
+                    </option>
+                  </select>
+                </td>
+                <td v-if="manure" class="narrow-cells">
+                  <select v-model="plot.selectedOption.nReduction" style="text-align-last: center;" class="select selection" @change="saveManureChange()">
+                    <option v-for="(reduction) in nReductions" :key="`${plot._id}_${reduction}`" :value="reduction">
+                      {{ reduction * 100 }}%
                     </option>
                   </select>
                 </td>
@@ -285,18 +295,18 @@
               <td class="narrow-cells-number">
                 {{ curTotLand }}
               </td>
-              <td v-if="manure" colspan="6" />
+              <td v-if="manure" colspan="7" />
               <td v-else colspan="4" />
               <td class="narrow-cells-number" style="font-weight: bold; padding-right: 10px;">
                 {{ format(grossMarginArab) }}
               </td>
             </tr>
             <tr v-if="manure">
-              <td colspan="4">
+              <td colspan="3">
                 Dungexport Frühjahr
               </td>
-              <td colspan="3" />
-              <td class="narrow-cells-number">
+              <td colspan="2" />
+              <td class="narrow-cells-number" colspan="4">
                 {{ manExportVolSpring }}m³
               </td>
               <td class="narrow-cells-number" style="padding-right: 10px;">
@@ -304,11 +314,11 @@
               </td>
             </tr>
             <tr v-if="manure">
-              <td colspan="4">
+              <td colspan="3">
                 Dungexport Herbst
               </td>
-              <td colspan="3" />
-              <td class="narrow-cells-number">
+              <td colspan="2" />
+              <td class="narrow-cells-number" colspan="4">
                 {{ manExportVolAutumn }}m³
               </td>
               <td class="narrow-cells-number" style="padding-right: 10px;">
@@ -319,7 +329,7 @@
               <td colspan="1" style="font-weight: bold;">
                 Summe
               </td>
-              <td v-if="manure" colspan="7" />
+              <td v-if="manure" colspan="8" />
               <td v-else colspan="5" />
               <td class="narrow-cells-number" style="font-weight: bold; padding-right: 10px;">
                 {{ format(grossMarginCurYear) }}
@@ -429,6 +439,7 @@ export default {
       shares: {},
       resultMapSwitcher: 'Kulturen',
       manAmounts: [0, 10, 15, 20, 25, 30, 40, 50, 60],
+      nReductions: [0, 0.1, 0.2, 0.3, 0.4],
       sortOrder: 'desc',
       cropColor: {}
     }
@@ -800,6 +811,7 @@ export default {
             crop: plot.selectedCrop,
             manAmount: plot.selectedOption.manAmount,
             solidAmount: plot.selectedOption.solidAmount,
+            nReduction: plot.selectedOption.nReduction,
             catchCrop: plot.selectedOption.catchCrop,
             autumnFert: plot.selectedOption.autumnFert
           }
@@ -821,6 +833,7 @@ export default {
         const crop = plot.selectedCrop
         const manAmount = plot.selectedOption.manAmount
         const solidAmount = plot.selectedOption.solidAmount
+        const nReduction = plot.selectedOption.nReduction
         const catchCrop = plot.selectedOption.catchCrop
         const autumnFert = plot.selectedOption.autumnFert
 
@@ -828,7 +841,15 @@ export default {
         // get new data from server
         const { data } = await this.$axios.post(
           process.env.baseUrl + 'model/update/',
-          { _id, crop, manAmount, solidAmount, catchCrop, autumnFert },
+          {
+            _id,
+            crop,
+            manAmount,
+            solidAmount,
+            nReduction,
+            catchCrop,
+            autumnFert
+          },
           { progress: true }
         )
         doc.selectedCrop = plot.selectedCrop
