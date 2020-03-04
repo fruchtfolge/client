@@ -77,6 +77,7 @@
 
 <script>
 import Constraint from '~/constructors/Constraint.js'
+import notifications from '~/components/notifications'
 
 export default {
   props: {
@@ -106,6 +107,7 @@ export default {
       area: 0
     }
   },
+  notifications: notifications,
   methods: {
     async addConstraint() {
       try {
@@ -126,7 +128,9 @@ export default {
         // console.log(constraint)
         await this.$db.post(constraint)
         this.$emit('closeAddConstraint')
+        this.saveSuccess()
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     },

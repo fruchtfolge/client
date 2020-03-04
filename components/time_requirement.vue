@@ -8,6 +8,7 @@
 <script>
 import Chart from 'chart.js'
 import 'chartjs-plugin-deferred'
+import notifications from '~/components/notifications'
 
 export default {
   props: {
@@ -20,6 +21,7 @@ export default {
       required: true
     }
   },
+  notifications: notifications,
   data() {
     return {
       timeRequirement: undefined,

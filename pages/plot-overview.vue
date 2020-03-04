@@ -96,6 +96,8 @@
 </template>
 
 <script>
+import notifications from '~/components/notifications'
+
 export default {
   data() {
     return {
@@ -128,6 +130,7 @@ export default {
       waiting: false
     }
   },
+  notifications: notifications,
   created() {
     this.update()
     this.$bus.$on('changeCurrents', _.debounce(this.update, 200))
@@ -166,7 +169,9 @@ export default {
         const plot = await this.$db.get(data._id)
         plot[prop] = newValue
         await this.$db.put(plot)
+        this.saveSuccess()
       } catch (e) {
+        this.saveError()
         console.log(e)
       }
     }

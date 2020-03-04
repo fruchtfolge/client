@@ -174,6 +174,10 @@ export default {
         this.settings.curYear = year
       }
     }
+  },
+  transition: {
+    name: 'InAndOut',
+    mode: ''
   }
 }
 </script>

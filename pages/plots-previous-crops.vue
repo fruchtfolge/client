@@ -77,6 +77,7 @@
 
 <script>
 import cultures from '~/assets/js/cultures'
+import notifications from '~/components/notifications'
 
 export default {
   components: {
@@ -96,7 +97,7 @@ export default {
       waiting: false
     }
   },
-  created() {},
+  notifications: notifications,
   mounted() {
     this.cultures = cultures
     this.update()
@@ -219,7 +220,9 @@ export default {
           newPlot._id = this.uuidv4()
           await this.$db.put(newPlot)
         }
+        this.saveSuccess()
       } catch (e) {
+        this.saveError()
         console.log(e)
       }
     },

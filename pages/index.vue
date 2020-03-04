@@ -214,6 +214,7 @@
 <script>
 import Setting from '~/constructors/Settings'
 import geo from '~/assets/js/geo'
+import notifications from '~/components/notifications'
 
 export default {
   components: {
@@ -253,35 +254,7 @@ export default {
   destroyed() {
     this.$bus.$off('flip')
   },
-  notifications: {
-    incomplete: {
-      title: 'UNVOLLSTÄNDIG',
-      message: 'Bitte füllen Sie zur Anmeldung alle Felder aus.',
-      type: 'warn'
-    },
-    noDSGVO: {
-      title: 'NUTZUNGSBEDINGUNG',
-      message:
-        'Für die Nutzung der Anwendung müssen Sie den Nutzungsbedingungen und der Cookies-Richtlinie zustimmen.',
-      type: 'warn'
-    },
-    notMatching: {
-      title: 'PASSWORT ÜBEREINSTIMMUNG',
-      message: 'Die Passwörter stimmen nicht überein.',
-      type: 'warn'
-    },
-    loginError: {
-      title: 'FEHLER',
-      message: 'Beim Login ist ein Fehler aufgetreten.',
-      type: 'error'
-    },
-    success: {
-      title: 'WILLKOMMEN',
-      message:
-        'Schön, dass Sie wieder da sind! Bitte haben Sie einen Augeblick geduld, während Ihre Daten synchronisiert werden.',
-      type: 'success'
-    }
-  },
+  notifications: notifications,
   methods: {
     flip() {
       // scroll to top of page after clicking

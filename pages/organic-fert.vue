@@ -33,19 +33,19 @@
               <td style="text-align: center;">
                 {{ manure.manType }}
               </td>
-              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'sumFertAmount', manure._id)">
+              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'sumFertAmount', manure._id)" @keydown.enter="$event.target.blur()">
                 {{ manure.sumFertAmount }}
               </td>
-              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'n', manure._id)">
+              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'n', manure._id)" @keydown.enter="$event.target.blur()">
                 {{ manure.n }}
               </td>
-              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'p', manure._id)">
+              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'p', manure._id)" @keydown.enter="$event.target.blur()">
                 {{ manure.p }}
               </td>
-              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'k', manure._id)">
+              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'k', manure._id)" @keydown.enter="$event.target.blur()">
                 {{ manure.k }}
               </td>
-              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'minUsagePercent', manure._id)">
+              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'minUsagePercent', manure._id)" @keydown.enter="$event.target.blur()">
                 {{ manure.minUsagePercent }}
               </td>
               <td style="background-color: #f5f5f5">
@@ -107,19 +107,19 @@
           <tbody>
             <tr>
               <td>Gülle Lagerkapazität [m³]</td>
-              <td contenteditable="true" @blur="save($event, 'manStorage', 'settings')">
+              <td contenteditable="true" @blur="save($event, 'manStorage', 'settings')" @keydown.enter="$event.target.blur()">
                 {{ settings.manStorage || sumManure.amount / 2 }}
               </td>
             </tr>
             <tr>
               <td>Gülle Exportkosten Frühjahr (bis Mai) [€/m³]</td>
-              <td contenteditable="true" @blur="save($event, 'manPriceSpring', 'settings')">
+              <td contenteditable="true" @blur="save($event, 'manPriceSpring', 'settings')" @keydown.enter="$event.target.blur()">
                 {{ settings.manPriceSpring || 15 }}
               </td>
             </tr>
             <tr>
               <td>Gülle Exportkosten Herbst (ab Mai) [€/m³]</td>
-              <td contenteditable="true" @blur="save($event, 'manPriceAutumn', 'settings')">
+              <td contenteditable="true" @blur="save($event, 'manPriceAutumn', 'settings')" @keydown.enter="$event.target.blur()">
                 {{ settings.manPriceAutumn || 30 }}
               </td>
             </tr>
@@ -166,6 +166,9 @@
   </div>
 </template>
 <script>
+import notifications from '~/components/notifications'
+import { sanitizeInput } from '~/components/helpers'
+
 export default {
   components: {
     addManure: () => import('~/components/add_manure.vue')
@@ -179,6 +182,7 @@ export default {
       settings: null
     }
   },
+  notifications: notifications,
   computed: {
     hasManure() {
       let flag = false
@@ -264,24 +268,46 @@ export default {
       this.$set(this, 'settings', this.$store.settings)
     },
     async save(e, type, id) {
+      let newValue, doc
       try {
-        const doc = await this.$db.get(id)
-        const newValue = Number(e.target.innerText)
+        doc = await this.$db.get(id)
+      } catch (err) {
+        this.showError()
+        console.log(err)
+      }
+      try {
+        // get new value that was entered into the table cell
+        newValue = sanitizeInput(e.target.innerText)
+        if (doc[type] === newValue) return
+      } catch (err) {
+        this.noNumber()
+        e.target.innerText = doc[type]
+        return
+      }
+      try {
         doc[type] = newValue
         await this.$db.put(doc)
-      } catch (e) {
-        console.log(e)
+        this.saveSuccess()
+      } catch (err) {
+        this.showError()
+        console.log(err)
       }
     },
     async remove() {
       try {
-        if (this.manures) {
-          const deleted = this.manures.filter(manure => manure._deleted)
+        const deleted = this.manures.filter(manure => manure._deleted)
+        if (deleted && deleted.length) {
           await this.$db.bulkDocs(deleted)
+          this.saveSuccess()
         } else {
-          console.log('Nothing to delete.')
+          this.showInfo({
+            title: 'NICHTS AUSGEWÄHLT',
+            message:
+              'Setzen Sie einen Haken in der Tabelle rechts neben der Gülle- bzw. Festmistart die Sie löschen möchten. Klicken Sie anschließend auf den "Entfernen"-Button'
+          })
         }
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     }

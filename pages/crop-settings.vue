@@ -18,7 +18,7 @@
             <tbody>
               <tr v-for="(subseq) in crops" :key="subseq._id">
                 <td>{{ subseq.name }}</td>
-                <td contenteditable="true" @blur="save($event, 'subseqCrops', subseq.cropGroup)">
+                <td contenteditable="true" @blur="save($event, 'subseqCrops', subseq.cropGroup)" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.subseqCrops[subseq.cropGroup] }}
                 </td>
               </tr>
@@ -39,19 +39,19 @@
             <tbody>
               <tr>
                 <td>Anbauspause in Jahren</td>
-                <td contenteditable="true" @blur="save($event, 'rotBreak')">
+                <td contenteditable="true" @blur="save($event, 'rotBreak')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.rotBreak }}
                 </td>
               </tr>
               <tr>
                 <td>Max. Anteil Anbaufläche [%]</td>
-                <td contenteditable="true" @blur="save($event, 'maxShare')">
+                <td contenteditable="true" @blur="save($event, 'maxShare')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.maxShare }}
                 </td>
               </tr>
               <tr>
                 <td>Mindestanforderung Bodenqualität</td>
-                <td contenteditable="true" @blur="save($event, 'minSoilQuality')">
+                <td contenteditable="true" @blur="save($event, 'minSoilQuality')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.minSoilQuality }}
                 </td>
               </tr>
@@ -69,7 +69,7 @@
               </tr>
               <tr>
                 <td>Faktor für Öko. Vorrangfläche (Greening)</td>
-                <td contenteditable="true" @blur="save($event,'efaFactor')">
+                <td contenteditable="true" @blur="save($event,'efaFactor')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.efaFactor }}
                 </td>
               </tr>
@@ -90,61 +90,55 @@
             <tbody>
               <tr>
                 <td>Ertragsniveau nach Tab. 2 bzw. 4 [dt/ha]</td>
-                <td contenteditable="true" @blur="save($event,'duevYieldLvl')">
+                <td contenteditable="true" @blur="save($event,'duevYieldLvl')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.duevYieldLvl }}
                 </td>
               </tr>
               <tr>
                 <td>N-Düngebedarf nach Tab. 2 bzw. 4 [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nRequirement')">
+                <td contenteditable="true" @blur="save($event,'nRequirement')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nRequirement }}
                 </td>
               </tr>
               <tr>
                 <td>Maximaler N-Bedarfszuschlag bei Mehrertrag je dt (Tab. 3) [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nMaxAddition')">
+                <td contenteditable="true" @blur="save($event,'nMaxAddition')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nMaxAddition }}
                 </td>
               </tr>
               <tr>
                 <td>Minimaler N-Bedarfsabzug bei Minderertrag je dt (Tab. 3) [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nMinSubtraction')">
+                <td contenteditable="true" @blur="save($event,'nMinSubtraction')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nMinSubtraction }}
                 </td>
               </tr>
               <tr>
                 <td>Durchschnittliche Menge N aus organischer Düngung der Vorjahre [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nFertPrevYear')">
+                <td contenteditable="true" @blur="save($event,'nFertPrevYear')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nFertPrevYear || 0 }}
                 </td>
               </tr>
               <tr>
                 <td>N-Bedarfsabzug wenn Vorfrucht (Tab. 7 bzw. 4) [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'prevCropEff')">
+                <td contenteditable="true" @blur="save($event,'prevCropEff')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.prevCropEff }}
                 </td>
               </tr>
               <tr>
                 <td>P-Entzug (nach §4(3)) [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'pWithdraw')">
+                <td contenteditable="true" @blur="save($event,'pWithdraw')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.pWithdraw }}
                 </td>
               </tr>
               <tr>
                 <td>P-Rückstände Erntereste [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'pHarvestLeft')">
+                <td contenteditable="true" @blur="save($event,'pHarvestLeft')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.pHarvestLeft }}
                 </td>
               </tr>
               <tr>
                 <td>Erntereste werden abgefahren</td>
                 <td><input type="checkbox" :checked="selectedCrop.harvestLeft" @change="saveCheckbox($event,'harvestLeft')"></td>
-              </tr>
-              <tr>
-                <td>Ertragspotenzial bei 20% reduzierter Düngung [%]</td>
-                <td contenteditable="true" @blur="save($event,'yieldRed20')">
-                  {{ selectedCrop.yieldRed20 }}
-                </td>
               </tr>
             </tbody>
           </table>
@@ -171,11 +165,15 @@
 </template>
 
 <script>
+import notifications from '~/components/notifications'
+import { sanitizeInput } from '~/components/helpers'
+
 export default {
   components: {
     addCrop: () => import('~/components/add_crop.vue'),
     cropsSidebar: () => import('~/components/crops_sidebar.vue')
   },
+  notifications: notifications,
   data() {
     return {
       crops: undefined,
@@ -202,8 +200,22 @@ export default {
       }
     },
     async save(e, type, value) {
+      let newValue
       try {
-        const newValue = Number(e.target.innerText)
+        // get new value that was entered into the table cell
+        newValue = sanitizeInput(e.target.innerText)
+        if (
+          type === 'subseqCrops' &&
+          newValue === this.selectedCrop.subseqCrops[value]
+        )
+          return
+        else if (newValue === this.selectedCrop[type]) return
+      } catch (err) {
+        this.noNumber()
+        e.target.innerText = this.selectedCrop.subseqCrops.value
+        return
+      }
+      try {
         if (type === 'subseqCrops') {
           this.$set(this.selectedCrop.subseqCrops, value, newValue)
         } else {
@@ -211,7 +223,9 @@ export default {
         }
         const update = await this.$db.put(this.selectedCrop)
         this.selectedCrop._rev = update.rev
+        this.saveSuccess()
       } catch (e) {
+        this.saveError()
         console.log(e)
       }
     },
@@ -221,14 +235,18 @@ export default {
         this.$set(this.selectedCrop, prop, newValue)
         const update = await this.$db.put(this.selectedCrop)
         this.selectedCrop._rev = update.rev
+        this.saveSuccess()
       } catch (e) {
+        this.saveError()
         console.log(e)
       }
     },
     async remove() {
       try {
         await this.$db.remove(this.selectedCrop)
+        this.showCropRemoveSucc()
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     },

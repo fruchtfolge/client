@@ -136,7 +136,9 @@ export default {
         // console.log(manure)
         await this.$db.post(manure)
         this.$emit('closeAddManure')
+        this.saveSuccess()
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     },

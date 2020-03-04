@@ -27,6 +27,7 @@ import Chart from 'chart.js'
 import TimeConstraints from '~/constructors/TimeConstraints'
 import chartDefaults from '~/assets/js/labour.js'
 import 'chartjs-plugin-dragdata'
+import notifications from '~/components/notifications'
 
 export default {
   data() {
@@ -36,6 +37,7 @@ export default {
       stored: false
     }
   },
+  notifications: notifications,
   mounted() {
     // check if data exists in store
     this.update()
@@ -85,24 +87,35 @@ export default {
       console.log(this.labourChart)
     },
     async add() {
-      // create new time constraints object
-      chartDefaults.year = this.$store.curYear
-      chartDefaults.scenario = this.$store.curScenario
+      try {
+        // create new time constraints object
+        chartDefaults.year = this.$store.curYear
+        chartDefaults.scenario = this.$store.curScenario
 
-      const timeConstraints = new TimeConstraints(chartDefaults)
-      console.log(timeConstraints)
-      await this.$db.put(timeConstraints)
+        const timeConstraints = new TimeConstraints(chartDefaults)
+        // console.log(timeConstraints)
+        await this.$db.put(timeConstraints)
+        this.saveSuccess()
+      } catch (e) {
+        this.showError()
+        console.log(e)
+      }
     },
     async saveChanges(e, datasetIndex, index, value) {
-      const chartData = await this.$db.get(this.chartDefaults._id)
-      chartData.data.datasets[datasetIndex].data[index] = value
-      const update = await this.$db.put(chartData)
-      this.chartDefaults._rev = update.rev
-      e.target.style.cursor = 'default'
+      try {
+        const chartData = await this.$db.get(this.chartDefaults._id)
+        chartData.data.datasets[datasetIndex].data[index] = value
+        const update = await this.$db.put(chartData)
+        this.chartDefaults._rev = update.rev
+        e.target.style.cursor = 'default'
+        this.saveSuccess()
+      } catch (e) {
+        this.showError()
+        console.log(e)
+      }
     },
     update() {
       if (!this.chartDefaults) {
-        console.log('yes')
         this.$set(this, 'chartDefaults', this.$store.curTimeConstraints)
         if (this.chartDefaults) {
           this.stored = true
@@ -111,10 +124,16 @@ export default {
       }
     },
     async remove() {
-      this.stored = false
-      this.labourChart.destroy()
-      await this.$db.remove(this.chartDefaults)
-      this.chartDefaults = null
+      try {
+        this.stored = false
+        this.labourChart.destroy()
+        await this.$db.remove(this.chartDefaults)
+        this.chartDefaults = null
+        this.saveSuccess()
+      } catch (e) {
+        this.showError()
+        console.log(e)
+      }
     }
   }
 }

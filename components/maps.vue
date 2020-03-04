@@ -6,9 +6,10 @@
 import { area } from '@turf/turf'
 import mapboxgl from 'mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
+import drawConfig from '../assets/js/draw.config.js'
+import notifications from '~/components/notifications'
 
 // load Mapbox Draw configuration file
-import drawConfig from '../assets/js/draw.config.js'
 
 export default {
   name: 'MapBox',
@@ -17,23 +18,7 @@ export default {
       curYear: ''
     }
   },
-  notifications: {
-    showAddressWarn: {
-      title: 'ADRESSE UNVOLLSTÄNDIG',
-      message: 'Bitte füllen Sie das Adressfeld komplett aus.',
-      type: 'warn'
-    },
-    showPlotRemoveSucc: {
-      title: 'SCHLAG ENTFERNT',
-      message: 'Schlag wurde erfolgreich entfernt.',
-      type: 'success'
-    },
-    showError: {
-      title: 'FEHLER',
-      message: 'Ein fehler ist aufgetreten.',
-      type: 'error'
-    }
-  },
+  notifications: notifications,
   async mounted() {
     let settings
     try {

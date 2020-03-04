@@ -1,6 +1,6 @@
 <template lang="html">
   <div v-on-clickaway="hide" @click="toggle">
-    <div class="dropdown">
+    <div class="dropdown-header">
       Aktionen
     </div>
     <div v-show="clicked" class="dropdown-menu">
@@ -33,7 +33,7 @@ export default {
 </script>
 
 <style lang="css">
-.dropdown {
+.dropdown-header {
   width: 123px;
   height: 38px;
   border: black;

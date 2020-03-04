@@ -22,6 +22,7 @@
 import Chart from 'chart.js'
 import cropLabourReq from '~/assets/js/cropLabourReq.js'
 import 'chartjs-plugin-dragdata'
+import notifications from '~/components/notifications'
 
 export default {
   props: {
@@ -62,6 +63,7 @@ export default {
       total: 0
     }
   },
+  notifications: notifications,
   watch: {
     crop: {
       handler() {
@@ -158,7 +160,7 @@ export default {
       })
     },
     async saveChanges(e, datasetIndex, index, value) {
-      console.log(datasetIndex, index, value)
+      // console.log(datasetIndex, index, value)
       try {
         const halfMonth = this.labels[index]
         const oldValue = this.getData(halfMonth)
@@ -168,14 +170,18 @@ export default {
         const update = await this.$db.put(this.crop)
         this.crop._rev = update.rev
         e.target.style.cursor = 'default'
+        this.saveSuccess()
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     },
     async remove() {
       try {
         await this.$db.remove(this.crop)
+        this.showCropRemoveSucc()
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     }

@@ -2,8 +2,8 @@
   <div>
     <loading v-if="loading" :main="status" />
     <div style="width: 50%; min-width: 500px; margin: auto; top: 120px;">
-      <h1 style="font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
-        EINSTELLUNGEN
+      <h1 id="adress" style="font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
+        ADRESSE
       </h1>
       <span>Für die Optimierung wird der Standort Ihres Betriebes benötigt. Dieser wird für die Berechnung der Hof-Feld-Distanzen der einzelnen Schläge verwendet. Anhand dieser Information werden die Deckungsbeiträge schlagspezifisch errechnet und regionalisierte Daten bezogen.</span>
       <br>
@@ -20,7 +20,7 @@
         <input v-model="city" type="text" class="input" placeholder="Stadt">
       </div>
       <br>
-      <h1 style="padding-top: 20px; font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
+      <h1 id="data-entry" style="padding-top: 20px; font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
         DATENEINGABE
       </h1>
       <span>Für die Optimierung werden Daten bezüglich Ihrer bewirtschafteten Flächen benötigt. Dabei werden insbesondere die Schlagskizzen (Geodaten) sowie die Vorfrüchte der Felder für die Optimierungsrechnung verwendet. Wenn Ihr Betrieb den Flächenantrag in Nordrhein-Westfalen stellt, können die Flächendaten aus dem ELAN-Downloadportal durch eingabe der ZID-Nummer und Passwort automatisch eingefügt werden.
@@ -124,6 +124,7 @@
 
 <script>
 import geo from '~/assets/js/geo'
+import notifications from '~/components/notifications'
 
 export default {
   components: {
@@ -145,44 +146,7 @@ export default {
       selectedDeleteYear: 2019
     }
   },
-  notifications: {
-    showAddressWarn: {
-      title: 'ADRESSE UNVOLLSTÄNDIG',
-      message: 'Bitte füllen Sie das Adressfeld komplett aus.',
-      type: 'warn'
-    },
-    showZidErr: {
-      title: 'INVEKOS FEHLER',
-      message:
-        'Bitte stellen Sie sicher, dass Ihre 12-stellige NRW Betriebsnummer (muss mit 27605 beginnen) vollständig ist und Sie das korekkte Passwort eingegeben haben. ',
-      type: 'warn'
-    },
-    noAddressErr: {
-      title: 'ADRESSE UNGÜLTIG',
-      message: 'Die angegebene Adresse konnte nicht gefunden werden.',
-      type: 'error'
-    },
-    showAddressSucc: {
-      title: 'ADRESSE GESPEICHERT',
-      message: 'Die Hof-Adresse wurde in den Einstellungen gespeichert.',
-      type: 'success'
-    },
-    showZidSucc: {
-      title: 'DATEN IMPORTIERT',
-      message: 'Die ELAN Antragsdaten wurden erfolgreich importiert.',
-      type: 'success'
-    },
-    showInfo: {
-      title: 'KEINE DATEN',
-      message: 'Es wurden keine ELAN Daten gefunden.',
-      type: 'info'
-    },
-    showError: {
-      title: 'EIN FEHLER IST AUFGETRETEN',
-      message: 'Unbekannter Fehler.',
-      type: 'error'
-    }
-  },
+  notifications: notifications,
   watch: {
     street() {
       if (this.street !== this.settings.street) this.debouncedGetHome()

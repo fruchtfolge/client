@@ -56,6 +56,7 @@
 <script>
 import { area } from '@turf/turf'
 import cultures from '~/assets/js/cultures.js'
+import notifications from '~/components/notifications'
 
 export default {
   props: {
@@ -75,18 +76,7 @@ export default {
       prevCrop3: ''
     }
   },
-  notifications: {
-    showPlotSucc: {
-      title: 'SCHLAG HINZUGEFÜGT',
-      message: 'Der Schlag wurde gespeichert.',
-      type: 'success'
-    },
-    showPlotErr: {
-      title: 'FEHLER',
-      message: 'Beim Hinzufügen des Schlags ist ein Fehler aufgetreten.',
-      type: 'error'
-    }
-  },
+  notifications: notifications,
   created() {
     this.cultures = cultures
     if (this.$store.crops) {

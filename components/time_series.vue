@@ -19,6 +19,7 @@
 import Chart from 'chart.js'
 import timeseries from '~/assets/js/timeseries.js'
 import 'chartjs-plugin-dragdata'
+import notifications from '~/components/notifications'
 
 export default {
   props: {
@@ -32,6 +33,7 @@ export default {
       timeseries
     }
   },
+  notifications: notifications,
   watch: {
     crop: {
       handler() {
@@ -195,7 +197,7 @@ export default {
       return data[0].contributionMargin[category][0][type].unit
     },
     async saveChanges(e, datasetIndex, index, value) {
-      console.log(datasetIndex, index, value)
+      // console.log(datasetIndex, index, value)
       try {
         // get crop object from database
         const year = timeseries.data.labels[index]
@@ -241,7 +243,9 @@ export default {
         // console.log(update)
         crop._rev = update.rev
         e.target.style.cursor = 'default'
+        this.saveSuccess()
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     },
@@ -251,7 +255,9 @@ export default {
     async remove() {
       try {
         await this.$db.remove(this.crop)
+        this.showCropRemoveSucc()
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     }

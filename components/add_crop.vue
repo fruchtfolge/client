@@ -58,6 +58,7 @@
 
 <script>
 import ktblCrops from '~/assets/js/crops.js'
+import notifications from '~/components/notifications'
 
 export default {
   data() {
@@ -70,6 +71,7 @@ export default {
       farmingTypes: ['konventionell/integriert', 'ökologisch']
     }
   },
+  notifications: notifications,
   computed: {
     crops() {
       const data = _.filter(ktblCrops, { farmingType: this.farmingType })
@@ -164,6 +166,7 @@ export default {
           )
 
           await this.$db.bulkDocs(data)
+          this.showCropSucc()
         } else {
           // crop now has to be present, but not set to active -> activate
           const crop = _.find(this.$store.crops, c => {
@@ -175,9 +178,11 @@ export default {
           // console.log(crop)
           crop.active = true
           await this.$db.put(crop)
+          this.showCropSucc()
         }
         // console.log(years)
       } catch (e) {
+        this.showError()
         console.log(e)
       }
 

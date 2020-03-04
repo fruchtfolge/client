@@ -404,6 +404,7 @@
 <script>
 import { Carousel, Slide } from 'vue-carousel'
 import cultures from '~/assets/js/cultures'
+import notifications from '~/components/notifications'
 
 export default {
   components: {
@@ -624,24 +625,7 @@ export default {
   destroyed() {
     this.$bus.$off('changeCurrents')
   },
-  notifications: {
-    showSolved: {
-      title: 'ERFOLGREICH',
-      message: 'Die Optimierung war erfolgreich und hat eine Lösung gefunden.',
-      type: 'success'
-    },
-    showWarnings: {
-      title: 'ANPASSUNG NÖTIG',
-      message: 'Nicht alle Restriktionen konnten eingehalten werden',
-      type: 'warn'
-    },
-    showInfeasible: {
-      title: 'UNMÖGLICH',
-      message:
-        'Die Optimierung konnte keine Lösunge finden. Versuchen Sie, Restriktionen aufzuweichen.',
-      type: 'error'
-    }
-  },
+  notifications: notifications,
   methods: {
     async solve(force) {
       this.loading = true
@@ -658,54 +642,59 @@ export default {
       }
     },
     async storeResults(data, newRun) {
-      console.log(data)
-      if (data.model_status === 1 || data.model_status === 8) {
-        this.warnings = data.warnings
-        this.curPlots.forEach(plot => {
-          // get recommendation for each plot from GAMS result
-          plot.selectedOption = data.recommendation.find(
-            p => p._id === plot._id
-          )
-          plot.recommendation = plot.selectedOption.name
-          plot.curGrossMargin = plot.selectedOption.grossMargin
-          plot.recommendedGrossMargin = plot.curGrossMargin
-          plot.selectedCrop = plot.recommendation
-          plot.recommendedCatchCrop = plot.catchCrop
-        })
-        const storage = this.curStorage || {
-          _id: `${this.curYear}_storage`,
-          type: 'storage',
-          year: this.curYear,
-          scenario: this.curScenario
-        }
-        storage.storage = data.storage
-        storage.exports = data.exports
-        await this.$db.put(storage)
-        if (newRun) {
-          this.$store.settings[
-            'grossMargin' + this.curYear
-          ] = this.grossMarginCurYear
-          await this.$db.put(this.$store.settings)
-        }
-      } else {
-        this.infeasible = true
-        this.curPlots.forEach(plot => {
-          plot.recommendation = ''
-          plot.recommendedCatchCrop = false
-          if (!plot.selectedCrop) {
-            plot.selectedCrop = plot.prevCrop1
+      try {
+        // console.log(data)
+        if (data.model_status === 1 || data.model_status === 8) {
+          this.warnings = data.warnings
+          this.curPlots.forEach(plot => {
+            // get recommendation for each plot from GAMS result
+            plot.selectedOption = data.recommendation.find(
+              p => p._id === plot._id
+            )
+            plot.recommendation = plot.selectedOption.name
+            plot.curGrossMargin = plot.selectedOption.grossMargin
+            plot.recommendedGrossMargin = plot.curGrossMargin
+            plot.selectedCrop = plot.recommendation
+            plot.recommendedCatchCrop = plot.catchCrop
+          })
+          const storage = this.curStorage || {
+            _id: `${this.curYear}_storage`,
+            type: 'storage',
+            year: this.curYear,
+            scenario: this.curScenario
           }
-        })
-      }
-      // save results in database
-      await this.$db.bulkDocs(this.curPlots)
-      if (!this.infeasible && (!this.warnings || !this.warnings.length)) {
-        this.showSolved()
-      } else if (!this.infeasible && this.warnings && this.warnings.length) {
-        const warnings = this.warnings.join('\n')
-        this.showWarnings({ message: warnings })
-      } else {
-        this.showInfeasible()
+          storage.storage = data.storage
+          storage.exports = data.exports
+          await this.$db.put(storage)
+          if (newRun) {
+            this.$store.settings[
+              'grossMargin' + this.curYear
+            ] = this.grossMarginCurYear
+            await this.$db.put(this.$store.settings)
+          }
+        } else {
+          this.infeasible = true
+          this.curPlots.forEach(plot => {
+            plot.recommendation = ''
+            plot.recommendedCatchCrop = false
+            if (!plot.selectedCrop) {
+              plot.selectedCrop = plot.prevCrop1
+            }
+          })
+        }
+        // save results in database
+        await this.$db.bulkDocs(this.curPlots)
+        if (!this.infeasible && (!this.warnings || !this.warnings.length)) {
+          this.showSolved()
+        } else if (!this.infeasible && this.warnings && this.warnings.length) {
+          const warnings = this.warnings.join('\n')
+          this.showWarnings({ message: warnings })
+        } else {
+          this.showInfeasible()
+        }
+      } catch (e) {
+        this.showError()
+        console.log(e)
       }
     },
     calcShares() {
@@ -799,7 +788,9 @@ export default {
         // update plot
         plot.selectedOption = data
         await this.$db.put(plot)
+        this.saveSuccess()
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     },
@@ -823,7 +814,9 @@ export default {
           { progress: true }
         )
         await this.storeResults(data)
+        this.saveSuccess()
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     },
@@ -857,7 +850,9 @@ export default {
         doc.selectedOption = data
         doc.curGrossMargin = data.grossMargin
         await this.$db.put(doc)
+        this.saveSuccess()
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     },
@@ -875,20 +870,18 @@ export default {
         }
       }
     },
-
     showPlotInfo(plot) {
-      console.log(plot)
+      // console.log(plot)
       if (this.selection === plot.id) {
         this.selection = ''
       } else {
         this.selection = plot.id
       }
     },
-
     async update() {
       this.loading = true
       const store = this.$store
-      console.log('update')
+      // console.log('update')
       if (store) {
         this.$set(this, 'curPlots', store.curPlots)
         this.$set(this, 'curCrops', store.curCrops)
