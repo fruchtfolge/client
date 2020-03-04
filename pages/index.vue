@@ -5,15 +5,17 @@
       <img id="background" class="background" src="~assets/img/background.jpeg" alt="background">
       <div id="login" class="flip-container" :class="{ flip: showRegister }">
         <div class="flipper">
-          <div class="login">
+          <form class="login">
             <p>ANBAUPLANUNG OPTIMIEREN</p>
             <input
               id="email"
               v-model="email"
               class="email"
               placeholder="E-Mail"
+              autocomplete="email"
               name="email"
               autofocus="autofocus"
+              @keyup.enter="login"
             >
             <input
               id="password"
@@ -22,33 +24,55 @@
               placeholder="Passwort"
               type="password"
               name="password"
+              autocomplete="current-password"
               @keyup.enter="login"
             >
             <button id="login-button" type="button" class="login-button" @click="login">
               ANMELDEN
             </button>
             <a class="forgot" href="index.html">Passwort vergessen?</a>
-          </div>
-          <div class="registrierung">
+          </form>
+          <form class="registrierung">
             <p>JETZT KOSTENLOS ANMELDEN</p>
             <div class="register-container">
-              <input id="postcode" v-model="postcode" class="address" placeholder="PLZ">
+              <input 
+                id="postcode" 
+                v-model="postcode" 
+                class="address" 
+                placeholder="PLZ"
+                autocomplete="postal-code"
+              >
               <input
                 id="address"
                 v-model="address"
                 list="suggestions"
                 class="address"
                 placeholder="Strasse u. Hausnr. (Betrieb)"
+                autocomplete="street-address"
                 @input="debouncedAutocomplete"
               >
               <autocomplete :suggestions="autocomplete" />
-              <input id="email2" v-model="email" class="address" placeholder="E-Mail Adresse">
-              <input id="password2" v-model="password" class="address" placeholder="Passwort" type="password">
+              <input 
+                id="email2" 
+                v-model="email" 
+                class="address" 
+                autocomplete="email"
+                placeholder="E-Mail Adresse"
+              >
+              <input 
+                id="password2" 
+                v-model="password" 
+                class="address" 
+                placeholder="Passwort" 
+                autocomplete="new-password"
+                type="password"
+              >
               <input
                 id="confirmPassword"
                 v-model="confirmPassword"
                 class="address"
                 placeholder="Passwort wiederholen"
+                autocomplete="new-password"
                 type="password"
                 @keyup.enter="signup"
               >
@@ -66,7 +90,7 @@
             <button id="signup" type="button" class="register-button" @click="signup">
               REGISTRIEREN
             </button>
-          </div>
+          </form>
         </div>
       </div>
       <div class="expand" @click="jump('landing')">

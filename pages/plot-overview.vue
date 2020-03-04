@@ -148,7 +148,6 @@ export default {
       this.$bus.$emit('importPrevYear')
     },
     async save(e, data, prop) {
-      console.log(e)
       try {
         let newValue = ''
         if (e && prop === 'name') {

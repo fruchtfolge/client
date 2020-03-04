@@ -39,15 +39,15 @@ module.exports = {
         type: 'image/x-icon',
         href: '/favicon.ico'
       },
-      {
-        rel: 'stylesheet',
-        href: 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css'
-      },
-      {
-        rel: 'stylesheet',
-        href:
-          'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.4/mapbox-gl-draw.css'
-      },
+      //      {
+      //        rel: 'stylesheet',
+      //        href: 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css'
+      //      },
+      //      {
+      //        rel: 'stylesheet',
+      //        href:
+      //          'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.4/mapbox-gl-draw.css'
+      //      },
       {
         rel: 'stylesheet',
         href:
@@ -67,7 +67,11 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: ['@/assets/css/global.css'],
+  css: [
+    '@/assets/css/global.css',
+    '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css',
+    'mapbox-gl/dist/mapbox-gl.css'
+  ],
 
   /*
   ** Plugins to load before mounting the App

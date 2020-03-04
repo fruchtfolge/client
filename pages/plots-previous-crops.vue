@@ -158,7 +158,7 @@ export default {
           }
           this.$set(this, 'crops', crops)
           this.$set(this, 'maxRotBreak', maxRotBreak)
-          console.log(this.curYear, this.maxRotBreak)
+          // console.log(this.curYear, this.maxRotBreak)
         } else {
           this.$set(this, 'maxRotBreak', 3)
         }
@@ -206,7 +206,7 @@ export default {
         } else {
           newCropCode = _.find(this.crops, { variety: newCrop }).code
         }
-        console.log(newCropCode, storedPlot, newCrop)
+        // console.log(newCropCode, storedPlot, newCrop)
 
         if (storedPlot) {
           storedPlot.crop = newCropCode
