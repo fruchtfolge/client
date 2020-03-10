@@ -3,7 +3,7 @@
     <div v-if="cropsAvailable">
       <div v-for="(curCrops, i) in displayGroups" :key="i">
         <div class="container" @click="expand(curCrops[0].displayGroup)">
-          <h2 class="regionText">
+          <h2 class="regionText hoverPointer">
             {{ curCrops[0].displayGroup.toUpperCase() }}
           </h2>
           <div class="arrow" :class="{ rotate: shown[curCrops[0].displayGroup]}" />
@@ -19,7 +19,7 @@
             <p
               v-for="(crop, n) of curCrops"
               :key="n"
-              class="cropsText"
+              class="cropsText hoverPointer"
               :class="{ active: isClicked(crop)}"
               @click="changeCrop(crop)"
             >

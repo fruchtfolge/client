@@ -212,7 +212,12 @@ export default {
         else if (newValue === this.selectedCrop[type]) return
       } catch (err) {
         this.noNumber()
-        e.target.innerText = this.selectedCrop.subseqCrops.value
+        // replace with previous value
+        if (type === 'subseqCrops') {
+          e.target.innerText = this.selectedCrop.subseqCrops[value]
+        } else {
+          e.target.innerText = this.selectedCrop[type]
+        }
         return
       }
       try {

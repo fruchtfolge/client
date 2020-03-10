@@ -6,7 +6,14 @@
         FRUCHTFOLGE
       </div>
       <!-- Planning year selector -->
-      <select v-model="settings.curYear" class="select planYear" type="button" value="2019" @change="saveSettings">
+      <select
+        v-model="settings.curYear"
+        class="select planYear"
+        type="button"
+        value="2019"
+        title="Wählen Sie das aktuelle Planungsjahr für die Optimierung aus"
+        @change="saveSettings"
+      >
         <option disabled value="">
           Planungsjahr
         </option>

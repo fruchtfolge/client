@@ -35,10 +35,10 @@
           <form class="registrierung">
             <p>JETZT KOSTENLOS ANMELDEN</p>
             <div class="register-container">
-              <input 
-                id="postcode" 
-                v-model="postcode" 
-                class="address" 
+              <input
+                id="postcode"
+                v-model="postcode"
+                class="address"
                 placeholder="PLZ"
                 autocomplete="postal-code"
               >
@@ -52,18 +52,18 @@
                 @input="debouncedAutocomplete"
               >
               <autocomplete :suggestions="autocomplete" />
-              <input 
-                id="email2" 
-                v-model="email" 
-                class="address" 
+              <input
+                id="email2"
+                v-model="email"
+                class="address"
                 autocomplete="email"
                 placeholder="E-Mail Adresse"
               >
-              <input 
-                id="password2" 
-                v-model="password" 
-                class="address" 
-                placeholder="Passwort" 
+              <input
+                id="password2"
+                v-model="password"
+                class="address"
+                placeholder="Passwort"
                 autocomplete="new-password"
                 type="password"
               >
@@ -333,7 +333,8 @@ export default {
         this.password = ''
         this.confirmPassword = ''
         // show succes banner
-        this.success()
+        if (signup) this.signupSuccess()
+        else this.loginSuccess()
         // store auth user
         localStorage.setItem('lastUser', auth.user_id)
         // initiate database

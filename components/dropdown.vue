@@ -1,6 +1,6 @@
 <template lang="html">
   <div v-on-clickaway="hide" @click="toggle">
-    <div class="dropdown-header">
+    <div class="dropdown-header hoverPointer">
       Aktionen
     </div>
     <div v-show="clicked" class="dropdown-menu">
@@ -52,7 +52,7 @@ export default {
   padding-left: 12px;
 }
 
-.dropdown:hover {
+.dropdown-header:hover {
   background-color: rgba(0, 0, 0, 0.02);
 }
 

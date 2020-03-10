@@ -58,6 +58,13 @@ h2,h3,h4 {
 .select::-ms-expand {
     display: none;
 }
+.select:hover {
+  cursor: pointer;
+}
+
+.hoverPointer:hover {
+  cursor: pointer;
+}
 
 .selection {
   font-size: 14px;
@@ -149,6 +156,7 @@ h2,h3,h4 {
 
 .button:hover {
   background-color: rgba(0, 0, 0, .02);
+  cursor: pointer;
 }
 
 .button:focus {outline:0;}

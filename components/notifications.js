@@ -2,7 +2,7 @@ export default {
   // default notifications
   saveSuccess: {
     title: 'GESPEICHERT',
-    message: 'Die Änderungen wurden erfolgreich gespeichert.',
+    message: 'Die Änderungen wurden gespeichert.',
     type: 'success'
   },
   saveError: {

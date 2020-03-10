@@ -6,7 +6,7 @@
       </h1>
       <div v-for="(region, n) in regions" :key="n">
         <div class="container" @click="expand(region[0].region)">
-          <h2 class="regionText">
+          <h2 class="regionText hoverPointer">
             {{ region[0].region.toUpperCase() }}
           </h2>
           <div class="arrow" :class="{ rotate: shown[region[0].region]}" />
@@ -22,7 +22,7 @@
             <p
               v-for="(plot, m) in region"
               :key="m"
-              class="plotsText"
+              class="plotsText hoverPointer"
               :class="{ active: isClicked(plot)}"
               @click="flyTo(plot)"
             >

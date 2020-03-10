@@ -90,6 +90,7 @@
 <script>
 import Multiselect from 'vue-multiselect'
 import cultures from '~/assets/js/cultures'
+import notifications from '~/components/notifications'
 
 export default {
   components: {
@@ -111,6 +112,7 @@ export default {
       waiting: false
     }
   },
+  notifications: notifications,
   created() {},
   mounted() {
     this.cultures = cultures
@@ -181,7 +183,7 @@ export default {
     },
     async changeAllowed(changedPlot) {
       try {
-        console.log(changedPlot)
+        // console.log(changedPlot)
         // get plot from db
         const plot = await this.$db.get(changedPlot._id)
         // change allowed crops
@@ -205,7 +207,9 @@ export default {
         })
         await this.$db.bulkDocs(this.curPlots)
         this.loading = false
+        this.saveSuccess()
       } catch (e) {
+        this.showError()
         this.loading = false
         console.log(e)
       }

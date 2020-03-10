@@ -942,7 +942,7 @@ export default {
   margin: 0;
   margin-top: 20px;
   margin-left: 20px;
-  max-width: 50vw;
+  max-width: 60vw;
   min-width: 620px;
   table-layout: fixed;
 }
