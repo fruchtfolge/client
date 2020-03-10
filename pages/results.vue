@@ -582,12 +582,7 @@ export default {
     resultsAvailable() {
       let flag = false
       if (this.$store && this.curPlots && this.curPlots.length) {
-        flag = true
-        this.curPlots.forEach(plot => {
-          if (!plot.selectedOption) {
-            flag = false
-          }
-        })
+        flag = this.curPlots.every(plot => plot.selectedOption)
       }
       return flag
     },
