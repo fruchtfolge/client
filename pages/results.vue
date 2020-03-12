@@ -27,7 +27,7 @@
               <th v-if="manure" style="width: 80px;" @click="sortPlots('orgFert')">
                 Org. Düngung
               </th>
-              <th v-if="manure" style="width: 80px;" @click="sortPlots('orgFert')">
+              <th v-if="manure && hasPlotsRedArea" style="width: 80px;" @click="sortPlots('orgFert')">
                 N-Reduzierung
               </th>
               <th v-if="manure" style="width: 60px;" @click="sortPlots('prevCrop1')">
@@ -70,7 +70,7 @@
                     </option>
                   </select>
                 </td>
-                <td v-if="manure" class="narrow-cells">
+                <td v-if="manure && hasPlotsRedArea" class="narrow-cells">
                   <select v-model="plot.selectedOption.nReduction" style="text-align-last: center;" class="select selection" @change="saveManureChange()">
                     <option v-for="(reduction) in nReductions" :key="`${plot._id}_${reduction}`" :value="reduction">
                       {{ reduction * 100 }}%
@@ -122,9 +122,9 @@
                       </tr>
                       <tr v-if="plot.duevEndangered">
                         <td>Korrektur Rotes Gebiet</td>
-                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'yieldRed20', plot)">
+                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'nYieldRed', plot)">
                           {{
-                            ((plot.selectedOption.yieldRed20
+                            ((plot.selectedOption.nYieldRed
                               * plot.selectedOption.amount)
                               - plot.selectedOption.amount).toFixed(2)
                           }}
@@ -136,10 +136,7 @@
                         </td>
                         <td style="text-align:center;font-weight: bold;">
                           {{
-                            (plot.selectedOption.amount
-                              * plot.selectedOption.yieldCap
-                              * plot.selectedOption.croppingFactor
-                              * plot.selectedOption.yieldRed20).toFixed(2)
+                            (plot.selectedOption.correctedAmount).toFixed(2)
                           }}
                         </td>
                       </tr>
@@ -295,17 +292,15 @@
               <td class="narrow-cells-number">
                 {{ curTotLand }}
               </td>
-              <td v-if="manure" colspan="7" />
-              <td v-else colspan="4" />
+              <td :colspan="colspan - 3" />
               <td class="narrow-cells-number" style="font-weight: bold; padding-right: 10px;">
                 {{ format(grossMarginArab) }}
               </td>
             </tr>
             <tr v-if="manure">
-              <td colspan="3">
+              <td :colspan="colspan - 5">
                 Dungexport Frühjahr
               </td>
-              <td colspan="2" />
               <td class="narrow-cells-number" colspan="4">
                 {{ manExportVolSpring }}m³
               </td>
@@ -314,10 +309,9 @@
               </td>
             </tr>
             <tr v-if="manure">
-              <td colspan="3">
+              <td :colspan="colspan - 5">
                 Dungexport Herbst
               </td>
-              <td colspan="2" />
               <td class="narrow-cells-number" colspan="4">
                 {{ manExportVolAutumn }}m³
               </td>
@@ -329,8 +323,7 @@
               <td colspan="1" style="font-weight: bold;">
                 Summe
               </td>
-              <td v-if="manure" colspan="8" />
-              <td v-else colspan="5" />
+              <td :colspan="colspan - 2" />
               <td class="narrow-cells-number" style="font-weight: bold; padding-right: 10px;">
                 {{ format(grossMarginCurYear) }}
               </td>
@@ -461,9 +454,19 @@ export default {
       }
       return exports
     },
+    hasPlotsRedArea() {
+      let flag = false
+      if (this.curPlots && this.curPlots.length) {
+        flag = this.curPlots.some(plot => plot.duevEndangered)
+      }
+      return flag
+    },
     colspan() {
-      if (this.manure) return 9
-      else return 7
+      if (this.manure) {
+        if (this.hasPlotsRedArea) return 10
+        return 9
+      }
+      return 7
     },
     manExportCostsSpring() {
       const price = this.$store.settings.manPriceSpring

@@ -272,8 +272,8 @@ export default {
       try {
         doc = await this.$db.get(id)
       } catch (err) {
-        this.showError()
         console.log(err)
+        this.showError()
       }
       try {
         // get new value that was entered into the table cell
