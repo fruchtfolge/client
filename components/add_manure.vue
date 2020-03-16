@@ -52,6 +52,7 @@
 <script>
 import duevValues from '~/assets/js/duev_values.js'
 import Manure from '~/constructors/Manure.js'
+import notifications from '~/components/notifications'
 
 export default {
   data() {
@@ -71,6 +72,7 @@ export default {
       ]
     }
   },
+  notifications: notifications,
   computed: {
     amountLabel() {
       if (this.category === 'Gärreste') return 'Menge in m3'
@@ -138,8 +140,8 @@ export default {
         this.$emit('closeAddManure')
         this.saveSuccess()
       } catch (e) {
-        this.showError()
         console.log(e)
+        this.showError()
       }
     },
     cancel() {

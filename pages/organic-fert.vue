@@ -289,8 +289,8 @@ export default {
         await this.$db.put(doc)
         this.saveSuccess()
       } catch (err) {
-        this.showError()
         console.log(err)
+        this.showError()
       }
     },
     async remove() {
