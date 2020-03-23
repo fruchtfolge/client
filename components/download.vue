@@ -15,6 +15,38 @@ export default {
       type: Array,
       required: true
     },
+    gmArab: {
+      type: Number,
+      required: true
+    },
+    gmTotal: {
+      type: Number,
+      required: true
+    },
+    costsManureSpring: {
+      type: Number,
+      required: false,
+      default: 0
+    },
+    costsManureAutumn: {
+      type: Number,
+      required: false,
+      default: 0
+    },
+    volManureSpring: {
+      type: Number,
+      required: false,
+      default: 0
+    },
+    volManureAutumn: {
+      type: Number,
+      required: false,
+      default: 0
+    },
+    curShares: {
+      type: Object,
+      required: true
+    },
     /*
     fields: {
       type: Array,
@@ -68,6 +100,7 @@ export default {
         [`Planung ${this.year}`, 'selectedCrop'],
         ['Org. Düngung', 'selectedOption.manAmount'],
         ['Herbstdüngung', 'selectedOption.autumnFert'],
+        ['N-Reduzierung', 'selectedOption.nReduction'],
         ['Ertrag [dt/ha]', 'selectedOption.correctedAmount'],
         ['Preis [dt/ha]', 'selectedOption.price'],
         ['Leistung [€/ha]', 'selectedOption.revenue'],
@@ -86,6 +119,32 @@ export default {
       })
       // create intermediate JSON in order to be able to export
       const exportData = this.data.map(this.prepare)
+      // add sum of gross margins, and manure export costs
+      exportData.push({
+        Name: 'Summe Ackerbau',
+        'Deckungsbeitrag Planungjahr': this.gmArab
+      })
+      exportData.push({
+        Name: 'Dungexport Frühjahr',
+        'davon Ausbringungskosten org. Dünger [€/ha]': this.volManureSpring,
+        'Deckungsbeitrag Planungjahr': this.costsManureSpring
+      })
+      exportData.push({
+        Name: 'Dungexport Herbst',
+        'davon Ausbringungskosten org. Dünger [€/ha]': this.volManureAutumn,
+        'Deckungsbeitrag Planungjahr': this.costsManureAutumn
+      })
+      exportData.push({
+        Name: 'Summe',
+        'Deckungsbeitrag Planungjahr': this.gmTotal
+      })
+      exportData.push([])
+      this.curShares.forEach(crop => {
+        exportData.push({
+          Name: crop.name,
+          Nummer: crop.data
+        })
+      })
       const exportWS = XLSX.utils.json_to_sheet(exportData, { header: order })
       const wb = XLSX.utils.book_new() // make Workbook of Excel
       // add Worksheet to Workbook

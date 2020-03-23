@@ -137,7 +137,10 @@ function updateCurrent() {
 }
 
 export default ({ app }, inject) => {
-  inject('store', Vue.prototype.$store)
+  // inject('store', Vue.prototype.$store)
+  // make sure to add store everytime this function is called,
+  // otherwise data from other user might be stored in local database
+  app.$store = Vue.prototype.$store
   inject('initalizeDB', database => {
     const db = new PouchDB(database, { auto_compaction: true })
     Vue.prototype.$db = db
@@ -265,6 +268,7 @@ export default ({ app }, inject) => {
       .on('error', err => {
         console.log(err)
       })
-    inject('db', Vue.prototype.$db)
+    app.$db = Vue.prototype.$db
+    // console.log(inject('db', db))
   })
 }

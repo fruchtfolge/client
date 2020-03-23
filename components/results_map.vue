@@ -209,20 +209,23 @@ export default {
       })
     },
     addDuevEndangered() {
-      this.resultsMap.addLayer({
-        id: 'rote-gebiete',
-        type: 'raster',
-        source: {
+      this.resultsMap.addLayer(
+        {
+          id: 'rote-gebiete',
           type: 'raster',
-          tiles: [
-            `${
-              process.env.baseUrl
-            }maps/duev?BBOX={bbox-epsg-3857}&FORMAT=image/png&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&CRS=EPSG:25832&TRANSPARENT=TRUE&width=256&height=256&LAYERS=belastete_gebiete_nitrat`
-          ],
-          tileSize: 256
+          source: {
+            type: 'raster',
+            tiles: [
+              `${
+                process.env.baseUrl
+              }maps/duev?BBOX={bbox-epsg-3857}&FORMAT=image/png&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&CRS=EPSG:25832&TRANSPARENT=TRUE&width=256&height=256&LAYERS=belastete_gebiete_nitrat`
+            ],
+            tileSize: 256
+          },
+          paint: {}
         },
-        paint: {}
-      })
+        this.curLayers[0]
+      )
     },
     removePlots() {
       try {
@@ -257,7 +260,7 @@ export default {
   /*box-shadow: 0 1px 2px rgba(0,0,0,0.10);*/
   background-color: #fff;
   top: 10px;
-  font: 14px/20px 'Open Sans', Arial, Helvetica, sans-serif;
+  font: 14px Inter, Arial, Helvetica, sans-serif;
   padding: 15px;
   position: absolute;
   left: 10px;

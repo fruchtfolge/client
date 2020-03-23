@@ -267,6 +267,6 @@ export default {
 
 .highlightRow {
   height: 40px;
-  font-family: 'Open Sans';
+  font-family: Inter;
 }
 </style>

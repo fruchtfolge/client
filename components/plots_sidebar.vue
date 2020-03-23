@@ -134,6 +134,7 @@ export default {
 </script>
 <style scoped="true">
 .plotsSidebar {
+  font-family: 'Open Sans Condensed', sans-serif;
   position: fixed;
   float: right;
   padding-top: 20px;
@@ -197,15 +198,16 @@ export default {
 }
 
 .plotsText {
-  font-size: 16px;
-  letter-spacing: 0.1em;
-  padding-left: 45px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  padding-left: 40px;
+  padding-top: 7px;
+  padding-bottom: 7px;
   margin: 0px;
 }
 
 .regionText {
+  font-family: 'Open Sans Condensed', sans-serif;
   font-size: 18px;
   letter-spacing: 0.2em;
   margin-bottom: 5px;

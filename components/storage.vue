@@ -97,7 +97,7 @@ export default {
       this.gradient[1].addColorStop(1, 'rgba(236, 203, 137, 0)')
     },
     createChart(chartId, chartData) {
-      Chart.defaults.global.defaultFontFamily = 'Open Sans'
+      Chart.defaults.global.defaultFontFamily = 'Inter'
       Chart.defaults.global.defaultFontSize = 14
 
       const config = {

@@ -5,10 +5,10 @@
       <h1 id="adress" style="font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
         ADRESSE
       </h1>
-      <span>Für die Optimierung wird der Standort Ihres Betriebes benötigt. Dieser wird für die Berechnung der Hof-Feld-Distanzen der einzelnen Schläge verwendet. Anhand dieser Information werden die Deckungsbeiträge schlagspezifisch errechnet und regionalisierte Daten bezogen.</span>
+      <span class="text">Für die Optimierung wird der Standort Ihres Betriebes benötigt. Dieser wird für die Berechnung der Hof-Feld-Distanzen der einzelnen Schläge verwendet. Anhand dieser Information werden die Deckungsbeiträge schlagspezifisch errechnet und regionalisierte Daten bezogen.</span>
       <br>
       <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
-        <span style="font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
+        <span style="font-family: 'Open Sans Condensed'; font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
           ADRESSE <!--Padding is optional-->
         </span>
       </div>
@@ -23,11 +23,11 @@
       <h1 id="data-entry" style="padding-top: 20px; font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
         DATENEINGABE
       </h1>
-      <span>Für die Optimierung werden Daten bezüglich Ihrer bewirtschafteten Flächen benötigt. Dabei werden insbesondere die Schlagskizzen (Geodaten) sowie die Vorfrüchte der Felder für die Optimierungsrechnung verwendet. Wenn Ihr Betrieb den Flächenantrag in Nordrhein-Westfalen stellt, können die Flächendaten aus dem ELAN-Downloadportal durch eingabe der ZID-Nummer und Passwort automatisch eingefügt werden.
+      <span class="text">Für die Optimierung werden Daten bezüglich Ihrer bewirtschafteten Flächen benötigt. Dabei werden insbesondere die Schlagskizzen (Geodaten) sowie die Vorfrüchte der Felder für die Optimierungsrechnung verwendet. Wenn Ihr Betrieb den Flächenantrag in Nordrhein-Westfalen stellt, können die Flächendaten aus dem ELAN-Downloadportal durch eingabe der ZID-Nummer und Passwort automatisch eingefügt werden.
         <br>
         <strong>Datenschutzhinweis:</strong> Ihre Invekos-Daten (Betriebsnummer und Passwort) werden einmalig zur Abfrage im ELAN-Downloadportal übertragen. Ihre Betriebsnummer, jedoch nicht das Passwort wird lokal auf Ihrem Rechner gespeichert.</span>
       <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
-        <span style="font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
+        <span style="font-family: 'Open Sans Condensed'; font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
           ZID-DATEN ABFRAGE <!--Padding is optional-->
         </span>
       </div>
@@ -69,7 +69,7 @@
       </div>
 
       <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
-        <span style="font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
+        <span style="font-size: 20px; font-family: 'Open Sans Condensed'; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
           ODER ELAN-DATEI UPLOAD
         </span>
       </div>
@@ -82,7 +82,7 @@
       <h1 style="padding-top: 40px; font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
         PERSÖNLICHE DATEN
       </h1>
-      <span>Persönlich angelegte Daten, z.B. Flächen, Kulturen oder Nebenbedingungen können an dieser Stelle für einzelne Jahre gelöscht werden. So können Sie beispielsweise verhindern, dass vorherige Planungsdaten als duplikate zu den Elan-Daten auftauchen.</span>
+      <span class="text">Persönlich angelegte Daten, z.B. Flächen, Kulturen oder Nebenbedingungen können an dieser Stelle für einzelne Jahre gelöscht werden. So können Sie beispielsweise verhindern, dass vorherige Planungsdaten als duplikate zu den Elan-Daten auftauchen.</span>
       <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px" />
       <div style="text-align: center;">
         <select v-model="selectedDeleteYear" class="deleteYear select" name="">
@@ -461,6 +461,9 @@ export default {
 .invekosBtn {
   margin-top: 20px;
   width: 241px;
+}
+.text {
+  font-size: 14px;
 }
 .deleteYear {
   width: 240px;

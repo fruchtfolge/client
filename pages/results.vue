@@ -71,9 +71,14 @@
                   </select>
                 </td>
                 <td v-if="manure && hasPlotsRedArea" class="narrow-cells">
-                  <select v-model="plot.selectedOption.nReduction" style="text-align-last: center;" class="select selection" @change="saveManureChange()">
+                  <select v-if="plot.duevEndangered" v-model="plot.selectedOption.nReduction" style="text-align-last: center;" class="select selection" @change="saveManureChange()">
                     <option v-for="(reduction) in nReductions" :key="`${plot._id}_${reduction}`" :value="reduction">
                       {{ reduction * 100 }}%
+                    </option>
+                  </select>
+                  <select v-else style="text-align-last: center;" class="select selection" title="N-Reduzierung nur bei Flächen im roten Gebiet möglich">
+                    <option>
+                      0%
                     </option>
                   </select>
                 </td>
@@ -89,7 +94,7 @@
                   <table class="inner-table table">
                     <thead>
                       <th />
-                      <th>Ertragskorrektur</th>
+                      <th>Ertragskorrektur [t/ha]</th>
                     </thead>
                     <tbody>
                       <tr>
@@ -373,6 +378,13 @@
             dropdown-item"
           :data="curPlots"
           :year="curYear"
+          :gmArab="grossMarginArab"
+          :costsManureSpring="manExportCostsSpring"
+          :costsManureAutumn="manExportCostsAutumn"
+          :volManureSpring="manExportVolSpring"
+          :volManureAutumn="manExportVolAutumn"
+          :gmTotal="grossMarginCurYear"
+          :curShares="curShares"
         />
       </dropdown>
       <select v-model="resultMapSwitcher" class="selection select result-map-switcher " name="">
@@ -941,7 +953,7 @@ export default {
   margin-top: 20px;
   margin-left: 20px;
   max-width: 60vw;
-  min-width: 620px;
+  min-width: 786px;
   table-layout: fixed;
 }
 
@@ -979,7 +991,7 @@ export default {
   padding: 20px;
 }
 .inner-table {
-  min-width: 0px;
+  min-width: 300px;
   max-width: 0px;
 }
 
@@ -1044,7 +1056,7 @@ export default {
 }
 @media (min-width: 1251px) {
   .plot-selection {
-    width: 150px;
+    width: 175px;
   }
 }
 </style>

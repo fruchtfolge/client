@@ -59,11 +59,13 @@ miniToastr.init({
       }
     },
     '.mini-toastr-notification__title': {
+      'font-family': 'Open Sans Condensed',
       'font-weight': 'bold',
       'letter-spacing': '0.1em',
       'margin-bottom': '6px'
     },
     '.mini-toastr-notification__message': {
+      'font-size': '13px',
       display: 'inline-block',
       'vertical-align': 'middle',
       width: '240px'

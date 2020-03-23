@@ -10,7 +10,7 @@
             {{ format(difference) }}
           </h2>
         </div>
-        <div class="">
+        <div class="deviations">
           <p v-for="(deviation,i) in deviations" :key="i">
             {{ deviation }}
           </p>
@@ -21,7 +21,7 @@
       <h2 class="dev-header">
         Greening
       </h2>
-      <div style="display: inline-block;">
+      <div style="display: inline-block; max-width: 400px">
         <div v-if="arableLand >= 15" class="greening-entries">
           <div :class="{ check: !brokeEfa, fail: brokeEfa }" />
           <p>Ökologische Vorrangfläche: Über 5% des AL</p>
@@ -307,17 +307,27 @@ export default {
 }
 
 .dev-header {
-  font-family: 'Open Sans';
+  font-family: Inter;
   font-weight: 300;
   letter-spacing: normal;
   font-size: 18px;
 }
+
+.deviations {
+  max-width: 400px;
+}
+
+.deviations p {
+  font-size: 14px;
+}
+
 .greening-check {
   margin-top: 40px;
   margin-bottom: 0px;
 }
 
 .greening-check p {
+  font-family: 'Open Sans Condensed', sans-serif;
   display: inline-flex;
   margin-top: 5px;
   margin-bottom: 5px;

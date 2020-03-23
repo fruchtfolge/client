@@ -27,7 +27,7 @@
               autocomplete="current-password"
               @keyup.enter="login"
             >
-            <button id="login-button" type="button" class="login-button" @click="login">
+            <button id="login-button" type="button" class="login-button hoverPointer" @click="login">
               ANMELDEN
             </button>
             <a class="forgot" href="index.html">Passwort vergessen?</a>
@@ -78,8 +78,8 @@
               >
               <input id="c2" v-model="dsgvoAccepted" type="checkbox" name="cc" class="">
               <label for="c2" class="label-login" style="margin-top: 100px;">
-                <span />Ich habe die <nuxt-link to="/nutzungsbedingungen">Nutzungsbedingungen</nuxt-link> gelesen und bin mit ihnen
-                einverstanden. Die <nuxt-link to="/datenschutz">Datenschutzerklärung</nuxt-link> habe ich ebenfalls zur Kenntnis genommen und akzeptiert.
+                <span />Ich habe die <nuxt-link class="link" to="/nutzungsbedingungen">Nutzungsbedingungen</nuxt-link> gelesen und bin mit ihnen
+                einverstanden. Die <nuxt-link class="link" to="/datenschutz">Datenschutzerklärung</nuxt-link> habe ich ebenfalls zur Kenntnis genommen und akzeptiert.
               </label>
               <br>
               <input id="c3" v-model="cookiesAccepted" type="checkbox" name="cookies" class="">
@@ -87,7 +87,7 @@
                 <span />Ich stimme der Verwendung von Cookies auf der Webseite zu.
               </label>
             </div>
-            <button id="signup" type="button" class="register-button" @click="signup">
+            <button id="signup" type="button" class="register-button hoverPointer" @click="signup">
               REGISTRIEREN
             </button>
           </form>
@@ -189,19 +189,19 @@
           <h2>Wie stabil ist die Anwendung?</h2>
           Die "Fruchtfolge"-Anwendung befindet sich derzeit noch im sogenannten
           Beta stadium. Wenn bei der Nutzung der Anwendung Fehler auftreten,
-          würden wir uns über eine <nuxt-link to="/kontakt">
+          würden wir uns über eine <nuxt-link class="link" to="/kontakt">
             kurze Mitteilung
           </nuxt-link> freuen.
 
           <h2>Ich würde gerne bei der Entwicklung mithelfen. Was kann ich tun?</h2>
           Die Entwicklung der Anwendung findet auf der Entwicklerplattform Github
           unter der Adresse
-          <a href="https://github.com/fruchtfolge/client">https://github.com/fruchtfolge/client</a>
+          <a class="link" href="https://github.com/fruchtfolge/client">https://github.com/fruchtfolge/client</a>
           statt. Auf der Seite finden Sie weitere Hinweise zur Kollaboration sowie
           aktuell anstehende Aufgaben.
 
           <h2>Ich habe Fragen/Anregungen bezüglich der Anwendung.</h2>
-          Sie können uns gerne über die auf der <nuxt-link to="/kontakt">
+          Sie können uns gerne über die auf der <nuxt-link class="link" to="/kontakt">
             Kontakt-Seite
           </nuxt-link>
           angegebenen Kontaktmöglichkeiten erreichen.
@@ -339,7 +339,6 @@ export default {
         localStorage.setItem('lastUser', auth.user_id)
         // initiate database
         this.$initalizeDB(auth.user_id)
-
         // do a one way replication
         this.$db.replicate
           .from(auth.userDBs.userdb)
@@ -375,7 +374,11 @@ export default {
             if (signup) {
               return $nuxt.$router.replace({ path: '/settings' })
             }
-            return $nuxt.$router.replace({ path: '/maps' })
+            try {
+              $nuxt.$router.replace({ path: '/maps' })
+            } catch (e) {
+              console.log(e)
+            }
           })
           .on('error', error => {
             console.log(error)
@@ -798,10 +801,10 @@ div.flip-container {
 }
 
 .label-login {
-  font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
+  font-family: Inter, Helvetica, Arial, sans-serif;
+  font-weight: 300;
   padding-left: 5px;
-  letter-spacing: 0.05em;
-  font-size: 14px;
+  font-size: 11px;
   color: #999999;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -915,6 +918,7 @@ div.flip-container {
   color: white;
   font-size: 18px;
   letter-spacing: 0.15em;
+  font-family: 'Open Sans Condensed', sans-serif;
 }
 
 .arrow-bottom {
@@ -935,7 +939,8 @@ div.flip-container {
 
 .copy {
   margin: auto;
-  font-family: 'Open Sans';
+  font-family: Inter;
+  font-size: 15px;
   font-weight: 300;
   width: 50%;
   min-width: 580px;
@@ -971,7 +976,7 @@ div.flip-container {
 
   .copy {
     margin: auto;
-    font-family: 'Open Sans';
+    font-family: Inter;
     font-weight: 300;
     font-size: 14px;
     width: initial;

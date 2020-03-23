@@ -254,7 +254,7 @@ export default {
 .multiselect__input,
 .multiselect__single,
 .multi-select-crops {
-  font-family: 'Open Sans';
+  font-family: Inter;
   background: none;
   font-size: 14px;
 }

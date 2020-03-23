@@ -76,14 +76,14 @@
       <h3>Mapbox API</h3>
       <p>Für die Bereitstellung von Karten setzen wir Mapbox API, einen Dienst der Mapbox Inc., 740 15th Street NW, 5 th Floor, Washington, District of Columbia 20005, USA, nachfolgend nur „Mapbox“ genannt, ein.</p>
       <p>Durch die Zertifizierung nach dem EU-US-Datenschutzschild („EU-US Privacy Shield“)</p>
-      <p><a href="https://www.privacyshield.gov/participant?id=a2zt0000000CbWQAA0&amp;status=Active" target="_blank" rel="noopener">https://www.privacyshield.gov/participant?id=a2zt0000000CbWQAA0&amp;status=Active</a><u /></p>
+      <p><a class="link" href="https://www.privacyshield.gov/participant?id=a2zt0000000CbWQAA0&amp;status=Active" target="_blank" rel="noopener">https://www.privacyshield.gov/participant?id=a2zt0000000CbWQAA0&amp;status=Active</a><u /></p>
       <p>garantiert Mapbox, dass die Datenschutzvorgaben der EU auch bei der Verarbeitung von Daten in den USA eingehalten werden.</p>
       <p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. f) DSGVO. Unser berechtigtes Interesse liegt in der Optimierung der Funktionalität unseres Internetauftritts.</p>
       <p>Bei Aufruf einer unserer Internetseiten, in die der Dienst Mapbox eingebunden ist, wird durch Mapbox ein Cookie über Ihren Internet - Browser auf Ihrem Endgerät gespeichert. Hierdurch werden Informationen über Ihre Nutzung unseres Internetauftritts, einschließlich Ihrer IP- Adresse, an einen Server von Mapbox in den USA übertragen und dort gespeichert. Diese Daten werden zum Zwecke der Anzeige der Seite bzw. zur Gewährleistung der Funktionalität des Dienstes Mapbox verarbeitet. Diese Informationen wird Mapbox womöglich an Dritte weitergeben, sofern dies gesetzlich vorgeschrieben ist oder die Informationen durch Dritte im Auftrag von Mapbox&nbsp;verarbeitet werden.</p>
-      <p>Die „Terms of Service“, die durch Mapbox unter <a href="https://www.mapbox.com/tos/#maps">https://www.mapbox.com/tos/#maps</a> bereitgestellt werden, enthalten weitergehenden Informationen über die Nutzung von Mapbox und über die von Mapbox erlangten Daten.</p>
+      <p>Die „Terms of Service“, die durch Mapbox unter <a class="link" href="https://www.mapbox.com/tos/#maps">https://www.mapbox.com/tos/#maps</a> bereitgestellt werden, enthalten weitergehenden Informationen über die Nutzung von Mapbox und über die von Mapbox erlangten Daten.</p>
       <p>Sofern Sie mit dieser Verarbeitung nicht einverstanden sind, haben Sie die Möglichkeit, die Installation der Cookies durch die entsprechenden Einstellungen in Ihrem Internet -Browser zu verhindern. Einzelheiten hierzu finden Sie vorstehend unter dem Punkt „Cookies“. Die Nutzung des Dienstes Mapbox über unseren Internetauftritt ist dann allerdings nicht mehr möglich.</p>
       <p>Zudem bietet Mapbox unter</p>
-      <p><a href="https://www.mapbox.com/privacy/" target="_blank" rel="noopener">https://www.mapbox.com/privacy/</a><u /></p>
+      <p><a class="link" href="https://www.mapbox.com/privacy/" target="_blank" rel="noopener">https://www.mapbox.com/privacy/</a><u /></p>
       <p>weitere Informationen zur Erhebung und Nutzung der Daten sowie zu Ihren Rechten und Möglichkeiten zum Schutz Ihrer Privatsphäre an.</p>
 
       <p>
@@ -108,11 +108,8 @@ export default {
     margin: auto;
     top: 120px;
   }
-  .copy h1 {
-    letter-spacing: 0.05em;
-  }
   .copy p {
-    font-family: 'Open Sans';
+    font-family: Inter;
     font-weight: 300;
   }
 }

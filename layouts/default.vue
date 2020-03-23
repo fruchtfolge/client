@@ -8,7 +8,7 @@
       <!-- Planning year selector -->
       <select
         v-model="settings.curYear"
-        class="select planYear"
+        class="select planYear hoverPointer"
         type="button"
         value="2019"
         title="Wählen Sie das aktuelle Planungsjahr für die Optimierung aus"
@@ -37,16 +37,17 @@
       </ul>
       <div class="footer-container">
         <div class="footer-sidebar">
-          <nuxt-link to="/kontakt">
+          <nuxt-link class="link" to="/kontakt">
             Kontakt
           </nuxt-link>
-          <nuxt-link to="/impressum">
+          <nuxt-link class="link" to="/impressum">
             Impressum
           </nuxt-link>
-          <nuxt-link to="/nutzungsbedingungen">
+          <br>
+          <nuxt-link class="link" to="/nutzungsbedingungen">
             Nutzungsbedingungen
           </nuxt-link>
-          <nuxt-link to="/Datenschutz">
+          <nuxt-link class="link" to="/Datenschutz">
             Datenschutz
           </nuxt-link>
         </div>
@@ -139,7 +140,7 @@ export default {
       try {
         if (route.path === '/') {
           await this.$axios.post(process.env.baseUrl + 'auth/logout')
-        }
+        } else if (route.path === this.curPage) return
         this.curPage = route.path
         return $nuxt.$router.replace({ path: route.path })
       } catch (e) {
@@ -273,6 +274,7 @@ html {
   list-style: none;
   padding-left: 0px;
   padding-bottom: 150px;
+  font-family: 'Open Sans Condensed', sans-serif;
 }
 
 .sidenav-container li:first-child {
@@ -287,7 +289,7 @@ html {
   letter-spacing: 0.1em;
   padding-left: 40px;
   top: 60px;
-  line-height: 36px;
+  line-height: 34px;
   font-weight: normal;
   margin-top: 5px;
   margin-bottom: 5px;
@@ -303,7 +305,7 @@ html {
 .subPage {
   padding-left: 50px;
   margin-top: -5px;
-  font-family: 'Open Sans';
+  font-family: Inter;
   letter-spacing: 0px;
   font-size: 14px;
   font-weight: 300;
@@ -338,14 +340,15 @@ html {
   background-color: #e8e8e8;
   width: 250px;
   padding: 10px;
-  padding-bottom: 10px;
+  padding-top: 5px;
 }
 
 .footer-sidebar a {
   color: grey;
-  font-family: 'Open Sans';
+  font-family: Inter;
   font-weight: 300;
   text-decoration: none;
-  font-size: 14px;
+  margin-right: 5px;
+  font-size: 11px;
 }
 </style>

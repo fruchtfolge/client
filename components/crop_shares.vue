@@ -50,7 +50,7 @@ export default {
       })
     },
     createChart(chartId, chartData) {
-      Chart.defaults.global.defaultFontFamily = 'Open Sans'
+      Chart.defaults.global.defaultFontFamily = 'Inter'
       Chart.defaults.global.defaultFontSize = 14
 
       const config = {
@@ -123,6 +123,6 @@ export default {
 .cropShares-wrapper {
   margin: auto;
   text-align: center;
-  margin-top: 30px;
+  margin-top: 0px;
 }
 </style>

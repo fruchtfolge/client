@@ -12,6 +12,9 @@
       <button class="button" style="margin-top: 10px;" type="button" name="button" @click="remove">
         ENTFERNEN
       </button>
+      <button class="button" style="margin-top: 10px;" type="button" name="button" @click="setAverage">
+        DURCHSCHNITT
+      </button>
     </div>
   </div>
 </template>
@@ -44,6 +47,7 @@ export default {
           timeseries.options.scales.yAxes[1].ticks.max
         this.timeseriesChart.options.scales.yAxes[2].ticks.max =
           timeseries.options.scales.yAxes[2].ticks.max
+
         this.timeseriesChart.update()
       },
       deep: true
@@ -184,6 +188,22 @@ export default {
         return o
       })
     },
+    async setAverage() {
+      try {
+        // get current data
+        const avgPrice = _.mean(timeseries.data.datasets[0].data)
+        const avgAmount = _.mean(timeseries.data.datasets[1].data)
+        const avgDirectCosts = _.mean(timeseries.data.datasets[2].data)
+        // save one by one
+        await this.saveChanges(null, 0, 9, avgPrice)
+        await this.saveChanges(null, 1, 9, avgAmount)
+        await this.saveChanges(null, 2, 9, avgDirectCosts)
+        this.filterData()
+        this.timeseriesChart.update()
+      } catch (e) {
+        console.log(e)
+      }
+    },
     getAmountDirectCosts(crop) {
       let count = 0
       crop.contributionMargin.directCosts.forEach(o => {
@@ -201,7 +221,9 @@ export default {
       try {
         // get crop object from database
         const year = timeseries.data.labels[index]
-        const crop = _.find(this.cropTimeSeries, ['year', year])
+        // get id
+        const refCrop = _.find(this.cropTimeSeries, ['year', year])
+        const crop = await this.$db.get(refCrop._id)
         if (datasetIndex === 0) {
           // price
           const oldValue = this.getData([crop], 'revenues', 'price')
@@ -239,10 +261,10 @@ export default {
           crop.contributionMargin.directCosts = newDirectCosts
         }
         // console.log(crop)
-        const update = await this.$db.put(crop)
+        await this.$db.put(crop)
         // console.log(update)
-        crop._rev = update.rev
-        e.target.style.cursor = 'default'
+        // crop._rev = update.rev
+        if (e) e.target.style.cursor = 'default'
         this.saveSuccess()
       } catch (e) {
         this.showError()

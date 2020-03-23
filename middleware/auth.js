@@ -57,7 +57,6 @@ export default async function(context) {
       throw new Error('no auth')
     }
   } catch (e) {
-    console.log(e)
     return deleteAndRedirect()
   }
 }

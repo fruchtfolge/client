@@ -4,7 +4,7 @@
       <div class="lds-spinner">
         <div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div />
       </div>
-      <h2 style="text-align: center;">
+      <h2 style="text-align: center; font-family: 'Open Sans Condensed'">
         {{ header }} <br> {{ main }}
       </h2>
     </div>

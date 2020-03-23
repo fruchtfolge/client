@@ -61,7 +61,7 @@ export default {
   display: block;
   font-size: .875rem;
   line-height: 1.5;
-  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+  font-family: Inter, Helvetica, Arial, sans-serif;
   padding: .375rem 1rem;
   position: relative;
 }

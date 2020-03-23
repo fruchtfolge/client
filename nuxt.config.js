@@ -51,7 +51,7 @@ module.exports = {
       {
         rel: 'stylesheet',
         href:
-          'https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans:300,400,600,700'
+          'https://fonts.googleapis.com/css?family=Inter:300,700|Open+Sans|Open+Sans+Condensed:300&display=swap'
       }
     ]
   },
@@ -76,7 +76,10 @@ module.exports = {
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: ['~/plugins/vue-pouch-db', '~/plugins/vue-notifications'],
+  plugins: [
+    '~/plugins/vue-pouch-db.js',
+    '~/plugins/vue-notifications.client.js'
+  ],
 
   /*
   ** Nuxt.js modules

@@ -6,7 +6,7 @@
         <h2 class="infoText">
           NEUEN DÜNGER HINZUFÜGEN
         </h2>
-        <label for="add.manure.category">Kategorie</label>
+        <label class="label" for="add.manure.category">Kategorie</label>
         <select id="add.manure.category" v-model="category" class="dropdown select" @change="reset('category')">
           <option disabled value="">
             Kategorie
@@ -15,7 +15,7 @@
             {{ option }}
           </option>
         </select>
-        <label for="add.manure.description">Bezeichnung</label>
+        <label class="label" for="add.manure.description">Bezeichnung</label>
         <select id="add.manure.description" v-model="description" class="dropdown select" @change="reset('description')">
           <option disabled value="">
             Bezeichnung
@@ -24,7 +24,7 @@
             {{ option }}
           </option>
         </select>
-        <label for="add.manure.type">Gülle/Festmist</label>
+        <label class="label" for="add.manure.type">Gülle/Festmist</label>
         <select id="add.manure.type" v-model="manType" class="dropdown select">
           <option disabled value="">
             Gülle/Festmist
@@ -33,7 +33,7 @@
             {{ option }}
           </option>
         </select>
-        <label for="add.manure.amount">{{ amountLabel }}</label>
+        <label class="label" for="add.manure.amount">{{ amountLabel }}</label>
         <input id="add.manure.amount" v-model="amount" type="number" class="input" @keyup.enter="addManure">
       </div>
       <p v-if="curError" style="text-align: center; margin-top: 30px; color:red;">
@@ -75,7 +75,7 @@ export default {
   notifications: notifications,
   computed: {
     amountLabel() {
-      if (this.category === 'Gärreste') return 'Menge in m3'
+      if (this.category === 'Gärreste') return 'Menge in m³'
       return 'Anzahl Tierplätze'
     },
     categories() {
@@ -161,6 +161,7 @@ export default {
 }
 
 .label {
+  font-size: 12px;
   position: relative;
   left: 0px;
   margin-left: 0px;

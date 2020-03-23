@@ -4,8 +4,12 @@ html,body {
   -webkit-overflow-scrolling: touch;
   -webkit-user-drag: none;
   cursor: default;
-  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+  font-family: Inter, Helvetica, Arial, sans-serif;
   height: 100%;
+}
+
+h1 {
+  font-family: 'Open Sans Condensed', sans-serif;
 }
 
 h2,h3,h4 {
@@ -36,7 +40,7 @@ h2,h3,h4 {
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.1em;
   padding-left: 5px;
-  font-size: 14px;
+  font-size: 12px;
   -webkit-user-drag: none;
 }
 .input[type='checkbox'] {
@@ -67,11 +71,11 @@ h2,h3,h4 {
 }
 
 .selection {
-  font-size: 14px;
+  font-size: 13px;
   text-align-last: left;
   width: 100%;
-  padding-right: 35px;
-  font-family: 'Open Sans';
+  padding-right: 40px;
+  font-family: Inter;
   font-weight: 300;
   padding-left: 5px;
   letter-spacing: normal;
@@ -84,14 +88,14 @@ h2,h3,h4 {
 
 .table {
   width: calc(100% - 275px);
-  font-family: 'Open Sans';
+  font-family: Inter;
   font-weight: 300;
   margin: auto;
   margin-top: 30px;
   min-width: 480px;
   max-width: 700px;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 13px;
   hyphens: auto;
   word-wrap: break-word;
 }
@@ -104,6 +108,8 @@ h2,h3,h4 {
 }
 .table tr {
   height: 30px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .table tr:nth-child(odd) {
@@ -112,6 +118,11 @@ h2,h3,h4 {
 
 .table td:first-child {
   padding-left: 10px;
+}
+
+.table td {
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .wide-cells {
@@ -192,8 +203,13 @@ h2,h3,h4 {
   z-index: 1110;
 }
 
+.link {
+  text-decoration: none;
+  color: rgba(3, 102, 214, 1);
+}
 .graph-description {
   font-family: "Open Sans";
   font-weight: 300;
+  font-size: 14px;
   color: grey;
 }

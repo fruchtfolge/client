@@ -122,6 +122,7 @@ export default {
 </script>
 <style>
 .cropsSidebar {
+  font-family: 'Open Sans Condensed', sans-serif;
   position: fixed;
   padding-top: 20px;
   overflow-y: scroll;
@@ -152,11 +153,11 @@ export default {
 
 .cropsText {
   font-size: 14px;
-  padding-left: 45px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding-left: 40px;
+  padding-top: 7px;
+  padding-bottom: 7px;
   margin: 0px;
-  font-family: 'Open Sans';
+  font-family: Inter;
   font-weight: 300;
 }
 

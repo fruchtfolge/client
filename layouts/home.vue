@@ -6,27 +6,27 @@
         FRUCHTFOLGE
       </nuxt-link>
       <!-- Switch between register and login -->
-      <button v-if="$nuxt.$route.path === '/'" class="register button" @click="flip">
+      <button v-if="$nuxt.$route.path === '/'" class="register button hoverPointer" @click="flip">
         {{ buttonText }}
       </button>
     </div>
     <!-- this is where the main application lives -->
     <nuxt class="nuxt" />
     <!-- Footer for legal texts-->
-    <div class="footer">
-      <nuxt-link to="/kontakt">
+    <footer class="footer">
+      <nuxt-link class="link" to="/kontakt">
         Kontakt
       </nuxt-link>
-      <nuxt-link to="/impressum">
+      <nuxt-link class="link" to="/impressum">
         Impressum
       </nuxt-link>
-      <nuxt-link to="/nutzungsbedingungen">
+      <nuxt-link class="link" to="/nutzungsbedingungen">
         Nutzungsbedingungen
       </nuxt-link>
-      <nuxt-link to="/datenschutz">
+      <nuxt-link class="link" to="/datenschutz">
         Datenschutz
       </nuxt-link>
-    </div>
+    </footer>
   </div>
 </template>
 
@@ -59,7 +59,7 @@ html {
   width: 100%;
   overflow-x: hidden;
   background-color: #f5f5f5;
-  font-family: 'Open Sans Condensed', sans-serif;
+  font-family: Inter, sans-serif;
 }
 
 .header {
