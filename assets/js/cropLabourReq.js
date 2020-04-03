@@ -17,6 +17,9 @@ export const cropLabourReq = {
   options: {
     dragData: true,
     dragDataRound: 1,
+    dragOptions: {
+      showTooltip: true
+    },
     maintainAspectRatio: false,
     scales: {
       yAxes: [

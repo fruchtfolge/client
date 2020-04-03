@@ -45,6 +45,9 @@ export const planetChartData = {
     // lineTension: 1,
     dragData: true,
     dragDataRound: 0,
+    dragOptions: {
+      showTooltip: true
+    },
     scales: {
       yAxes: [
         {

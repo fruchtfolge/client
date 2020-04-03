@@ -87,6 +87,8 @@ export default {
       })
       // show warning when crop shares are exceeded
       this.$store.curCrops.forEach(crop => {
+        // do not consider permanent pastures
+        if (crop.code === 459) return
         if (!this.shares[this.curYear]) return
         const maxShare = crop.maxShare || 100
         const maxHa = _.round((maxShare / 100) * this.arableLand, 2)
@@ -106,8 +108,6 @@ export default {
       })
       // show warnings when user defined constraints are not met
       if (this.$store.curConstraints) {
-        console.log(this.shares)
-
         this.$store.curConstraints.forEach(constraint => {
           const area = Number(constraint.area)
           let share = this.shares[this.curYear]
@@ -189,7 +189,11 @@ export default {
       const props = Object.keys(this.shares[this.curYear])
       let flag = false
       props.forEach(share => {
+        // get crop object for the share, disregard permanent pastures
+        const crop = this.$store.curCrops.find(c => c.name === share)
+        if (crop && crop.code === 459) return
         if (this.shares[this.curYear][share] >= this.sevenFivePercent) {
+          console.log(share)
           flag = share
         }
       })
@@ -255,7 +259,6 @@ export default {
     checkCatchCrop(plot) {
       const crop = plot.selectedCrop
       const selectedData = _.find(this.$store.curCrops, ['name', crop])
-      console.log(selectedData, crop)
       if (selectedData && selectedData.season === 'Winter') {
         return `${plot.name}: Greening ZF nur vor Sommerung`
       }
@@ -288,7 +291,6 @@ export default {
       this.totLand = totLand
       this.greenLand = greenLand
       this.arableLand = arableLand
-      console.log(this.arableLand)
     },
     format(number) {
       const formatter = new Intl.NumberFormat('de-DE', {

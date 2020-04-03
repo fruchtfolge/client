@@ -84,7 +84,6 @@ export default {
         data: chartData.data,
         options: chartData.options
       })
-      console.log(this.labourChart)
     },
     async add() {
       try {

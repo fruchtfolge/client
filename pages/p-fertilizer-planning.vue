@@ -131,7 +131,7 @@ export default {
     },
     minP(plot) {
       if (plot.selectedOption) {
-        return _.round(plot.selectedOption.minPAmount * 0.12)
+        return _.round(plot.selectedOption.minPAmount)
       }
       return 0
     }

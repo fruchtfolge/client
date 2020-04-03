@@ -44,7 +44,7 @@ export default {
       default: 0
     },
     curShares: {
-      type: Object,
+      type: Array,
       required: true
     },
     /*
@@ -96,7 +96,7 @@ export default {
         [`${this.year - 3}`, 'prevCrop3'],
         [`${this.year - 2}`, 'prevCrop2'],
         [`${this.year - 1}`, 'prevCrop1'],
-        ['Zwischenfrucht', 'catchCrop'],
+        ['Zwischenfrucht', 'selectedOption.catchCrop'],
         [`Planung ${this.year}`, 'selectedCrop'],
         ['Org. Düngung', 'selectedOption.manAmount'],
         ['Herbstdüngung', 'selectedOption.autumnFert'],
@@ -149,9 +149,18 @@ export default {
       const wb = XLSX.utils.book_new() // make Workbook of Excel
       // add Worksheet to Workbook
       XLSX.utils.book_append_sheet(wb, exportWS, 'Fruchtfolge')
-      console.log('test')
       // export Excel file
-      XLSX.writeFile(wb, `Fruchtfolge - Planung ${this.year}.xlsx`)
+      // count plots in red area
+      const red = this.data.reduce((acc, cur) => {
+        if (cur.duevEndangered) {
+          acc++
+        }
+        return acc
+      }, 0)
+      let opt = 'Opt'
+      if (this.data[0].allowedCrops.length) opt = 'NoOpt'
+      // XLSX.writeFile(wb, `Fruchtfolge - Planung ${this.year}.xlsx`)
+      XLSX.writeFile(wb, `Fruchtfolge - ${red} red area - ${opt}.xlsx`)
     }
   }
 }

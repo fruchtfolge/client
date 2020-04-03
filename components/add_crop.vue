@@ -115,7 +115,6 @@ export default {
             (crop.name === this.crop || crop.name === this.variety) &&
             crop.variety === this.variety
           ) {
-            console.log(crop)
             bool = true
           }
         })

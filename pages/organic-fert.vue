@@ -10,7 +10,7 @@
           <thead>
             <tr>
               <th colspan="3" />
-              <th colspan="3">
+              <th colspan="6">
                 Nährstoffgehalte [kg/m³]
               </th>
               <th />
@@ -23,7 +23,10 @@
               <th>N</th>
               <th>P<sub>2</sub>O<sub>5</sub></th>
               <th>K<sub>2</sub>O</th>
-              <th>Mindestausnutzung N [%]</th>
+              <th>Mindestausnutzung N nach DüV [%]</th>
+              <th>Stall- und Lagerverluste nach DüV [%]</th>
+              <th>Mindestausnutzung N tatsächlich [%]</th>
+              <th>Stall- und Lagerverluste tatsächlich [%]</th>
               <th style="background-color: #f5f5f5" />
             </tr>
           </thead>
@@ -48,6 +51,15 @@
               <td style="text-align: center;" contenteditable="true" @blur="save($event, 'minUsagePercent', manure._id)" @keydown.enter="$event.target.blur()">
                 {{ manure.minUsagePercent }}
               </td>
+              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'storageLosses', manure._id)" @keydown.enter="$event.target.blur()">
+                {{ manure.storageLosses || 20 }}
+              </td>
+              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'minUsagePercentUser', manure._id)" @keydown.enter="$event.target.blur()">
+                {{ manure.minUsagePercentUser || manure.minUsagePercent }}
+              </td>
+              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'storageLossesUser', manure._id)" @keydown.enter="$event.target.blur()">
+                {{ manure.storageLossesUser !== undefined ? manure.storageLossesUser : 20 }}
+              </td>
               <td style="background-color: #f5f5f5">
                 <input v-model="manure._deleted" style="-webkit-appearance: checkbox;" type="checkbox">
               </td>
@@ -71,6 +83,15 @@
               <td style="text-align: center;">
                 <b>{{ sumManure.minUsagePercent }}</b>
               </td>
+              <td style="text-align: center;">
+                <b>{{ sumManure.storageLosses || 20 }}</b>
+              </td>
+              <td style="text-align: center;">
+                <b>{{ sumManure.minUsagePercentUser || sumManure.minUsagePercent }}</b>
+              </td>
+              <td style="text-align: center;">
+                <b>{{ sumManure.storageLossesUser !== undefined ? sumManure.storageLossesUser : 20 }}</b>
+              </td>
             </tr>
             <tr v-if="hasSolid">
               <td colspan="2">
@@ -90,6 +111,15 @@
               </td>
               <td style="text-align: center;">
                 <b>{{ sumSolid.minUsagePercent }}</b>
+              </td>
+              <td style="text-align: center;">
+                <b>{{ sumSolid.storageLosses || 20 }}</b>
+              </td>
+              <td style="text-align: center;">
+                <b>{{ sumSolid.minUsagePercentUser || sumSolid.minUsagePercent }}</b>
+              </td>
+              <td style="text-align: center;">
+                <b>{{ sumSolid.storageLossesUser !== undefined ? sumSolid.storageLossesUser : 20 }}</b>
               </td>
             </tr>
           </tbody>
@@ -138,15 +168,21 @@
           <tbody>
             <tr>
               <td>Mist Lagerkapazität [m³]</td>
-              <td>3000</td>
+              <td contenteditable="true" @blur="save($event, 'solidStorage', 'settings')" @keydown.enter="$event.target.blur()">
+                {{ settings.solidStorage || sumSolid.amount / 4 }}
+              </td>
             </tr>
             <tr>
               <td>Mist Exportkosten Frühjahr (bis Mai) [€/m³]</td>
-              <td>15</td>
+              <td contenteditable="true" @blur="save($event, 'solidPriceSpring', 'settings')" @keydown.enter="$event.target.blur()">
+                {{ settings.solidPriceSpring || 15 }}
+              </td>
             </tr>
             <tr>
               <td>Mist Exportkosten Herbst (ab Mai) [€/m³]</td>
-              <td>30</td>
+              <td contenteditable="true" @blur="save($event, 'solidPriceAutumn', 'settings')" @keydown.enter="$event.target.blur()">
+                {{ settings.solidPriceAutumn || 30 }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -208,6 +244,21 @@ export default {
             'minUsagePercent',
             'Gülle',
             'Jauche'
+          ),
+          storageLosses: this.calcAverageNut(
+            'storageLosses',
+            'Gülle',
+            'Jauche'
+          ),
+          minUsagePercentUser: this.calcAverageNut(
+            'minUsagePercentUser',
+            'Gülle',
+            'Jauche'
+          ),
+          storageLossesUser: this.calcAverageNut(
+            'storageLossesUser',
+            'Gülle',
+            'Jauche'
           )
         }
       }
@@ -224,7 +275,6 @@ export default {
     },
     sumSolid() {
       if (this.hasSolid) {
-        console.log(this.manures)
         return {
           amount: _.sumBy(this.manures, m => {
             if (m.manType.includes('Festmist')) return m.sumFertAmount

@@ -139,6 +139,8 @@ export default {
     async follow(route) {
       try {
         if (route.path === '/') {
+          // compact database on logout
+          await this.$axios.post(process.env.baseUrl + 'auth/compact')
           await this.$axios.post(process.env.baseUrl + 'auth/logout')
         } else if (route.path === this.curPage) return
         this.curPage = route.path
@@ -158,7 +160,6 @@ export default {
         const settings = await this.$db.get('settings')
         settings.curYear = this.settings.curYear
         settings.curScenario = this.settings.curScenario
-        console.log(settings)
         await this.$db.put(settings)
       } catch (e) {
         console.log(e)

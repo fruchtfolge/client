@@ -253,11 +253,11 @@ export default {
 }
 
 .plotsText {
-  font-size: 16px;
-  letter-spacing: 0.1em;
-  padding-left: 45px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  padding-left: 40px;
+  padding-top: 7px;
+  padding-bottom: 7px;
   margin: 0px;
 }
 

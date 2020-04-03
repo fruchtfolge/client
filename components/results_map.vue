@@ -98,13 +98,16 @@ export default {
         let fc = this.data.map(plot => {
           plot.geometry.properties.center = plot.center
           if (this.selection === 'Org. Düngung') {
-            plot.geometry.properties.elem = plot.selectedOption.manAmount + 'm³'
+            plot.geometry.properties.elem = `${Number(
+              plot.selectedOption.manAmount
+            ) + Number(plot.selectedOption.solidAmount)}m³`
           } else {
             plot.geometry.properties.elem = plot.selectedCrop
           }
-          plot.geometry.properties.description = `${
-            plot.name
-          }: ${plot.selectedCrop + ', ' + plot.selectedOption.manAmount + 'm³'}`
+          plot.geometry.properties.description = `${plot.name}: ${
+            plot.selectedCrop
+          }, ${Number(plot.selectedOption.manAmount) +
+            Number(plot.selectedOption.solidAmount)}m³`
           return plot.geometry
         })
         fc = featureCollection(fc)
@@ -119,6 +122,7 @@ export default {
           // get unique manure values
           const manColors = {
             '0': '#fff',
+            '5': '#eef5f2',
             '10': '#eef5f2',
             '15': '#deebe5',
             '20': '#cde1d8',
@@ -129,7 +133,13 @@ export default {
             '60': '#5a8271'
           }
           this.iteratee = [
-            ...new Set(this.data.map(p => p.selectedOption.manAmount))
+            ...new Set(
+              this.data.map(
+                p =>
+                  Number(p.selectedOption.manAmount) +
+                  Number(p.selectedOption.solidAmount)
+              )
+            )
           ]
             .sort((a, b) => a - b)
             .map((a, i) => {
@@ -230,7 +240,6 @@ export default {
     removePlots() {
       try {
         this.curLayers.forEach(layer => {
-          console.log(layer)
           this.resultsMap.removeLayer(layer)
         })
         this.curLayers = []

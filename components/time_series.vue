@@ -12,7 +12,14 @@
       <button class="button" style="margin-top: 10px;" type="button" name="button" @click="remove">
         ENTFERNEN
       </button>
-      <button class="button" style="margin-top: 10px;" type="button" name="button" @click="setAverage">
+      <button
+        class="button"
+        style="margin-top: 10px; margin-left: 20px;"
+        type="button"
+        name="button"
+        title="Für das Planungsjahr den Durschnitt der Preise, Erträge, Direktkosten der letzten 10 Jahre berechnen"
+        @click="setAverage"
+      >
         DURCHSCHNITT
       </button>
     </div>
@@ -248,9 +255,8 @@ export default {
           crop.contributionMargin.revenues = newRevenues
         } else {
           const oldValue = this.getData([crop], 'directCosts', 'total')
-          const amountDirectCosts = this.getAmountDirectCosts(crop)
+          // const amountDirectCosts = this.getAmountDirectCosts(crop)
           const corrFactor = oldValue > 0 ? value / oldValue : value // (((value / oldValue) - 1) / amountDirectCosts) + 1
-          console.log(corrFactor, amountDirectCosts)
           const newDirectCosts = this.setData(
             crop,
             'directCosts',

@@ -126,9 +126,7 @@ export default {
     async delete(data) {
       try {
         // fetch plot object from DB
-        console.log(data.features[0].properties._id)
         const plot = await this.$db.get(data.features[0].properties._id)
-        console.log(plot)
         // remove from Database
         await this.$db.remove(plot)
         this.showPlotRemoveSucc()
@@ -164,7 +162,6 @@ export default {
       if (this.Draw) this.Draw.deleteAll()
     },
     select(data) {
-      console.log(data)
       if (data.features.length !== 1) return
       this.$bus.$emit('selectedPlot', data.features[0].properties._id)
     }

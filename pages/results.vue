@@ -24,13 +24,16 @@
               <th class="plot-selection" @click="sortPlots('selectedCrop')">
                 Planung {{ curYear }}
               </th>
-              <th v-if="manure" style="width: 80px;" @click="sortPlots('orgFert')">
-                Org. Düngung
+              <th v-if="hasManure" style="width: 80px;" @click="sortPlots('orgFert')">
+                Gülle
               </th>
-              <th v-if="manure && hasPlotsRedArea" style="width: 80px;" @click="sortPlots('orgFert')">
+              <th v-if="hasSolid" style="width: 80px;" @click="sortPlots('orgFert')">
+                Festmist
+              </th>
+              <th v-if="curManure && hasPlotsRedArea" style="width: 80px;" @click="sortPlots('orgFert')">
                 N-Reduzierung
               </th>
-              <th v-if="manure" style="width: 60px;" @click="sortPlots('prevCrop1')">
+              <th v-if="curManure" style="width: 60px;" @click="sortPlots('prevCrop1')">
                 Herbstdüngung
               </th>
               <th style="width: 80px;" @click="sortPlots('curGrossMargin')">
@@ -63,14 +66,21 @@
                     </option>
                   </select>
                 </td>
-                <td v-if="manure" class="narrow-cells">
+                <td v-if="hasManure" class="narrow-cells">
                   <select v-model="plot.selectedOption.manAmount" style="text-align-last: center;" class="select selection" @change="saveManureChange()">
                     <option v-for="(amount) in manAmounts" :key="`${plot._id}_${amount}`" :value="amount">
                       {{ amount }}m³
                     </option>
                   </select>
                 </td>
-                <td v-if="manure && hasPlotsRedArea" class="narrow-cells">
+                <td v-if="hasSolid" class="narrow-cells">
+                  <select v-model="plot.selectedOption.solidAmount" style="text-align-last: center;" class="select selection" @change="saveManureChange()">
+                    <option v-for="(amount) in solidAmounts" :key="`${plot._id}_solid_${amount}`" :value="amount">
+                      {{ amount }}m³
+                    </option>
+                  </select>
+                </td>
+                <td v-if="curManure && hasPlotsRedArea" class="narrow-cells">
                   <select v-if="plot.duevEndangered" v-model="plot.selectedOption.nReduction" style="text-align-last: center;" class="select selection" @change="saveManureChange()">
                     <option v-for="(reduction) in nReductions" :key="`${plot._id}_${reduction}`" :value="reduction">
                       {{ reduction * 100 }}%
@@ -82,7 +92,7 @@
                     </option>
                   </select>
                 </td>
-                <td v-if="manure" class="narrow-cells-text">
+                <td v-if="curManure" class="narrow-cells-text">
                   <input v-model="plot.selectedOption.autumnFert" type="checkbox" style="-webkit-appearance: checkbox;" @change="saveManureChange()">
                 </td>
                 <td class="narrow-cells-number" style="padding-right: 10px;" @click="showPlotInfo(plot)">
@@ -125,8 +135,8 @@
                           }}
                         </td>
                       </tr>
-                      <tr v-if="plot.duevEndangered">
-                        <td>Korrektur Rotes Gebiet</td>
+                      <tr>
+                        <td>Korrektur Düngereduzierung (nach DüV)</td>
                         <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'nYieldRed', plot)">
                           {{
                             ((plot.selectedOption.nYieldRed
@@ -248,24 +258,14 @@
                         <td colspan="3">
                           Zwischenfruchtanbau
                         </td>
-                        <td v-if="plot.selectedOption.catchCrop" style="text-align:center;" contenteditable="true" @blur="save($event,i,'catchCropCosts', plot)">
-                          {{
-                            format(plot.selectedOption.catchCropCosts / plot.size)
-                          }}
-                        </td>
-                        <td v-else style="text-align:center;" contenteditable="true" @blur="save($event,i,'catchCropCosts', plot)">
-                          {{
-                            format(0)
-                          }}
-                        </td>
-                        <td v-if="plot.selectedOption.catchCrop" style="text-align:center;">
+                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'catchCropCosts', plot)">
                           {{
                             format(plot.selectedOption.catchCropCosts)
                           }}
                         </td>
-                        <td v-else style="text-align:center;">
+                        <td style="text-align:center;">
                           {{
-                            format(0)
+                            format(plot.selectedOption.catchCropCosts * plot.size)
                           }}
                         </td>
                       </tr>
@@ -302,9 +302,9 @@
                 {{ format(grossMarginArab) }}
               </td>
             </tr>
-            <tr v-if="manure">
+            <tr v-if="hasManure">
               <td :colspan="colspan - 5">
-                Dungexport Frühjahr
+                Gülleexport Frühjahr
               </td>
               <td class="narrow-cells-number" colspan="4">
                 {{ manExportVolSpring }}m³
@@ -313,15 +313,37 @@
                 {{ format(manExportCostsSpring) }}
               </td>
             </tr>
-            <tr v-if="manure">
+            <tr v-if="hasManure">
               <td :colspan="colspan - 5">
-                Dungexport Herbst
+                Gülleexport Herbst
               </td>
               <td class="narrow-cells-number" colspan="4">
                 {{ manExportVolAutumn }}m³
               </td>
               <td class="narrow-cells-number" style="padding-right: 10px;">
                 {{ format(manExportCostsAutumn) }}
+              </td>
+            </tr>
+            <tr v-if="hasSolid">
+              <td :colspan="colspan - 5">
+                Festmistexport Frühjahr
+              </td>
+              <td class="narrow-cells-number" colspan="4">
+                {{ solidExportVolSpring }}m³
+              </td>
+              <td class="narrow-cells-number" style="padding-right: 10px;">
+                {{ format(solidExportCostsSpring) }}
+              </td>
+            </tr>
+            <tr v-if="hasSolid">
+              <td :colspan="colspan - 5">
+                Festmistexport Herbst
+              </td>
+              <td class="narrow-cells-number" colspan="4">
+                {{ solidExportVolAutumn }}m³
+              </td>
+              <td class="narrow-cells-number" style="padding-right: 10px;">
+                {{ format(solidExportCostsAutumn) }}
               </td>
             </tr>
             <tr>
@@ -359,7 +381,7 @@
               <slide>
                 <grossMarginTimeline :plots="curPlots" />
               </slide>
-              <slide v-if="manure">
+              <slide v-if="curManure">
                 <storage :curStorage="curStorage.storage" />
               </slide>
             </carousel>
@@ -431,6 +453,7 @@ export default {
       curPlots: undefined,
       curCrops: undefined,
       curStorage: undefined,
+      curManure: undefined,
       plots: undefined,
       curYear: undefined,
       curScenario: 'Standard',
@@ -441,9 +464,9 @@ export default {
       totLand: 0,
       sortKey: '',
       cropYearSwitcher: 'selectedCrop',
-      manure: undefined,
       shares: {},
       resultMapSwitcher: 'Kulturen',
+      solidAmounts: [0, 5, 10, 12, 15, 20],
       manAmounts: [0, 10, 15, 20, 25, 30, 40, 50, 60],
       nReductions: [0, 0.1, 0.2, 0.3, 0.4],
       sortOrder: 'desc',
@@ -454,18 +477,6 @@ export default {
     curTotLand() {
       return _.round(this.totLand, 2)
     },
-    manExportVolSpring() {
-      let exports = 0
-      if (this.curStorage && this.curStorage.exports) {
-        exports += this.curStorage.exports.manure.reduce(
-          (acc, ind, i) => (acc += i < 5 ? ind : 0)
-        )
-        exports += this.curStorage.exports.solid.reduce(
-          (acc, ind, i) => (acc += i < 5 ? ind : 0)
-        )
-      }
-      return exports
-    },
     hasPlotsRedArea() {
       let flag = false
       if (this.curPlots && this.curPlots.length) {
@@ -474,11 +485,39 @@ export default {
       return flag
     },
     colspan() {
-      if (this.manure) {
-        if (this.hasPlotsRedArea) return 10
-        return 9
+      let columns = 7
+      if (this.hasManure && this.hasSolid) columns += 3
+      else if (this.hasManure || this.hasSolid) columns += 2
+      if (this.hasPlotsRedArea) columns += 1
+      return columns
+    },
+    hasManure() {
+      let flag = false
+      if (this.curManure) {
+        this.curManure.forEach(m => {
+          if (m.manType.includes('Gülle') || m.manType.includes('Jauche'))
+            flag = true
+        })
       }
-      return 7
+      return flag
+    },
+    hasSolid() {
+      let flag = false
+      if (this.curManure) {
+        this.curManure.forEach(m => {
+          if (m.manType.includes('Festmist')) flag = true
+        })
+      }
+      return flag
+    },
+    manExportVolSpring() {
+      let exports = 0
+      if (this.curStorage && this.curStorage.exports) {
+        exports += this.curStorage.exports.manure.reduce(
+          (acc, ind, i) => (acc += i < 5 ? ind : 0)
+        )
+      }
+      return exports
     },
     manExportCostsSpring() {
       const price = this.$store.settings.manPriceSpring
@@ -486,12 +525,33 @@ export default {
         : 15
       return _.round(this.manExportVolSpring * price)
     },
+    solidExportVolSpring() {
+      let exports = 0
+      if (this.curStorage && this.curStorage.exports) {
+        exports += this.curStorage.exports.solid.reduce(
+          (acc, ind, i) => (acc += i < 5 ? ind : 0)
+        )
+      }
+      return exports
+    },
+    solidExportCostsSpring() {
+      const price = this.$store.settings.solidPriceSpring
+        ? this.$store.settings.solidPriceSpring
+        : 15
+      return _.round(this.solidExportVolSpring * price)
+    },
     manExportVolAutumn() {
       let exports = 0
       if (this.curStorage && this.curStorage.exports) {
         exports += this.curStorage.exports.manure.reduce(
           (acc, ind, i) => (acc += i > 4 ? ind : 0)
         )
+      }
+      return exports
+    },
+    solidExportVolAutumn() {
+      let exports = 0
+      if (this.curStorage && this.curStorage.exports) {
         exports += this.curStorage.exports.solid.reduce(
           (acc, ind, i) => (acc += i > 4 ? ind : 0)
         )
@@ -503,6 +563,12 @@ export default {
         ? this.$store.settings.manPriceAutumn
         : 15
       return _.round(this.manExportVolAutumn * price)
+    },
+    solidExportCostsAutumn() {
+      const price = this.$store.settings.solidPriceAutumn
+        ? this.$store.settings.solidPriceAutumn
+        : 15
+      return _.round(this.solidExportVolAutumn * price)
     },
     curTimeReq() {
       const time = this.curPlots
@@ -617,7 +683,9 @@ export default {
       return (
         this.grossMarginArab -
         this.manExportCostsSpring -
-        this.manExportCostsAutumn
+        this.manExportCostsAutumn -
+        this.solidExportCostsSpring -
+        this.solidExportCostsAutumn
       )
     }
   },
@@ -817,7 +885,7 @@ export default {
             autumnFert: plot.selectedOption.autumnFert
           }
         })
-        console.log(req)
+
         const { data } = await this.$axios.post(
           process.env.baseUrl + 'model/update-manure/',
           req,
@@ -895,7 +963,7 @@ export default {
       if (store) {
         this.$set(this, 'curPlots', store.curPlots)
         this.$set(this, 'curCrops', store.curCrops)
-        this.$set(this, 'manure', store.curManure)
+        this.$set(this, 'curManure', store.curManure)
         this.$set(this, 'curStorage', store.curStorage)
         this.$set(this, 'curYear', store.curYear)
         this.$set(this, 'curScenario', store.curScenario)
@@ -913,7 +981,7 @@ export default {
         this.updatePrevCrops()
         // update shares
         this.calcShares()
-        // console.log(this.manure)
+        // console.log(this.curManure)
         this.loading = false
       }
     },
@@ -935,8 +1003,9 @@ export default {
 
 .result-wrapper {
   /* width: calc(100vw - 200px); */
-  min-width: 1024px;
+  /* min-width: 1024px; */
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
 }
 
@@ -948,10 +1017,10 @@ export default {
 }
 
 .result-table {
-  float: left;
-  margin: 0;
+  /* float: left; */
+  /* margin: 0; */
   margin-top: 20px;
-  margin-left: 20px;
+  /* margin-left: 20px; */
   max-width: 60vw;
   min-width: 786px;
   table-layout: fixed;
