@@ -40,7 +40,7 @@
         Zur Beachtung der datenschutzrechtlichen Vorgaben im Zusammenhang mit der
         Auftragsdatenverarbeitung schließen der Anbieter und der Nutzer ergänzend zu diesen
         Nutzungsbedingungen eine gesonderte Datenschutzvereinbarung ab, die auf der folgenden Unterseite eingesehen werden kann:
-        <nuxt-link to="/datenschutz">
+        <nuxt-link class="link" to="/datenschutz">
           fruchtfolge.uni-bonn.de/datenschutz
         </nuxt-link>
       </p>
@@ -83,11 +83,9 @@ export default {
     margin: auto;
     top: 120px;
   }
-  .copy h1 {
-    letter-spacing: 0.05em;
-  }
+
   .copy p {
-    font-family: 'Open Sans';
+    font-family: Inter;
     font-weight: 300;
   }
 }

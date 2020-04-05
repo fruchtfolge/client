@@ -7,7 +7,7 @@
           NEUE KULTUR HINZUFÜGEN
         </h2>
         <label for="add.crop.farmingType">Anbauverfahren</label>
-        <select id="add.crop.farmingType" v-model="farmingType" class="dropdown">
+        <select id="add.crop.farmingType" v-model="farmingType" class="dropdown select">
           <option disabled value="">
             Anbauverfahren
           </option>
@@ -16,7 +16,7 @@
           </option>
         </select>
         <label for="add.crop.crop">Kultur</label>
-        <select id="add.crop.crop" v-model="crop" class="dropdown">
+        <select id="add.crop.crop" v-model="crop" class="dropdown select">
           <option disabled value="">
             Kultur
           </option>
@@ -25,7 +25,7 @@
           </option>
         </select>
         <label for="add.crop.system">System</label>
-        <select id="add.crop.system" v-model="system" class="dropdown">
+        <select id="add.crop.system" v-model="system" class="dropdown select">
           <option disabled value="">
             System
           </option>
@@ -46,10 +46,10 @@
       <p v-if="exists" style="text-align: center; margin-top: 30px; color:red;">
         Kultur bereits vorhanden. Bitte anderen Sortennamen wählen.
       </p>
-      <button v-if="!exists" class="buttonOk" @click="addCrop">
+      <button v-if="!exists" class="buttonOk button" @click="addCrop">
         ÜBERNEHMEN
       </button>
-      <button class="buttonCancel" @click="cancel">
+      <button class="buttonCancel button" @click="cancel">
         ABBRECHEN
       </button>
     </div>
@@ -58,6 +58,7 @@
 
 <script>
 import ktblCrops from '~/assets/js/crops.js'
+import notifications from '~/components/notifications'
 
 export default {
   data() {
@@ -70,6 +71,7 @@ export default {
       farmingTypes: ['konventionell/integriert', 'ökologisch']
     }
   },
+  notifications: notifications,
   computed: {
     crops() {
       const data = _.filter(ktblCrops, { farmingType: this.farmingType })
@@ -110,9 +112,8 @@ export default {
       if (this.$store && this.$store.curCrops && this.$store.curCrops.length) {
         this.$store.curCrops.forEach(crop => {
           if (
-            crop.name === this.crop ||
-            crop.name === this.variety ||
-            (crop.variety && crop.variety === this.variety)
+            (crop.name === this.crop || crop.name === this.variety) &&
+            crop.variety === this.variety
           ) {
             bool = true
           }
@@ -164,6 +165,7 @@ export default {
           )
 
           await this.$db.bulkDocs(data)
+          this.showCropSucc()
         } else {
           // crop now has to be present, but not set to active -> activate
           const crop = _.find(this.$store.crops, c => {
@@ -175,9 +177,11 @@ export default {
           // console.log(crop)
           crop.active = true
           await this.$db.put(crop)
+          this.showCropSucc()
         }
         // console.log(years)
       } catch (e) {
+        this.showError()
         console.log(e)
       }
 
@@ -191,29 +195,9 @@ export default {
 </script>
 
 <style scoped>
-.blur {
-  background: #f5f5f5;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 95;
-  transition: all 0.8s ease-in-out;
-  opacity: 0.95;
-  visibility: visible;
-}
-
 .box {
-  position: absolute;
   width: 400px;
   height: 500px;
-  top: calc(50vh - 120px);
-  margin-top: -250px;
-  left: 50%;
-  margin-left: -200px;
-  background-color: white;
-  border: 1px solid;
-  border-color: #cccccc;
-  z-index: 99;
 }
 
 .inputs {

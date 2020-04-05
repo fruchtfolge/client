@@ -46,56 +46,26 @@ export default {
       this.datasets = []
       this.labels = []
       const store = this.$store
-      const colors = ['#294D4A', '#4A6D7C', '#7690A5']
+      const colors = [
+        'rgb(121, 173, 151)',
+        'rgb(236, 203, 137)',
+        'rgb(212, 133, 68)'
+      ]
       const curYear = store.curYear
-      const scenario = store.curScenario
       const years = Array(curYear - (curYear - 10))
         .fill(0)
         .map((e, i) => i + (curYear - 9))
 
       for (let i = 0; i < 3; i++) {
         const croppingYear = curYear - i
-        const plots = store.plots.filter(plot => {
-          return plot.year === croppingYear && plot.scenario === scenario
-        })
 
         const data = []
         const shares = []
+
         years.forEach(year => {
           const o = { year: croppingYear, sum: 0 }
           // calculate total db for cropping plan of curYear - i under prices/yields/directCosts of year
-          let grossMargins = []
-          let grossMargin = 0
-          grossMargins = plots.map(plot => {
-            const plotData = plot.matrix[year]
-            if (!plotData) return
-            const cropCode = plot.crop
-            let crop = _.find(this.$store.crops, ['code', cropCode])
-            if (crop) {
-              crop = crop.name
-            }
-            if (i === 0) {
-              crop = plot.selectedCrop
-            }
-            if (plotData[crop]) {
-              let catchCropCosts = 0
-              if (plot.catchCrop) {
-                catchCropCosts = plot.matrix.catchCropCosts
-              }
-              if (o[crop]) o[crop] += plotData[crop].size
-              else o[crop] = plotData[crop].size
-              o.sum += plotData[crop].size
-              if (i === 0) {
-                return plotData[crop].grossMargin - catchCropCosts
-              }
-              return (
-                plotData[crop].grossMarginNoCropEff * plotData[crop].size -
-                catchCropCosts
-              )
-            }
-          })
-
-          grossMargin = _.round(_.sum(grossMargins), 2)
+          const grossMargin = 0
           data.push(grossMargin)
           shares.push(o)
           if (this.labels.indexOf(year) === -1) this.labels.push(year)
@@ -109,6 +79,48 @@ export default {
         })
       }
     },
+    amount(crop) {
+      return _.round(
+        _.sumBy(crop.contributionMargin.revenues, o => {
+          return o.amount.value
+        })
+      )
+    },
+    price(crop, amount) {
+      let price
+      if (amount > 0) {
+        price = _.round(
+          _.sumBy(crop.contributionMargin.revenues, o => {
+            return o.total.value
+          }) / amount,
+          2
+        )
+      } else {
+        price = _.round(
+          _.sumBy(crop.contributionMargin.revenues, o => {
+            return o.total.value
+          }),
+          2
+        )
+      }
+      return price
+    },
+    variableCosts(crop) {
+      return _.round(
+        _.sumBy(crop.contributionMargin.variableCosts, o => {
+          return o.total.value
+        }),
+        2
+      )
+    },
+    directCosts(crop) {
+      return _.round(
+        _.sumBy(crop.contributionMargin.directCosts, o => {
+          return o.total.value
+        }),
+        2
+      )
+    },
     createGradient(chartId) {
       const ctx = document.getElementById(chartId).getContext('2d')
       this.gradient = []
@@ -116,21 +128,21 @@ export default {
       this.gradient[0] = ctx.createLinearGradient(0, 0, 0, 450)
       this.gradient[1] = ctx.createLinearGradient(0, 0, 0, 450)
       this.gradient[2] = ctx.createLinearGradient(0, 0, 0, 450)
-
-      this.gradient[0].addColorStop(0, 'rgba(41,77,74, 0.5)')
-      this.gradient[0].addColorStop(0.5, 'rgba(41,77,74, 0.25)')
-      this.gradient[0].addColorStop(1, 'rgba(41,77,74, 0)')
-
-      this.gradient[1].addColorStop(0, 'rgba(74,109,124, 0.9)')
-      this.gradient[1].addColorStop(0.5, 'rgba(74,109,124, 0.25)')
-      this.gradient[1].addColorStop(1, 'rgba(74,109,124, 0)')
-
-      this.gradient[2].addColorStop(0, 'rgba(118,144,165, 0.9)')
-      this.gradient[2].addColorStop(0.5, 'rgba(118,144,165, 0.25)')
-      this.gradient[2].addColorStop(1, 'rgba(118,144,165, 0)')
+      // rgb(121, 173, 151)
+      this.gradient[0].addColorStop(0, 'rgba(121, 173, 151, 0.5)')
+      this.gradient[0].addColorStop(0.5, 'rgba(121, 173, 151, 0)')
+      this.gradient[0].addColorStop(1, 'rgba(121, 173, 151, 0)')
+      // rgb(236, 203, 137)
+      this.gradient[1].addColorStop(0, 'rgba(236, 203, 137, 0.7)')
+      this.gradient[1].addColorStop(0.5, 'rgba(236, 203, 137, 0)')
+      this.gradient[1].addColorStop(1, 'rgba(236, 203, 137, 0)')
+      // rgb(214, 230, 205)
+      this.gradient[2].addColorStop(0, 'rgba(212, 133, 68, 0.9)')
+      this.gradient[2].addColorStop(0.5, 'rgba(212, 133, 68, 0)')
+      this.gradient[2].addColorStop(1, 'rgba(212, 133, 68, 0)')
     },
     createChart(chartId, chartData) {
-      Chart.defaults.global.defaultFontFamily = 'Raleway'
+      Chart.defaults.global.defaultFontFamily = 'Inter'
       Chart.defaults.global.defaultFontSize = 14
 
       const config = {
@@ -140,6 +152,10 @@ export default {
           labels: this.labels
         },
         options: {
+          title: {
+            display: true,
+            text: 'Gesamtdeckungsbeitrag im Zeitverlauf'
+          },
           responsive: false,
           legend: {
             position: 'bottom'
@@ -177,6 +193,6 @@ export default {
 .grossMarginTimeline-wrapper {
   text-align: center;
   margin: auto;
-  margin-top: 80px;
+  margin-top: 60px;
 }
 </style>

@@ -5,18 +5,15 @@
       <div class="logo">
         FRUCHTFOLGE
       </div>
-      <!-- Scenario selector -->
-      <select v-model="settings.curScenario" class="planYear scenario" type="button" value="Standard" @change="saveSettings">
-        <option disabled value="">
-          Szenario
-        </option>
-        <option v-for="(scenario,j) in scenarios" :key="j" :value="scenario.name">
-          {{ scenario.name }}
-        </option>
-        <!-- <option>Neues Szenario</option> -->
-      </select>
       <!-- Planning year selector -->
-      <select v-model="settings.curYear" class="planYear" type="button" value="2019" @change="saveSettings">
+      <select
+        v-model="settings.curYear"
+        class="select planYear hoverPointer"
+        type="button"
+        value="2019"
+        title="Wählen Sie das aktuelle Planungsjahr für die Optimierung aus"
+        @change="saveSettings"
+      >
         <option disabled value="">
           Planungsjahr
         </option>
@@ -40,16 +37,17 @@
       </ul>
       <div class="footer-container">
         <div class="footer-sidebar">
-          <nuxt-link to="/kontakt">
+          <nuxt-link class="link" to="/kontakt">
             Kontakt
           </nuxt-link>
-          <nuxt-link to="/impressum">
+          <nuxt-link class="link" to="/impressum">
             Impressum
           </nuxt-link>
-          <nuxt-link to="/nutzungsbedingungen">
+          <br>
+          <nuxt-link class="link" to="/nutzungsbedingungen">
             Nutzungsbedingungen
           </nuxt-link>
-          <nuxt-link to="/Datenschutz">
+          <nuxt-link class="link" to="/Datenschutz">
             Datenschutz
           </nuxt-link>
         </div>
@@ -66,7 +64,7 @@
 <script>
 import Setting from '~/constructors/Settings'
 import routes from '~/assets/js/routes.js'
-// console.log(routes);
+
 export default {
   data() {
     return {
@@ -141,11 +139,10 @@ export default {
     async follow(route) {
       try {
         if (route.path === '/') {
-          // compact database
+          // compact database on logout
           await this.$axios.post(process.env.baseUrl + 'auth/compact')
-          // then logout
           await this.$axios.post(process.env.baseUrl + 'auth/logout')
-        }
+        } else if (route.path === this.curPage) return
         this.curPage = route.path
         return $nuxt.$router.replace({ path: route.path })
       } catch (e) {
@@ -163,7 +160,6 @@ export default {
         const settings = await this.$db.get('settings')
         settings.curYear = this.settings.curYear
         settings.curScenario = this.settings.curScenario
-        console.log(settings)
         await this.$db.put(settings)
       } catch (e) {
         console.log(e)
@@ -187,6 +183,10 @@ export default {
         this.settings.curYear = year
       }
     }
+  },
+  transition: {
+    name: 'InAndOut',
+    mode: ''
   }
 }
 </script>
@@ -213,6 +213,9 @@ html {
   background: white;
   z-index: 97;
   line-height: 60px;
+  border-bottom: #ececec;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
 }
 
 .logo {
@@ -255,13 +258,6 @@ html {
   right: 175px;
 }
 
-.nuxt {
-  position: relative;
-  top: 60px;
-  transition: margin-left 0.5s;
-  padding-bottom: 50px;
-}
-
 .sidenav {
   height: 100%;
   width: 0;
@@ -279,6 +275,7 @@ html {
   list-style: none;
   padding-left: 0px;
   padding-bottom: 150px;
+  font-family: 'Open Sans Condensed', sans-serif;
 }
 
 .sidenav-container li:first-child {
@@ -293,7 +290,7 @@ html {
   letter-spacing: 0.1em;
   padding-left: 40px;
   top: 60px;
-  line-height: 40px;
+  line-height: 34px;
   font-weight: normal;
   margin-top: 5px;
   margin-bottom: 5px;
@@ -307,8 +304,12 @@ html {
 }
 
 .subPage {
-  padding-left: 60px;
+  padding-left: 50px;
   margin-top: -5px;
+  font-family: Inter;
+  letter-spacing: 0px;
+  font-size: 14px;
+  font-weight: 300;
 }
 
 .navIcon {
@@ -337,16 +338,18 @@ html {
 }
 
 .footer-sidebar {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: #e8e8e8;
+  width: 250px;
   padding: 10px;
-  padding-bottom: 10px;
+  padding-top: 5px;
 }
 
 .footer-sidebar a {
   color: grey;
-  font-family: 'Open Sans';
+  font-family: Inter;
   font-weight: 300;
   text-decoration: none;
-  font-size: 14px;
+  margin-right: 5px;
+  font-size: 11px;
 }
 </style>

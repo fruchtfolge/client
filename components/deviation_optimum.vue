@@ -2,13 +2,15 @@
   <div>
     <div>
       <div v-show="shown">
-        <div v-if="difference !== 0">
-          <h2>Differenz zum Optimum</h2>
+        <div v-if="difference !== 0" class="difference-wrapper">
+          <h2 class="dev-header">
+            Differenz zum Optimum
+          </h2>
           <h2 class="number" :class="{ positive: difference > 0 }">
             {{ format(difference) }}
           </h2>
         </div>
-        <div class="">
+        <div class="deviations">
           <p v-for="(deviation,i) in deviations" :key="i">
             {{ deviation }}
           </p>
@@ -16,8 +18,10 @@
       </div>
     </div>
     <div v-if="arableLand >= 10" class="greening-check">
-      <h2>Greening</h2>
-      <div style="display: inline-block;">
+      <h2 class="dev-header">
+        Greening
+      </h2>
+      <div style="display: inline-block; max-width: 400px">
         <div v-if="arableLand >= 15" class="greening-entries">
           <div :class="{ check: !brokeEfa, fail: brokeEfa }" />
           <p>Ökologische Vorrangfläche: Über 5% des AL</p>
@@ -76,57 +80,15 @@ export default {
       }
     },
     deviations() {
-      const deviations = []
-      const permPastCropCodes = [459, 480, 492, 57, 567, 572, 592, 972]
+      let deviations = []
       this.plots.forEach(plot => {
-        const crop = _.find(this.$store.curCrops, ['name', plot.selectedCrop])
-        const cropCode = crop ? crop.code : ''
-        if (
-          !cropCode ||
-          !plot.matrix[this.curYear] ||
-          !plot.matrix[this.curYear][plot.selectedCrop]
-        )
-          return
-        const data = plot.matrix[this.curYear][plot.selectedCrop]
-        // get selected crop and previous crop
-        const croppingFactor = data.croppingFactor
-        // Crop rotational deviations
-        // show warning if cropping factor is below 6
-        if (croppingFactor <= 0.6) {
-          deviations.push(
-            `${plot.name}: ${data.name} ungünstige Nachfrucht von ${
-              plot.prevCrop1
-            }`
-          )
-        } else if (croppingFactor === 0) {
-          deviations.push(
-            `${plot.name}: ${data.name} keine mögliche Nachfrucht von ${
-              plot.prevCrop1
-            }`
-          )
-        }
-        // when rotational break for crop isn't held
-        if (!data.rotBreakHeld) {
-          deviations.push(
-            `${plot.name}: Anbaupause von ${data.name} nicht eingehalten`
-          )
-        }
-        // show warning when perm pasture is recultivated with another crop
-        if (plot.permPast && permPastCropCodes.indexOf(cropCode) === -1) {
-          deviations.push(
-            `${plot.name}: Umbruch von Dauergrünland nicht erlaubt.`
-          )
-        }
-        // show warning when growing catch crop is not possible
-        if (plot.catchCrop) {
-          const catchCropDeviation = this.checkCatchCrop(plot)
-          if (catchCropDeviation) {
-            deviations.push(catchCropDeviation)
-          }
-        }
+        if (!plot.selectedOption) return
+        deviations = deviations.concat(plot.selectedOption.warnings)
       })
       // show warning when crop shares are exceeded
       this.$store.curCrops.forEach(crop => {
+        // do not consider permanent pastures
+        if (crop.code === 459) return
         if (!this.shares[this.curYear]) return
         const maxShare = crop.maxShare || 100
         const maxHa = _.round((maxShare / 100) * this.arableLand, 2)
@@ -149,13 +111,13 @@ export default {
         this.$store.curConstraints.forEach(constraint => {
           const area = Number(constraint.area)
           let share = this.shares[this.curYear]
-            ? this.shares[this.curYear][constraint.crop1Code]
+            ? this.shares[this.curYear][constraint.crop1]
             : 0
           let crop = constraint.crop1
           if (constraint.crop2Code) {
             crop += ' + ' + constraint.crop2
             share += this.shares[this.curYear]
-              ? this.shares[this.curYear][constraint.crop2Code]
+              ? this.shares[this.curYear][constraint.crop2]
               : 0
           }
           if (share > area && constraint.operator === '<') {
@@ -227,7 +189,11 @@ export default {
       const props = Object.keys(this.shares[this.curYear])
       let flag = false
       props.forEach(share => {
+        // get crop object for the share, disregard permanent pastures
+        const crop = this.$store.curCrops.find(c => c.name === share)
+        if (crop && crop.code === 459) return
         if (this.shares[this.curYear][share] >= this.sevenFivePercent) {
+          console.log(share)
           flag = share
         }
       })
@@ -255,22 +221,11 @@ export default {
       return flag
     },
     greeningEfa() {
-      console.log(this.shares)
-      if (!this.shares[this.curYear]) return 0
       let efa = 0
-      const props = Object.keys(this.shares[this.curYear])
-      props.forEach(cropName => {
-        // find crop for the given code
-        const share = this.shares[this.curYear][cropName]
-        const crop = _.find(this.$store.curCrops, ['name', cropName])
-        if (crop && share) {
-          efa += share * crop.efaFactor
-        }
-      })
       // add Ecological focus area from catch crops
       this.plots.forEach(plot => {
-        if (plot.catchCrop) {
-          efa += plot.size
+        if (plot.selectedOption) {
+          efa += plot.size * plot.selectedOption.efaFactor
         }
       })
       return _.round(efa, 2)
@@ -304,7 +259,6 @@ export default {
     checkCatchCrop(plot) {
       const crop = plot.selectedCrop
       const selectedData = _.find(this.$store.curCrops, ['name', crop])
-      console.log(selectedData, crop)
       if (selectedData && selectedData.season === 'Winter') {
         return `${plot.name}: Greening ZF nur vor Sommerung`
       }
@@ -320,14 +274,8 @@ export default {
       let totLand = 0
       let greenLand = 0
       plots.forEach(plot => {
-        const code = plot.recommendation
-        if (code) {
-          const plotData = plot.matrix[this.curYear][code]
-          const grossMargin = plotData.grossMargin
-          optimum += grossMargin
-          if (plot.recommendedCatchCrop) {
-            optimum += -plot.matrix.catchCropCosts
-          }
+        if (plot.recommendedGrossMargin) {
+          optimum += plot.recommendedGrossMargin
         }
         totLand += plot.size
         if (plot.permPast) {
@@ -337,10 +285,12 @@ export default {
         }
       })
       this.optimum = optimum
+      if (this.$store.settings['grossMargin' + this.curYear]) {
+        this.optimum = this.$store.settings['grossMargin' + this.curYear]
+      }
       this.totLand = totLand
       this.greenLand = greenLand
       this.arableLand = arableLand
-      console.log(this.arableLand)
     },
     format(number) {
       const formatter = new Intl.NumberFormat('de-DE', {
@@ -354,11 +304,32 @@ export default {
 }
 </script>
 <style>
+.difference-wrapper {
+  margin-top: 30px;
+}
+
+.dev-header {
+  font-family: Inter;
+  font-weight: 300;
+  letter-spacing: normal;
+  font-size: 18px;
+}
+
+.deviations {
+  max-width: 400px;
+}
+
+.deviations p {
+  font-size: 14px;
+}
+
 .greening-check {
+  margin-top: 40px;
   margin-bottom: 0px;
 }
 
 .greening-check p {
+  font-family: 'Open Sans Condensed', sans-serif;
   display: inline-flex;
   margin-top: 5px;
   margin-bottom: 5px;
@@ -384,7 +355,6 @@ export default {
   background: url('~assets/img/fail.svg');
 }
 .number {
-  margin-top: -20px;
   letter-spacing: 0.05em;
   color: rgb(187, 67, 29);
 }

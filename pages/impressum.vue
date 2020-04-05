@@ -39,11 +39,8 @@ export default {
     margin: auto;
     top: 120px;
   }
-  .copy h1 {
-    letter-spacing: 0.05em;
-  }
   .copy p {
-    font-family: 'Open Sans';
+    font-family: Inter;
     font-weigth: 300;
   }
 }

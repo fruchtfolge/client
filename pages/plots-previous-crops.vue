@@ -2,19 +2,23 @@
   <div>
     <loading v-if="loading" />
     <div v-if="!loading && curPlots && curPlots.length > 0" class="plotOverview">
-      <table>
+      <table class="table plotOverview-table">
         <thead>
           <tr>
-            <th style="min-width: 250px;">
+            <th style="width: 125px;">
               Name
             </th>
-            <th>Größe</th>
-            <th>Hof-Feld-Distanz</th>
+            <th style="width: 50px;">
+              Größe
+            </th>
+            <th style="width: 50px;">
+              Hof-Feld-Distanz
+            </th>
             <template v-for="(year) in prevYears">
-              <th :key="`ZF_${year}`">
+              <th :key="`ZF_${year}`" style="width: 50px;">
                 ZF
               </th>
-              <th :key="year">
+              <th :key="year" style="width: 125px;">
                 {{ year }}
               </th> <!--style="min-width: 200px;"-->
             </template>
@@ -22,22 +26,22 @@
         </thead>
         <tbody>
           <tr v-for="(plot) in curPlots" :key="plot._id">
-            <td style="text-align: center;">
+            <td class="wide-cells">
               {{ plot.name }}
             </td>
-            <td style="text-align: center;">
+            <td class="narrow-cells-number">
               {{ plot.size }}
             </td>
-            <td style="text-align: center;">
+            <td class="narrow-cells-number">
               {{ plot.distance }}
             </td>
             <template v-for="(year,m) in prevYears">
-              <td :key="`ZF_${year}_${m}`" style="text-align: center;">
+              <td :key="`ZF_${year}_${m}`" style="text-align: center; width: 50px;">
                 <input type="checkbox" :checked="plot[year + 'catchCrop']" @change="saveCatchCrop($event,plot,year)">
               </td>
 
-              <td :key="`${year}_${m}`" style="text-align: center;">
-                <select v-model="plot[year]" class="selection" @change="saveCropChange(plot,year)">
+              <td :key="`${year}_${m}`" style="wide-cells">
+                <select v-model="plot[year]" class="selection select" @change="saveCropChange(plot,year)">
                   <option v-for="(crop) in crops" :key="`${crop.code}_${crop.name}`" :value="crop.name">
                     {{ crop.name }}
                   </option>
@@ -61,10 +65,10 @@
         <br>
         Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
       </h3>
-      <button @click="$nuxt.$router.replace({path: 'maps'})">
+      <button class="button" @click="$nuxt.$router.replace({path: 'maps'})">
         ZUR KARTE
       </button>
-      <button style="margin-left: 20px;" @click="importPrev">
+      <button class="button" style="margin-left: 20px;" @click="importPrev">
         IMPORTIEREN
       </button>
     </div>
@@ -73,6 +77,7 @@
 
 <script>
 import cultures from '~/assets/js/cultures'
+import notifications from '~/components/notifications'
 
 export default {
   components: {
@@ -92,7 +97,7 @@ export default {
       waiting: false
     }
   },
-  created() {},
+  notifications: notifications,
   mounted() {
     this.cultures = cultures
     this.update()
@@ -154,7 +159,7 @@ export default {
           }
           this.$set(this, 'crops', crops)
           this.$set(this, 'maxRotBreak', maxRotBreak)
-          console.log(this.curYear, this.maxRotBreak)
+          // console.log(this.curYear, this.maxRotBreak)
         } else {
           this.$set(this, 'maxRotBreak', 3)
         }
@@ -202,7 +207,7 @@ export default {
         } else {
           newCropCode = _.find(this.crops, { variety: newCrop }).code
         }
-        console.log(newCropCode, storedPlot, newCrop)
+        // console.log(newCropCode, storedPlot, newCrop)
 
         if (storedPlot) {
           storedPlot.crop = newCropCode
@@ -215,7 +220,9 @@ export default {
           newPlot._id = this.uuidv4()
           await this.$db.put(newPlot)
         }
+        this.saveSuccess()
       } catch (e) {
+        this.saveError()
         console.log(e)
       }
     },
@@ -257,20 +264,16 @@ export default {
 </script>
 
 <style>
+.plotOverview-table {
+  /* float: left; */
+  /* margin: 0; */
+  margin-top: 20px;
+  max-width: 100vw;
+  min-width: 768px;
+  table-layout: fixed;
+}
+
 .plotOverview table input {
   -webkit-appearance: checkbox;
-}
-.selection {
-  min-width: 0px;
-  width: 100px;
-  font-size: 14px;
-  text-align-last: center;
-  font-family: 'Open Sans';
-  font-weight: 300;
-  letter-spacing: normal;
-  border-width: 0px;
-  background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
-  background-repeat: no-repeat;
-  background-position: 100% 50%;
 }
 </style>

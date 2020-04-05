@@ -6,7 +6,7 @@
       </h1>
       <div v-for="(region, n) in regions" :key="n">
         <div class="container" @click="expand(region[0].region)">
-          <h2 class="regionText">
+          <h2 class="regionText hoverPointer">
             {{ region[0].region.toUpperCase() }}
           </h2>
           <div class="arrow" :class="{ rotate: shown[region[0].region]}" />
@@ -22,7 +22,7 @@
             <p
               v-for="(plot, m) in region"
               :key="m"
-              class="plotsText"
+              class="plotsText hoverPointer"
               :class="{ active: isClicked(plot)}"
               @click="flyTo(plot)"
             >
@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     regionsAvail() {
-      console.log(this.regions)
+      // console.log(this.regions)
       if (this.regions) {
         return true
       } else {
@@ -134,6 +134,7 @@ export default {
 </script>
 <style scoped="true">
 .plotsSidebar {
+  font-family: 'Open Sans Condensed', sans-serif;
   position: fixed;
   float: right;
   padding-top: 20px;
@@ -197,15 +198,16 @@ export default {
 }
 
 .plotsText {
-  font-size: 16px;
-  letter-spacing: 0.1em;
-  padding-left: 45px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  padding-left: 40px;
+  padding-top: 7px;
+  padding-bottom: 7px;
   margin: 0px;
 }
 
 .regionText {
+  font-family: 'Open Sans Condensed', sans-serif;
   font-size: 18px;
   letter-spacing: 0.2em;
   margin-bottom: 5px;

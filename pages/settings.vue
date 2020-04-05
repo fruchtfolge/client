@@ -2,13 +2,13 @@
   <div>
     <loading v-if="loading" :main="status" />
     <div style="width: 50%; min-width: 500px; margin: auto; top: 120px;">
-      <h1 style="font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
-        EINSTELLUNGEN
+      <h1 id="adress" style="font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
+        ADRESSE
       </h1>
-      <span>Für die Optimierung wird der Standort Ihres Betriebes benötigt. Dieser wird für die Berechnung der Hof-Feld-Distanzen der einzelnen Schläge verwendet. Anhand dieser Information werden die Deckungsbeiträge schlagspezifisch errechnet und regionalisierte Daten bezogen.</span>
+      <span class="text">Für die Optimierung wird der Standort Ihres Betriebes benötigt. Dieser wird für die Berechnung der Hof-Feld-Distanzen der einzelnen Schläge verwendet. Anhand dieser Information werden die Deckungsbeiträge schlagspezifisch errechnet und regionalisierte Daten bezogen.</span>
       <br>
       <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
-        <span style="font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
+        <span style="font-family: 'Open Sans Condensed'; font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
           ADRESSE <!--Padding is optional-->
         </span>
       </div>
@@ -20,14 +20,14 @@
         <input v-model="city" type="text" class="input" placeholder="Stadt">
       </div>
       <br>
-      <h1 style="padding-top: 20px; font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
+      <h1 id="data-entry" style="padding-top: 20px; font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
         DATENEINGABE
       </h1>
-      <span>Für die Optimierung werden Daten bezüglich Ihrer bewirtschafteten Flächen benötigt. Dabei werden insbesondere die Schlagskizzen (Geodaten) sowie die Vorfrüchte der Felder für die Optimierungsrechnung verwendet. Wenn Ihr Betrieb den Flächenantrag in Nordrhein-Westfalen stellt, können die Flächendaten aus dem ELAN-Downloadportal durch eingabe der ZID-Nummer und Passwort automatisch eingefügt werden.
+      <span class="text">Für die Optimierung werden Daten bezüglich Ihrer bewirtschafteten Flächen benötigt. Dabei werden insbesondere die Schlagskizzen (Geodaten) sowie die Vorfrüchte der Felder für die Optimierungsrechnung verwendet. Wenn Ihr Betrieb den Flächenantrag in Nordrhein-Westfalen stellt, können die Flächendaten aus dem ELAN-Downloadportal durch eingabe der ZID-Nummer und Passwort automatisch eingefügt werden.
         <br>
         <strong>Datenschutzhinweis:</strong> Ihre Invekos-Daten (Betriebsnummer und Passwort) werden einmalig zur Abfrage im ELAN-Downloadportal übertragen. Ihre Betriebsnummer, jedoch nicht das Passwort wird lokal auf Ihrem Rechner gespeichert.</span>
       <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
-        <span style="font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
+        <span style="font-family: 'Open Sans Condensed'; font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
           ZID-DATEN ABFRAGE <!--Padding is optional-->
         </span>
       </div>
@@ -53,14 +53,14 @@
         <br>
       </div>
       <div style="text-align: center;">
-        <button id="zid-btn" type="button" class="invekosBtn" name="zid-btn" @click="getElan">
+        <button id="zid-btn" type="button" class="invekosBtn button" name="zid-btn" @click="getElan">
           ABSENDEN
         </button>
         <button
           id="zid-btn"
           style="margin-left: 10px"
           type="button"
-          class="invekosBtn"
+          class="invekosBtn button"
           name="zid-btn"
           @click="deleteElanData"
         >
@@ -69,7 +69,7 @@
       </div>
 
       <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
-        <span style="font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
+        <span style="font-size: 20px; font-family: 'Open Sans Condensed'; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
           ODER ELAN-DATEI UPLOAD
         </span>
       </div>
@@ -82,10 +82,10 @@
       <h1 style="padding-top: 40px; font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
         PERSÖNLICHE DATEN
       </h1>
-      <span>Persönlich angelegte Daten, z.B. Flächen, Kulturen oder Nebenbedingungen können an dieser Stelle für einzelne Jahre gelöscht werden. So können Sie beispielsweise verhindern, dass vorherige Planungsdaten als duplikate zu den Elan-Daten auftauchen.</span>
+      <span class="text">Persönlich angelegte Daten, z.B. Flächen, Kulturen oder Nebenbedingungen können an dieser Stelle für einzelne Jahre gelöscht werden. So können Sie beispielsweise verhindern, dass vorherige Planungsdaten als duplikate zu den Elan-Daten auftauchen.</span>
       <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px" />
       <div style="text-align: center;">
-        <select v-model="selectedDeleteYear" class="deleteYear" name="">
+        <select v-model="selectedDeleteYear" class="deleteYear select" name="">
           <option value="2016">
             2016
           </option>
@@ -110,16 +110,21 @@
         </select>
       </div>
       <div style="text-align: center;">
-        <button id="zid-btn" type="button" class="invekosBtn" name="zid-btn" @click="deleteYear">
+        <button id="zid-btn" type="button" class="invekosBtn button" name="zid-btn" @click="deleteYear">
           LÖSCHEN
         </button>
       </div>
+      <h1 style="padding-top: 40px; font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
+        Düngeverordnung 2020
+      </h1>
+      <input type="checkbox" :checked="duev2020" @change="save($event)">
     </div>
   </div>
 </template>
 
 <script>
 import geo from '~/assets/js/geo'
+import notifications from '~/components/notifications'
 
 export default {
   components: {
@@ -128,6 +133,7 @@ export default {
   data() {
     return {
       loading: false,
+      duev2020: false,
       status:
         'Flächenanträge werden von der Landwirtschaftskammer heruntergerladen.',
       interval: '',
@@ -140,44 +146,7 @@ export default {
       selectedDeleteYear: 2019
     }
   },
-  notifications: {
-    showAddressWarn: {
-      title: 'ADRESSE UNVOLLSTÄNDIG',
-      message: 'Bitte füllen Sie das Adressfeld komplett aus.',
-      type: 'warn'
-    },
-    showZidErr: {
-      title: 'INVEKOS FEHLER',
-      message:
-        'Bitte stellen Sie sicher, dass Ihre 12-stellige NRW Betriebsnummer (muss mit 27605 beginnen) vollständig ist und Sie das korekkte Passwort eingegeben haben. ',
-      type: 'warn'
-    },
-    noAddressErr: {
-      title: 'ADRESSE UNGÜLTIG',
-      message: 'Die angegebene Adresse konnte nicht gefunden werden.',
-      type: 'error'
-    },
-    showAddressSucc: {
-      title: 'ADRESSE GESPEICHERT',
-      message: 'Die Hof-Adresse wurde in den Einstellungen gespeichert.',
-      type: 'success'
-    },
-    showZidSucc: {
-      title: 'DATEN IMPORTIERT',
-      message: 'Die ELAN Antragsdaten wurden erfolgreich importiert.',
-      type: 'success'
-    },
-    showInfo: {
-      title: 'KEINE DATEN',
-      message: 'Es wurden keine ELAN Daten gefunden.',
-      type: 'info'
-    },
-    showError: {
-      title: 'EIN FEHLER IST AUFGETRETEN',
-      message: 'Unbekannter Fehler.',
-      type: 'error'
-    }
-  },
+  notifications: notifications,
   watch: {
     street() {
       if (this.street !== this.settings.street) this.debouncedGetHome()
@@ -201,6 +170,7 @@ export default {
       // allocate settings to reactive properties
       this.zidId = this.settings.zidId
       // this.zidPass = this.settings.zidPass
+      this.duev2020 = this.settings.duev2020
       this.curYear = this.settings.curYear
       this.street = this.settings.street
       this.postcode = this.settings.postcode
@@ -329,6 +299,12 @@ export default {
         this.loading = false
         console.log(e)
       }
+    },
+    async save(e) {
+      this.duev2020 = e.target.checked
+      const settings = await this.$db.get('settings')
+      settings.duev2020 = this.duev2020
+      await this.$db.put(settings)
     },
     getLatestElanYear(year, month) {
       // The Elan Download portal is generally updated on the 1st of September
@@ -485,6 +461,9 @@ export default {
 .invekosBtn {
   margin-top: 20px;
   width: 241px;
+}
+.text {
+  font-size: 14px;
 }
 .deleteYear {
   width: 240px;

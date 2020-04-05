@@ -22,6 +22,13 @@ miniToastr.init({
       right: '22px',
       top: '72px'
     },
+    /* This would only show the first error, however it seem confusing as
+    from a users perspective its not possible to see if the latest changes
+    have been accepted or not
+    '.mini-toastr > div:not(:first-child)': {
+      display: 'none'
+    },
+    */
     '.mini-toastr__notification': {
       cursor: 'pointer',
       padding: '12px 18px',
@@ -52,11 +59,13 @@ miniToastr.init({
       }
     },
     '.mini-toastr-notification__title': {
+      'font-family': 'Open Sans Condensed',
       'font-weight': 'bold',
       'letter-spacing': '0.1em',
       'margin-bottom': '6px'
     },
     '.mini-toastr-notification__message': {
+      'font-size': '13px',
       display: 'inline-block',
       'vertical-align': 'middle',
       width: '240px'
@@ -68,8 +77,15 @@ miniToastr.init({
 // This mean that in case of 'success' message we will call miniToastr.success(message, title, timeout, cb)
 // In case of 'error' we will call miniToastr.error(message, title, timeout, cb)
 // and etc.
+const toastDisplayTimes = {
+  success: 1500,
+  error: 3000,
+  info: 8000,
+  warn: 8000
+}
+
 function toast({ title, message, type, timeout, cb }) {
-  return miniToastr[type](message, title, 8000, cb)
+  return miniToastr[type](message, title, toastDisplayTimes[type], cb)
 }
 
 // Here we map vue-notifications method to function abowe (to mini-toastr)

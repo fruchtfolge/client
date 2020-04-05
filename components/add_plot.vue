@@ -5,7 +5,7 @@
         <div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div />
       </div>
     </div>
-    <div class="plotBox">
+    <div class="box">
       <div class="inputs">
         <h2 class="infoText">
           NEUEN SCHLAG HINZUFÜGEN
@@ -13,7 +13,7 @@
         <label for="add.plot.name">Name</label>
         <input id="add.plot.name" v-model="name" type="text" class="input" @keyup.enter="addPlot">
         <label for="add.plot.prevCrop1">Hauptfrucht {{ curYear - 1 }}</label>
-        <select id="add.plot.prevCrop1" v-model="prevCrop1" class="dropdown">
+        <select id="add.plot.prevCrop1" v-model="prevCrop1" class="select dropdown">
           <option v-for="(crop, i) in crops" :key="i" :value="crop.code">
             {{ crop.name }}
           </option>
@@ -23,7 +23,7 @@
           </option>
         </select>
         <label for="add.plot.prevCrop2">Hauptfrucht {{ curYear - 2 }}</label>
-        <select id="add.plot.prevCrop2" v-model="prevCrop2" class="dropdown">
+        <select id="add.plot.prevCrop2" v-model="prevCrop2" class="select dropdown">
           <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop.code">
             {{ prevCrop.name }}
           </option>
@@ -33,7 +33,7 @@
           </option>
         </select>
         <label for="add.plot.prevCrop3">Hauptfrucht {{ curYear - 3 }}</label>
-        <select id="add.plot.prevCrop3" v-model="prevCrop3" class="dropdown">
+        <select id="add.plot.prevCrop3" v-model="prevCrop3" class="select dropdown">
           <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop.code">
             {{ prevCrop.name }}
           </option>
@@ -43,10 +43,10 @@
           </option>
         </select>
       </div>
-      <button class="buttonOk" @click="addPlot">
+      <button class="button buttonOk" @click="addPlot">
         ÜBERNEHMEN
       </button>
-      <button class="buttonCancel" @click="cancel">
+      <button class="button buttonCancel" @click="cancel">
         ABBRECHEN
       </button>
     </div>
@@ -56,6 +56,7 @@
 <script>
 import { area } from '@turf/turf'
 import cultures from '~/assets/js/cultures.js'
+import notifications from '~/components/notifications'
 
 export default {
   props: {
@@ -75,18 +76,7 @@ export default {
       prevCrop3: ''
     }
   },
-  notifications: {
-    showPlotSucc: {
-      title: 'SCHLAG HINZUGEFÜGT',
-      message: 'Der Schlag wurde gespeichert.',
-      type: 'success'
-    },
-    showPlotErr: {
-      title: 'FEHLER',
-      message: 'Beim Hinzufügen des Schlags ist ein Fehler aufgetreten.',
-      type: 'error'
-    }
-  },
+  notifications: notifications,
   created() {
     this.cultures = cultures
     if (this.$store.crops) {
@@ -142,31 +132,6 @@ export default {
 </script>
 
 <style scoped>
-.blur {
-  background: #f5f5f5;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 95;
-  transition: all 0.8s ease-in-out;
-  opacity: 0.95;
-  visibility: visible;
-}
-
-.plotBox {
-  position: absolute;
-  width: 400px;
-  height: 500px;
-  top: calc(50% - 60px);
-  margin-top: -250px;
-  left: 50%;
-  margin-left: -200px;
-  background-color: white;
-  border: 1px solid;
-  border-color: #cccccc;
-  z-index: 99;
-}
-
 .plotLoading {
   z-index: 101;
 }

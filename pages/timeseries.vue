@@ -1,18 +1,20 @@
 <template>
   <div>
-    <addCrop v-if="addCrop" @closeAddCrop="addCrop = false" />
-    <cropsSidebar :crops="crops" :selected-crop="selectedCrop" @showAddCrop="addCrop = true" @changeCrop="changeCrop" />
-    <timeSeries v-if="selectedCrop" :crop="selectedCrop" />
-    <div v-else style="text-align: center; margin-top: 100px; width: calc(100% - 275px);">
-      <h3>Noch keine Kulturen für das ausgewähle Planungsjahr und Szenario vorhanden.</h3>
-      <h3>
-        Sie können neue Kulturen durch klicken auf den 'Hinzufügen'-Button in der rechten Seitenleiste hinzufügen.
-        <br>
-        Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
-      </h3>
-      <button style="margin-left: 20px;" @click="importPrev">
-        IMPORTIEREN
-      </button>
+    <div class="page-container">
+      <addCrop v-if="addCrop" @closeAddCrop="addCrop = false" />
+      <cropsSidebar :crops="crops" :selected-crop="selectedCrop" @showAddCrop="addCrop = true" @changeCrop="changeCrop" />
+      <timeSeries v-if="selectedCrop" :crop="selectedCrop" />
+      <div v-else style="text-align: center; margin-top: 100px; width: calc(100% - 275px);">
+        <h3>Noch keine Kulturen für das ausgewähle Planungsjahr und Szenario vorhanden.</h3>
+        <h3>
+          Sie können neue Kulturen durch klicken auf den 'Hinzufügen'-Button in der rechten Seitenleiste hinzufügen.
+          <br>
+          Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
+        </h3>
+        <button class="button" style="margin-left: 20px;" @click="importPrev">
+          IMPORTIEREN
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -20,7 +22,7 @@
 <script>
 export default {
   components: {
-    timeSeries: () => import('~/components/timeSeries.vue'),
+    timeSeries: () => import('~/components/time_series.vue'),
     addCrop: () => import('~/components/add_crop.vue'),
     cropsSidebar: () => import('~/components/crops_sidebar.vue')
   },

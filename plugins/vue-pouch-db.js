@@ -2,7 +2,6 @@ import Vue from 'vue'
 import PouchDB from 'pouchdb-browser'
 import Find from 'pouchdb-find'
 import LiveFind from 'pouchdb-live-find'
-import pkg from '../package'
 
 PouchDB.plugin(Find)
 PouchDB.plugin(LiveFind)
@@ -108,12 +107,40 @@ function updateCurrent() {
       Vue.set(Vue.prototype.$store, 'curTimeConstraints', null)
     }
   }
+  if (Vue.prototype.$store.manure && Vue.prototype.$store.settings) {
+    const match = Vue.prototype.$store.manure.filter(manure => {
+      return (
+        manure.year === Vue.prototype.$store.settings.curYear &&
+        manure.scenario === Vue.prototype.$store.settings.curScenario
+      )
+    })
+    if (match.length > 0) {
+      Vue.set(Vue.prototype.$store, 'curManure', match)
+    } else {
+      Vue.set(Vue.prototype.$store, 'curManure', null)
+    }
+  }
+  if (Vue.prototype.$store.storage && Vue.prototype.$store.settings) {
+    const match = Vue.prototype.$store.storage.filter(storage => {
+      return (
+        storage.year === Vue.prototype.$store.settings.curYear &&
+        storage.scenario === Vue.prototype.$store.settings.curScenario
+      )
+    })
+    if (match.length > 0) {
+      Vue.set(Vue.prototype.$store, 'curStorage', match[0])
+    } else {
+      Vue.set(Vue.prototype.$store, 'curStorage', null)
+    }
+  }
   Vue.prototype.$bus.$emit('changeCurrents')
 }
 
 export default ({ app }, inject) => {
-  inject('version', pkg.version)
-  inject('store', Vue.prototype.$store)
+  // inject('store', Vue.prototype.$store)
+  // make sure to add store everytime this function is called,
+  // otherwise data from other user might be stored in local database
+  app.$store = Vue.prototype.$store
   inject('initalizeDB', database => {
     const db = new PouchDB(database, { auto_compaction: true })
     Vue.prototype.$db = db
@@ -211,6 +238,37 @@ export default ({ app }, inject) => {
         console.log(err)
       })
 
-    inject('db', Vue.prototype.$db)
+    // manure constraints
+    Vue.prototype.$db
+      .liveFind({
+        selector: {
+          type: 'manure'
+        },
+        aggregate: true
+      })
+      .on('update', (update, aggregate) => {
+        Vue.set(Vue.prototype.$store, 'manure', aggregate)
+        debouncedUpdate()
+      })
+      .on('error', err => {
+        console.log(err)
+      })
+    // storage results
+    Vue.prototype.$db
+      .liveFind({
+        selector: {
+          type: 'storage'
+        },
+        aggregate: true
+      })
+      .on('update', (update, aggregate) => {
+        Vue.set(Vue.prototype.$store, 'storage', aggregate)
+        debouncedUpdate()
+      })
+      .on('error', err => {
+        console.log(err)
+      })
+    app.$db = Vue.prototype.$db
+    // console.log(inject('db', db))
   })
 }

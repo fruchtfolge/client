@@ -85,3 +85,10 @@ sw.*
 
 # Videos
 *.mp4
+
+# ELAN-NRW test files
+*.xml
+*.gml
+
+# Notes folder
+notes

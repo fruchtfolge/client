@@ -3,7 +3,7 @@
     <div v-if="cropsAvailable">
       <div v-for="(curCrops, i) in displayGroups" :key="i">
         <div class="container" @click="expand(curCrops[0].displayGroup)">
-          <h2 class="regionText">
+          <h2 class="regionText hoverPointer">
             {{ curCrops[0].displayGroup.toUpperCase() }}
           </h2>
           <div class="arrow" :class="{ rotate: shown[curCrops[0].displayGroup]}" />
@@ -19,7 +19,7 @@
             <p
               v-for="(crop, n) of curCrops"
               :key="n"
-              class="cropsText"
+              class="cropsText hoverPointer"
               :class="{ active: isClicked(crop)}"
               @click="changeCrop(crop)"
             >
@@ -32,8 +32,8 @@
     <div v-else class="helpText">
       Klicken Sie auf den "Hinzufügen" Button um eine neue Kultur für das aktuelle Planungsjahr und Szenario hinzuzufügen
     </div>
-    <div style="text-align: center; margin-top: 40px;">
-      <button @click="addCrop">
+    <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
+      <button class="button" @click="addCrop">
         HINZUFÜGEN
       </button>
     </div>
@@ -122,6 +122,7 @@ export default {
 </script>
 <style>
 .cropsSidebar {
+  font-family: 'Open Sans Condensed', sans-serif;
   position: fixed;
   padding-top: 20px;
   overflow-y: scroll;
@@ -151,12 +152,13 @@ export default {
 }
 
 .cropsText {
-  font-size: 16px;
-  letter-spacing: 0.1em;
-  padding-left: 45px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  font-size: 14px;
+  padding-left: 40px;
+  padding-top: 7px;
+  padding-bottom: 7px;
   margin: 0px;
+  font-family: Inter;
+  font-weight: 300;
 }
 
 .groupText {
@@ -251,11 +253,11 @@ export default {
 }
 
 .plotsText {
-  font-size: 16px;
-  letter-spacing: 0.1em;
-  padding-left: 45px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  padding-left: 40px;
+  padding-top: 7px;
+  padding-bottom: 7px;
   margin: 0px;
 }
 

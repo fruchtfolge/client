@@ -6,9 +6,10 @@
 import { area } from '@turf/turf'
 import mapboxgl from 'mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
+import drawConfig from '../assets/js/draw.config.js'
+import notifications from '~/components/notifications'
 
 // load Mapbox Draw configuration file
-import drawConfig from '../assets/js/draw.config.js'
 
 export default {
   name: 'MapBox',
@@ -17,23 +18,7 @@ export default {
       curYear: ''
     }
   },
-  notifications: {
-    showAddressWarn: {
-      title: 'ADRESSE UNVOLLSTÄNDIG',
-      message: 'Bitte füllen Sie das Adressfeld komplett aus.',
-      type: 'warn'
-    },
-    showPlotRemoveSucc: {
-      title: 'SCHLAG ENTFERNT',
-      message: 'Schlag wurde erfolgreich entfernt.',
-      type: 'success'
-    },
-    showError: {
-      title: 'FEHLER',
-      message: 'Ein fehler ist aufgetreten.',
-      type: 'error'
-    }
-  },
+  notifications: notifications,
   async mounted() {
     let settings
     try {
@@ -90,6 +75,10 @@ export default {
   },
   destroyed() {
     this.$bus.$off('changeCurrents')
+    this.$bus.$off('resize')
+    this.$bus.$off('flyTo')
+    this.$bus.$off('drawPlot')
+    this.map.remove()
   },
   methods: {
     createMap(settings) {
@@ -99,7 +88,7 @@ export default {
       // init the map
       this.map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/satellite-streets-v10?optimize=true',
+        style: 'mapbox://styles/mapbox/satellite-streets-v11?optimize=true',
         // style: 'mapbox://styles/mapbox/light-v10?optimize=true',
         center: settings.home || [7.685235, 51.574318],
         zoom: settings.home ? 14 : 8,
@@ -137,9 +126,7 @@ export default {
     async delete(data) {
       try {
         // fetch plot object from DB
-        console.log(data.features[0].properties._id)
         const plot = await this.$db.get(data.features[0].properties._id)
-        console.log(plot)
         // remove from Database
         await this.$db.remove(plot)
         this.showPlotRemoveSucc()
@@ -175,7 +162,6 @@ export default {
       if (this.Draw) this.Draw.deleteAll()
     },
     select(data) {
-      console.log(data)
       if (data.features.length !== 1) return
       this.$bus.$emit('selectedPlot', data.features[0].properties._id)
     }

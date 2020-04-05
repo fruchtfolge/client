@@ -1,13 +1,13 @@
 <template lang="html">
   <div>
     <div class="blur" />
-    <div class="constraintBox">
+    <div class="constraintBox box">
       <div class="inputs">
         <h2 class="infoText">
           NEUE NEBENBEDINGUNG HINZUFÜGEN
         </h2>
         <label for="add.constraint.crop1">Kultur</label>
-        <select id="add.constraint.crop1" v-model="crop1" class="dropdown">
+        <select id="add.constraint.crop1" v-model="crop1" class="dropdown select">
           <option disabled value="">
             Kultur
           </option>
@@ -27,7 +27,7 @@
         -->
         </select>
         <label for="add.constraint.crop2">und Kultur (optional)</label>
-        <select id="add.constraint.crop2" v-model="crop2" class="dropdown">
+        <select id="add.constraint.crop2" v-model="crop2" class="dropdown select">
           <option disabled value="">
             Kultur
           </option>
@@ -36,10 +36,10 @@
             {{ crop.name }}
           </option>
         </select>
-        <label for="add.constraint.crop4">weniger/mehr</label>
-        <select id="add.constraint.crop4" v-model="operator" class="dropdown">
+        <label for="add.constraint.crop4">soll(en) insgesamt weniger/mehr als</label>
+        <select id="add.constraint.crop4" v-model="operator" class="dropdown select">
           <option disabled value="">
-            weniger/mehr
+            maximal/mehr
           </option>
           <option value="<">
             weniger als
@@ -48,8 +48,10 @@
             mehr als
           </option>
         </select>
+        <label for="add.constraint.name">Fläche in {{ sizeType }} betragen.</label>
+        <input id="add.constraint.name" v-model="area" type="number" class="input" @keyup.enter="addConstraint">
         <label for="add.constraint.crop4">Flächeneinheit</label>
-        <select id="add.constraint.crop4" v-model="sizeType" class="dropdown">
+        <select id="add.constraint.crop4" v-model="sizeType" class="dropdown select">
           <option value="ha">
             ha
           </option>
@@ -59,16 +61,14 @@
           </option>
         -->
         </select>
-        <label for="add.constraint.name">Fläche in {{ sizeType }}</label>
-        <input id="add.constraint.name" v-model="area" type="number" class="input" @keyup.enter="addConstraint">
       </div>
       <p v-if="!crop1" style="text-align: center; margin-top: 30px; color:red;">
         Bitte Kultur auswählen.
       </p>
-      <button v-if="crop1" class="buttonOk" @click="addConstraint">
+      <button v-if="crop1" class="buttonOk button" @click="addConstraint">
         ÜBERNEHMEN
       </button>
-      <button class="buttonCancel" @click="cancel">
+      <button class="buttonCancel button" @click="cancel">
         ABBRECHEN
       </button>
     </div>
@@ -77,6 +77,7 @@
 
 <script>
 import Constraint from '~/constructors/Constraint.js'
+import notifications from '~/components/notifications'
 
 export default {
   props: {
@@ -106,6 +107,7 @@ export default {
       area: 0
     }
   },
+  notifications: notifications,
   methods: {
     async addConstraint() {
       try {
@@ -126,7 +128,9 @@ export default {
         // console.log(constraint)
         await this.$db.post(constraint)
         this.$emit('closeAddConstraint')
+        this.saveSuccess()
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     },
@@ -138,29 +142,9 @@ export default {
 </script>
 
 <style scoped>
-.blur {
-  background: #f5f5f5;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 95;
-  transition: all 0.8s ease-in-out;
-  opacity: 0.95;
-  visibility: visible;
-}
-
 .constraintBox {
-  position: absolute;
   width: 400px;
   height: 580px;
-  top: calc(50vh - 120px);
-  margin-top: -250px;
-  left: 50%;
-  margin-left: -200px;
-  background-color: white;
-  border: 1px solid;
-  border-color: #cccccc;
-  z-index: 99;
 }
 
 .inputs {
@@ -196,6 +180,7 @@ export default {
   background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
   background-position: 100% 50%;
   background-repeat: no-repeat;
+  border-color: rgb(193, 187, 187);
   padding-right: 25px;
 }
 

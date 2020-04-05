@@ -1,57 +1,77 @@
 <template>
   <div>
     <div v-if="plots && plots.length > 0" class="plotOverview">
-      <table>
+      <table class="table plotOverview-table">
         <thead>
           <tr>
-            <th style="min-width: 250px;">
+            <th style="width: 125px;">
               Name
             </th>
-            <th>Größe</th>
-            <th>Hof-Feld-Distanz</th>
-            <th>Bodenqualität (SQR)</th>
-            <th>Bodenart</th>
-            <th>Humusgehalt</th>
-            <th>Hackfruchtfähig</th>
-            <th>Dauergrünland</th>
+            <th style="width: 50px;">
+              Größe
+            </th>
+            <th style="width: 50px;">
+              Hof-Feld-Distanz
+            </th>
+            <th style="width: 50px;">
+              Bodenqualität (SQR)
+            </th>
+            <th style="width: 150px;">
+              Bodenart
+            </th>
+            <th style="width: 80px;">
+              Humusgehalt
+            </th>
+            <th style="width: 50px;">
+              Hackfruchtfähig
+            </th>
+            <th style="width: 50px;">
+              Rotes Gebiet
+            </th>
+            <th style="width: 50px;">
+              Dauergrünland
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(plot, i) in plots" :key="i">
-            <td contenteditable style="text-align: center;" @blur="save($event,plot,'name')">
+            <td contenteditable class="wide-cells" @blur="save($event,plot,'name')">
               {{ plot.name }}
             </td>
             <td
               contenteditable
-              style="center;"
+              class="narrow-cells-number"
               @blur="save(e,plot,'size')"
             >
               {{ plot.size }}
             </td>
-            <td contenteditable style="text-align: center;" @blur="save($event,plot,'distance')">
+            <td contenteditable class="narrow-cells-number" @blur="save($event,plot,'distance')">
               {{ plot.distance }}
             </td>
-            <td contenteditable style="text-align: center;" @blur="save($event,plot,'quality')">
+            <td contenteditable class="narrow-cells-number" @blur="save($event,plot,'quality')">
               {{ plot.quality }}
             </td>
             <td style="text-align: center;">
-              <select v-model="plot.soilType" class="selection" @change="save(null,plot,'soilType')">
+              <select v-model="plot.soilType" style="width: 150px;" class="selection select wide-cells" @change="save(null,plot,'soilType')">
                 <option v-for="(soilType) in soilTypes" :key="soilType" :value="soilType">
                   {{ soilType }}
                 </option>
               </select>
             </td>
             <td style="text-align: center;">
-              <select v-model="plot.humusContent" class="selection" @change="save(null,plot,'humusContent')">
+              <select v-model="plot.humusContent" class="selection select" @change="save(null,plot,'humusContent')">
                 <option v-for="(humusContent) in humusContents" :key="humusContent" :value="humusContent">
                   {{ humusContent }}
                 </option>
               </select>
             </td>
-            <td style="text-align: center;">
+            <td class="narrow-cells-checkbox">
               <input type="checkbox" :checked="plot.rootCrops" @change="save($event,plot,'rootCrops')">
             </td>
-            <td style="text-align: center;">
+            <td class="narrow-cells-checkbox">
+              <input type="checkbox" :checked="plot.duevEndangered" @change="save($event,plot,'duevEndangered')">
+            </td>
+            <td class="narrow-cells-checkbox">
               <input type="checkbox" :checked="plot.permPast" @change="save($event,plot,'permPast')">
             </td>
           </tr>
@@ -65,10 +85,10 @@
         <br>
         Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
       </h3>
-      <button @click="$nuxt.$router.replace({path: 'maps'})">
+      <button class="button" @click="$nuxt.$router.replace({path: 'maps'})">
         ZUR KARTE
       </button>
-      <button style="margin-left: 20px;" @click="importPrev">
+      <button style="margin-left: 20px;" class="button" @click="importPrev">
         IMPORTIEREN
       </button>
     </div>
@@ -76,6 +96,8 @@
 </template>
 
 <script>
+import notifications from '~/components/notifications'
+
 export default {
   data() {
     return {
@@ -108,6 +130,7 @@ export default {
       waiting: false
     }
   },
+  notifications: notifications,
   created() {
     this.update()
     this.$bus.$on('changeCurrents', _.debounce(this.update, 200))
@@ -128,12 +151,14 @@ export default {
       this.$bus.$emit('importPrevYear')
     },
     async save(e, data, prop) {
-      console.log(e)
       try {
         let newValue = ''
         if (e && prop === 'name') {
           newValue = e.target.innerText
-        } else if (e && (prop === 'rootCrops' || prop === 'permPast')) {
+        } else if (
+          (e && (prop === 'rootCrops' || prop === 'permPast')) ||
+          prop === 'duevEndangered'
+        ) {
           newValue = e.target.checked
         } else if (e) {
           newValue = Number(e.target.innerText)
@@ -144,7 +169,9 @@ export default {
         const plot = await this.$db.get(data._id)
         plot[prop] = newValue
         await this.$db.put(plot)
+        this.saveSuccess()
       } catch (e) {
+        this.saveError()
         console.log(e)
       }
     }
@@ -153,20 +180,16 @@ export default {
 </script>
 
 <style>
+.plotOverview-table {
+  /* float: left; */
+  /* margin: 0; */
+  margin-top: 20px;
+  max-width: 80vw;
+  min-width: 768px;
+  table-layout: fixed;
+}
+
 .plotOverview table input {
   -webkit-appearance: checkbox;
-}
-.selection {
-  min-width: 0px;
-  width: 100px;
-  font-size: 14px;
-  text-align-last: center;
-  font-family: 'Open Sans';
-  font-weight: 300;
-  letter-spacing: normal;
-  border-width: 0px;
-  background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
-  background-repeat: no-repeat;
-  background-position: 100% 50%;
 }
 </style>

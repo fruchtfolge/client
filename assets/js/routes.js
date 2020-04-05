@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     path: '/',
     name: 'LOGOUT',
@@ -56,7 +56,7 @@ module.exports = [
   {
     subPage: true,
     path: '/crop-labour-requirement',
-    name: 'Arbeitsbedarf',
+    name: 'Arbeitszeitbedarf',
     icon: 'static/crops.png'
   },
   {
@@ -83,16 +83,32 @@ module.exports = [
     icon: 'static/constraints.png'
   },
   {
+    subPage: true,
+    path: '/organic-fert',
+    name: 'Dunganfall',
+    icon: 'static/crops.png'
+  },
+  {
+    subPage: true,
+    path: '/plots-planned-crops',
+    name: 'Planung',
+    icon: 'static/crops.png'
+  },
+  {
     path: '/results',
     name: 'ERGEBNISSE',
     icon: 'static/results.png'
-  }
-  /*
+  },
   {
     subPage: true,
-    path: '/fertilizer-planning',
-    name: 'N-Düngeplanung',
+    path: '/n-fertilizer-planning',
+    name: 'N-Düngebedarf',
+    icon: 'static/fertPlanning.png'
+  },
+  {
+    subPage: true,
+    path: '/p-fertilizer-planning',
+    name: 'P-Düngebedarf',
     icon: 'static/fertPlanning.png'
   }
-  */
 ]

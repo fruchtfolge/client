@@ -1,16 +1,18 @@
 <template lang="html">
   <div>
     <h2 style="width:calc(100% - 275px);text-align: center;margin-top: 40px;">
-      Gesamtarbeitsbedarf: {{ total }}h/ha
+      Gesamtarbeitszeitbedarf: {{ total }} h/ha
     </h2>
     <div class="cropLabour-wrapper">
       <canvas id="cropLabour-chart" />
     </div>
     <div style="width:calc(100% - 275px);text-align:center;margin-top: 20px;">
-      <p style="color:grey;">
+      <p class="graph-description">
+        Klicken und ziehen Sie die Datenpunkte an die gewünschte Position.
+        <br>
         Quelle der Daten: KTBL Verfahrensrechner Pflanzenbau
       </p>
-      <button style="margin-top: 10px;" type="button" name="button" @click="remove">
+      <button class="button" style="margin-top: 10px;" type="button" name="button" @click="remove">
         ENTFERNEN
       </button>
     </div>
@@ -20,6 +22,7 @@
 import Chart from 'chart.js'
 import cropLabourReq from '~/assets/js/cropLabourReq.js'
 import 'chartjs-plugin-dragdata'
+import notifications from '~/components/notifications'
 
 export default {
   props: {
@@ -60,6 +63,7 @@ export default {
       total: 0
     }
   },
+  notifications: notifications,
   watch: {
     crop: {
       handler() {
@@ -93,6 +97,12 @@ export default {
       cropLabourReq.data.datasets[0].data = this.dataset.data
       cropLabourReq.data.datasets[0].label = this.dataset.label
       cropLabourReq.data.datasets[0].borderColor = this.dataset.borderColor
+      cropLabourReq.options.onDragStart = e => {
+        e.target.style.cursor = 'grabbing'
+      }
+      cropLabourReq.options.onDrag = e => {
+        e.target.style.cursor = 'grabbing'
+      }
       cropLabourReq.options.onDragEnd = this.saveChanges
 
       Chart.defaults.global.defaultFontFamily = 'Raleway'
@@ -117,7 +127,7 @@ export default {
 
       this.dataset = {
         data: data,
-        label: `Arbeitsbedarf [h/ha]`,
+        label: `Arbeitszeitbedarf [h/ha]`,
         borderColor: 'rgb(121, 173, 151)'
       }
       this.calcTotal()
@@ -153,7 +163,7 @@ export default {
       })
     },
     async saveChanges(e, datasetIndex, index, value) {
-      console.log(datasetIndex, index, value)
+      // console.log(datasetIndex, index, value)
       try {
         const halfMonth = this.labels[index]
         const oldValue = this.getData(halfMonth)
@@ -162,14 +172,19 @@ export default {
 
         const update = await this.$db.put(this.crop)
         this.crop._rev = update.rev
+        e.target.style.cursor = 'default'
+        this.saveSuccess()
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     },
     async remove() {
       try {
         await this.$db.remove(this.crop)
+        this.showCropRemoveSucc()
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     }

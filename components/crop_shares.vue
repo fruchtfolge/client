@@ -1,12 +1,14 @@
 <template lang="html">
   <div>
     <div class="cropShares-wrapper">
-      <canvas id="cropShares-chart" width="280" height="280" style="display: unset;" />
+      <canvas id="cropShares-chart" width="400" height="400" />
     </div>
   </div>
 </template>
 <script>
 import Chart from 'chart.js'
+import 'chartjs-plugin-piechart-outlabels'
+import 'chartjs-plugin-deferred'
 
 export default {
   props: {
@@ -48,11 +50,11 @@ export default {
       })
     },
     createChart(chartId, chartData) {
-      Chart.defaults.global.defaultFontFamily = 'Raleway'
+      Chart.defaults.global.defaultFontFamily = 'Inter'
       Chart.defaults.global.defaultFontSize = 14
 
       const config = {
-        type: 'pie',
+        type: 'outlabeledPie',
         data: {
           datasets: [
             {
@@ -68,12 +70,37 @@ export default {
           legend: {
             position: 'bottom'
           },
+          plugins: {
+            deferred: {
+              delay: 250 // delay of 500 ms after the canvas is considered inside the viewport
+            },
+            outlabels: {
+              text(context) {
+                const index = context.dataIndex
+                const value = context.dataset.data[index]
+                return value + 'ha'
+              },
+              valuePrecision: 5,
+              display() {
+                return true
+                // return window._printing ? true : false
+              },
+              color: 'white',
+              borderColor: 'white',
+              borderWidth: 2,
+              stretch: 20,
+              font: {
+                resizable: true,
+                minSize: 14
+              }
+            }
+          },
           tooltips: {
             callbacks: {
               label: function(tooltipItem, data) {
                 const value = data.datasets[0].data[tooltipItem.index]
                 const label = data.labels[tooltipItem.index]
-                return label + ': ' + value + ' ha'
+                return label + ': ' + value + 'ha'
               }
             },
             xPadding: 6,
@@ -90,12 +117,12 @@ export default {
 </script>
 <style>
 #cropShares-chart {
-  display: unset;
+  margin: auto;
 }
 
 .cropShares-wrapper {
   margin: auto;
   text-align: center;
-  margin-top: 80px;
+  margin-top: 0px;
 }
 </style>

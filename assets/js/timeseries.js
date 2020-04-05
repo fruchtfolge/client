@@ -38,6 +38,9 @@ export const timeseries = {
   options: {
     dragData: true,
     dragDataRound: 1,
+    dragOptions: {
+      showTooltip: true
+    },
     maintainAspectRatio: false,
     scales: {
       yAxes: [
@@ -69,6 +72,13 @@ export const timeseries = {
           }
         }
       ]
+    },
+    hover: {
+      onHover: function(e) {
+        const point = this.getElementAtEvent(e)
+        if (point.length) e.target.style.cursor = 'grab'
+        else e.target.style.cursor = 'default'
+      }
     }
   }
 }

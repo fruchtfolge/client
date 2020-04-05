@@ -14,6 +14,9 @@ const features = [
 
 module.exports = {
   mode: 'spa',
+  server: {
+    port: 3002
+  },
   /*
   ** Headers of the page
   */
@@ -39,23 +42,19 @@ module.exports = {
         type: 'image/x-icon',
         href: '/favicon.ico'
       },
-      {
-        rel: 'stylesheet',
-        href: 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css'
-      },
+      // {
+      //   rel: 'stylesheet',
+      //   href: 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css'
+      // },
+      // {
+      //   rel: 'stylesheet',
+      //   href:
+      //     'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.4/mapbox-gl-draw.css'
+      // },
       {
         rel: 'stylesheet',
         href:
-          'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.4/mapbox-gl-draw.css'
-      },
-      {
-        rel: 'stylesheet',
-        href:
-          'https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans:300,400,600,700'
-      },
-      {
-        rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css?family=Raleway&display=swap'
+          'https://fonts.googleapis.com/css?family=Inter:300,700|Open+Sans|Open+Sans+Condensed:300&display=swap'
       }
     ]
   },
@@ -71,15 +70,18 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: ['@/assets/css/global.css'],
+  css: [
+    '@/assets/css/global.css',
+    '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css',
+    'mapbox-gl/dist/mapbox-gl.css'
+  ],
 
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~/plugins/vue-pouch-db',
-    '~/plugins/vue-notifications',
-    '~/plugins/vue-tour'
+    '~/plugins/vue-pouch-db.js',
+    '~/plugins/vue-notifications.client.js'
   ],
 
   /*
@@ -102,8 +104,8 @@ module.exports = {
   ** API base url, can be changed for debugging
   */
   env: {
-    baseUrl: 'https://fruchtfolge.agp.uni-bonn.de/api/'
-    // baseUrl: 'http://localhost:3001/'
+    // baseUrl: 'http://localhost:3003/'
+    baseUrl: 'http://fruchtfolge.agp.uni-bonn.de/api/'
   },
   router: {
     middleware: 'auth'

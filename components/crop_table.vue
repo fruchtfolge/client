@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="cropsTable">
-    <table>
+    <table class="table">
       <thead>
         <tr>
           <th>Leistungs-/Kostenart</th>
@@ -19,11 +19,11 @@
         <!-- Revenues-->
         <tr v-for="(source, i) in cm.revenues" :key="`revenues_${i}`">
           <td>{{ source.name }}</td>
-          <td contenteditable="true" @blur="update($event, 'revenues', i, 'amount')">
+          <td contenteditable="true" @blur="update($event, 'revenues', i, 'amount')" @keydown.enter="$event.target.blur()">
             {{ source.amount.value }}
           </td>
           <td>{{ source.amount.unit }}</td>
-          <td contenteditable="true" @blur="update($event, 'revenues', i, 'price')">
+          <td contenteditable="true" @blur="update($event, 'revenues', i, 'price')" @keydown.enter="$event.target.blur()">
             {{ source.price.value }}
           </td>
           <td>{{ source.price.unit }}</td>
@@ -40,11 +40,11 @@
         <!-- Direct Costs-->
         <tr v-for="(source, i) in cm.directCosts" :key="`directCosts_${i}`">
           <td>{{ source.name }}</td>
-          <td contenteditable="true" @blur="update($event, 'directCosts', i, 'amount')">
+          <td contenteditable="true" @blur="update($event, 'directCosts', i, 'amount')" @keydown.enter="$event.target.blur()">
             {{ source.amount.value }}
           </td>
           <td>{{ source.amount.unit }}</td>
-          <td contenteditable="true" @blur="update($event, 'directCosts', i, 'price')">
+          <td contenteditable="true" @blur="update($event, 'directCosts', i, 'price')" @keydown.enter="$event.target.blur()">
             {{ source.price.value }}
           </td>
           <td>{{ source.price.unit }}</td>
@@ -61,11 +61,11 @@
         <!-- Other Variable Costs-->
         <tr v-for="(source, i) in cm.variableCosts" :key="`variableCosts_${i}`">
           <td>{{ source.name }}</td>
-          <td contenteditable="true" @blur="update($event, 'variableCosts', i, 'amount')">
+          <td contenteditable="true" @blur="update($event, 'variableCosts', i, 'amount')" @keydown.enter="$event.target.blur()">
             {{ source.amount.value }}
           </td>
           <td>{{ source.amount.unit }}</td>
-          <td contenteditable="true" @blur="update($event, 'variableCosts', i, 'price')">
+          <td contenteditable="true" @blur="update($event, 'variableCosts', i, 'price')" @keydown.enter="$event.target.blur()">
             {{ source.price.value }}
           </td>
           <td>{{ source.price.unit }}</td>
@@ -90,11 +90,11 @@
         <!-- Fix Costs-->
         <tr v-for="(source, i) in cm.fixCosts" :key="`fixCosts_${i}`">
           <td>{{ source.name }}</td>
-          <td contenteditable="true" @blur="update($event, 'fixCosts', i, 'amount')">
+          <td contenteditable="true" @blur="update($event, 'fixCosts', i, 'amount')" @keydown.enter="$event.target.blur()">
             {{ source.amount.value }}
           </td>
           <td>{{ source.amount.unit }}</td>
-          <td contenteditable="true" @blur="update($event, 'fixCosts', i, 'price')">
+          <td contenteditable="true" @blur="update($event, 'fixCosts', i, 'price')" @keydown.enter="$event.target.blur()">
             {{ source.price.value }}
           </td>
           <td>{{ source.price.unit }}</td>
@@ -124,13 +124,16 @@
       </tbody>
     </table>
     <div style="text-align:center;margin-top: 40px">
-      <button type="button" name="button" @click="remove">
+      <button class="button" type="button" name="button" @click="remove">
         ENTFERNEN
       </button>
     </div>
   </div>
 </template>
 <script>
+import notifications from '~/components/notifications'
+import { sanitizeInput } from '~/components/helpers'
+
 export default {
   props: {
     crop: {
@@ -143,6 +146,7 @@ export default {
       // selectedCrop: null
     }
   },
+  notifications: notifications,
   computed: {
     cm() {
       return this.crop.contributionMargin
@@ -187,9 +191,17 @@ export default {
   },
   methods: {
     async update(e, key, index, prop) {
+      let newValue
       try {
-        // get new value that was entered in to the table cell
-        const newValue = Number(e.target.innerText)
+        // get new value that was entered into the table cell
+        newValue = sanitizeInput(e.target.innerText)
+        if (newValue === this.cm[key][index][prop].value) return
+      } catch (err) {
+        this.noNumber()
+        e.target.innerText = this.cm[key][index][prop].value
+        return
+      }
+      try {
         this.$set(this.cm[key][index][prop], 'value', newValue)
         // calculate new total amount
         const amount = this.cm[key][index].amount.value
@@ -201,7 +213,9 @@ export default {
         this.crop._rev = doc._rev
         // store in Database
         await this.$db.put(this.crop)
+        this.saveSuccess()
       } catch (e) {
+        this.saveError()
         console.log(e)
       }
     },
@@ -215,7 +229,7 @@ export default {
           return amount * price
         } else {
           // we assume that this is a case of eur/1000 eur or similar
-          console.log(priceUnit)
+          // console.log(priceUnit)
           const factor = Number(priceUnit[1].split(' ')[0])
           return (price / factor) * amount
         }
@@ -226,8 +240,10 @@ export default {
     },
     async remove() {
       try {
+        this.showCropRemoveSucc()
         await this.$db.remove(this.crop)
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     }
@@ -235,13 +251,13 @@ export default {
 }
 </script>
 <style>
-td:nth-child(2) {
+.cropsTable td:nth-child(2) {
   text-align: right;
 }
-td:nth-child(4) {
+.cropsTable td:nth-child(4) {
   text-align: right;
 }
-td:nth-child(6) {
+.cropsTable td:nth-child(6) {
   text-align: right;
 }
 
@@ -251,6 +267,6 @@ td:nth-child(6) {
 
 .highlightRow {
   height: 40px;
-  font-family: 'Open Sans';
+  font-family: Inter;
 }
 </style>

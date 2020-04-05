@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100%;">
-    <div class="">
+    <div class="page-container">
       <addPlot v-if="addPlot" :plot-data="plotData" @closeAddPlot="addPlot = false" />
       <plotsSidebar />
       <div style="width: calc(100% - 275px)">
