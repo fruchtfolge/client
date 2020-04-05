@@ -76,7 +76,7 @@
             </tbody>
           </table>
         </div>
-        <div class="duevSettings">
+        <div v-if="!isGreenlandCrop" class="duevSettings">
           <table class="table">
             <caption class="caption">
               Einstellungen Düngeverordnung 2017/2020
@@ -98,6 +98,18 @@
                 <td>N-Düngebedarf nach Tab. 2 bzw. 4 [kg/ha]</td>
                 <td contenteditable="true" @blur="save($event,'nRequirement')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nRequirement }}
+                </td>
+              </tr>
+              <tr>
+                <td>N-Sollwert [kg/ha]</td>
+                <td contenteditable="true" @blur="save($event,'nTargetValue')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.nTargetValue || selectedCrop.nRequirement }}
+                </td>
+              </tr>
+              <tr>
+                <td>Max. Güllemenge [m³/ha]</td>
+                <td contenteditable="true" @blur="save($event,'maxOrganicN')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.maxOrganicN || 60 }}
                 </td>
               </tr>
               <tr>
@@ -143,6 +155,87 @@
             </tbody>
           </table>
         </div>
+        <div v-else class="duevSettings">
+          <table class="table">
+            <caption class="caption">
+              Einstellungen Düngeverordnung Grünland 2020
+            </caption>
+            <thead>
+              <tr>
+                <th>Eigenschaft</th>
+                <th>Wert</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ertragsniveau nach Tab. 9 [dt TM/ha]</td>
+                <td contenteditable="true" @blur="save($event,'duevYieldLvl')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.duevYieldLvl }}
+                </td>
+              </tr>
+              <tr>
+                <td>Ertragsniveau 5 Jahr Ø Betrieb [dt TM/ha]</td>
+                <td contenteditable="true" @blur="save($event,'avgYieldLvl')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.avgYieldLvl }}
+                </td>
+              </tr>
+              <tr>
+                <td>Rohproteingehalt nach Tab. 9 [dt TM/ha]</td>
+                <td contenteditable="true" @blur="save($event,'duevRPlvl')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.duevRPlvl }}
+                </td>
+              </tr>
+              <tr>
+                <td>Ertragsniveau RP 5 Jahr Ø Betrieb [% RP i.d. TM]</td>
+                <td contenteditable="true" @blur="save($event,'avgRPperc')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.avgRPperc }}
+                </td>
+              </tr>
+              <tr>
+                <td>N-Düngebedarf nach Tab. 9 [kg/ha]</td>
+                <td contenteditable="true" @blur="save($event,'nRequirement')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.nRequirement }}
+                </td>
+              </tr>
+              <tr>
+                <td>N-Sollwert [kg/ha]</td>
+                <td contenteditable="true" @blur="save($event,'nTargetValue')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.nTargetValue || selectedCrop.nRequirement }}
+                </td>
+              </tr>
+              <tr>
+                <td>Max. Güllemenge [m³/ha]</td>
+                <td contenteditable="true" @blur="save($event,'maxOrganicN')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.maxOrganicN || 60 }}
+                </td>
+              </tr>
+              <tr>
+                <td>Zu- oder Abschlag bei Ertragsdifferenz je 10 dt (Tab. 10) [kg/ha]</td>
+                <td contenteditable="true" @blur="save($event,'nYieldDiff')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.nYieldDiff }}
+                </td>
+              </tr>
+              <tr>
+                <td>Zu- oder Abschlag je 1 % Rohprotein in der TM Rohproteindifferenz je 10 dt (Tab. 10) [kg/ha]</td>
+                <td contenteditable="true" @blur="save($event,'nRPdiff')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.nRPdiff }}
+                </td>
+              </tr>
+              <tr>
+                <td>Abschläge für Stickstoffnachlieferung aus der Stickstoffbindung von Leguminosen (Tab. 12) [kg/ha]</td>
+                <td contenteditable="true" @blur="save($event,'nLegumeRed')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.nLegumeRed }}
+                </td>
+              </tr>
+              <tr>
+                <td>P-Entzug (nach §4(3)) [kg/dt TM]</td>
+                <td contenteditable="true" @blur="save($event,'pWithdraw')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.pWithdraw }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <div style="text-align:center;margin-top: 40px;">
           <button class="button" type="button" name="button" @click="remove">
             ENTFERNEN
@@ -180,6 +273,33 @@ export default {
       toggle: true,
       selectedCrop: undefined,
       addCrop: false
+    }
+  },
+  computed: {
+    isGreenlandCrop() {
+      let flag = false
+      const greenLandCropCodes = [
+        459,
+        421,
+        422,
+        423,
+        424,
+        425,
+        426,
+        427,
+        429,
+        430,
+        431,
+        432,
+        433
+      ]
+      if (
+        this.selectedCrop &&
+        greenLandCropCodes.indexOf(this.selectedCrop.code) > -1
+      ) {
+        flag = true
+      }
+      return flag
     }
   },
   created() {

@@ -14,6 +14,9 @@ const features = [
 
 module.exports = {
   mode: 'spa',
+  server: {
+    port: 3002
+  },
   /*
   ** Headers of the page
   */
@@ -97,7 +100,7 @@ module.exports = {
   ** API base url, can be changed for debugging
   */
   env: {
-    baseUrl: 'http://localhost:3001/'
+    baseUrl: 'http://localhost:3003/'
     // baseUrl: 'http://fruchtfolge.agp.uni-bonn.de/api/'
   },
 
