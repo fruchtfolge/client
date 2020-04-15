@@ -151,7 +151,7 @@
                         </td>
                         <td style="text-align:center;font-weight: bold;">
                           {{
-                            (plot.selectedOption.correctedAmount).toFixed(2)
+                            plot.selectedOption.correctedAmount ? (plot.selectedOption.correctedAmount).toFixed(2) : 0
                           }}
                         </td>
                       </tr>
@@ -717,6 +717,7 @@ export default {
         await this.storeResults(data, true)
       } catch (e) {
         console.log(e)
+        this.showInfeasible()
       }
     },
     async storeResults(data, newRun) {
@@ -877,7 +878,7 @@ export default {
         const req = this.curPlots.map(plot => {
           return {
             _id: plot._id,
-            crop: plot.selectedCrop,
+            crop: this.curCrops.find(c => plot.selectedCrop === c.name)._id,
             manAmount: plot.selectedOption.manAmount,
             solidAmount: plot.selectedOption.solidAmount,
             nReduction: plot.selectedOption.nReduction,
@@ -901,7 +902,7 @@ export default {
     async saveCropChange(plot) {
       try {
         const _id = plot._id
-        const crop = plot.selectedCrop
+        const crop = this.curCrops.find(c => plot.selectedCrop === c.name)._id
         const manAmount = plot.selectedOption.manAmount
         const solidAmount = plot.selectedOption.solidAmount
         const nReduction = plot.selectedOption.nReduction

@@ -349,18 +349,20 @@ export default {
           .on('complete', async info => {
             // console.log(info, auth.userDBs.userdb)
             const settings = await this.getSettings(date)
-            const { data } = await this.$axios.post(
-              process.env.baseUrl + 'auth/userDoc',
-              {
-                username: auth.user_id
-              }
-            )
-            settings.street = data.address
-            settings.postcode = data.postcode
-            settings.city = data.city
-            settings.home = data.home
-            settings.timestamp = date.toISOString()
-            settings.state_district = data.state_district
+            if (auth.user_id !== 'debug@test.de') {
+              const { data } = await this.$axios.post(
+                process.env.baseUrl + 'auth/userDoc',
+                {
+                  username: auth.user_id
+                }
+              )
+              settings.street = data.address
+              settings.postcode = data.postcode
+              settings.city = data.city
+              settings.home = data.home
+              settings.timestamp = date.toISOString()
+              settings.state_district = data.state_district
+            }
             settings.auth = auth
 
             await this.$db.put(settings)
@@ -369,8 +371,8 @@ export default {
               live: true,
               retry: true
             })
-            // this.loading = false
-            // this.clicked = false
+            this.loading = false
+            this.clicked = false
             if (signup) {
               return $nuxt.$router.replace({ path: '/settings' })
             }

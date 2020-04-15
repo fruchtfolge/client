@@ -23,7 +23,10 @@
               Humusgehalt
             </th>
             <th style="width: 50px;">
-              Hackfruchtfähig
+              Nmin-Wert Bodenuntersuchung
+            </th>
+            <th style="width: 50px;">
+              Gehaltsklasse P<sub>2</sub>O<sub>5</sub>
             </th>
             <th style="width: 50px;">
               Rotes Gebiet
@@ -65,8 +68,15 @@
                 </option>
               </select>
             </td>
-            <td class="narrow-cells-checkbox">
-              <input type="checkbox" :checked="plot.rootCrops" @change="save($event,plot,'rootCrops')">
+            <td contenteditable class="narrow-cells-number">
+              {{ plot.nmin }}
+            </td>
+            <td class="narrow-cells-number">
+              <select v-model="plot.pSupplyStage" class="selection select" @change="save(null,plot,'pSupplyStage')">
+                <option v-for="(supplyStage) in pSupplyStages" :key="supplyStage" :value="supplyStage">
+                  {{ supplyStage }}
+                </option>
+              </select>
             </td>
             <td class="narrow-cells-checkbox">
               <input type="checkbox" :checked="plot.duevEndangered" @change="save($event,plot,'duevEndangered')">
@@ -125,6 +135,7 @@ export default {
         '15 - <30%',
         '≥30%'
       ],
+      pSupplyStages: ['A', 'B', 'C', 'D', 'E'],
       selectedPlot: null,
       curYear: 2019,
       waiting: false

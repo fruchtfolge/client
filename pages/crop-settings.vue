@@ -211,14 +211,20 @@
               </tr>
               <tr>
                 <td>Zu- oder Abschlag bei Ertragsdifferenz je 10 dt (Tab. 10) [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nYieldDiff')" @keydown.enter="$event.target.blur()">
-                  {{ selectedCrop.nYieldDiff }}
+                <td contenteditable="true" @blur="save($event,'nChangeYieldDiff')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.nChangeYieldDiff }}
                 </td>
               </tr>
               <tr>
                 <td>Zu- oder Abschlag je 1 % Rohprotein in der TM Rohproteindifferenz je 10 dt (Tab. 10) [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nRPdiff')" @keydown.enter="$event.target.blur()">
-                  {{ selectedCrop.nRPdiff }}
+                <td contenteditable="true" @blur="save($event,'nChangeRPDiff')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.nChangeRPDiff }}
+                </td>
+              </tr>
+              <tr>
+                <td>Durchschnittliche Menge N aus organischer Düngung der Vorjahre [kg/ha]</td>
+                <td contenteditable="true" @blur="save($event,'nFertPrevYear')" @keydown.enter="$event.target.blur()">
+                  {{ selectedCrop.nFertPrevYear || 0 }}
                 </td>
               </tr>
               <tr>

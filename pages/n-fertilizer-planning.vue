@@ -1,12 +1,15 @@
 <template>
   <div>
     <div v-if="dataAvail" class="plotOverview">
-      <table class="table-fert table">
+      <table v-if="arablePlots" class="table-fert table">
+        <caption class="caption">
+          Düngebedarfsermittlung Ackerbau
+        </caption>
         <thead>
           <tr>
             <th>Name</th>
             <th>Kultur</th>
-            <th>Ertragsniveau 3 Jahr Ø Betrieb [dt/ha]</th>
+            <th>Ertragsniveau 5 Jahr Ø Betrieb [dt/ha]</th>
             <th>N-Bedarfswert [kg N/ha]</th>
             <th>Zu- oder Abschlag Ertragsdifferenz [kg N/ha]</th>
             <th>Abschlag Nmin-Probe/Richtwert [kg N/ha]</th>
@@ -19,7 +22,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(plot, i) in filteredPlots" :key="i">
+          <tr v-for="(plot, i) in arablePlots" :key="i">
             <td style="width: 100px;" class="cell-text">
               {{ plot.name }}
             </td>
@@ -59,6 +62,71 @@
           </tr>
         </tbody>
       </table>
+      <table v-if="greenlandPlots" class="table-fert table">
+        <caption class="caption">
+          Düngebedarfsermittlung Grünland und Feldfutter
+        </caption>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Kultur</th>
+            <th>Ertragsniveau 5 Jahr Ø Betrieb [dt TM/ha]</th>
+            <th>Ertragsniveau RP 5 Jahr Ø Betrieb [% RP i.d. TM]</th>
+            <th>N-Bedarfswert [kg N/ha]</th>
+            <th>Zu- oder Abschlag Ertragsdifferenz [kg N/ha]</th>
+            <th>Zu- oder Abschlag RP Differenz [kg N/ha]</th>
+            <th>Abschlag org. Düngung der Vorjahre [kg N/ha]</th>
+            <th>Abschlag N aus Bodenvorrat [kg N/ha]</th>
+            <th>Abschlag N-Bindung Leguminosen [kg N/ha]</th>
+            <th>Stickstoffdüngebedarf Vegetation [kg N/ha]</th>
+            <th>Planung Org. Düngung [kg N/ha]</th>
+            <th>Planung Min. Düngung [kg N/ha]</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(plot, i) in greenlandPlots" :key="i">
+            <td style="width: 100px;" class="cell-text">
+              {{ plot.name }}
+            </td>
+            <td style="width: 100px;" class="cell-text">
+              {{ plot.selectedCrop }}
+            </td>
+            <td class="cell-number">
+              {{ plot.selectedOption.avgYield }}
+            </td>
+            <td class="cell-number">
+              {{ plot.selectedOption.avgRPperc }}
+            </td>
+            <td class="cell-number">
+              {{ plot.selectedOption.nReq }}
+            </td>
+            <td class="cell-number">
+              {{ plot.selectedOption.nYieldDiff }}
+            </td>
+            <td class="cell-number">
+              {{ plot.selectedOption.nRPDiff }}
+            </td>
+            <td class="cell-number">
+              {{ plot.selectedOption.nFertPrevYear }}
+            </td>
+            <td class="cell-number">
+              {{ plot.selectedOption.humusContent }}
+            </td>
+            <td class="cell-number">
+              {{ plot.selectedOption.nLegumeRed }}
+            </td>
+            <td class="cell-number" style="font-weight: bold;">
+              {{ plot.selectedOption.nSum }}
+            </td>
+            <td class="cell-number">
+              {{ orgN(plot) }}
+            </td>
+            <td class="cell-number" style="padding-right: 10px;">
+              {{ minN(plot) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div v-else style="text-align: center; margin-top: 100px;">
       <h3>Noch keine Schläge für das ausgewähle Planungsjahr und Szenario vorhanden.</h3>
@@ -84,6 +152,21 @@ export default {
       plots: null,
       crops: null,
       curYear: 2019,
+      greenLandCropCodes: [
+        459,
+        421,
+        422,
+        423,
+        424,
+        425,
+        426,
+        427,
+        429,
+        430,
+        431,
+        432,
+        433
+      ],
       waiting: false
     }
   },
@@ -104,6 +187,16 @@ export default {
     filteredPlots() {
       const filtered = this.plots.filter(p => p.selectedOption.nReq)
       return filtered
+    },
+    greenlandPlots() {
+      return this.filteredPlots.filter(
+        p => this.greenLandCropCodes.indexOf(p.selectedOption.code) > -1
+      )
+    },
+    arablePlots() {
+      return this.filteredPlots.filter(
+        p => this.greenLandCropCodes.indexOf(p.selectedOption.code) === -1
+      )
     }
   },
   created() {

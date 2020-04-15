@@ -158,7 +158,8 @@ export default {
         return acc
       }, 0)
       let opt = 'Opt'
-      if (this.data[0].allowedCrops.length) opt = 'NoOpt'
+      if (this.data[0].allowedCrops && this.data[0].allowedCrops.length)
+        opt = 'NoOpt'
       // XLSX.writeFile(wb, `Fruchtfolge - Planung ${this.year}.xlsx`)
       XLSX.writeFile(wb, `Fruchtfolge - ${red} red area - ${opt}.xlsx`)
     }
