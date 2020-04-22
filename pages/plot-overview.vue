@@ -158,8 +158,8 @@ export default {
       this.$set(this, 'curYear', this.$store.curYear)
     },
     importPrev() {
+      if (!this.waiting) this.$bus.$emit('importPrevYear')
       this.waiting = true
-      this.$bus.$emit('importPrevYear')
     },
     async save(e, data, prop) {
       try {
