@@ -53,8 +53,8 @@ export default {
       }
     },
     importPrev() {
+      if (!this.waiting) this.$bus.$emit('importPrevYear')
       this.waiting = true
-      this.$bus.$emit('importPrevYear')
     }
   }
 }

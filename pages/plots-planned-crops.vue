@@ -178,8 +178,8 @@ export default {
       }
     },
     importPrev() {
+      if (!this.loading) this.$bus.$emit('importPrevYear')
       this.loading = true
-      this.$bus.$emit('importPrevYear')
     },
     async changeAllowed(changedPlot) {
       try {
