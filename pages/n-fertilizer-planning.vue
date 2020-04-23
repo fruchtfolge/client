@@ -128,7 +128,17 @@
         </tbody>
       </table>
     </div>
-    <div v-else style="text-align: center; margin-top: 100px;">
+    <div v-if="!dataAvail && plotsAvail" style="text-align: center; margin-top: 100px;">
+      <h3>
+        Es wurde noch keine Anbauplanung für das Planungsjahr {{ curYear }} angelegt.
+        <br><br>Klicken Sie auf den Link 'Anbauplanung' um loszulegen.
+      </h3>
+      <br>
+      <button class="button" @click="$nuxt.$router.replace({path: 'results'})">
+        NEUE PLANUNG
+      </button>
+    </div>
+    <div v-if="!dataAvail && !plotsAvail" style="text-align: center; margin-top: 100px;">
       <h3>Noch keine Schläge für das ausgewähle Planungsjahr und Szenario vorhanden.</h3>
       <h3>
         Sie können neue Schläge auf der Seite 'Karte' einzeichnen.
@@ -171,6 +181,10 @@ export default {
     }
   },
   computed: {
+    plotsAvail() {
+      if (this.plots && this.plots.length) return true
+      return false
+    },
     dataAvail() {
       let bool = true
       if (this.plots && this.plots.length) {
