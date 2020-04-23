@@ -101,6 +101,12 @@ export default [
   },
   {
     subPage: true,
+    path: '/results',
+    name: 'Anbauplanung',
+    icon: 'static/results.png'
+  },
+  {
+    subPage: true,
     path: '/n-fertilizer-planning',
     name: 'N-Düngebedarf',
     icon: 'static/fertPlanning.png'
