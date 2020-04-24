@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100%;">
-    <div class="page-container">
+    <div class="page-container no-bottom-padding">
       <addPlot v-if="addPlot" :plot-data="plotData" @closeAddPlot="addPlot = false" />
       <plotsSidebar />
       <div style="width: calc(100% - 275px)">
@@ -30,3 +30,8 @@ export default {
   }
 }
 </script>
+<style scoped="true">
+.no-bottom-padding {
+  padding-bottom: 0px;
+}
+</style>
