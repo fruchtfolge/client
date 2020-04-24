@@ -1,6 +1,7 @@
 export default async function(context) {
   const allowedRoutes = [
     '/',
+    '/forgot-password',
     '/datenschutz',
     '/impressum',
     '/kontakt',
