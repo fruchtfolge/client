@@ -21,6 +21,7 @@
           <div v-show="shown[region[0].region]" class="body">
             <p
               v-for="(plot, m) in region"
+              :id="plot._id"
               :key="m"
               class="plotsText hoverPointer"
               :class="{ active: isClicked(plot)}"
@@ -128,6 +129,8 @@ export default {
       if (!plot || !plot[0] || !plot[0].region) return
       this.shown[plot[0].region] = true
       this.curPlot = plot[0]
+      const elem = document.getElementById(plot[0]._id)
+      if (elem && elem !== undefined) elem.scrollIntoView()
     }
   }
 }

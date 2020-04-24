@@ -6,7 +6,12 @@
       <div id="login" class="flip-container" :class="{ flip: showRegister }">
         <div class="flipper">
           <form class="login">
-            <p>ANBAUPLANUNG OPTIMIEREN</p>
+            <p v-if="forgotPassword">
+              PASSWORT ZURÜCKSETZEN
+            </p>
+            <p v-else>
+              ANBAUPLANUNG OPTIMIEREN
+            </p>
             <input
               id="email"
               v-model="email"
@@ -17,7 +22,11 @@
               autofocus="autofocus"
               @keyup.enter="login"
             >
+            <div v-if="forgotPassword" class="forgot-password-label" style="margin-top: 100px;">
+              Geben Sie Ihre E-Mail Adresse in das Eingabefeld und klicken Sie anschließend auf 'Weiter', um Ihr Passwort zurückzusetzen.</span>
+            </div>
             <input
+              v-if="!forgotPassword"
               id="password"
               v-model="password"
               class="password"
@@ -27,10 +36,13 @@
               autocomplete="current-password"
               @keyup.enter="login"
             >
-            <button id="login-button" type="button" class="login-button hoverPointer" @click="login">
+            <button v-if="forgotPassword" id="forgot-password-button" type="button" class="login-button hoverPointer" @click="postForgotPassword">
+              WEITER
+            </button>
+            <button v-else id="login-button" type="button" class="login-button hoverPointer" @click="login">
               ANMELDEN
             </button>
-            <a class="forgot" href="index.html">Passwort vergessen?</a>
+            <a class="forgot" @click="forgotPassword = !forgotPassword">{{ forgotPassword ? "Zurück zur Anmeldung" : "Passwort vergessen?" }}</a>
           </form>
           <form class="registrierung">
             <p>JETZT KOSTENLOS ANMELDEN</p>
@@ -232,6 +244,7 @@ export default {
       postcode: '',
       confirmPassword: '',
       autocomplete: [],
+      forgotPassword: false,
       dsgvoAccepted: false,
       cookiesAccepted: false,
       clicked: false,
@@ -372,8 +385,6 @@ export default {
               live: true,
               retry: true
             })
-            this.loading = false
-            this.clicked = false
             if (signup) {
               return $nuxt.$router.replace({ path: '/settings' })
             }
@@ -440,6 +451,28 @@ export default {
       el.scrollIntoView({ behavior: 'smooth' })
       el.scrollTop += 10
     },
+    async postForgotPassword() {
+      if (!this.email) {
+        return this.loginError({
+          message: 'Bitte geben Sie Ihre E-Mail Adresse an.'
+        })
+      }
+      this.clicked = true
+      this.loading = true
+      try {
+        await this.$axios.post(process.env.baseUrl + 'auth/forgot-password', {
+          email: this.email
+        })
+        return $nuxt.$router.replace({ path: '/forgot-password' })
+      } catch (e) {
+        this.clicked = false
+        this.loading = false
+        this.loginError({
+          message: 'Kein Account mit dieser E-Mail Adresse hinterlegt.'
+        })
+        console.error(e)
+      }
+    },
     async login() {
       if (this.clicked) return
       this.clicked = true
@@ -468,7 +501,7 @@ export default {
       }
     }
   },
-  middleware: 'auth',
+  middleware: null,
   layout: 'home'
 }
 </script>
@@ -644,6 +677,21 @@ div.flip-container {
   margin-top: 20px;
   margin-left: 30px;
   margin-right: 30px;
+}
+
+.forgot-password-label {
+  margin-top: 100px;
+  padding-left: 35px;
+  padding-right: 30px;
+  font-family: Inter, Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  font-size: 11px;
+  color: #999999;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .address {
