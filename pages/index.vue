@@ -371,8 +371,6 @@ export default {
               live: true,
               retry: true
             })
-            this.loading = false
-            this.clicked = false
             if (signup) {
               return $nuxt.$router.replace({ path: '/settings' })
             }

@@ -105,6 +105,20 @@ export default {
       // auto open sidenav when window width is greater than x
       const width = window.innerWidth > 0 ? window.innerWidth : screen.width
       if (width <= 1000) this.close()
+      // add service worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker
+          .register('/worker.js')
+          .then(function(registration) {
+            console.log(
+              'Registration successful, scope is:',
+              registration.scope
+            )
+          })
+          .catch(function(err) {
+            console.log('Service worker registration failed, error:', err)
+          })
+      }
     } catch (e) {
       if (e.status === 404) {
         this.settings = new Setting(this.settings)
