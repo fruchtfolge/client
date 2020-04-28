@@ -38,7 +38,7 @@
             </thead>
             <tbody>
               <tr>
-                <td>Anbauspause in Jahren</td>
+                <td>Anbaupause in Jahren</td>
                 <td contenteditable="true" @blur="save($event, 'rotBreak')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.rotBreak }}
                 </td>

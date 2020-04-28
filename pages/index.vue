@@ -424,7 +424,7 @@ export default {
             address: this.address,
             postcode: this.postcode,
             home: address.home,
-            state_district: address.stateDistrict,
+            state_district: address.state_district,
             city: address.city
           }
         )

@@ -48,9 +48,9 @@
                 :preserve-search="true"
                 :searchable="false"
                 selectLabel="Enter zum auswählen"
-                selectedLabel="Auwgewählt"
+                selectedLabel="Ausgewählt"
                 deselectLabel="Enter zum entfernen"
-                placeholder="Auwählen"
+                placeholder="Auswählen"
                 :preselect-first="false"
                 @input="changeAllowed(plot)"
               />
