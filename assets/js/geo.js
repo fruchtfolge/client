@@ -62,7 +62,7 @@ export default {
         throw Error('Keine Koordinaten für die angegebene Adresse gefunden.')
 
       const stateDistrict = match.properties.macrocounty
-        ? match.properties.macrocounty.split(' ')[0]
+        ? match.properties.macrocounty.split(' ')[1]
         : 'Deutschland'
       const town = match.properties.locality
       return {
