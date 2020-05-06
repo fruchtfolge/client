@@ -38,6 +38,7 @@
           type="text"
           class="input"
           name="zid"
+          autocomplete="off"
           placeholder="ZID-Betriebsnummer (27605...)"
         >
         <br>
@@ -47,6 +48,7 @@
           type="password"
           class="input"
           name="zid-pw"
+          autocomplete="off"
           placeholder="Passwort"
           @keyup.enter="getElan"
         >

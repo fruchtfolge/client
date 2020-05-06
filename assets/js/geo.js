@@ -22,9 +22,9 @@ export default {
         params: {
           api_key: '5b3ce3597851110001cf624840afc87995d74264ab078793584fa381',
           text: `${street},${postcode}`,
-          layers: 'address',
           'focus.point.lat': 51.0968582,
           'focus.point.lon': 5.9690268,
+          'boundary.country': 'DE',
           size: 5,
           lang: 'DE'
         }
@@ -46,6 +46,7 @@ export default {
           postalcode: postcode,
           'focus.point.lat': 51.0968582,
           'focus.point.lon': 5.9690268,
+          'boundary.country': 'DE',
           lang: 'DE',
           size: 1
         }
