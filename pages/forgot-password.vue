@@ -57,6 +57,7 @@ import notifications from '~/components/notifications'
 
 export default {
   middleware: null,
+  scrollToTop: true,
   layout: 'home',
   components: {
     loading: () => import('~/components/loading.vue')

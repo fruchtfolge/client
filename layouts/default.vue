@@ -201,7 +201,8 @@ export default {
   transition: {
     name: 'InAndOut',
     mode: ''
-  }
+  },
+  scrollToTop: true
 }
 </script>
 

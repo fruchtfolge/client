@@ -204,6 +204,7 @@ h2,h3,h4 {
 }
 
 .link {
+  cursor: pointer;
   text-decoration: none;
   color: rgba(3, 102, 214, 1);
 }

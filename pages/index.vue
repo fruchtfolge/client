@@ -3,113 +3,140 @@
     <loading v-if="loading" :main="progress" />
     <div v-else>
       <img id="background" class="background" src="~assets/img/background.jpeg" alt="background">
-      <div id="login" class="flip-container" :class="{ flip: showRegister }">
-        <div class="flipper">
+      <div id="login" />
+      <div id="login" class="flip-container" :class="{ flip: showRegister, 'margin-front': !showRegister, 'margin-back': showRegister }">
+        <div class="flipper" :class="{ 'width-back': showRegister }">
           <form class="login">
-            <p v-if="forgotPassword">
-              PASSWORT ZURÜCKSETZEN
-            </p>
-            <p v-else>
-              ANBAUPLANUNG OPTIMIEREN
-            </p>
-            <input
-              id="email"
-              v-model="email"
-              class="email"
-              placeholder="E-Mail"
-              autocomplete="email"
-              name="email"
-              autofocus="autofocus"
-              @keyup.enter="login"
-            >
-            <div v-if="forgotPassword" class="forgot-password-label" style="margin-top: 100px;">
-              Geben Sie Ihre E-Mail Adresse in das Eingabefeld und klicken Sie anschließend auf 'Weiter', um Ihr Passwort zurückzusetzen.</span>
+            <div v-if="forgotPassword" class="teaser">
+              <p v-if="forgotPassword">
+                PASSWORT ZURÜCKSETZEN
+              </p>
+              <span style="line-height: 1.4em;">
+                Geben Sie Ihre E-Mail Adresse in das Eingabefeld und klicken Sie anschließend auf 'Weiter', um Ihr Passwort zurückzusetzen.
+              </span>
             </div>
-            <input
-              v-if="!forgotPassword"
-              id="password"
-              v-model="password"
-              class="password"
-              placeholder="Passwort"
-              type="password"
-              name="password"
-              autocomplete="current-password"
-              @keyup.enter="login"
-            >
-            <button v-if="forgotPassword" id="forgot-password-button" type="button" class="login-button hoverPointer" @click="postForgotPassword">
-              WEITER
-            </button>
-            <button v-else id="login-button" type="button" class="login-button hoverPointer" @click="login">
-              ANMELDEN
-            </button>
-            <a class="forgot" @click="forgotPassword = !forgotPassword">{{ forgotPassword ? "Zurück zur Anmeldung" : "Passwort vergessen?" }}</a>
+            <div v-else class="teaser">
+              <p>
+                ANBAUPLANUNG OPTIMIEREN
+              </p>
+              <span style="line-height: 1.4em;">
+                Die Düngeverordnung 2020 bringt viele Änderungen mit sich. Zusätzlich zu neuen Maßnahmen in den roten Gebieten wurden unter anderem auch die Auflagen für die Herbstdüngung verschärft.
+                <br>
+                Die Fruchtfolge Anwendung der Uni Bonn unterstützt Sie dabei, in nur wenigen Minuten die kostengünstigste Anpassungstrategie an die neue Düngeverordnung für Ihren Betrieb zu finden.
+                <br>
+                Die Düngebedarfsermittlung wird dabei automatisch erstellt.
+                <br>
+                <!--
+                <br>
+                <br>
+                Sie wollen direkt loslegen? Klicken Sie auf den 'Registrieren'-Button in der oberen rechten Ecke.
+              -->
+              </span>
+              <div style="margin-top: 10px;">
+                <a class="link" style="margin-top: 10px;" @click="jump('landing')">Mehr erfahren</a>
+              </div>
+            </div>
+            <div class="login-container">
+              <p v-if="!forgotPassword">
+                WILLKOMMEN ZURÜCK
+              </p>
+              <p v-else />
+              <label class="label" for="email">E-Mail</label>
+              <input
+                id="email"
+                v-model="email"
+                class="email"
+                placeholder="E-Mail"
+                autocomplete="email"
+                name="email"
+                autofocus="autofocus"
+                @keyup.enter="login"
+              >
+              <label v-if="!forgotPassword" class="label" for="password">Passwort</label>
+              <input
+                v-if="!forgotPassword"
+                id="password"
+                v-model="password"
+                class="password"
+                placeholder="Passwort"
+                type="password"
+                name="password"
+                autocomplete="current-password"
+                @keyup.enter="login"
+              >
+              <button v-if="forgotPassword" id="forgot-password-button" type="button" class="login-button hoverPointer" @click="postForgotPassword">
+                WEITER
+              </button>
+              <button v-else id="login-button" type="button" class="login-button hoverPointer" @click="login">
+                ANMELDEN
+              </button>
+              <a class="forgot" @click="forgotPassword = !forgotPassword">{{ forgotPassword ? "Zurück zur Anmeldung" : "Passwort vergessen?" }}</a>
+            </div>
           </form>
           <form class="registrierung">
-            <p>JETZT KOSTENLOS ANMELDEN</p>
+            <p>JETZT KOSTENLOS REGISTRIEREN</p>
             <div class="register-container">
-              <input
-                id="postcode"
-                v-model="postcode"
-                class="address"
-                placeholder="PLZ"
-                autocomplete="postal-code"
-              >
-              <input
-                id="address"
-                v-model="address"
-                list="suggestions"
-                class="address"
-                placeholder="Strasse u. Hausnr. (Betrieb)"
-                autocomplete="street-address"
-                @input="debouncedAutocomplete"
-              >
-              <autocomplete :suggestions="autocomplete" />
-              <input
-                id="email2"
-                v-model="email"
-                class="address"
-                autocomplete="email"
-                placeholder="E-Mail Adresse"
-              >
-              <input
-                id="password2"
-                v-model="password"
-                class="address"
-                placeholder="Passwort"
-                autocomplete="new-password"
-                type="password"
-              >
-              <input
-                id="confirmPassword"
-                v-model="confirmPassword"
-                class="address"
-                placeholder="Passwort wiederholen"
-                autocomplete="new-password"
-                type="password"
-                @keyup.enter="signup"
-              >
-              <input id="c2" v-model="dsgvoAccepted" type="checkbox" name="cc" class="">
-              <label for="c2" class="label-login" style="margin-top: 100px;">
-                <span />Ich habe die <nuxt-link class="link" to="/nutzungsbedingungen">Nutzungsbedingungen</nuxt-link> gelesen und bin mit ihnen
-                einverstanden. Die <nuxt-link class="link" to="/datenschutz">Datenschutzerklärung</nuxt-link> habe ich ebenfalls zur Kenntnis genommen und akzeptiert.
-              </label>
-              <br>
-              <input id="c3" v-model="cookiesAccepted" type="checkbox" name="cookies" class="">
-              <label for="c3" class="label-login" style="margin-top: 100px;">
-                <span />Ich stimme der Verwendung von Cookies auf der Webseite zu.
-              </label>
+              <addressMap :suggestions="autocomplete" :address="address" :coordsForward="coordsForward" @updateCoords="updateCoords" />
+              <div class="register-input-container">
+                <label for="address" class="label">Adresse</label>
+                <input
+                  id="address"
+                  v-model="address"
+                  list="suggestions"
+                  class="address"
+                  placeholder="Strasse u. Hausnr. (Betrieb)"
+                  autocomplete="street-address"
+                  @input="debouncedAutocomplete"
+                  @blur="forwardGeocode"
+                  @keypup.enter="forwardGeocode"
+                >
+                <autocomplete :suggestions="autocomplete" />
+                <label for="email2" class="label">E-Mail</label>
+                <input
+                  id="email2"
+                  v-model="email"
+                  class="address"
+                  autocomplete="email"
+                  placeholder="E-Mail Adresse"
+                >
+                <label for="password2" class="label">Passwort</label>
+                <input
+                  id="password2"
+                  v-model="password"
+                  class="address"
+                  placeholder="Passwort"
+                  autocomplete="new-password"
+                  type="password"
+                >
+                <label for="password2" class="label">Passwort wiederholen</label>
+                <input
+                  id="confirmPassword"
+                  v-model="confirmPassword"
+                  class="address"
+                  placeholder="Passwort wiederholen"
+                  autocomplete="new-password"
+                  type="password"
+                  @keyup.enter="signup"
+                >
+                <input id="c2" v-model="dsgvoAccepted" type="checkbox" name="cc" class="">
+                <label for="c2" class="label-login" style="margin-top: 100px;">
+                  <span />Ich habe die <nuxt-link class="link" to="/nutzungsbedingungen">Nutzungsbedingungen</nuxt-link> gelesen und bin mit ihnen
+                  einverstanden. Die <nuxt-link class="link" to="/datenschutz">Datenschutzerklärung</nuxt-link> habe ich ebenfalls zur Kenntnis genommen und akzeptiert.
+                </label>
+                <br>
+                <input id="c3" v-model="cookiesAccepted" type="checkbox" name="cookies" class="">
+                <label for="c3" class="label-login" style="margin-top: 100px;">
+                  <span />Ich stimme der Verwendung von Cookies auf der Webseite zu.
+                </label>
+                <button id="signup" type="button" class="register-button hoverPointer" @click="signup">
+                  REGISTRIEREN
+                </button>
+              </div>
             </div>
-            <button id="signup" type="button" class="register-button hoverPointer" @click="signup">
-              REGISTRIEREN
-            </button>
           </form>
         </div>
       </div>
-      <div class="expand" @click="jump('landing')">
-        <h2>WEITERE INFOS</h2>
-        <div id="landing" class="arrow-bottom" />
-      </div>
-      <div class="landing">
+      <div id="landing" class="landing">
         <h1>
           FRUCHTFOLGE IST KEINE ACKERSCHLAGKARTEI
         </h1>
@@ -231,17 +258,19 @@ import notifications from '~/components/notifications'
 export default {
   components: {
     loading: () => import('~/components/loading.vue'),
-    autocomplete: () => import('~/components/autocomplete.vue')
+    autocomplete: () => import('~/components/autocomplete.vue'),
+    addressMap: () => import('~/components/address_map.vue')
   },
   data() {
     return {
       showRegister: false,
       pendingMax: 0,
       progress: '0%',
+      coords: [7.685235, 51.574318],
+      coordsForward: [7.685235, 51.574318],
       email: '',
       password: '',
       address: '',
-      postcode: '',
       confirmPassword: '',
       autocomplete: [],
       forgotPassword: false,
@@ -257,11 +286,12 @@ export default {
     )
     this.debouncedAutocomplete = _.debounce(async () => {
       try {
-        this.autocomplete = await geo.autocomplete(this.address, this.postcode)
+        this.autocomplete = await geo.autocomplete(this.address)
       } catch (e) {
-        this.incomplete({ title: 'ADRESSE', message: e.message })
+        console.error(JSON.stringify(e))
+        // this.incomplete({ title: 'ADRESSE', message: e.message })
       }
-    }, 350)
+    }, 150)
     this.$bus.$on('flip', this.flip)
   },
   destroyed() {
@@ -277,11 +307,27 @@ export default {
         ? (this.showRegister = false)
         : (this.showRegister = true)
     },
+    updateCoords(value) {
+      this.coords = [value.lng, value.lat]
+    },
+    async forwardGeocode() {
+      if (this.address.length < 3) return
+      let geoData
+      try {
+        geoData = await geo.forward(this.address)
+      } catch (e) {
+        console.error(e)
+        return
+      }
+      this.stateDistrict = geoData.state_district
+      this.city = geoData.city
+      this.coordsForward = geoData.home
+      this.coords = geoData.home
+    },
     checkSignup() {
       if (
         !this.address ||
         !this.email ||
-        !this.postcode ||
         !this.password ||
         !this.confirmPassword
       ) {
@@ -293,6 +339,11 @@ export default {
       } else if (this.password !== this.confirmPassword) {
         this.notMatching()
         return false
+      } else if (this.coords === [7.685235, 51.574318]) {
+        this.showAddressWarn({
+          message:
+            'Bitte ziehen Sie den Mittelpunkt der Karte auf die Adresse Ihres Betriebes.'
+        })
       } else {
         return true
       }
@@ -370,7 +421,6 @@ export default {
                 }
               )
               settings.street = data.address
-              settings.postcode = data.postcode
               settings.city = data.city
               settings.home = data.home
               settings.timestamp = date.toISOString()
@@ -413,8 +463,6 @@ export default {
           return
         }
 
-        const address = await geo.forward(this.address, this.postcode)
-
         const { data } = await this.$axios.post(
           process.env.baseUrl + 'auth/register',
           {
@@ -422,10 +470,10 @@ export default {
             password: this.password,
             confirmPassword: this.confirmPassword,
             address: this.address,
-            postcode: this.postcode,
-            home: address.home,
-            state_district: address.state_district,
-            city: address.city
+            postcode: '',
+            home: this.coords,
+            state_district: this.state_district,
+            city: this.city
           }
         )
         await this.handleSuccess(data, true)
@@ -501,6 +549,7 @@ export default {
     }
   },
   middleware: null,
+  scrollToTop: true,
   layout: 'home'
 }
 </script>
@@ -563,13 +612,24 @@ div.flip-container {
   position: absolute;
   cursor: default;
   left: 50%;
-  margin-left: -150px;
   margin-top: calc(-50vh - 290px);
+}
+
+.margin-front {
+  margin-left: -360px;
+}
+
+.margin-back {
+  margin-left: -360px;
+}
+
+.width-back {
+  width: 720px;
 }
 
 /* entire container, keeps perspective */
 .flip-container {
-  perspective: 1000px;
+  perspective: 3000px;
 }
 
 /* flip the pane when hovered */
@@ -579,8 +639,8 @@ div.flip-container {
 
 .flip-container,
 .login {
-  width: 300px;
-  height: 370px;
+  width: 720px;
+  height: 550px;
 }
 
 /* flip speed goes here */
@@ -609,24 +669,31 @@ div.flip-container {
 
 /* back, initially hidden pane */
 .registrierung {
-  height: 580px;
+  height: 650px;
+  width: 720px;
   transform: rotateY(180deg);
 }
 
 .login {
   background: white;
-  border-radius: 0 !important;
+  border-radius: 0px;
+}
+
+.teaser {
+  font-size: 14px;
+  margin-left: 60px;
+  width: 300px;
 }
 
 .login p {
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.23em;
-  font-size: 29px;
+  font-size: 28px;
   text-align: center;
   color: black;
-  padding-top: 15px;
-  padding-left: 5px;
+  padding-top: 55px;
   margin: 0px;
+  margin-bottom: 40px;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -635,13 +702,19 @@ div.flip-container {
   user-select: none;
 }
 
+.login-container {
+  width: 233px;
+  position: absolute;
+  right: 60px;
+  top: 0px;
+}
 .registrierung p {
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.23em;
   font-size: 26px;
   text-align: center;
   color: black;
-  padding-top: 15px;
+  padding-top: 35px;
   padding-left: 5px;
   margin: 0px;
   -webkit-touch-callout: none;
@@ -678,6 +751,13 @@ div.flip-container {
   margin-right: 30px;
 }
 
+.register-input-container {
+  position: absolute;
+  right: 35px;
+  top: 111px;
+  width: 241px;
+}
+
 .forgot-password-label {
   margin-top: 100px;
   padding-left: 35px;
@@ -709,32 +789,8 @@ div.flip-container {
   border-radius: 0 !important;
 }
 
-.postcode {
-  position: absolute;
-  top: 50%;
-  margin-top: -89px;
-  left: 50%;
-  margin-left: -116.5px;
-  width: 233px;
-  height: 33px;
-  border-style: solid;
-  border-width: 1px;
-  border-color: #cccccc;
-  background-color: transparent;
-  font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
-  letter-spacing: 0.1em;
-  font-size: 18px;
-  color: grey;
-  padding-left: 5px;
-  border-radius: 0 !important;
-}
-
 .email {
-  position: absolute;
-  top: 50%;
-  margin-top: -48px;
-  left: 50%;
-  margin-left: -116.5px;
+  margin-bottom: 10px;
   width: 233px;
   height: 33px;
   border-style: solid;
@@ -746,27 +802,6 @@ div.flip-container {
   font-size: 18px;
   color: grey;
   padding-left: 5px;
-  border-radius: 0 !important;
-}
-
-.emailFalsch {
-  position: absolute;
-  top: 38%;
-  margin-top: -48px;
-  left: 50%;
-  margin-left: -120px;
-  width: 240px;
-  height: 33px;
-  border-style: dashed;
-  border-width: 1px;
-  border-color: #cccccc;
-  background-color: #f5f5f5;
-  font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
-  text-align: center;
-  letter-spacing: 0.1em;
-  font-size: 12px;
-  color: grey;
-  padding-left: 0px;
   border-radius: 0 !important;
 }
 
@@ -791,13 +826,10 @@ div.flip-container {
 }
 
 .password {
-  position: absolute;
-  top: 50%;
-  margin-top: 0px;
+  margin-bottom: 10px;
   width: 233px;
   height: 33px;
-  left: 50%;
-  margin-left: -116.5px;
+  right: 50px;
   border-style: solid;
   border-width: 1px;
   border-color: #cccccc;
@@ -850,6 +882,11 @@ div.flip-container {
   border-radius: 0 !important;
 }
 
+.label {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+}
+
 .label-login {
   font-family: Inter, Helvetica, Arial, sans-serif;
   font-weight: 300;
@@ -865,13 +902,10 @@ div.flip-container {
 }
 
 .login-button {
-  position: absolute;
-  top: 50%;
-  margin-top: 88px;
-  width: 233px;
+  margin-top: 40px;
+  width: 241px;
   height: 40px;
-  left: 50%;
-  margin-left: -116.5px;
+  right: 50px;
   border-style: solid;
   border-width: 1px;
   border-color: black;
@@ -894,12 +928,10 @@ div.flip-container {
 }
 
 .register-button {
-  position: absolute;
   bottom: 30px;
-  width: 233px;
+  width: 241px;
   height: 40px;
-  left: 50%;
-  margin-left: -116.5px;
+  margin-top: 50px;
   border-style: solid;
   border-width: 1px;
   border-color: black;
@@ -922,10 +954,9 @@ div.flip-container {
 }
 
 .forgot {
-  position: absolute;
-  top: 50%;
-  margin-top: 138px;
-  right: 33.5px;
+  cursor: pointer;
+  margin-top: 20px;
+  float: right;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.1em;
   font-size: 14px;
@@ -948,7 +979,7 @@ div.flip-container {
 }
 
 .landing {
-  height: 100vh;
+  /* height: 100vh; */
   margin-top: 120px;
 }
 
@@ -995,7 +1026,7 @@ div.flip-container {
   width: 50%;
   min-width: 580px;
   max-width: 800px;
-  padding-bottom: 50px;
+  padding-bottom: 100px;
   padding-left: 5px;
   padding-right: 5px;
 }

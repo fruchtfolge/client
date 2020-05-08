@@ -27,6 +27,7 @@
 <script>
 export default {
   middleware: null,
+  scrollToTop: true,
   layout: 'home'
 }
 </script>

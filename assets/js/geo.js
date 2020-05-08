@@ -13,15 +13,14 @@ export default {
     return request.data.route.distance
   },
 
-  async autocomplete(street, postcode) {
-    if (!postcode) throw Error('Bitte zuerst Postleizahl eingeben.')
+  async autocomplete(street) {
     if (!street || street.length < 3) return
     const { data } = await axios.get(
       'https://api.openrouteservice.org/geocode/autocomplete',
       {
         params: {
           api_key: '5b3ce3597851110001cf624840afc87995d74264ab078793584fa381',
-          text: `${street},${postcode}`,
+          text: `${street}`,
           'focus.point.lat': 51.0968582,
           'focus.point.lon': 5.9690268,
           'boundary.country': 'DE',
@@ -32,18 +31,17 @@ export default {
     )
     if (data && data.features) {
       const match = data.features
-      return match.map(o => o.properties.name)
+      return match
     }
   },
 
-  async forward(street, postcode) {
+  async forward(street) {
     const { data } = await axios.get(
-      'https://api.openrouteservice.org/geocode/search/structured',
+      'https://api.openrouteservice.org/geocode/search',
       {
         params: {
           api_key: '5b3ce3597851110001cf624840afc87995d74264ab078793584fa381',
-          address: street,
-          postalcode: postcode,
+          text: street,
           'focus.point.lat': 51.0968582,
           'focus.point.lon': 5.9690268,
           'boundary.country': 'DE',

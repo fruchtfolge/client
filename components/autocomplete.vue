@@ -1,8 +1,8 @@
 <template>
   <div class="">
     <datalist id="suggestions" class="">
-      <option v-for="(suggestion,i) in cleanSuggestions" :key="`suggestion_${i}`">
-        {{ suggestion }}
+      <option v-for="(suggestion,i) in cleanSuggestions" :key="`suggestion_${i}`" :value="suggestion.properties.label">
+        {{ suggestion.properties.clean }}
       </option>
     </datalist>
   </div>
@@ -24,7 +24,8 @@ export default {
   computed: {
     cleanSuggestions() {
       return this.suggestions.map(s => {
-        return toAscii.fold(s)
+        s.properties.clean = toAscii.fold(s.properties.label)
+        return s
       })
     }
   }
