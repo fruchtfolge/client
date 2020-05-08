@@ -7,7 +7,6 @@ export default class Setting {
     this.curYear = settings.curYear
     this.curScenario = settings.curScenario
     this.street = ''
-    this.postcode = ''
     this.city = ''
   }
 }

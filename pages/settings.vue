@@ -15,8 +15,6 @@
       <div style="text-align: center;">
         <input v-model="street" type="text" class="input" placeholder="Straße und Hausnummer">
         <br>
-        <input v-model="postcode" type="text" class="input" placeholder="PLZ">
-        <br>
         <input v-model="city" type="text" class="input" placeholder="Stadt">
       </div>
       <br>
@@ -38,6 +36,7 @@
           type="text"
           class="input"
           name="zid"
+          autocomplete="off"
           placeholder="ZID-Betriebsnummer (27605...)"
         >
         <br>
@@ -47,6 +46,7 @@
           type="password"
           class="input"
           name="zid-pw"
+          autocomplete="off"
           placeholder="Passwort"
           @keyup.enter="getElan"
         >
@@ -142,7 +142,6 @@ export default {
       curYear: 2019,
       street: '',
       city: '',
-      postcode: '',
       selectedDeleteYear: 2019
     }
   },
@@ -150,9 +149,6 @@ export default {
   watch: {
     street() {
       if (this.street !== this.settings.street) this.debouncedGetHome()
-    },
-    postcode() {
-      if (this.postcode !== this.settings.postcode) this.debouncedGetHome()
     },
     city() {
       if (this.city !== this.settings.city) this.debouncedGetHome()
@@ -173,7 +169,6 @@ export default {
       this.duev2020 = this.settings.duev2020
       this.curYear = this.settings.curYear
       this.street = this.settings.street
-      this.postcode = this.settings.postcode
       this.city = this.settings.city
       console.log(this.settings)
     } catch (e) {
@@ -187,11 +182,10 @@ export default {
       if (!this.street || !this.city) return this.showAddressWarn()
       try {
         const settings = await this.$db.get('settings')
-        const address = await geo.forward(this.street, this.postcode, this.city)
+        const address = await geo.forward(this.street)
 
         settings.street = this.street
         settings.city = this.city
-        settings.postcode = this.postcode
         settings.home = address.home
         settings.state_district = address.state_district
 

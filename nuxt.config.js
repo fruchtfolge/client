@@ -54,7 +54,7 @@ module.exports = {
       {
         rel: 'stylesheet',
         href:
-          'https://fonts.googleapis.com/css?family=Inter:300,700|Open+Sans|Open+Sans+Condensed:300&display=swap'
+          'https://fonts.googleapis.com/css?family=Inter:300,400,600,700|Open+Sans+Condensed:300&display=swap'
       }
     ]
   },
@@ -72,6 +72,7 @@ module.exports = {
   */
   css: [
     '@/assets/css/global.css',
+    '@/assets/css/grid.css',
     '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css',
     'mapbox-gl/dist/mapbox-gl.css'
   ],
@@ -104,8 +105,9 @@ module.exports = {
   ** API base url, can be changed for debugging
   */
   env: {
-    // baseUrl: 'http://localhost:3003/'
-    baseUrl: 'https://fruchtfolge.agp.uni-bonn.de/api/'
+    // baseUrl: 'http://localhost:3003/',
+    baseUrl: 'https://fruchtfolge.agp.uni-bonn.de/api/',
+    appVersion: pkg.version
   },
   router: {
     middleware: 'auth'

@@ -14,6 +14,7 @@
     <nuxt class="nuxt" />
     <!-- Footer for legal texts-->
     <footer class="footer">
+      <p>Fruchtfolge Version {{ version }} - Economic Modeling of Agricultural Systems Group - ILR - Universität Bonn</p>
       <nuxt-link class="link" to="/kontakt">
         Kontakt
       </nuxt-link>
@@ -34,8 +35,12 @@
 export default {
   data() {
     return {
-      buttonText: 'REGISTRIEREN'
+      buttonText: 'REGISTRIEREN',
+      version: '2.0.0'
     }
+  },
+  created() {
+    this.version = process.env.appVersion
   },
   methods: {
     flip() {
@@ -103,18 +108,21 @@ html {
 }
 
 .footer {
-  position: fixed;
-  text-align: right;
+  padding: 20px;
+  position: relative;
   bottom: 0px;
-  right: 0px;
-  padding-right: 10px;
-  padding-left: 10px;
-  background-color: rgba(0, 0, 0, 0.3);
+  text-align: center;
+  border-top: 1px #ececec solid;
+  background-color: #f5f5f5;
 }
 .footer a {
+  font-size: 12px;
   padding-right: 5px;
   padding-left: 5px;
   text-decoration: none;
-  color: white;
+  color: black;
+}
+.footer p {
+  font-size: 12px;
 }
 </style>

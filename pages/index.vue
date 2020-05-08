@@ -3,220 +3,318 @@
     <loading v-if="loading" :main="progress" />
     <div v-else>
       <img id="background" class="background" src="~assets/img/background.jpeg" alt="background">
-      <div id="login" class="flip-container" :class="{ flip: showRegister }">
-        <div class="flipper">
+      <div id="login" />
+      <div id="login" class="flip-container" :class="{ flip: showRegister, 'margin-front': !showRegister, 'margin-back': showRegister }">
+        <div class="flipper" :class="{ 'width-back': showRegister }">
           <form class="login">
-            <p v-if="forgotPassword">
+            <p v-if="forgotPassword" style="width: 100%">
               PASSWORT ZURÜCKSETZEN
             </p>
-            <p v-else>
-              ANBAUPLANUNG OPTIMIEREN
-            </p>
-            <input
-              id="email"
-              v-model="email"
-              class="email"
-              placeholder="E-Mail"
-              autocomplete="email"
-              name="email"
-              autofocus="autofocus"
-              @keyup.enter="login"
-            >
-            <div v-if="forgotPassword" class="forgot-password-label" style="margin-top: 100px;">
-              Geben Sie Ihre E-Mail Adresse in das Eingabefeld und klicken Sie anschließend auf 'Weiter', um Ihr Passwort zurückzusetzen.</span>
+            <div v-if="forgotPassword" class="teaser">
+              <span style="line-height: 1.4em;">
+                <br>
+                <br>
+                Geben Sie Ihre E-Mail Adresse in das Eingabefeld auf der rechten Seiten ein.
+                <br>
+                <br>
+                Klicken Sie anschließend auf 'Weiter' um Ihr Passwort zurückzusetzen.
+                <br>
+                <br>
+                Sie erhalten Anschließend eine E-Mail mit weiteren Anweisungen zum Zurücksetzen Ihres Passworts.
+              </span>
             </div>
-            <input
-              v-if="!forgotPassword"
-              id="password"
-              v-model="password"
-              class="password"
-              placeholder="Passwort"
-              type="password"
-              name="password"
-              autocomplete="current-password"
-              @keyup.enter="login"
-            >
-            <button v-if="forgotPassword" id="forgot-password-button" type="button" class="login-button hoverPointer" @click="postForgotPassword">
-              WEITER
-            </button>
-            <button v-else id="login-button" type="button" class="login-button hoverPointer" @click="login">
-              ANMELDEN
-            </button>
-            <a class="forgot" @click="forgotPassword = !forgotPassword">{{ forgotPassword ? "Zurück zur Anmeldung" : "Passwort vergessen?" }}</a>
+            <div v-else class="teaser">
+              <p>
+                ANBAUPLANUNG OPTIMIEREN
+              </p>
+              <span style="line-height: 1.4em;">
+                Die Düngeverordnung 2020 bringt viele Änderungen mit sich. Zusätzlich zu neuen Maßnahmen in den roten Gebieten wurden unter anderem auch die Auflagen für die Herbstdüngung verschärft.
+                <br>
+                Die Fruchtfolge Anwendung der Uni Bonn unterstützt Sie dabei, in nur wenigen Minuten die kostengünstigste Anpassungstrategie an die neue Düngeverordnung für Ihren Betrieb zu finden.
+                <br>
+                Die Düngebedarfsermittlung wird dabei automatisch erstellt.
+                <br>
+                <!--
+                <br>
+                <br>
+                Sie wollen direkt loslegen? Klicken Sie auf den 'Registrieren'-Button in der oberen rechten Ecke.
+              -->
+              </span>
+              <div style="margin-top: 10px;">
+                <a class="link" style="margin-top: 10px;" @click="jump('landing')">Mehr erfahren</a>
+              </div>
+            </div>
+            <div class="login-container">
+              <p v-if="!forgotPassword">
+                WILLKOMMEN ZURÜCK
+              </p>
+              <p v-else>
+                <br>
+                <br>
+              </p>
+              <label class="label" for="email">E-Mail</label>
+              <input
+                id="email"
+                v-model="email"
+                class="email"
+                placeholder="E-Mail"
+                autocomplete="email"
+                name="email"
+                autofocus="autofocus"
+                @keyup.enter="login"
+              >
+              <label v-if="!forgotPassword" class="label" for="password">Passwort</label>
+              <input
+                v-if="!forgotPassword"
+                id="password"
+                v-model="password"
+                class="password"
+                placeholder="Passwort"
+                type="password"
+                name="password"
+                autocomplete="current-password"
+                @keyup.enter="login"
+              >
+              <button v-if="forgotPassword" id="forgot-password-button" type="button" class="login-button hoverPointer" @click="postForgotPassword">
+                WEITER
+              </button>
+              <button v-else id="login-button" type="button" class="login-button hoverPointer" @click="login">
+                ANMELDEN
+              </button>
+              <a class="forgot" @click="forgotPassword = !forgotPassword">{{ forgotPassword ? "Zurück zur Anmeldung" : "Passwort vergessen?" }}</a>
+            </div>
           </form>
           <form class="registrierung">
-            <p>JETZT KOSTENLOS ANMELDEN</p>
+            <p>JETZT KOSTENLOS REGISTRIEREN</p>
             <div class="register-container">
-              <input
-                id="postcode"
-                v-model="postcode"
-                class="address"
-                placeholder="PLZ"
-                autocomplete="postal-code"
-              >
-              <input
-                id="address"
-                v-model="address"
-                list="suggestions"
-                class="address"
-                placeholder="Strasse u. Hausnr. (Betrieb)"
-                autocomplete="street-address"
-                @input="debouncedAutocomplete"
-              >
-              <autocomplete :suggestions="autocomplete" />
-              <input
-                id="email2"
-                v-model="email"
-                class="address"
-                autocomplete="email"
-                placeholder="E-Mail Adresse"
-              >
-              <input
-                id="password2"
-                v-model="password"
-                class="address"
-                placeholder="Passwort"
-                autocomplete="new-password"
-                type="password"
-              >
-              <input
-                id="confirmPassword"
-                v-model="confirmPassword"
-                class="address"
-                placeholder="Passwort wiederholen"
-                autocomplete="new-password"
-                type="password"
-                @keyup.enter="signup"
-              >
-              <input id="c2" v-model="dsgvoAccepted" type="checkbox" name="cc" class="">
-              <label for="c2" class="label-login" style="margin-top: 100px;">
-                <span />Ich habe die <nuxt-link class="link" to="/nutzungsbedingungen">Nutzungsbedingungen</nuxt-link> gelesen und bin mit ihnen
-                einverstanden. Die <nuxt-link class="link" to="/datenschutz">Datenschutzerklärung</nuxt-link> habe ich ebenfalls zur Kenntnis genommen und akzeptiert.
-              </label>
-              <br>
-              <input id="c3" v-model="cookiesAccepted" type="checkbox" name="cookies" class="">
-              <label for="c3" class="label-login" style="margin-top: 100px;">
-                <span />Ich stimme der Verwendung von Cookies auf der Webseite zu.
-              </label>
+              <addressMap :suggestions="autocomplete" :address="address" :coordsForward="coordsForward" @updateCoords="updateCoords" />
+              <div class="register-input-container">
+                <label for="address" class="label">Adresse</label>
+                <input
+                  id="address"
+                  v-model="address"
+                  list="suggestions"
+                  class="address"
+                  placeholder="Strasse u. Hausnr. (Betrieb)"
+                  autocomplete="street-address"
+                  @input="debouncedAutocomplete"
+                  @blur="forwardGeocode"
+                  @keypup.enter="forwardGeocode"
+                >
+                <autocomplete :suggestions="autocomplete" />
+                <label for="email2" class="label">E-Mail</label>
+                <input
+                  id="email2"
+                  v-model="email"
+                  class="address"
+                  autocomplete="email"
+                  placeholder="E-Mail Adresse"
+                >
+                <label for="password2" class="label">Passwort</label>
+                <input
+                  id="password2"
+                  v-model="password"
+                  class="address"
+                  placeholder="Passwort"
+                  autocomplete="new-password"
+                  type="password"
+                >
+                <label for="password2" class="label">Passwort wiederholen</label>
+                <input
+                  id="confirmPassword"
+                  v-model="confirmPassword"
+                  class="address"
+                  placeholder="Passwort wiederholen"
+                  autocomplete="new-password"
+                  type="password"
+                  @keyup.enter="signup"
+                >
+                <input id="c2" v-model="dsgvoAccepted" type="checkbox" name="cc" class="">
+                <label for="c2" class="label-login" style="margin-top: 100px;">
+                  <span />Ich habe die <nuxt-link class="link" to="/nutzungsbedingungen">Nutzungsbedingungen</nuxt-link> gelesen und bin mit ihnen
+                  einverstanden. Die <nuxt-link class="link" to="/datenschutz">Datenschutzerklärung</nuxt-link> habe ich ebenfalls zur Kenntnis genommen und akzeptiert.
+                </label>
+                <br>
+                <input id="c3" v-model="cookiesAccepted" type="checkbox" name="cookies" class="">
+                <label for="c3" class="label-login" style="margin-top: 100px;">
+                  <span />Ich stimme der Verwendung von Cookies auf der Webseite zu.
+                </label>
+                <button id="signup" type="button" class="register-button hoverPointer" @click="signup">
+                  REGISTRIEREN
+                </button>
+              </div>
             </div>
-            <button id="signup" type="button" class="register-button hoverPointer" @click="signup">
-              REGISTRIEREN
-            </button>
           </form>
         </div>
       </div>
-      <div class="expand" @click="jump('landing')">
-        <h2>WEITERE INFOS</h2>
-        <div id="landing" class="arrow-bottom" />
-      </div>
-      <div class="landing">
-        <h1>
-          FRUCHTFOLGE IST KEINE ACKERSCHLAGKARTEI
-        </h1>
-        <div class="copy">
-          Die kostenlose "Fruchtfolge"-Anwendung der Universität Bonn unterstützt
-          Sie dabei, den Gewinn Ihres Betriebes durch eine optimierte Anbauplanung
-          zu maximieren.
-
-          <br>
-          <br>
-
-          <!-- Sehen Sie sich das kurze Einführungsvideo an oder lesen Sie unterhalb
-          des Videos weiter. -->
-
-          <!-- <video class="video" :src="require('~/assets/img/test.mp4')" controls type="video/mp4" /> -->
-          <img class="image" src="~assets/img/results.png" alt="Results">
-
-          <div class="smallDisplay">
-            <h2>Warum kann ich mich nicht anmelden?</h2>
-            Die Fruchtfolge Anwendung ist für Tablets und Desktop Computer optimiert.
-            Rufen Sie die Anwendung von einem Gerät mit einem größeren Bildschirm auf,
-            um den vollen Umfang der Anwendung zu nutzen.
+      <div id="landing" class="landing copy">
+        <div style="width: 100%; max-width: 888px; flex: 1 0 100%;">
+          <h2 style="margin-bottom: 45px;">
+            <a href="#landing">Fruchtfolge ist keine Ackerschlagkartei</a>
+          </h2>
+          <div flow-cols="2" flow-cols-s="1">
+            <p>
+              Die kostenlose "Fruchtfolge"-Anwendung der Universität Bonn unterstützt
+              Sie dabei, den Gewinn Ihres Betriebes durch eine optimierte Anbauplanung
+              zu maximieren.
+              <br>
+              Alles was Sie dafür brauchen, sind Ihre InVeKos Betriebsnummer,
+              und zwischen 5 und 30 Minuten Zeit.
+              <br>
+              <br>
+              Ausführliche Informationen zur Benutzung gibt es auf
+              <a class="link" href="https://fruchtfolge.agp.uni-bonn.de/documentation/#schon-dass-sie-hier-sind" target="_blank">offiziellen Supportseite</a>.
+            </p>
+            <a href="https://fruchtfolge.agp.uni-bonn.de/documentation/#schon-dass-sie-hier-sind" target="_blank">
+              <img class="image" src="https://chrispahm.github.io/assets/fruchtfolge.gif" alt="Fruchtfolge übersicht">
+            </a>
           </div>
-
-          <h2>Was macht die "Fruchtfolge"-Anwendung?</h2>
-          Die "Fruchtfolge"-Anwendung stellt einen Gewinnmaximierenden Anbauplan
-          für Ihre Ackerflächen auf.<br><br>
-          Dabei werden Nebenbedingungen wie maximal verfügbare Arbeitszeitstunden,
-          Fruchtfolgeeffekte, Bodenqualitäten, Hof-Feld Entfernungen (und deren Auswirkungen
-          auf Arbeitszeitbedarfe und Maschinenkosten) und die Greening-Richtlinie
-          berücksichtigt.<br><br>
-          Die empfohlene Anbaukultur kann für jeden Schlag ersetzt werden, die daraus
-          resultierenden Konsequenzen (z.B. Verstoß gegen Greening-Auflagen,
-          Überschreitung von maximalen Fruchtfolgenateilen, verringerter
-          Gesamtdeckungsbeitrag etc.) werden Ihnen direkt mitgeteilt.<br><br>
-
-          Es werden automatisch Standardwerte für Fruchtfolgeeffekte,
-          Deckungsbeiträge und Zeitreihendaten aus diversen Datenbanken importiert,
-          sodass Sie nicht alle Daten selber eingeben müssen. Wenn ihr Betrieb
-          den Flächenantrag in Nordrhein-Westfalen stellt, können Sie des Weiteren
-          bequem Ihre Schläge und Kulturen importieren.<br><br>
-          Alle Daten für die Optimierung sind veränderbar und lassen sich
-          and Ihre persönlichen Gegebenheiten anpassen.<br><br>
-          Die Erstellung eines optimierten Anbauplans dauert in der Regel weniger als
-          10-30 Minuten (je nach Betriebsbeschaffenheit).<br><br>
-
-          <h2>Für wen ist die "Fruchtfolge"-Anwendung gedacht?</h2>
-          Grundsätzlich ist die Anwendung für alle Entscheidungsträger, das heißt
-          Landwirte/Landwirtinnen sowie deren Berater gedacht.<br>
-          Die Anwendung ist gleichermaßen für konventionell als auch
-          ökologisch/integriert wirtschaftende Betriebe geeignet.<br>
-          Ein Datenimport aus Flächenatragsdaten ist
-          derzeit lediglich für das Land Nordrhein-Westfalen verfügbar.
-
-          <h2>Wie gut ist der erstellte Anbauplan?</h2>
-          Die Qualität der Optimierung steht und fällt mit der Qualität der
-          von Ihnen eingegeben Daten. Da für die Anbaukulturen Standardwerte für
-          Preise, Erträge, Kosten, Fruchtfolgeeffekte uvm. aus diversen
-          Datenbanken importiert werden, können diese teilweise stark von den
-          tatsächlich auf Ihrem Betrieb auftretenden Daten abweichen. Eine Anpassung
-          Ihrerseits ist daher unabdingbar.<br><br>
-          Allgemein ist die "Fruchtfolge"-Anwendung als praktische Planungshilfe
-          gedacht. Die sorgfältige Überprüfung und gegebenenfalls Anpassung des
-          Anbauplans vor der tatsächlichen Umsetzung ist jedoch zwingend erforderlich.
-
-          <h2>Ist die Anwendung wirklich kostenlos?</h2>
-          Ja. Die "Fruchtfolge"-Anwendung ist ein sogenanntes Open-Source Projekt,
-          dass von der Universität Bonn verwaltet und bereitgestellt wird. Open-Source
-          Projekte können kostenlos verwendet werden. Im gegenzug besteht jedoch
-          dafür kein Anspruch auf Unterstützung im Umgang mit der Anwendung.<br>
-          Ein weiterer Vorteil ist, dass interessierte Entwickler bei der
-          Gestaltung der Anwendung teilhaben, mögliche Fehler
-          beseitigen oder neue Funktionen hinzufügen. <br>
-          Bekannte Beispiele für Open-Source Projekte sind beispielsweise der
-          beliebte Internet-Browser Mozilla Firefox oder der vorinstallierte
-          Taschenrechner auf Microsoft Windows Computern.
-
-          <h2>Warum muss ich meine Adresse bei der Registrierung angeben?</h2>
-          Die Adresse Ihrer Hofstelle wird benötigt, um die Hof-Feld Entfernungen
-          der von Ihnen bewirtschafteten Flächen zu errechnen. Mit dieser Information
-          werden Schlagspezifische Transportkosten und Arbeitszeitbedarfe für
-          Sie errechnet.
-
-          <h2>Sind meine Daten sicher?</h2>
-          Ihre Daten werden nur lokal auf Ihrem Rechner, sowie auf einem gesicherten
-          Server der Universität in Bonn gespeichert und unterliegen somit den Datenschutzauflagen
-          des Landes NRW.
-
-          <h2>Wie stabil ist die Anwendung?</h2>
-          Die "Fruchtfolge"-Anwendung befindet sich derzeit noch im sogenannten
-          Beta stadium. Wenn bei der Nutzung der Anwendung Fehler auftreten,
-          würden wir uns über eine <nuxt-link class="link" to="/kontakt">
-            kurze Mitteilung
-          </nuxt-link> freuen.
-
-          <h2>Ich würde gerne bei der Entwicklung mithelfen. Was kann ich tun?</h2>
-          Die Entwicklung der Anwendung findet auf der Entwicklerplattform Github
-          unter der Adresse
-          <a class="link" href="https://github.com/fruchtfolge/client">https://github.com/fruchtfolge/client</a>
-          statt. Auf der Seite finden Sie weitere Hinweise zur Kollaboration sowie
-          aktuell anstehende Aufgaben.
-
-          <h2>Ich habe Fragen/Anregungen bezüglich der Anwendung.</h2>
-          Sie können uns gerne über die auf der <nuxt-link class="link" to="/kontakt">
-            Kontakt-Seite
-          </nuxt-link>
-          angegebenen Kontaktmöglichkeiten erreichen.
+          <h2 id="faq">
+            <a href="#faq">FAQ</a>
+          </h2>
+          <div class="grid" columns="2" columns-s="1" style="grid-row-gap: 33.75px;">
+            <div class="smallDisplay">
+              <h4 id="warum-kann-ich-mich-nicht-anmelden">
+                <a href="#warum-kann-ich-mich-nicht-anmelden">
+                  Warum kann ich mich nicht anmelden?
+                </a>
+              </h4>
+              Die Fruchtfolge Anwendung ist für Tablets und Desktop Computer optimiert.
+              Rufen Sie die Anwendung von einem Gerät mit einem größeren Bildschirm auf,
+              um den vollen Umfang der Anwendung zu nutzen.
+            </div>
+            <div class="c">
+              <h4 id="was-macht-die-fruchtfolge-anwendung">
+                <a href="#was-macht-die-fruchtfolge-anwendung">
+                  Was macht die "Fruchtfolge"-Anwendung?
+                </a>
+              </h4>
+              Die "Fruchtfolge"-Anwendung stellt einen Gewinnmaximierenden Anbauplan
+              für Ihre Ackerflächen auf.<br><br>
+              Dabei werden Nebenbedingungen wie maximal verfügbare Arbeitszeitstunden,
+              Fruchtfolgeeffekte, Bodenqualitäten, Hof-Feld Entfernungen (und deren Auswirkungen
+              auf Arbeitszeitbedarfe und Maschinenkosten) und die Greening-Richtlinie
+              berücksichtigt.<br><br>
+              Die empfohlene Anbaukultur kann für jeden Schlag ersetzt werden, die daraus
+              resultierenden Konsequenzen (z.B. Verstoß gegen Greening-Auflagen,
+              Überschreitung von maximalen Fruchtfolgenateilen, verringerter
+              Gesamtdeckungsbeitrag etc.) werden Ihnen direkt mitgeteilt.
+            </div>
+            <div class="c">
+              <h4 id="wie-viel-zeit-beansprucht-die-benutzung-des-programms">
+                <a href="#wie-viel-zeit-beansprucht-die-benutzung-des-programms">Wie viel Zeit beansprucht die Benutzung des Programms?
+                </a>
+              </h4>
+              Es werden automatisch Standardwerte für Fruchtfolgeeffekte,
+              Deckungsbeiträge und Zeitreihendaten aus diversen Datenbanken importiert,
+              sodass Sie nicht alle Daten selber eingeben müssen. Wenn ihr Betrieb
+              den Flächenantrag in Nordrhein-Westfalen stellt, können Sie des Weiteren
+              bequem Ihre Schläge und Kulturen importieren.<br><br>
+              Alle Daten für die Optimierung sind veränderbar und lassen sich
+              and Ihre persönlichen Gegebenheiten anpassen.<br><br>
+              Die Erstellung eines optimierten Anbauplans dauert in der Regel weniger als
+              10-30 Minuten (je nach Betriebsbeschaffenheit).<br><br>
+            </div>
+            <div class="c">
+              <h4 id="fuer-wen-ist-die-fruchtfolge-anwendung-gedacht">
+                <a href="#fuer-wen-ist-die-fruchtfolge-anwendung-gedacht">Für wen ist die "Fruchtfolge"-Anwendung gedacht?
+                </a>
+              </h4>
+              Grundsätzlich ist die Anwendung für alle Entscheidungsträger, das heißt
+              Landwirte/Landwirtinnen sowie deren Berater gedacht.<br>
+              Die Anwendung ist gleichermaßen für konventionell als auch
+              ökologisch/integriert wirtschaftende Betriebe geeignet.<br>
+              Ein Datenimport aus Flächenatragsdaten ist
+              derzeit lediglich für das Land Nordrhein-Westfalen verfügbar.
+            </div>
+            <div class="c">
+              <h4 id="wie-gut-ist-der-erstellte-anbauplan">
+                <a href="#wie-gut-ist-der-erstellte-anbauplan">
+                  Wie gut ist der erstellte Anbauplan?
+                </a>
+              </h4>
+              Die Qualität der Optimierung steht und fällt mit der Qualität der
+              von Ihnen eingegeben Daten. Da für die Anbaukulturen Standardwerte für
+              Preise, Erträge, Kosten, Fruchtfolgeeffekte uvm. aus diversen
+              Datenbanken importiert werden, können diese teilweise stark von den
+              tatsächlich auf Ihrem Betrieb auftretenden Daten abweichen. Eine Anpassung
+              Ihrerseits ist daher unabdingbar.<br><br>
+              Allgemein ist die "Fruchtfolge"-Anwendung als praktische Planungshilfe
+              gedacht. Die sorgfältige Überprüfung und gegebenenfalls Anpassung des
+              Anbauplans vor der tatsächlichen Umsetzung ist jedoch zwingend erforderlich.
+            </div>
+            <div class="c">
+              <h4 id="ist-die-anwendung-wirklich-kostenlos">
+                <a href="#ist-die-anwendung-wirklich-kostenlos">
+                  Ist die Anwendung wirklich kostenlos?
+                </a>
+              </h4>
+              Ja. Die "Fruchtfolge"-Anwendung ist ein sogenanntes Open-Source Projekt,
+              dass von der Universität Bonn verwaltet und bereitgestellt wird. Open-Source
+              Projekte können kostenlos verwendet werden. Im gegenzug besteht jedoch
+              dafür kein Anspruch auf Unterstützung im Umgang mit der Anwendung.<br>
+              Ein weiterer Vorteil ist, dass interessierte Entwickler bei der
+              Gestaltung der Anwendung teilhaben, mögliche Fehler
+              beseitigen oder neue Funktionen hinzufügen. <br>
+              Bekannte Beispiele für Open-Source Projekte sind beispielsweise der
+              beliebte Internet-Browser Mozilla Firefox oder der vorinstallierte
+              Taschenrechner auf Microsoft Windows Computern.
+            </div>
+            <div class="c">
+              <h4 id="warum-muss-ich-meine-adresse-bei-der-registrierung-angeben">
+                <a href="#warum-muss-ich-meine-adresse-bei-der-registrierung-angeben">
+                  Warum muss ich meine Adresse bei der Registrierung angeben?
+                </a>
+              </h4>
+              Die Adresse Ihrer Hofstelle wird benötigt, um die Hof-Feld Entfernungen
+              der von Ihnen bewirtschafteten Flächen zu errechnen. Mit dieser Information
+              werden schlagspezifische Transportkosten und Arbeitszeitbedarfe für
+              Sie errechnet.
+            </div>
+            <div class="c">
+              <h4 id="sind-meine-daten-sicher">
+                <a href="#sind-meine-daten-sicher">Sind meine Daten sicher?</a>
+              </h4>
+              Ihre Daten werden nur lokal auf Ihrem Rechner, sowie auf einem gesicherten
+              Server der Universität in Bonn gespeichert und unterliegen somit den Datenschutzauflagen
+              des Landes NRW.
+            </div>
+            <div class="c">
+              <h4 id="wie-stabil-ist-die-anwendung">
+                <a href="#wie-stabil-ist-die-anwendung">
+                  Wie stabil ist die Anwendung?
+                </a>
+              </h4>
+              Die "Fruchtfolge"-Anwendung befindet sich derzeit noch im sogenannten
+              Beta stadium. Wenn bei der Nutzung der Anwendung Fehler auftreten,
+              würden wir uns über eine <nuxt-link class="link" to="/kontakt">
+                kurze Mitteilung
+              </nuxt-link> freuen.
+            </div>
+            <div class="c">
+              <h4 id="ich-wuerde-gerne-bei-der-entwicklung-mithelfen">
+                <a href="#ich-wuerde-gerne-bei-der-entwicklung-mithelfen">
+                  Ich würde gerne bei der Entwicklung mithelfen. Was kann ich tun?
+                </a>
+              </h4>
+              Die Entwicklung der Anwendung findet auf der Entwicklerplattform Github
+              unter der Adresse
+              <a class="link" href="https://github.com/fruchtfolge" target="_blank">https://github.com/fruchtfolge</a>
+              statt. Auf der Seite finden Sie weitere Hinweise zur Kollaboration sowie
+              aktuell anstehende Aufgaben.
+            </div>
+            <div class="c">
+              <h4 id="ich-habe-fragen-zur-anwendung">
+                <a href="#ich-habe-fragen-zur-anwendung">
+                  Ich habe Fragen/Anregungen bezüglich der Anwendung.
+                </a>
+              </h4>
+              Sie können uns gerne über die auf der <nuxt-link class="link" to="/kontakt">
+                Kontakt-Seite
+              </nuxt-link>
+              angegebenen Kontaktmöglichkeiten erreichen.
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -231,17 +329,19 @@ import notifications from '~/components/notifications'
 export default {
   components: {
     loading: () => import('~/components/loading.vue'),
-    autocomplete: () => import('~/components/autocomplete.vue')
+    autocomplete: () => import('~/components/autocomplete.vue'),
+    addressMap: () => import('~/components/address_map.vue')
   },
   data() {
     return {
       showRegister: false,
       pendingMax: 0,
       progress: '0%',
+      coords: [7.685235, 51.574318],
+      coordsForward: [7.685235, 51.574318],
       email: '',
       password: '',
       address: '',
-      postcode: '',
       confirmPassword: '',
       autocomplete: [],
       forgotPassword: false,
@@ -258,11 +358,12 @@ export default {
     )
     this.debouncedAutocomplete = _.debounce(async () => {
       try {
-        this.autocomplete = await geo.autocomplete(this.address, this.postcode)
+        this.autocomplete = await geo.autocomplete(this.address)
       } catch (e) {
-        this.incomplete({ title: 'ADRESSE', message: e.message })
+        console.error(JSON.stringify(e))
+        // this.incomplete({ title: 'ADRESSE', message: e.message })
       }
-    }, 350)
+    }, 150)
     this.$bus.$on('flip', this.flip)
   },
   destroyed() {
@@ -278,11 +379,27 @@ export default {
         ? (this.showRegister = false)
         : (this.showRegister = true)
     },
+    updateCoords(value) {
+      this.coords = [value.lng, value.lat]
+    },
+    async forwardGeocode() {
+      if (this.address.length < 3) return
+      let geoData
+      try {
+        geoData = await geo.forward(this.address)
+      } catch (e) {
+        console.error(e)
+        return
+      }
+      this.stateDistrict = geoData.state_district
+      this.city = geoData.city
+      this.coordsForward = geoData.home
+      this.coords = geoData.home
+    },
     checkSignup() {
       if (
         !this.address ||
         !this.email ||
-        !this.postcode ||
         !this.password ||
         !this.confirmPassword
       ) {
@@ -294,6 +411,11 @@ export default {
       } else if (this.password !== this.confirmPassword) {
         this.notMatching()
         return false
+      } else if (this.coords === [7.685235, 51.574318]) {
+        this.showAddressWarn({
+          message:
+            'Bitte ziehen Sie den Mittelpunkt der Karte auf die Adresse Ihres Betriebes.'
+        })
       } else {
         return true
       }
@@ -371,7 +493,6 @@ export default {
                 }
               )
               settings.street = data.address
-              settings.postcode = data.postcode
               settings.city = data.city
               settings.home = data.home
               settings.timestamp = date.toISOString()
@@ -414,8 +535,6 @@ export default {
           return
         }
 
-        const address = await geo.forward(this.address, this.postcode)
-
         const { data } = await this.$axios.post(
           process.env.baseUrl + 'auth/register',
           {
@@ -423,10 +542,10 @@ export default {
             password: this.password,
             confirmPassword: this.confirmPassword,
             address: this.address,
-            postcode: this.postcode,
-            home: address.home,
-            state_district: address.state_district,
-            city: address.city
+            postcode: '',
+            home: this.coords,
+            state_district: this.state_district,
+            city: this.city
           }
         )
         await this.handleSuccess(data, true)
@@ -459,6 +578,7 @@ export default {
       }
       this.clicked = true
       this.loading = true
+      this.progress = 'Ihre Anfrage wird bearbeitet'
       try {
         await this.$axios.post(process.env.baseUrl + 'auth/forgot-password', {
           email: this.email
@@ -467,6 +587,7 @@ export default {
       } catch (e) {
         this.clicked = false
         this.loading = false
+        this.progress = '0%'
         this.loginError({
           message: 'Kein Account mit dieser E-Mail Adresse hinterlegt.'
         })
@@ -502,6 +623,7 @@ export default {
     }
   },
   middleware: null,
+  scrollToTop: true,
   layout: 'home'
 }
 </script>
@@ -564,13 +686,24 @@ div.flip-container {
   position: absolute;
   cursor: default;
   left: 50%;
-  margin-left: -150px;
   margin-top: calc(-50vh - 290px);
+}
+
+.margin-front {
+  margin-left: -360px;
+}
+
+.margin-back {
+  margin-left: -360px;
+}
+
+.width-back {
+  width: 720px;
 }
 
 /* entire container, keeps perspective */
 .flip-container {
-  perspective: 1000px;
+  perspective: 3000px;
 }
 
 /* flip the pane when hovered */
@@ -580,8 +713,8 @@ div.flip-container {
 
 .flip-container,
 .login {
-  width: 300px;
-  height: 370px;
+  width: 720px;
+  height: 550px;
 }
 
 /* flip speed goes here */
@@ -610,24 +743,31 @@ div.flip-container {
 
 /* back, initially hidden pane */
 .registrierung {
-  height: 580px;
+  height: 650px;
+  width: 720px;
   transform: rotateY(180deg);
 }
 
 .login {
   background: white;
-  border-radius: 0 !important;
+  border-radius: 0px;
+}
+
+.teaser {
+  font-size: 14px;
+  margin-left: 60px;
+  width: 300px;
 }
 
 .login p {
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.23em;
-  font-size: 29px;
+  font-size: 28px;
   text-align: center;
   color: black;
-  padding-top: 15px;
-  padding-left: 5px;
+  padding-top: 55px;
   margin: 0px;
+  margin-bottom: 40px;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -636,13 +776,19 @@ div.flip-container {
   user-select: none;
 }
 
+.login-container {
+  width: 233px;
+  position: absolute;
+  right: 60px;
+  top: 0px;
+}
 .registrierung p {
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.23em;
   font-size: 26px;
   text-align: center;
   color: black;
-  padding-top: 15px;
+  padding-top: 35px;
   padding-left: 5px;
   margin: 0px;
   -webkit-touch-callout: none;
@@ -679,6 +825,13 @@ div.flip-container {
   margin-right: 30px;
 }
 
+.register-input-container {
+  position: absolute;
+  right: 35px;
+  top: 111px;
+  width: 241px;
+}
+
 .forgot-password-label {
   margin-top: 100px;
   padding-left: 35px;
@@ -710,32 +863,8 @@ div.flip-container {
   border-radius: 0 !important;
 }
 
-.postcode {
-  position: absolute;
-  top: 50%;
-  margin-top: -89px;
-  left: 50%;
-  margin-left: -116.5px;
-  width: 233px;
-  height: 33px;
-  border-style: solid;
-  border-width: 1px;
-  border-color: #cccccc;
-  background-color: transparent;
-  font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
-  letter-spacing: 0.1em;
-  font-size: 18px;
-  color: grey;
-  padding-left: 5px;
-  border-radius: 0 !important;
-}
-
 .email {
-  position: absolute;
-  top: 50%;
-  margin-top: -48px;
-  left: 50%;
-  margin-left: -116.5px;
+  margin-bottom: 10px;
   width: 233px;
   height: 33px;
   border-style: solid;
@@ -747,27 +876,6 @@ div.flip-container {
   font-size: 18px;
   color: grey;
   padding-left: 5px;
-  border-radius: 0 !important;
-}
-
-.emailFalsch {
-  position: absolute;
-  top: 38%;
-  margin-top: -48px;
-  left: 50%;
-  margin-left: -120px;
-  width: 240px;
-  height: 33px;
-  border-style: dashed;
-  border-width: 1px;
-  border-color: #cccccc;
-  background-color: #f5f5f5;
-  font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
-  text-align: center;
-  letter-spacing: 0.1em;
-  font-size: 12px;
-  color: grey;
-  padding-left: 0px;
   border-radius: 0 !important;
 }
 
@@ -792,13 +900,10 @@ div.flip-container {
 }
 
 .password {
-  position: absolute;
-  top: 50%;
-  margin-top: 0px;
+  margin-bottom: 10px;
   width: 233px;
   height: 33px;
-  left: 50%;
-  margin-left: -116.5px;
+  right: 50px;
   border-style: solid;
   border-width: 1px;
   border-color: #cccccc;
@@ -851,6 +956,11 @@ div.flip-container {
   border-radius: 0 !important;
 }
 
+.label {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+}
+
 .label-login {
   font-family: Inter, Helvetica, Arial, sans-serif;
   font-weight: 300;
@@ -866,13 +976,10 @@ div.flip-container {
 }
 
 .login-button {
-  position: absolute;
-  top: 50%;
-  margin-top: 88px;
-  width: 233px;
+  margin-top: 40px;
+  width: 241px;
   height: 40px;
-  left: 50%;
-  margin-left: -116.5px;
+  right: 50px;
   border-style: solid;
   border-width: 1px;
   border-color: black;
@@ -895,12 +1002,10 @@ div.flip-container {
 }
 
 .register-button {
-  position: absolute;
   bottom: 30px;
-  width: 233px;
+  width: 241px;
   height: 40px;
-  left: 50%;
-  margin-left: -116.5px;
+  margin-top: 50px;
   border-style: solid;
   border-width: 1px;
   border-color: black;
@@ -923,10 +1028,9 @@ div.flip-container {
 }
 
 .forgot {
-  position: absolute;
-  top: 50%;
-  margin-top: 138px;
-  right: 33.5px;
+  cursor: pointer;
+  margin-top: 20px;
+  float: right;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.1em;
   font-size: 14px;
@@ -949,8 +1053,7 @@ div.flip-container {
 }
 
 .landing {
-  height: 100vh;
-  margin-top: 120px;
+  /* height: 100vh; */
 }
 
 .landing h1 {
@@ -988,22 +1091,6 @@ div.flip-container {
   display: none;
 }
 
-.copy {
-  margin: auto;
-  font-family: Inter;
-  font-size: 15px;
-  font-weight: 300;
-  width: 50%;
-  min-width: 580px;
-  max-width: 800px;
-  padding-bottom: 50px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-.copy h2 {
-  margin-top: 60px;
-}
 .video {
   width: 100%;
   margin-bottom: 40px;
@@ -1025,21 +1112,8 @@ div.flip-container {
     display: none;
   }
 
-  .copy {
-    margin: auto;
-    font-family: Inter;
-    font-weight: 300;
-    font-size: 14px;
-    width: initial;
-    min-width: initial;
-    max-width: initial;
-    padding-bottom: 50px;
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-
   .smallDisplay {
-    display: initial;
+    display: block;
   }
 
   .logo {
