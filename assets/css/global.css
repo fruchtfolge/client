@@ -5,7 +5,9 @@ html,body {
   -webkit-user-drag: none;
   cursor: default;
   font-family: Inter, Helvetica, Arial, sans-serif;
+  font-weight: 400;
   height: 100%;
+  color: #111
 }
 
 h1 {
@@ -213,4 +215,49 @@ h2,h3,h4 {
   font-weight: 300;
   font-size: 14px;
   color: grey;
+}
+.copy {
+  background-color: white;
+  font-size: 15px;
+  line-height: 22.5px;
+  padding: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.copy h2 {
+  font-weight: 700;
+  font-size: 1.8rem;
+  line-height: 33.75px;
+  letter-spacing: -0.03em;
+  margin-bottom: 22.5px;
+}
+
+.copy h4 {
+  font-weight: 600;
+}
+
+.copy h2 a, .copy h4 a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.copy h2 a:hover, .copy h4 a:hover {
+  color: #79AE98;
+}
+
+.copy h2:target a, .copy h4:target a {
+  color: white;
+  background-color: #79AE98;
+  padding: 5px;
+  display: block;
+}
+
+.copy h4:before, .copy h2:before {
+  content: '';
+  display: block;
+  position: relative;
+  width: 0;
+  height: 5em;
+  margin-top: -60px;
 }

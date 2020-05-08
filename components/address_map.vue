@@ -3,7 +3,7 @@
     <div class="address-label">
       Geben Sie im Eingabefeld 'Adresse' die Adresse Ihres Betriebes an.<br>
       Ziehen Sie falls nötig anschließend den Mittelpunkt der Karte auf Ihren Betrieb.
-      <a href="https://fruchtfolge.agp.uni-bonn.de/documentation/#registrieren" target="_blank" class="link">Wofür wird meine Adresse benötigt?</a>
+      <a href="#warum-muss-ich-meine-adresse-bei-der-registrierung-angeben" class="link">Wofür wird meine Adresse benötigt?</a>
     </div>
     <div id="address-map" class="address-map" />
   </div>

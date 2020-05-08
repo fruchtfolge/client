@@ -36,9 +36,9 @@
       </div>
     </div>
     <div v-else class="wrapper">
-      <h1 class="title">
+      <h2 class="title">
         Post ist unterwegs 📫
-      </h1>
+      </h2>
 
       Wir haben Ihnen eine E-Mail zur Bestätigung der Passwortänderung zugeschickt.
       <br>Klicken Sie auf den Link in der E-Mail, um Ihr Passwort zu ändern.
@@ -46,8 +46,9 @@
       <br>
       <br>
       <nuxt-link class="button error-button" to="/">
-        Zurück zur Startseite
+        ZURÜCK ZUR STARTSEITE
       </nuxt-link>
+      </h2>
     </div>
   </div>
 </template>
@@ -115,6 +116,7 @@ export default {
 }
 .title {
   font-size: 3em;
+  letter-spacing: -0.04em;
 }
 
 .wrapper {
@@ -131,8 +133,11 @@ export default {
 .error-button {
   margin-top: 50px;
   text-decoration: none;
+  color: #111;
   font-size: 18px;
   padding: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
   letter-spacing: 0.1em;
 }
 

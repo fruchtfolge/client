@@ -7,12 +7,20 @@
       <div id="login" class="flip-container" :class="{ flip: showRegister, 'margin-front': !showRegister, 'margin-back': showRegister }">
         <div class="flipper" :class="{ 'width-back': showRegister }">
           <form class="login">
+            <p v-if="forgotPassword" style="width: 100%">
+              PASSWORT ZURÜCKSETZEN
+            </p>
             <div v-if="forgotPassword" class="teaser">
-              <p v-if="forgotPassword">
-                PASSWORT ZURÜCKSETZEN
-              </p>
               <span style="line-height: 1.4em;">
-                Geben Sie Ihre E-Mail Adresse in das Eingabefeld und klicken Sie anschließend auf 'Weiter', um Ihr Passwort zurückzusetzen.
+                <br>
+                <br>
+                Geben Sie Ihre E-Mail Adresse in das Eingabefeld auf der rechten Seiten ein.
+                <br>
+                <br>
+                Klicken Sie anschließend auf 'Weiter' um Ihr Passwort zurückzusetzen.
+                <br>
+                <br>
+                Sie erhalten Anschließend eine E-Mail mit weiteren Anweisungen zum Zurücksetzen Ihres Passworts.
               </span>
             </div>
             <div v-else class="teaser">
@@ -40,7 +48,10 @@
               <p v-if="!forgotPassword">
                 WILLKOMMEN ZURÜCK
               </p>
-              <p v-else />
+              <p v-else>
+                <br>
+                <br>
+              </p>
               <label class="label" for="email">E-Mail</label>
               <input
                 id="email"
@@ -136,114 +147,174 @@
           </form>
         </div>
       </div>
-      <div id="landing" class="landing">
-        <h1>
-          FRUCHTFOLGE IST KEINE ACKERSCHLAGKARTEI
-        </h1>
-        <div class="copy">
-          Die kostenlose "Fruchtfolge"-Anwendung der Universität Bonn unterstützt
-          Sie dabei, den Gewinn Ihres Betriebes durch eine optimierte Anbauplanung
-          zu maximieren.
-
-          <br>
-          <br>
-
-          <!-- Sehen Sie sich das kurze Einführungsvideo an oder lesen Sie unterhalb
-          des Videos weiter. -->
-
-          <!-- <video class="video" :src="require('~/assets/img/test.mp4')" controls type="video/mp4" /> -->
-          <img class="image" src="~assets/img/results.png" alt="Results">
-
-          <div class="smallDisplay">
-            <h2>Warum kann ich mich nicht anmelden?</h2>
-            Die Fruchtfolge Anwendung ist für Tablets und Desktop Computer optimiert.
-            Rufen Sie die Anwendung von einem Gerät mit einem größeren Bildschirm auf,
-            um den vollen Umfang der Anwendung zu nutzen.
+      <div id="landing" class="landing copy">
+        <div style="width: 100%; max-width: 888px; flex: 1 0 100%;">
+          <h2 style="margin-bottom: 45px;">
+            <a href="#landing">Fruchtfolge ist keine Ackerschlagkartei</a>
+          </h2>
+          <div flow-cols="2" flow-cols-s="1">
+            <p>
+              Die kostenlose "Fruchtfolge"-Anwendung der Universität Bonn unterstützt
+              Sie dabei, den Gewinn Ihres Betriebes durch eine optimierte Anbauplanung
+              zu maximieren.
+              <br>
+              Alles was Sie dafür brauchen, sind Ihre InVeKos Betriebsnummer,
+              und zwischen 5 und 30 Minuten Zeit.
+              <br>
+              <br>
+              Ausführliche Informationen zur Benutzung gibt es auf
+              <a class="link" href="https://fruchtfolge.agp.uni-bonn.de/documentation/#schon-dass-sie-hier-sind" target="_blank">offiziellen Supportseite</a>.
+            </p>
+            <a href="https://fruchtfolge.agp.uni-bonn.de/documentation/#schon-dass-sie-hier-sind" target="_blank">
+              <img class="image" src="https://chrispahm.github.io/assets/fruchtfolge.gif" alt="Fruchtfolge übersicht">
+            </a>
           </div>
-
-          <h2>Was macht die "Fruchtfolge"-Anwendung?</h2>
-          Die "Fruchtfolge"-Anwendung stellt einen Gewinnmaximierenden Anbauplan
-          für Ihre Ackerflächen auf.<br><br>
-          Dabei werden Nebenbedingungen wie maximal verfügbare Arbeitszeitstunden,
-          Fruchtfolgeeffekte, Bodenqualitäten, Hof-Feld Entfernungen (und deren Auswirkungen
-          auf Arbeitszeitbedarfe und Maschinenkosten) und die Greening-Richtlinie
-          berücksichtigt.<br><br>
-          Die empfohlene Anbaukultur kann für jeden Schlag ersetzt werden, die daraus
-          resultierenden Konsequenzen (z.B. Verstoß gegen Greening-Auflagen,
-          Überschreitung von maximalen Fruchtfolgenateilen, verringerter
-          Gesamtdeckungsbeitrag etc.) werden Ihnen direkt mitgeteilt.<br><br>
-
-          Es werden automatisch Standardwerte für Fruchtfolgeeffekte,
-          Deckungsbeiträge und Zeitreihendaten aus diversen Datenbanken importiert,
-          sodass Sie nicht alle Daten selber eingeben müssen. Wenn ihr Betrieb
-          den Flächenantrag in Nordrhein-Westfalen stellt, können Sie des Weiteren
-          bequem Ihre Schläge und Kulturen importieren.<br><br>
-          Alle Daten für die Optimierung sind veränderbar und lassen sich
-          and Ihre persönlichen Gegebenheiten anpassen.<br><br>
-          Die Erstellung eines optimierten Anbauplans dauert in der Regel weniger als
-          10-30 Minuten (je nach Betriebsbeschaffenheit).<br><br>
-
-          <h2>Für wen ist die "Fruchtfolge"-Anwendung gedacht?</h2>
-          Grundsätzlich ist die Anwendung für alle Entscheidungsträger, das heißt
-          Landwirte/Landwirtinnen sowie deren Berater gedacht.<br>
-          Die Anwendung ist gleichermaßen für konventionell als auch
-          ökologisch/integriert wirtschaftende Betriebe geeignet.<br>
-          Ein Datenimport aus Flächenatragsdaten ist
-          derzeit lediglich für das Land Nordrhein-Westfalen verfügbar.
-
-          <h2>Wie gut ist der erstellte Anbauplan?</h2>
-          Die Qualität der Optimierung steht und fällt mit der Qualität der
-          von Ihnen eingegeben Daten. Da für die Anbaukulturen Standardwerte für
-          Preise, Erträge, Kosten, Fruchtfolgeeffekte uvm. aus diversen
-          Datenbanken importiert werden, können diese teilweise stark von den
-          tatsächlich auf Ihrem Betrieb auftretenden Daten abweichen. Eine Anpassung
-          Ihrerseits ist daher unabdingbar.<br><br>
-          Allgemein ist die "Fruchtfolge"-Anwendung als praktische Planungshilfe
-          gedacht. Die sorgfältige Überprüfung und gegebenenfalls Anpassung des
-          Anbauplans vor der tatsächlichen Umsetzung ist jedoch zwingend erforderlich.
-
-          <h2>Ist die Anwendung wirklich kostenlos?</h2>
-          Ja. Die "Fruchtfolge"-Anwendung ist ein sogenanntes Open-Source Projekt,
-          dass von der Universität Bonn verwaltet und bereitgestellt wird. Open-Source
-          Projekte können kostenlos verwendet werden. Im gegenzug besteht jedoch
-          dafür kein Anspruch auf Unterstützung im Umgang mit der Anwendung.<br>
-          Ein weiterer Vorteil ist, dass interessierte Entwickler bei der
-          Gestaltung der Anwendung teilhaben, mögliche Fehler
-          beseitigen oder neue Funktionen hinzufügen. <br>
-          Bekannte Beispiele für Open-Source Projekte sind beispielsweise der
-          beliebte Internet-Browser Mozilla Firefox oder der vorinstallierte
-          Taschenrechner auf Microsoft Windows Computern.
-
-          <h2>Warum muss ich meine Adresse bei der Registrierung angeben?</h2>
-          Die Adresse Ihrer Hofstelle wird benötigt, um die Hof-Feld Entfernungen
-          der von Ihnen bewirtschafteten Flächen zu errechnen. Mit dieser Information
-          werden Schlagspezifische Transportkosten und Arbeitszeitbedarfe für
-          Sie errechnet.
-
-          <h2>Sind meine Daten sicher?</h2>
-          Ihre Daten werden nur lokal auf Ihrem Rechner, sowie auf einem gesicherten
-          Server der Universität in Bonn gespeichert und unterliegen somit den Datenschutzauflagen
-          des Landes NRW.
-
-          <h2>Wie stabil ist die Anwendung?</h2>
-          Die "Fruchtfolge"-Anwendung befindet sich derzeit noch im sogenannten
-          Beta stadium. Wenn bei der Nutzung der Anwendung Fehler auftreten,
-          würden wir uns über eine <nuxt-link class="link" to="/kontakt">
-            kurze Mitteilung
-          </nuxt-link> freuen.
-
-          <h2>Ich würde gerne bei der Entwicklung mithelfen. Was kann ich tun?</h2>
-          Die Entwicklung der Anwendung findet auf der Entwicklerplattform Github
-          unter der Adresse
-          <a class="link" href="https://github.com/fruchtfolge/client">https://github.com/fruchtfolge/client</a>
-          statt. Auf der Seite finden Sie weitere Hinweise zur Kollaboration sowie
-          aktuell anstehende Aufgaben.
-
-          <h2>Ich habe Fragen/Anregungen bezüglich der Anwendung.</h2>
-          Sie können uns gerne über die auf der <nuxt-link class="link" to="/kontakt">
-            Kontakt-Seite
-          </nuxt-link>
-          angegebenen Kontaktmöglichkeiten erreichen.
+          <h2 id="faq">
+            <a href="#faq">FAQ</a>
+          </h2>
+          <div class="grid" columns="2" columns-s="1" style="grid-row-gap: 33.75px;">
+            <div class="smallDisplay">
+              <h4 id="warum-kann-ich-mich-nicht-anmelden">
+                <a href="#warum-kann-ich-mich-nicht-anmelden">
+                  Warum kann ich mich nicht anmelden?
+                </a>
+              </h4>
+              Die Fruchtfolge Anwendung ist für Tablets und Desktop Computer optimiert.
+              Rufen Sie die Anwendung von einem Gerät mit einem größeren Bildschirm auf,
+              um den vollen Umfang der Anwendung zu nutzen.
+            </div>
+            <div class="c">
+              <h4 id="was-macht-die-fruchtfolge-anwendung">
+                <a href="#was-macht-die-fruchtfolge-anwendung">
+                  Was macht die "Fruchtfolge"-Anwendung?
+                </a>
+              </h4>
+              Die "Fruchtfolge"-Anwendung stellt einen Gewinnmaximierenden Anbauplan
+              für Ihre Ackerflächen auf.<br><br>
+              Dabei werden Nebenbedingungen wie maximal verfügbare Arbeitszeitstunden,
+              Fruchtfolgeeffekte, Bodenqualitäten, Hof-Feld Entfernungen (und deren Auswirkungen
+              auf Arbeitszeitbedarfe und Maschinenkosten) und die Greening-Richtlinie
+              berücksichtigt.<br><br>
+              Die empfohlene Anbaukultur kann für jeden Schlag ersetzt werden, die daraus
+              resultierenden Konsequenzen (z.B. Verstoß gegen Greening-Auflagen,
+              Überschreitung von maximalen Fruchtfolgenateilen, verringerter
+              Gesamtdeckungsbeitrag etc.) werden Ihnen direkt mitgeteilt.
+            </div>
+            <div class="c">
+              <h4 id="wie-viel-zeit-beansprucht-die-benutzung-des-programms">
+                <a href="#wie-viel-zeit-beansprucht-die-benutzung-des-programms">Wie viel Zeit beansprucht die Benutzung des Programms?
+                </a>
+              </h4>
+              Es werden automatisch Standardwerte für Fruchtfolgeeffekte,
+              Deckungsbeiträge und Zeitreihendaten aus diversen Datenbanken importiert,
+              sodass Sie nicht alle Daten selber eingeben müssen. Wenn ihr Betrieb
+              den Flächenantrag in Nordrhein-Westfalen stellt, können Sie des Weiteren
+              bequem Ihre Schläge und Kulturen importieren.<br><br>
+              Alle Daten für die Optimierung sind veränderbar und lassen sich
+              and Ihre persönlichen Gegebenheiten anpassen.<br><br>
+              Die Erstellung eines optimierten Anbauplans dauert in der Regel weniger als
+              10-30 Minuten (je nach Betriebsbeschaffenheit).<br><br>
+            </div>
+            <div class="c">
+              <h4 id="fuer-wen-ist-die-fruchtfolge-anwendung-gedacht">
+                <a href="#fuer-wen-ist-die-fruchtfolge-anwendung-gedacht">Für wen ist die "Fruchtfolge"-Anwendung gedacht?
+                </a>
+              </h4>
+              Grundsätzlich ist die Anwendung für alle Entscheidungsträger, das heißt
+              Landwirte/Landwirtinnen sowie deren Berater gedacht.<br>
+              Die Anwendung ist gleichermaßen für konventionell als auch
+              ökologisch/integriert wirtschaftende Betriebe geeignet.<br>
+              Ein Datenimport aus Flächenatragsdaten ist
+              derzeit lediglich für das Land Nordrhein-Westfalen verfügbar.
+            </div>
+            <div class="c">
+              <h4 id="wie-gut-ist-der-erstellte-anbauplan">
+                <a href="#wie-gut-ist-der-erstellte-anbauplan">
+                  Wie gut ist der erstellte Anbauplan?
+                </a>
+              </h4>
+              Die Qualität der Optimierung steht und fällt mit der Qualität der
+              von Ihnen eingegeben Daten. Da für die Anbaukulturen Standardwerte für
+              Preise, Erträge, Kosten, Fruchtfolgeeffekte uvm. aus diversen
+              Datenbanken importiert werden, können diese teilweise stark von den
+              tatsächlich auf Ihrem Betrieb auftretenden Daten abweichen. Eine Anpassung
+              Ihrerseits ist daher unabdingbar.<br><br>
+              Allgemein ist die "Fruchtfolge"-Anwendung als praktische Planungshilfe
+              gedacht. Die sorgfältige Überprüfung und gegebenenfalls Anpassung des
+              Anbauplans vor der tatsächlichen Umsetzung ist jedoch zwingend erforderlich.
+            </div>
+            <div class="c">
+              <h4 id="ist-die-anwendung-wirklich-kostenlos">
+                <a href="#ist-die-anwendung-wirklich-kostenlos">
+                  Ist die Anwendung wirklich kostenlos?
+                </a>
+              </h4>
+              Ja. Die "Fruchtfolge"-Anwendung ist ein sogenanntes Open-Source Projekt,
+              dass von der Universität Bonn verwaltet und bereitgestellt wird. Open-Source
+              Projekte können kostenlos verwendet werden. Im gegenzug besteht jedoch
+              dafür kein Anspruch auf Unterstützung im Umgang mit der Anwendung.<br>
+              Ein weiterer Vorteil ist, dass interessierte Entwickler bei der
+              Gestaltung der Anwendung teilhaben, mögliche Fehler
+              beseitigen oder neue Funktionen hinzufügen. <br>
+              Bekannte Beispiele für Open-Source Projekte sind beispielsweise der
+              beliebte Internet-Browser Mozilla Firefox oder der vorinstallierte
+              Taschenrechner auf Microsoft Windows Computern.
+            </div>
+            <div class="c">
+              <h4 id="warum-muss-ich-meine-adresse-bei-der-registrierung-angeben">
+                <a href="#warum-muss-ich-meine-adresse-bei-der-registrierung-angeben">
+                  Warum muss ich meine Adresse bei der Registrierung angeben?
+                </a>
+              </h4>
+              Die Adresse Ihrer Hofstelle wird benötigt, um die Hof-Feld Entfernungen
+              der von Ihnen bewirtschafteten Flächen zu errechnen. Mit dieser Information
+              werden schlagspezifische Transportkosten und Arbeitszeitbedarfe für
+              Sie errechnet.
+            </div>
+            <div class="c">
+              <h4 id="sind-meine-daten-sicher">
+                <a href="#sind-meine-daten-sicher">Sind meine Daten sicher?</a>
+              </h4>
+              Ihre Daten werden nur lokal auf Ihrem Rechner, sowie auf einem gesicherten
+              Server der Universität in Bonn gespeichert und unterliegen somit den Datenschutzauflagen
+              des Landes NRW.
+            </div>
+            <div class="c">
+              <h4 id="wie-stabil-ist-die-anwendung">
+                <a href="#wie-stabil-ist-die-anwendung">
+                  Wie stabil ist die Anwendung?
+                </a>
+              </h4>
+              Die "Fruchtfolge"-Anwendung befindet sich derzeit noch im sogenannten
+              Beta stadium. Wenn bei der Nutzung der Anwendung Fehler auftreten,
+              würden wir uns über eine <nuxt-link class="link" to="/kontakt">
+                kurze Mitteilung
+              </nuxt-link> freuen.
+            </div>
+            <div class="c">
+              <h4 id="ich-wuerde-gerne-bei-der-entwicklung-mithelfen">
+                <a href="#ich-wuerde-gerne-bei-der-entwicklung-mithelfen">
+                  Ich würde gerne bei der Entwicklung mithelfen. Was kann ich tun?
+                </a>
+              </h4>
+              Die Entwicklung der Anwendung findet auf der Entwicklerplattform Github
+              unter der Adresse
+              <a class="link" href="https://github.com/fruchtfolge" target="_blank">https://github.com/fruchtfolge</a>
+              statt. Auf der Seite finden Sie weitere Hinweise zur Kollaboration sowie
+              aktuell anstehende Aufgaben.
+            </div>
+            <div class="c">
+              <h4 id="ich-habe-fragen-zur-anwendung">
+                <a href="#ich-habe-fragen-zur-anwendung">
+                  Ich habe Fragen/Anregungen bezüglich der Anwendung.
+                </a>
+              </h4>
+              Sie können uns gerne über die auf der <nuxt-link class="link" to="/kontakt">
+                Kontakt-Seite
+              </nuxt-link>
+              angegebenen Kontaktmöglichkeiten erreichen.
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -506,6 +577,7 @@ export default {
       }
       this.clicked = true
       this.loading = true
+      this.progress = 'Ihre Anfrage wird bearbeitet'
       try {
         await this.$axios.post(process.env.baseUrl + 'auth/forgot-password', {
           email: this.email
@@ -514,6 +586,7 @@ export default {
       } catch (e) {
         this.clicked = false
         this.loading = false
+        this.progress = '0%'
         this.loginError({
           message: 'Kein Account mit dieser E-Mail Adresse hinterlegt.'
         })
@@ -980,7 +1053,6 @@ div.flip-container {
 
 .landing {
   /* height: 100vh; */
-  margin-top: 120px;
 }
 
 .landing h1 {
@@ -1018,22 +1090,6 @@ div.flip-container {
   display: none;
 }
 
-.copy {
-  margin: auto;
-  font-family: Inter;
-  font-size: 15px;
-  font-weight: 300;
-  width: 50%;
-  min-width: 580px;
-  max-width: 800px;
-  padding-bottom: 100px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-.copy h2 {
-  margin-top: 60px;
-}
 .video {
   width: 100%;
   margin-bottom: 40px;
@@ -1055,21 +1111,8 @@ div.flip-container {
     display: none;
   }
 
-  .copy {
-    margin: auto;
-    font-family: Inter;
-    font-weight: 300;
-    font-size: 14px;
-    width: initial;
-    min-width: initial;
-    max-width: initial;
-    padding-bottom: 50px;
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-
   .smallDisplay {
-    display: initial;
+    display: block;
   }
 
   .logo {

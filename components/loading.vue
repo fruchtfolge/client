@@ -38,7 +38,7 @@ export default {
   background: #f5f5f5;
   position: absolute;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   z-index: 95;
   transition: all 0.8s ease-in-out;
   opacity: 1;

@@ -112,7 +112,8 @@ html {
   position: relative;
   bottom: 0px;
   text-align: center;
-  background-color: #ececec;
+  border-top: 1px #ececec solid;
+  background-color: #f5f5f5;
 }
 .footer a {
   font-size: 12px;
