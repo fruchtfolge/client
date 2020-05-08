@@ -88,7 +88,14 @@ module.exports = {
   /*
   ** Nuxt.js modules
   */
-  modules: ['@nuxtjs/axios'],
+  modules: [
+    // Doc: https://axios.nuxtjs.org/usage
+    '@nuxtjs/axios',
+    '@nuxtjs/google-analytics'
+  ],
+  googleAnalytics: {
+    id: 'UA-142985518-1'
+  },
   /*
   ** Axios module configuration
   */
@@ -102,7 +109,6 @@ module.exports = {
     baseUrl: 'https://fruchtfolge.agp.uni-bonn.de/api/',
     appVersion: pkg.version
   },
-
   router: {
     middleware: 'auth'
   },

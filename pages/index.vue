@@ -352,8 +352,9 @@ export default {
     }
   },
   created() {
+    console.info('Fruchtfolge Version ' + this.$version)
     console.log(
-      'Moin! Interssiert an der Entwicklung? Mehr Infos auf github.com/fruchtfolge :)'
+      'Moin! Interssiert an der Entwicklung? Mehr Infos auf github.com/fruchtfolge :)\n'
     )
     this.debouncedAutocomplete = _.debounce(async () => {
       try {

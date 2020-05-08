@@ -88,6 +88,9 @@ export default {
       timeseries.data.datasets[1].backgroundColor = gradient2
       timeseries.data.datasets[2].backgroundColor = gradient3
 
+      Chart.defaults.global.defaultFontFamily = 'Raleway'
+      Chart.defaults.global.defaultFontSize = 14
+
       this.timeseriesChart = new Chart(ctx, {
         type: timeseries.type,
         data: timeseries.data,
