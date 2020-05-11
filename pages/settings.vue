@@ -170,7 +170,6 @@ export default {
       this.curYear = this.settings.curYear
       this.street = this.settings.street
       this.city = this.settings.city
-      console.log(this.settings)
     } catch (e) {
       console.log(e)
     }
