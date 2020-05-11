@@ -7,7 +7,7 @@ Fruchtfolge is an open-source crop planning optimization tool. It's main focus a
 
 This repository contains the client side code of the application.
 
-Fruchtfolge is currently in alpha state.
+Fruchtfolge is currently in beta state.
 If you are interested in the development and would like to contribute, follow the subsequent steps in order to build the application.
 
 ## Prerequisites
