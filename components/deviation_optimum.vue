@@ -193,7 +193,7 @@ export default {
         const crop = this.$store.curCrops.find(c => c.name === share)
         if (crop && crop.code === 459) return
         if (this.shares[this.curYear][share] >= this.sevenFivePercent) {
-          console.log(share)
+          // console.log(share)
           flag = share
         }
       })
