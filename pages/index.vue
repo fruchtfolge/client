@@ -162,7 +162,7 @@
               und zwischen 5 und 30 Minuten Zeit.
               <br>
               <br>
-              Ausführliche Informationen zur Benutzung gibt es auf
+              Ausführliche Informationen zur Benutzung gibt es auf der
               <a class="link" href="https://fruchtfolge.agp.uni-bonn.de/documentation/#schon-dass-sie-hier-sind" target="_blank">offiziellen Supportseite</a>.
             </p>
             <a href="https://fruchtfolge.agp.uni-bonn.de/documentation/#schon-dass-sie-hier-sind" target="_blank">
@@ -352,7 +352,7 @@ export default {
     }
   },
   created() {
-    console.info('Fruchtfolge Version ' + this.$version)
+    console.info('Fruchtfolge Version ' + process.env.appVersion)
     console.log(
       'Moin! Interssiert an der Entwicklung? Mehr Infos auf github.com/fruchtfolge :)\n'
     )
