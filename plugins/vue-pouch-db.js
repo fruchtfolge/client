@@ -19,6 +19,69 @@ function uuidv4() {
   })
 }
 
+// delete duplicates
+/*
+Vue.prototype.$bus.$on('deleteDuplicates', async () => {
+  try {
+    const curYear = Vue.prototype.$store.curYear
+    // query all crops and plots of the current year
+    // this.$nuxt.db
+    const crops = await Vue.prototype.$db.find({
+      selector: {
+        year: curYear,
+        type: 'crop'
+      }
+    })
+    const plots = await Vue.prototype.$db.find({
+      selector: {
+        year: curYear,
+        type: 'plot'
+      }
+    })
+    // delete all duplicates
+    if (plots && plots.docs) {
+      const plotsToDelete = []
+      // plots are duplicates when their center is equal
+      const centers = []
+      plots.docs.forEach(p => {
+        if (centers.indexOf(p.center[0] + p.center[1]) === -1)
+          centers.push(p.center[0] + p.center[1])
+        else centers.push(0)
+      })
+      centers.forEach((c, i) => {
+        if (c === 0) plotsToDelete.push(plots.docs[i])
+      })
+      await Vue.prototype.$db.bulkDocs(
+        plotsToDelete.map(d => {
+          d._deleted = true
+          return d
+        })
+      )
+    }
+    if (crops && crops.docs) {
+      const cropsToDelete = []
+      // crops are equal when their code, name, and variety are equal
+      const duplProps = []
+      crops.docs.forEach(c => {
+        const data = c.code + c.name + c.variety
+        if (duplProps.indexOf(data) === -1) duplProps.push(data)
+        else duplProps.push(0)
+      })
+      duplProps.forEach((c, i) => {
+        if (c === 0) cropsToDelete.push(crops.docs[i])
+      })
+      await Vue.prototype.$db.bulkDocs(
+        cropsToDelete.map(d => {
+          d._deleted = true
+          return d
+        })
+      )
+    }
+  } catch (e) {
+    console.log(e)
+  }
+})
+*/
 // listen to import previous year event
 Vue.prototype.$bus.$on('importPrevYear', async () => {
   try {

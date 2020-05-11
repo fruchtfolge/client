@@ -590,18 +590,18 @@ export default {
         '#B5DCE1'
       ]
       */
-      /*
+
       const cultures = {
         'Winterweizen - Brotweizen': '#79AE98',
         Kartoffeln: '#D6E5CD',
         Stärkekartoffeln: '#D6E5CD',
         Zuckerrüben: '#ECCB89',
-        'Silomais (als Hauptfutter)': '#D48544',
+        'Mais - Silomais': '#D48544',
         Winterraps: '#9B643B',
         Wintergerste: '#9DD5C0',
         Winterroggen: '#B5DCE1'
       }
-      */
+
       const colors = [
         '#79ae98',
         '#d6e5cd',

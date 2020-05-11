@@ -98,8 +98,8 @@ module.exports = {
   ** API base url, can be changed for debugging
   */
   env: {
-    // baseUrl: 'http://localhost:3003/',
-    baseUrl: 'https://fruchtfolge.agp.uni-bonn.de/api/',
+    baseUrl: 'http://localhost:3003/',
+    // baseUrl: 'https://fruchtfolge.agp.uni-bonn.de/api/',
     appVersion: pkg.version
   },
 
