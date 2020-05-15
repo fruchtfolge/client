@@ -44,16 +44,19 @@
                 :options="crops"
                 :multiple="true"
                 :close-on-select="false"
-                :clear-on-select="false"
+                :clear-on-select="true"
+                :hide-selected="true"
                 :preserve-search="true"
-                :searchable="false"
+                :searchable="true"
                 selectLabel="Enter zum auswählen"
                 selectedLabel="Ausgewählt"
                 deselectLabel="Enter zum entfernen"
                 placeholder="Auswählen"
                 :preselect-first="false"
                 @input="changeAllowed(plot)"
-              />
+              >
+                <span slot="noResult">Kultur nicht gefunden 😞</span>
+              </multiselect>
             </td>
           </tr>
         </tbody>
@@ -190,7 +193,9 @@ export default {
         plot.allowedCrops = changedPlot.allowedCrops
         // store again
         await this.$db.put(plot)
+        this.saveSuccess()
       } catch (e) {
+        this.saveError()
         console.log(e)
       }
     },
