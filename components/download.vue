@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import XLSX from 'xlsx'
+import { utils, writeFile } from 'xlsx'
 
 export default {
   props: {
@@ -145,10 +145,10 @@ export default {
           Nummer: crop.data
         })
       })
-      const exportWS = XLSX.utils.json_to_sheet(exportData, { header: order })
-      const wb = XLSX.utils.book_new() // make Workbook of Excel
+      const exportWS = utils.json_to_sheet(exportData, { header: order })
+      const wb = utils.book_new() // make Workbook of Excel
       // add Worksheet to Workbook
-      XLSX.utils.book_append_sheet(wb, exportWS, 'Fruchtfolge')
+      utils.book_append_sheet(wb, exportWS, 'Fruchtfolge')
       // export Excel file
       // count plots in red area
       const red = this.data.reduce((acc, cur) => {
@@ -160,8 +160,8 @@ export default {
       let opt = 'Opt'
       if (this.data[0].allowedCrops && this.data[0].allowedCrops.length)
         opt = 'NoOpt'
-      // XLSX.writeFile(wb, `Fruchtfolge - Planung ${this.year}.xlsx`)
-      XLSX.writeFile(wb, `Fruchtfolge - ${red} red area - ${opt}.xlsx`)
+      // writeFile(wb, `Fruchtfolge - Planung ${this.year}.xlsx`)
+      writeFile(wb, `Fruchtfolge - ${red} red area - ${opt}.xlsx`)
     }
   }
 }
