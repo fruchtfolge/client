@@ -21,7 +21,8 @@
 </template>
 <script>
 import mapboxgl from 'mapbox-gl'
-import { featureCollection, bbox } from '@turf/turf'
+import bbox from '@turf/bbox'
+import { featureCollection } from '@turf/helpers'
 
 export default {
   props: {
@@ -54,12 +55,13 @@ export default {
     }
   },
   destroyed() {
-    this.resultsMap.remove()
+    if (this.resultsMap) this.resultsMap.remove()
   },
   async mounted() {
     const settings = await this.$db.get('settings')
     this.duev2020 = settings.duev2020
     this.createMap(settings)
+    if (!this.resultsMap) return
     this.resultsMap.on('load', () => {
       if (this.duev2020) this.addDuevEndangered()
       this.drawPlots()
@@ -76,12 +78,16 @@ export default {
         'pk.eyJ1IjoidG9mZmkiLCJhIjoiY2l3cXRnNHplMDAxcTJ6cWY1YWp5djBtOSJ9.mBYmcCSgNdaRJ1qoHW5KSQ'
 
       // init the map
-      this.resultsMap = new mapboxgl.Map({
-        container: 'results-map',
-        style: 'mapbox://styles/mapbox/light-v10?optimize=true',
-        center: settings.home || [7.685235, 51.574318],
-        zoom: settings.home ? 14 : 8
-      })
+      try {
+        this.resultsMap = new mapboxgl.Map({
+          container: 'results-map',
+          style: 'mapbox://styles/mapbox/light-v10?optimize=true',
+          center: settings.home || [7.685235, 51.574318],
+          zoom: settings.home ? 14 : 8
+        })
+      } catch (e) {
+        // container not ready yet, will draw in the next iteration
+      }
       /*
       this.resultsMap.addControl(
         new mapboxgl.NavigationControl(),

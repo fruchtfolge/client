@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { area } from '@turf/turf'
+import area from '@turf/area'
 import mapboxgl from 'mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import drawConfig from '../assets/js/draw.config.js'

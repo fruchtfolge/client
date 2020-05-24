@@ -5,6 +5,10 @@
       <div class="logo">
         FRUCHTFOLGE
       </div>
+      <!-- show currently active page at the top when in print mode -->
+      <div style="display: none;" class="printPageName">
+        {{ curPageName }}
+      </div>
       <!-- Planning year selector -->
       <select
         v-model="settings.curYear"
@@ -29,6 +33,7 @@
           v-for="(route, index) in routes"
           :key="index"
           class="sidenav-links"
+          :title="route.name"
           :class="{ active: isClicked(route), subPage: route.subPage }"
           @click="follow(route)"
         >
@@ -90,6 +95,13 @@ export default {
         backgroundColor: 'rgba(0, 0, 0, .05)'
       },
       routes
+    }
+  },
+  computed: {
+    curPageName() {
+      const clicked = this.routes.find(route => route.path === this.curPage)
+      if (clicked) return _.capitalize(clicked.name)
+      return ''
     }
   },
   async created() {

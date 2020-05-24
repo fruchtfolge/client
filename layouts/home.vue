@@ -14,7 +14,7 @@
     <nuxt class="nuxt" />
     <!-- Footer for legal texts-->
     <footer class="footer">
-      <p>Fruchtfolge Version {{ version }} - Economic Modeling of Agricultural Systems Group - ILR - Universität Bonn</p>
+      <p>Fruchtfolge Version {{ version }} - <a href="https://www.ilr.uni-bonn.de/em/em_e.htm" target="_blank" style="text-decoration: none; color: inherit;">Economic Modeling of Agricultural Systems Group - ILR - Universität Bonn</a></p>
       <nuxt-link class="link" to="/kontakt">
         Kontakt
       </nuxt-link>

@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { area } from '@turf/turf'
+import area from '@turf/area'
 import cultures from '~/assets/js/cultures.js'
 import notifications from '~/components/notifications'
 

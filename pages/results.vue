@@ -1042,14 +1042,6 @@ export default {
   text-align: '.' center;
 }
 
-.result-table tr {
-  background-color: #ececec;
-}
-
-.result-table tr:nth-child(odd) {
-  background-color: #f5f5f5;
-}
-
 /*
 .result-table tr:nth-child(4n + 1),
 .result-table tr:nth-child(4n + 2) {

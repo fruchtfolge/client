@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="page-container">
+    <div class="page-container printFixOverflow">
       <addCrop v-if="addCrop" @closeAddCrop="addCrop = false" />
       <cropsSidebar :crops="crops" :selected-crop="selectedCrop" @showAddCrop="addCrop = true" @changeCrop="changeCrop" />
       <timeSeries v-if="selectedCrop" :crop="selectedCrop" />

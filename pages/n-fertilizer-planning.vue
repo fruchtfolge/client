@@ -1,24 +1,52 @@
 <template>
   <div>
     <div v-if="dataAvail" class="plotOverview">
-      <table v-if="arablePlots" class="table-fert table">
+      <table v-if="arablePlots && arablePlots.length" class="table-fert table">
         <caption class="caption">
           Düngebedarfsermittlung Ackerbau
         </caption>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Kultur</th>
-            <th>Ertragsniveau 5 Jahr Ø Betrieb [dt/ha]</th>
-            <th>N-Bedarfswert [kg N/ha]</th>
-            <th>Zu- oder Abschlag Ertragsdifferenz [kg N/ha]</th>
-            <th>Abschlag Nmin-Probe/Richtwert [kg N/ha]</th>
-            <th>Abschlag Standort / Humus [kg N/ha]</th>
-            <th>Abschlag org. Düngung der Vorjahre [kg N/ha]</th>
-            <th>Abschlag Vorfrucht / ZF [kg N/ha]</th>
-            <th>Stickstoffdüngebedarf Vegetation [kg N/ha]</th>
-            <th>Planung Org. Düngung [kg N/ha]</th>
-            <th>Planung Min. Düngung [kg N/ha]</th>
+            <th rowspan="2">
+              Name
+            </th>
+            <th rowspan="2">
+              Kultur
+            </th>
+            <th rowspan="2">
+              Ertragsniveau 5 Jahre Ø Betrieb [dt/ha]
+            </th>
+            <th rowspan="2">
+              N-Bedarfswert [kg N/ha]
+            </th>
+            <th colspan="5">
+              Zu- oder Abschläge [kg N/ha]
+            </th>
+            <th rowspan="2">
+              N-Düngebedarf [kg N/ha]
+            </th>
+            <th rowspan="2">
+              N-Reduktion im roten Gebiet
+            </th>
+            <th rowspan="2">
+              N-Düngebedarf abzgl. Reduktion [kg N/ha]
+            </th>
+            <th colspan="2">
+              Planung [kg N/ha]
+            </th>
+          </tr>
+          <tr>
+            <th>Ertragsdifferenz</th>
+            <th>Nmin-Probe / Richtwert</th>
+            <th>Humusgehalt</th>
+            <th>Org. Düngung der Vorjahre</th>
+            <th>Vorfrucht / ZF</th>
+            <th>
+              Org. Düngung
+            </th>
+            <th>
+              Min. Düngung
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -54,6 +82,12 @@
               {{ plot.selectedOption.nSum }}
             </td>
             <td class="cell-number">
+              {{ plot.selectedOption.nReduction }}%
+            </td>
+            <td class="cell-number" style="font-weight: bold;">
+              {{ plot.selectedOption.reducedNSum }}
+            </td>
+            <td class="cell-number">
               {{ orgN(plot) }}
             </td>
             <td class="cell-number" style="padding-right: 10px;">
@@ -62,7 +96,7 @@
           </tr>
         </tbody>
       </table>
-      <table v-if="greenlandPlots" class="table-fert table">
+      <table v-if="greenlandPlots && greenlandPlots.length" class="table-fert table">
         <caption class="caption">
           Düngebedarfsermittlung Grünland und Feldfutter
         </caption>
@@ -253,8 +287,10 @@ export default {
 
 .table-fert {
   table-layout: fixed;
+  width: 100%;
   min-width: 800px;
-  max-width: 1024px;
+  max-width: 1300px;
+  margin: 20px 0px 0px 20px;
 }
 
 .table-fert th {

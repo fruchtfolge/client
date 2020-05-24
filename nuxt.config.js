@@ -17,6 +17,7 @@ module.exports = {
   server: {
     port: 3002
   },
+  modern: true,
   /*
   ** Headers of the page
   */
@@ -28,7 +29,12 @@ module.exports = {
         name: 'viewport',
         content: 'width=device-width, user-scalable=no, initial-scale=1'
       },
-      { hid: 'description', name: 'description', content: pkg.description }
+      {
+        hid: 'description',
+        name: 'description',
+        content:
+          'Mit wenigen Klicks die Anbauplanung optimieren. Düngeverordnung 2020 mit inbegriffen!'
+      }
     ],
     script: [
       {
@@ -73,6 +79,7 @@ module.exports = {
   css: [
     '@/assets/css/global.css',
     '@/assets/css/grid.css',
+    '@/assets/css/print.css',
     '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css',
     'mapbox-gl/dist/mapbox-gl.css'
   ],
@@ -139,6 +146,8 @@ module.exports = {
         __dirname,
         'node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js'
       )
+
+      alias.xlsx = path.resolve(__dirname, 'node_modules/xlsx/xlsx.mini.js')
 
       const vueLoader = config.module.rules.find(r => r.loader === 'vue-loader')
       vueLoader.options.transformToRequire = {
