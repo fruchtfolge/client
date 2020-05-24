@@ -1,0 +1,164 @@
+@media print {
+
+  /* always hide sidebar in printing mode */
+  .sidenav {
+    display: none;
+  }
+
+  * {
+    overflow: visible !important;
+  }
+
+  body, html {
+    background-color: white !important;
+  }
+
+  .header {
+    position: static !important;
+  }
+
+  .planYear {
+    position: absolute !important;
+    font-family: Inter, sans-serif;
+    font-weight: 300;
+    font-size: 16px !important;
+    letter-spacing: 0px;
+    padding: 0px !important;
+    width: auto !important;
+    background: white !important;
+    right: 20px !important;
+    border: none;
+  }
+
+  .plotsSidebar {
+    display: none;
+  }
+
+  .cropsSidebar {
+    display: none;
+  }
+
+  .cropsTable {
+    width: 100% !important;
+  }
+
+  .cropsTable .table {
+    margin-top: 10px !important;
+  }
+
+  .timeseries-wrapper {
+    height: 50vw !important;
+    width: 100% !important;
+  }
+
+  .cropLabour-wrapper {
+    height: 50vw !important;
+    width: 100% !important;
+  }
+
+  .printFixOverflow {
+    overflow: hidden !important;
+  }
+
+  .dropdown-header {
+    display: none;
+  }
+  .printCropName {
+    display: block !important;
+    text-align: center;
+    font-size: 12px;
+    margin-top: 20px;
+  }
+
+  .button {
+    display: none;
+  }
+
+  .navIcon {
+    display: none;
+  }
+
+  .logo {
+    padding-left: 20px !important;
+  }
+
+  .logo:after {
+    content: "Planungsjahr";
+    font-family: Inter, sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    letter-spacing: 0em;
+    position: absolute;
+    top: 0px;
+    right: 125px;
+  }
+  .printPageName {
+    display: block !important;
+    position: absolute;
+    top: 0px;
+    text-align: center;
+    width: 100%;
+  }
+  .nuxt {
+    width: 100%;
+    position: static;
+    top: 0px;
+    margin: 0;
+    padding: 0;
+    margin-left: 0px !important;
+    background: none;
+  }
+
+  .table {
+    width: 100%;
+    table-layout: auto;
+    font-family: Georgia, serif;
+  }
+
+  .table tr:nth-child(odd) {
+    background-color: #f5f5f5;
+  }
+
+  .sidenav-links.active {
+    content: attr(title);
+    position: absolute;
+    top: 0px;
+    display: inline !important;
+  }
+
+  th {
+    color: black !important;
+    background-color: white !important;
+    border-bottom: 1px solid #ececec;
+  }
+
+  .selection {
+    font-size: 12px;
+    font-family: Georgia, serif !important;
+    -moz-text-align-last: left;
+    text-align-last: left;
+    width: 100%;
+    font-family: Inter;
+    font-weight: 300;
+    letter-spacing: normal;
+    border-width: 0px;
+    padding: 0px;
+    background: none !important;
+    background-color: inherit !important;
+  }
+
+  input[type="checkbox"] {
+    display: none;
+  }
+
+  input[type="checkbox"][checked="checked"] {
+    display: inline-block;
+  }
+  .VueCarousel {
+    overflow: hidden !important;
+  }
+  .result-table {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}

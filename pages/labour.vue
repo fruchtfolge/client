@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="printFixOverflow">
     <div class="chart-wrapper">
       <canvas id="labour-chart" />
     </div>

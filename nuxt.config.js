@@ -79,6 +79,7 @@ module.exports = {
   css: [
     '@/assets/css/global.css',
     '@/assets/css/grid.css',
+    '@/assets/css/print.css',
     '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css',
     'mapbox-gl/dist/mapbox-gl.css'
   ],

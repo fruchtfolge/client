@@ -1,5 +1,8 @@
 <template lang="html">
   <div class="cropsTable">
+    <div style="display: none;" class="printCropName">
+      {{ crop.name }}
+    </div>
     <table class="table">
       <thead>
         <tr>
