@@ -5,7 +5,7 @@
       <cropsSidebar :crops="crops" :selected-crop="selectedCrop" @showAddCrop="addCrop = true" @changeCrop="changeCrop" />
       <div v-if="selectedCrop" class="cropSettings">
         <div class="subseqCrops">
-          <table class="table">
+          <table :key="`subseqCrops_${selectedCrop.name}`" class="table">
             <caption class="caption">
               Vorfruchtwirkungen von {{ selectedCrop.name }} auf Nachfrüchte
             </caption>
@@ -26,7 +26,7 @@
           </table>
         </div>
         <div class="settings">
-          <table class="table">
+          <table :key="`cropSettings_${selectedCrop.name}`" class="table">
             <caption class="caption">
               Fruchtfolge Eigenschaften
             </caption>
@@ -77,7 +77,7 @@
           </table>
         </div>
         <div v-if="!isGreenlandCrop" class="duevSettings">
-          <table class="table">
+          <table :key="`duevSettings_${selectedCrop.name}`" class="table">
             <caption class="caption">
               Einstellungen Düngeverordnung 2017/2020
             </caption>
@@ -156,7 +156,7 @@
           </table>
         </div>
         <div v-else class="duevSettings">
-          <table class="table">
+          <table :key="`duevSettings_${selectedCrop.name}`" class="table">
             <caption class="caption">
               Einstellungen Düngeverordnung Grünland 2020
             </caption>

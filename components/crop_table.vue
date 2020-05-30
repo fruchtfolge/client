@@ -3,7 +3,7 @@
     <div style="display: none;" class="printCropName">
       {{ crop.name }}
     </div>
-    <table class="table">
+    <table :key="`grossMargin_${crop.name}`" class="table">
       <thead>
         <tr>
           <th>Leistungs-/Kostenart</th>
