@@ -1,9 +1,11 @@
 # Fruchtfolge
 [![DOI](https://zenodo.org/badge/173977199.svg)](https://zenodo.org/badge/latestdoi/173977199)
 
-Fruchtfolge is an open-source crop planning optimization tool. It's main focus are usability and data security.
+Fruchtfolge is an open-source decision support system (DSS) for crop planning optimization. It's main focus are usability and data security.
 
-[fruchtfolge.agp.uni-bonn.de](http://fruchtfolge.agp.uni-bonn.de)
+[![Fruchtfolge GIF](https://chrispahm.github.io/assets/fruchtfolge.gif)](http://fruchtfolge.agp.uni-bonn.de)
+
+The latest version of the DSS is hosted at [fruchtfolge.agp.uni-bonn.de](http://fruchtfolge.agp.uni-bonn.de).
 
 This repository contains the client side code of the application.
 
@@ -24,7 +26,7 @@ Then [clone](https://help.github.com/articles/cloning-a-repository/) or [fork](h
 # install dependencies
 $ npm install
 
-# serve with hot reload at localhost:3000
+# serve with hot reload at localhost:3002
 $ npm run dev
 
 # build for production and launch server
