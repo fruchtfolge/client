@@ -13,7 +13,7 @@ const features = [
 ].join('%2C')
 
 module.exports = {
-  mode: 'spa',
+  ssr: false,
   server: {
     port: 3002
   },
