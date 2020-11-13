@@ -1,6 +1,6 @@
 {
   "name": "fruchtfolge",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "sideEffects": true,
   "description": "Fruchtfolge client application",
   "author": "Christoph Pahmeyer <christoph.pahmeyer@ilr.uni-bonn.de>",

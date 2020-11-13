@@ -1565,6 +1565,7 @@ module.exports = [
     cropGroup: 'Gattung: Beta (Rüben)',
     code: 603
   },
+  /*
   {
     farmingType: 'konventionell/integriert',
     crop: 'Zwischenfrucht Perserklee',
@@ -1593,6 +1594,7 @@ module.exports = [
     cropGroup: '',
     code: 999
   },
+  */
   {
     farmingType: 'ökologisch',
     crop: 'Ackerbohnen - Erbsen - Gemenge',
