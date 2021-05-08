@@ -29,7 +29,7 @@
     "chartjs-plugin-piechart-outlabels": "^0.1.4",
     "cross-env": "^5.2.1",
     "fold-to-ascii": "^4.1.2",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "mapbox-gl": "^1.10.1",
     "mini-toastr": "^0.8.1",
     "nuxt": "^2.12.0",
