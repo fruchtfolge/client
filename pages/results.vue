@@ -698,7 +698,7 @@ export default {
       this.renderResultsMap = true
     }, 2000)
 
-    this.$bus.$on('changeCurrents', _.debounce(this.update, 200))
+    this.$bus.$on('changeCurrents', _.debounce(this.update, 500))
   },
   destroyed() {
     this.$bus.$off('changeCurrents')
@@ -707,6 +707,7 @@ export default {
   methods: {
     async solve(force) {
       this.loading = true
+      this.renderResultsMap = false
       try {
         // solve the model
         const { data } = await this.$axios.post(
@@ -983,7 +984,11 @@ export default {
         // update shares
         this.calcShares()
         // console.log(this.curManure)
+        // await this.$nextTick()
         this.loading = false
+        setTimeout(() => {
+          this.renderResultsMap = true
+        }, 4000)
       }
     },
     format(number) {
