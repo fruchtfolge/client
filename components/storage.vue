@@ -111,6 +111,9 @@ export default {
             display: true,
             text: 'Dunglager'
           },
+          animation: {
+            duration: 0
+          },
           responsive: false,
           legend: {
             position: 'bottom'
