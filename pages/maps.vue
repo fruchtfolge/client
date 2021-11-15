@@ -3,7 +3,7 @@
     <div class="page-container no-bottom-padding">
       <addPlot v-if="addPlot" :plot-data="plotData" @closeAddPlot="addPlot = false" />
       <plotsSidebar />
-      <div style="width: calc(100% - 275px)">
+      <div style="width: calc(100% - 295px)">
         <maps @addPlot="openDialogue" />
       </div>
     </div>

@@ -5,11 +5,12 @@
 <script>
 import area from '@turf/area'
 import mapboxgl from 'mapbox-gl'
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
+// load Mapbox Draw configuration file
 import drawConfig from '../assets/js/draw.config.js'
 import notifications from '~/components/notifications'
-
-// load Mapbox Draw configuration file
 
 export default {
   name: 'MapBox',
@@ -99,7 +100,11 @@ export default {
       this.Draw = new MapboxDraw(drawConfig)
       this.map.addControl(new mapboxgl.NavigationControl(), 'bottom-left')
       this.map.addControl(this.Draw, 'bottom-left')
-
+      this.map.addControl(
+        new MapboxGeocoder({
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: mapboxgl
+      }))
       // add drawing event listeners
       this.map.on('draw.create', this.create)
       this.map.on('draw.update', this.update)
