@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import PouchDB from 'pouchdb-browser'
 import Find from 'pouchdb-find'
-import LiveFind from 'pouchdb-live-find'
+import LiveFind from '@chrispahm/pouchdb-live-find'
 
 PouchDB.plugin(Find)
 PouchDB.plugin(LiveFind)

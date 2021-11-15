@@ -4,15 +4,12 @@ module.exports = {
     browser: true,
     node: true
   },
-  parserOptions: {
-    parser: 'babel-eslint'
-  },
   globals: {
     '_': true,
     '$nuxt': true
   },
   extends: [
-    '@nuxtjs',
+    'plugin:nuxt/recommended',
     'plugin:prettier/recommended'
   ],
   plugins: [
