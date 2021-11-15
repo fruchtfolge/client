@@ -33,10 +33,21 @@ export default {
     }
   },
   mounted() {
+    this.startMountTime = new Date()
+    console.log('mounted')
     this.prepareData()
     this.createChart('cropShares-chart', this.cropShares)
   },
   methods: {
+    debouncedUpdate() {
+      return _.debounce(() => {
+        this.prepareData()
+        this.cropShares.data.datasets[0].data = this.dataset.data
+        this.cropShares.data.datasets[0].backgroundColor = this.dataset.backgroundColor
+        this.cropShares.data.labels = this.dataset.labels
+        this.cropShares.update()
+      }, 500)
+    },
     prepareData() {
       this.dataset = {}
       this.dataset.data = []
@@ -66,13 +77,16 @@ export default {
           labels: this.dataset.labels
         },
         options: {
+          animation: {
+            duration: 1
+          },
           responsive: false,
           legend: {
             position: 'bottom'
           },
           plugins: {
             deferred: {
-              delay: 250 // delay of 500 ms after the canvas is considered inside the viewport
+              delay: 500 // delay of 500 ms after the canvas is considered inside the viewport
             },
             outlabels: {
               text(context) {
@@ -111,6 +125,9 @@ export default {
       }
       const ctx = document.getElementById(chartId).getContext('2d')
       this.cropShares = new Chart(ctx, config)
+      setTimeout(() => {
+        this.cropShares.options.animation.duration = 1500
+      }, 10)
     }
   }
 }
