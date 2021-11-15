@@ -53,7 +53,7 @@
                 deselectLabel="Enter zum entfernen"
                 placeholder="Auswählen"
                 :preselect-first="false"
-                @input="changeAllowed(plot)"
+                @input="debouncedChangeAllowed(plot)"
               >
                 <span slot="noResult">Kultur nicht gefunden 😞</span>
               </multiselect>
@@ -184,6 +184,9 @@ export default {
       if (!this.loading) this.$bus.$emit('importPrevYear')
       this.loading = true
     },
+    debouncedChangeAllowed(changedPlot) {
+      return _.debounce(this.changeAllowed, 250)
+    },
     async changeAllowed(changedPlot) {
       try {
         // console.log(changedPlot)
@@ -192,6 +195,7 @@ export default {
         // change allowed crops
         plot.allowedCrops = changedPlot.allowedCrops
         // store again
+        console.log('jo')
         await this.$db.put(plot)
         this.saveSuccess()
       } catch (e) {
