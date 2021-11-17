@@ -9,9 +9,9 @@
           <h2 class="infoText">
             NEUEN SCHLAG HINZUFÜGEN
           </h2>
-          <label for="add.plot.name">Name</label>
+          <label class="label" for="add.plot.name">Name</label>
           <input id="add.plot.name" v-model="name" type="text" class="input" @keyup.enter="addPlot">
-          <label for="add.plot.prevCrop1">Hauptfrucht {{ curYear - 1 }}</label>
+          <label class="label" for="add.plot.prevCrop1">Hauptfrucht {{ curYear - 1 }}</label>
           <select id="add.plot.prevCrop1" v-model="prevCrop1" class="select dropdown">
             <option v-for="(crop, i) in crops" :key="i" :value="crop.code">
               {{ crop.name }}
@@ -21,7 +21,7 @@
               {{ culture.variety }}
             </option>
           </select>
-          <label for="add.plot.prevCrop2">Hauptfrucht {{ curYear - 2 }}</label>
+          <label class="label" for="add.plot.prevCrop2">Hauptfrucht {{ curYear - 2 }}</label>
           <select id="add.plot.prevCrop2" v-model="prevCrop2" class="select dropdown">
             <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop.code">
               {{ prevCrop.name }}
@@ -31,7 +31,7 @@
               {{ culture.variety }}
             </option>
           </select>
-          <label for="add.plot.prevCrop3">Hauptfrucht {{ curYear - 3 }}</label>
+          <label class="label" for="add.plot.prevCrop3">Hauptfrucht {{ curYear - 3 }}</label>
           <select id="add.plot.prevCrop3" v-model="prevCrop3" class="select dropdown">
             <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop.code">
               {{ prevCrop.name }}
@@ -50,7 +50,7 @@
         </button>
       </div>
     </div>
-    
+
   </div>
 </template>
 
@@ -146,6 +146,7 @@ export default {
 }
 
 .label {
+  font-size: 12px;
   position: relative;
   left: 0px;
   margin-left: 0px;

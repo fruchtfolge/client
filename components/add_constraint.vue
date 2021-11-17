@@ -6,7 +6,7 @@
           <h2 class="infoText">
             NEUE NEBENBEDINGUNG HINZUFÜGEN
           </h2>
-          <label for="add.constraint.crop1">Kultur</label>
+          <label class="label" for="add.constraint.crop1">Kultur</label>
           <select id="add.constraint.crop1" v-model="crop1" class="dropdown select">
             <option disabled value="">
               Kultur
@@ -26,7 +26,7 @@
             </option>
           -->
           </select>
-          <label for="add.constraint.crop2">und Kultur (optional)</label>
+          <label class="label" for="add.constraint.crop2">und Kultur (optional)</label>
           <select id="add.constraint.crop2" v-model="crop2" class="dropdown select">
             <option disabled value="">
               Kultur
@@ -36,7 +36,7 @@
               {{ crop.name }}
             </option>
           </select>
-          <label for="add.constraint.crop4">soll(en) insgesamt weniger/mehr als</label>
+          <label class="label" for="add.constraint.crop4">soll(en) insgesamt weniger/mehr als</label>
           <select id="add.constraint.crop4" v-model="operator" class="dropdown select">
             <option disabled value="">
               maximal/mehr
@@ -48,9 +48,9 @@
               mehr als
             </option>
           </select>
-          <label for="add.constraint.name">Fläche in {{ sizeType }} betragen.</label>
+          <label class="label" for="add.constraint.name">Fläche in {{ sizeType }} betragen.</label>
           <input id="add.constraint.name" v-model="area" type="number" class="input" @keyup.enter="addConstraint">
-          <label for="add.constraint.crop4">Flächeneinheit</label>
+          <label class="label" for="add.constraint.crop4">Flächeneinheit</label>
           <select id="add.constraint.crop4" v-model="sizeType" class="dropdown select">
             <option value="ha">
               ha
@@ -75,7 +75,7 @@
         </div>
       </div>
     </div>
-    
+
   </div>
 </template>
 
@@ -160,6 +160,7 @@ export default {
 }
 
 .label {
+  font-size: 12px;
   position: relative;
   left: 0px;
   margin-left: 0px;

@@ -6,7 +6,7 @@
           <h2 class="infoText">
             NEUE KULTUR HINZUFÜGEN
           </h2>
-          <label for="add.crop.farmingType">Anbauverfahren</label>
+          <label class="label" for="add.crop.farmingType">Anbauverfahren</label>
           <select id="add.crop.farmingType" v-model="farmingType" class="dropdown select">
             <option disabled value="">
               Anbauverfahren
@@ -15,7 +15,7 @@
               {{ typeOption }}
             </option>
           </select>
-          <label for="add.crop.crop">Kultur</label>
+          <label class="label" for="add.crop.crop">Kultur</label>
           <select id="add.crop.crop" v-model="crop" class="dropdown select">
             <option disabled value="">
               Kultur
@@ -24,7 +24,7 @@
               {{ cropOption }}
             </option>
           </select>
-          <label for="add.crop.system">System</label>
+          <label class="label" for="add.crop.system">System</label>
           <select id="add.crop.system" v-model="system" class="dropdown select">
             <option disabled value="">
               System
@@ -33,7 +33,7 @@
               {{ systemOption }}
             </option>
           </select>
-          <label for="add.crop.variety">Sorte</label>
+          <label class="label" for="add.crop.variety">Sorte</label>
           <input
             id="add.crop.variety"
             v-model="variety"
@@ -210,6 +210,7 @@ export default {
 }
 
 .label {
+  font-size: 12px;
   position: relative;
   left: 0px;
   margin-left: 0px;
