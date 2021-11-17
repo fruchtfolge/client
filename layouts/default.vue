@@ -365,6 +365,7 @@ html {
 }
 
 .footer-sidebar {
+  border-top: 1px solid #dfdfdf;
   background-color: #e8e8e8;
   width: 250px;
   padding: 10px;
