@@ -1,55 +1,56 @@
 <template lang="html">
   <div>
-    <div class="blur" :class="{ plotLoading: loading }">
-      <div class="lds-spinner">
+    <div class="blur">
+      <div v-if="loading" class="lds-spinner">
         <div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div />
       </div>
-    </div>
-    <div class="box">
-      <div class="inputs">
-        <h2 class="infoText">
-          NEUEN SCHLAG HINZUFÜGEN
-        </h2>
-        <label for="add.plot.name">Name</label>
-        <input id="add.plot.name" v-model="name" type="text" class="input" @keyup.enter="addPlot">
-        <label for="add.plot.prevCrop1">Hauptfrucht {{ curYear - 1 }}</label>
-        <select id="add.plot.prevCrop1" v-model="prevCrop1" class="select dropdown">
-          <option v-for="(crop, i) in crops" :key="i" :value="crop.code">
-            {{ crop.name }}
-          </option>
-          <option value="" />
-          <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
-            {{ culture.variety }}
-          </option>
-        </select>
-        <label for="add.plot.prevCrop2">Hauptfrucht {{ curYear - 2 }}</label>
-        <select id="add.plot.prevCrop2" v-model="prevCrop2" class="select dropdown">
-          <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop.code">
-            {{ prevCrop.name }}
-          </option>
-          <option value="" />
-          <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
-            {{ culture.variety }}
-          </option>
-        </select>
-        <label for="add.plot.prevCrop3">Hauptfrucht {{ curYear - 3 }}</label>
-        <select id="add.plot.prevCrop3" v-model="prevCrop3" class="select dropdown">
-          <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop.code">
-            {{ prevCrop.name }}
-          </option>
-          <option value="" />
-          <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
-            {{ culture.variety }}
-          </option>
-        </select>
+      <div v-else class="box">
+        <div class="inputs">
+          <h2 class="infoText">
+            NEUEN SCHLAG HINZUFÜGEN
+          </h2>
+          <label for="add.plot.name">Name</label>
+          <input id="add.plot.name" v-model="name" type="text" class="input" @keyup.enter="addPlot">
+          <label for="add.plot.prevCrop1">Hauptfrucht {{ curYear - 1 }}</label>
+          <select id="add.plot.prevCrop1" v-model="prevCrop1" class="select dropdown">
+            <option v-for="(crop, i) in crops" :key="i" :value="crop.code">
+              {{ crop.name }}
+            </option>
+            <option value="" />
+            <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
+              {{ culture.variety }}
+            </option>
+          </select>
+          <label for="add.plot.prevCrop2">Hauptfrucht {{ curYear - 2 }}</label>
+          <select id="add.plot.prevCrop2" v-model="prevCrop2" class="select dropdown">
+            <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop.code">
+              {{ prevCrop.name }}
+            </option>
+            <option value="" />
+            <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
+              {{ culture.variety }}
+            </option>
+          </select>
+          <label for="add.plot.prevCrop3">Hauptfrucht {{ curYear - 3 }}</label>
+          <select id="add.plot.prevCrop3" v-model="prevCrop3" class="select dropdown">
+            <option v-for="(prevCrop, i) in crops" :key="i" :value="prevCrop.code">
+              {{ prevCrop.name }}
+            </option>
+            <option value="" />
+            <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
+              {{ culture.variety }}
+            </option>
+          </select>
+        </div>
+        <button class="button buttonOk" @click="addPlot">
+          ÜBERNEHMEN
+        </button>
+        <button class="button buttonCancel" @click="cancel">
+          ABBRECHEN
+        </button>
       </div>
-      <button class="button buttonOk" @click="addPlot">
-        ÜBERNEHMEN
-      </button>
-      <button class="button buttonCancel" @click="cancel">
-        ABBRECHEN
-      </button>
     </div>
+    
   </div>
 </template>
 
@@ -163,16 +164,18 @@ export default {
 }
 
 .dropdown {
+  font-size: 14px;
+  font-family: 'Inter', Helvetica, Arial, sans-serif;
+  letter-spacing: 0px;
   margin-bottom: 15px;
   width: 320px;
   height: 33px;
-  background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
-  background-position: 100% 50%;
-  background-repeat: no-repeat;
-  padding-right: 25px;
 }
 
 .input {
+  font-size: 14px;
+  font-family: 'Inter', Helvetica, Arial, sans-serif;
+  letter-spacing: 0px;
   margin-bottom: 15px;
   width: 312px;
   height: 33px;

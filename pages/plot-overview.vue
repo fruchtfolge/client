@@ -272,7 +272,7 @@ export default {
   /* float: left; */
   margin: auto;
   margin-top: 20px;
-  max-width: 80vw;
+  max-width: 960px;
   min-width: 768px;
 }
 
@@ -281,10 +281,11 @@ export default {
 }
 
 .search-plots {
+  box-sizing: border-box;
   font-size: 16px;
   height: 36px;
   margin-right: 5px;
-  width: 300px;
+  width: 100%;
 }
 
 .duplicates-label {
@@ -301,6 +302,10 @@ export default {
 
 .plotOverview-table {
   margin: unset;
+  width: unset;
+  margin-top: 10px;
+  max-width: 960px;
+  min-width: 100%;
 }
 .plotOverview table input {
   -webkit-appearance: checkbox;

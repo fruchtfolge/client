@@ -105,6 +105,23 @@ export default {
           accessToken: mapboxgl.accessToken,
           mapboxgl: mapboxgl
       }))
+      
+      class HelloWorldControl {
+        onAdd(map) {
+          this._map = map;
+          this._container = document.createElement('div');
+          this._container.className = 'mapboxgl-ctrl-group mapboxgl-ctrl';
+          this._container.innerHTML = '<button class="mapbox-gl-draw_ctrl-draw-btn addIcon" title="Schläge hinzufügen"></button>'
+          return this._container;
+        }
+         
+        onRemove() {
+          this._container.parentNode.removeChild(this._container);
+          this._map = undefined;
+        }
+      }
+      this.map.addControl(new HelloWorldControl(), 'bottom-left')
+      
       // add drawing event listeners
       this.map.on('draw.create', this.create)
       this.map.on('draw.update', this.update)
@@ -179,5 +196,8 @@ export default {
   position: relative;
   width: 100%;
   height: calc(100vh - 60px);
+}
+.addIcon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15' height='15' width='15'%3E%3Ctitle%3Ehospital.svg%3C/title%3E%3Crect fill='none' x='0' y='0' width='15' height='15'%3E%3C/rect%3E%3Cpath fill='%23333' transform='translate(0 0)' d='M7,1C6.4,1,6,1.4,6,2v4H2C1.4,6,1,6.4,1,7v1 c0,0.6,0.4,1,1,1h4v4c0,0.6,0.4,1,1,1h1c0.6,0,1-0.4,1-1V9h4c0.6,0,1-0.4,1-1V7c0-0.6-0.4-1-1-1H9V2c0-0.6-0.4-1-1-1H7z'%3E%3C/path%3E%3C/svg%3E");
 }
 </style>

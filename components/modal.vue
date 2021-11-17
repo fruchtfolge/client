@@ -1,25 +1,28 @@
 <template lang="html">
   <div>
-    <div class="blur" :class="{ modalLoading: loading }">
-      <div class="lds-spinner">
+    <div class="blur">
+      <div v-if="loading" class="lds-spinner">
         <div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div /><div />
       </div>
-    </div>
-    <div class="box">
-      <div class="inputs">
-        <h2 class="infoText">
-          {{ head }}
-        </h2>
+      <div v-else class="box">
+        <div class="inputs">
+          <h2 class="infoText">
+            {{ head }}
+          </h2>
+        </div>
+        <p class="text-body">
+          {{ body }}
+        </p>
+        <div class="buttons-modal">
+          <button class="buttonOk button" @click="handleOk">
+            {{ buttonOk }}
+          </button>
+          <button class="buttonCancel button" @click="handleCancle">
+            {{ buttonCancel }}
+          </button>
+        </div>
+
       </div>
-      <p class="text-body">
-        {{ body }}
-      </p>
-      <button class="buttonOk button" @click="handleOk">
-        {{ buttonOk }}
-      </button>
-      <button class="buttonCancel button" @click="handleCancle">
-        {{ buttonCancel }}
-      </button>
     </div>
   </div>
 </template>
@@ -51,7 +54,7 @@ export default {
       type: String,
       required: false,
       default: 'ABBRECHEN'
-    },
+    }
   },
   data() {
     return {
@@ -74,16 +77,11 @@ export default {
 </script>
 
 <style scoped>
-.blur {
-  padding-top: 100px;
-}
-.modalLoading {
-  z-index: 1001;
-}
 
 .box {
   width: 400px;
   height: 250px;
+  margin-bottom: 100px;
 }
 
 .infoText {
@@ -102,9 +100,6 @@ export default {
 }
 
 .buttonOk {
-  position: absolute;
-  bottom: 35px;
-  left: 45px;
   width: 130px;
 }
 
@@ -113,10 +108,8 @@ export default {
   color: white;
 }
 
+
 .buttonCancel {
-  position: absolute;
-  bottom: 35px;
-  right: 45px;
   width: 130px;
 }
 
