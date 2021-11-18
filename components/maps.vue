@@ -36,14 +36,10 @@ export default {
     } catch (e) {
       if (e.status === 404) {
         this.showAddressWarn()
-        return $nuxt.$router.replace({ path: 'settings' })
+        return $nuxt.$router.push({ path: 'settings' })
       }
       console.log(e)
     }
-    // if (!settings.home) {
-    //  this.showAddressWarn()
-    //  return $nuxt.$router.replace({path: 'settings'})
-    // }
   },
   created() {
     // listen to changes in settings and plots (current planning year etc.)
@@ -62,6 +58,8 @@ export default {
         center: plot.center,
         zoom: 15
       })
+      // direct select plot in draw
+      this.Draw.changeMode('direct_select', {featureId: plot._id})
     })
 
     this.$bus.$on('resize', () => {
@@ -105,7 +103,7 @@ export default {
           accessToken: mapboxgl.accessToken,
           mapboxgl: mapboxgl
       }))
-      
+
       class HelloWorldControl {
         onAdd(map) {
           this._map = map;
@@ -114,14 +112,14 @@ export default {
           this._container.innerHTML = '<button class="mapbox-gl-draw_ctrl-draw-btn addIcon" title="Schläge hinzufügen"></button>'
           return this._container;
         }
-         
+
         onRemove() {
           this._container.parentNode.removeChild(this._container);
           this._map = undefined;
         }
       }
       this.map.addControl(new HelloWorldControl(), 'bottom-left')
-      
+
       // add drawing event listeners
       this.map.on('draw.create', this.create)
       this.map.on('draw.update', this.update)
@@ -134,9 +132,26 @@ export default {
         // const geometries = []
         plots.forEach(plot => {
           plot.geometry.properties._id = plot._id
+          plot.geometry.id = plot._id
           this.Draw.add(plot.geometry)
           // geometries.push(plot.geometry)
         })
+
+        // check for query params, in that case center the given plot
+        if (this.$route.query && this.$route.query.plot) {
+          const plotId = this.$route.query.plot
+          const match = this.curPlots.find(p => p._id === plotId)
+          if (match) {
+            this.map.flyTo({
+              center: match.center,
+              zoom: 15
+            })
+            // update sidebar to select plot accordingly
+            this.$bus.$emit('selectedPlot', plotId)
+            // direct select plot in draw
+            this.Draw.changeMode('direct_select', {featureId: plotId})
+          }
+        }
         // fit map to the bounds of the plots
         // const extent = featureCollection(geometries)
         // const bounds = bbox(extent)
@@ -167,6 +182,8 @@ export default {
         plot.size = this.getSize(plot.geometry)
         // store changes in Database
         await this.$db.put(plot)
+        // show success toast
+        this.saveSuccess()
       } catch (e) {
         console.log(e)
       }

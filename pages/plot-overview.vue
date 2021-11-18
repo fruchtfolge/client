@@ -111,6 +111,14 @@
             class="dropdown-item"
             @click="selectedPlots.length ? isModalOpen = true : ''"
           >Ausgewählte Schläge löschen</a>
+          <div v-if="selectedPlots.length">
+            <hr>
+            <a
+              class="dropdown-item fly-to-plot"
+              style="white-space: break-spaces; max-width: 200px;"
+              @click="showSelectedOnMap"
+            >{{selectedPlots[0].name}} auf der Karte anzeigen</a>
+          </div>
         </dropdown>
       </div>
 
@@ -122,7 +130,7 @@
         <br>
         Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
       </h3>
-      <button style="background-color: white;" class="button" @click="$nuxt.$router.replace({path: 'maps'})">
+      <button style="background-color: white;" class="button" @click="$nuxt.$router.push({path: 'maps'})">
         ZUR KARTE
       </button>
       <button style="margin-left: 20px; background-color: white;" class="button" @click="importPrev">
@@ -223,6 +231,11 @@ export default {
     importPrev() {
       if (!this.waiting) this.$bus.$emit('importPrevYear')
       this.waiting = true
+    },
+    showSelectedOnMap() {
+      if (this.selectedPlots && this.selectedPlots.length) {
+        $nuxt.$router.push({ path: 'maps', query: { plot: this.selectedPlots[0]._id } })
+      }
     },
     async deleteSelectedPlots() {
       const plotsToDelete = this.selectedPlots.map(p => {
