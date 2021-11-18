@@ -30,7 +30,7 @@ export default {
       paint: {
         'fill-color': '#ffffff',
         'fill-outline-color': '#ffffff',
-        'fill-opacity': 0.2
+        'fill-opacity': 0.4
       }
     },
     // polygon outline stroke
