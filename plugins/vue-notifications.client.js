@@ -42,16 +42,20 @@ miniToastr.init({
       */
       width: '300px',
       '&.-error': {
-        'background-color': '#de4457'
+        'background-color': '#de4457',
+        'border': '2px solid #c33b4b'
       },
       '&.-warn': {
-        'background-color': '#e2963d'
+        'background-color': '#e2963d',
+        'border': '2px solid #c38032'
       },
       '&.-success': {
-        'background-color': '#79ae98'
+        'background-color': '#79ae98',
+        'border': '2px solid #669481'
       },
       '&.-info': {
-        'background-color': '#3684c8'
+        'background-color': '#3684c8',
+        'border': '2px solid #2d70aa'
       },
       '&:hover': {
         opacity: 1
