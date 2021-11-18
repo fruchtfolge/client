@@ -97,6 +97,11 @@ export default {
       routes
     }
   },
+  watch: {
+    '$route': function (route) {
+      this.curPage = route.path
+    }
+  },
   computed: {
     curPageName() {
       const clicked = this.routes.find(route => route.path === this.curPage)
@@ -170,14 +175,14 @@ export default {
           await this.$axios.post(process.env.baseUrl + 'auth/logout')
         } else if (route.path === this.curPage) return
         this.curPage = route.path
-        return $nuxt.$router.replace({ path: route.path })
+        return $nuxt.$router.push({ path: route.path })
       } catch (e) {
         console.log(e)
-        return $nuxt.$router.replace({ path: route.path })
+        return $nuxt.$router.push({ path: route.path })
       }
     },
     isClicked(route) {
-      if (route.subPage) {
+      if (route.subPage || route.path === '/settings') {
         return this.curPage === route.path
       }
     },
