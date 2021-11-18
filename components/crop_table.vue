@@ -83,7 +83,7 @@
           <td>€/ha</td>
         </tr>
         <!-- Contribution Margin-->
-        <tr class="highlightRow">
+        <tr style="font-weight: 600;" class="highlightRow">
           <td colspan="5">
             Deckungsbeitrag
           </td>
@@ -270,6 +270,8 @@ export default {
 
 .highlightRow {
   height: 40px;
+  background-color: white;
+  /* font-weight: 600; */
   font-family: Inter;
 }
 </style>
