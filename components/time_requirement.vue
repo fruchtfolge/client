@@ -8,6 +8,7 @@
 <script>
 import Chart from 'chart.js'
 import 'chartjs-plugin-deferred'
+import '~/assets/js/chartjs-plugin-background'
 import notifications from '~/components/notifications'
 
 export default {

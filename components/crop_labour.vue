@@ -22,6 +22,7 @@
 import Chart from 'chart.js'
 import cropLabourReq from '~/assets/js/cropLabourReq.js'
 import 'chartjs-plugin-dragdata'
+import '~/assets/js/chartjs-plugin-background'
 import notifications from '~/components/notifications'
 
 export default {

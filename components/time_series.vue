@@ -29,6 +29,7 @@
 import Chart from 'chart.js'
 import timeseries from '~/assets/js/timeseries.js'
 import 'chartjs-plugin-dragdata'
+import '~/assets/js/chartjs-plugin-background'
 import notifications from '~/components/notifications'
 
 export default {
@@ -299,6 +300,7 @@ export default {
 #timeseries-chart {
   margin-top: 80px;
 }
+
 .timeseries-wrapper {
   width: calc(100% - 275px);
   height: calc(85vh - 150px);
