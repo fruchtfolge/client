@@ -106,7 +106,7 @@ export default {
       }
       cropLabourReq.options.onDragEnd = this.saveChanges
 
-      Chart.defaults.global.defaultFontFamily = 'Raleway'
+      Chart.defaults.global.defaultFontFamily = 'Inter'
       Chart.defaults.global.defaultFontSize = 14
 
       this.cropLabourChart = new Chart(ctx, {

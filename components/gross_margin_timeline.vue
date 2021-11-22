@@ -175,6 +175,9 @@ export default {
                 }
               }
             ]
+          },
+          chartArea: {
+            backgroundColor: 'white'
           }
         }
       }
