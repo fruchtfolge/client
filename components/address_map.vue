@@ -122,8 +122,8 @@ export default {
           mapboxgl: mapboxgl
       }))
     }
-    
-    
+
+
     const el = document.createElement('div')
     el.className = 'marker'
 
@@ -145,7 +145,7 @@ export default {
       this.coords = this.map.getCenter()
       this.marker.setLngLat(this.coords)
     })
-    
+
     this.$bus.$on('resize', () => {
       setTimeout(() => {
         this.map.resize()
@@ -166,14 +166,5 @@ export default {
   font-size: 12px;
   margin-top: 45px;
   margin-bottom: 15px;
-}
-.marker {
-  background-image: url('/icon.png');
-  box-shadow: 0 0 0 2pt white;
-  background-size: cover;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  cursor: pointer;
 }
 </style>
