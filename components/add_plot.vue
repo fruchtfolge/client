@@ -9,6 +9,9 @@
           <h2 class="infoText">
             NEUEN SCHLAG HINZUFÜGEN
           </h2>
+          <h2 style="margin-bottom: 0px;" class="infoText">
+            {{ displaySize }} ha
+          </h2>
           <label class="label" for="add.plot.name">Name</label>
           <input id="add.plot.name" v-model="name" type="text" class="input" @keyup.enter="addPlot">
           <label class="label" for="add.plot.prevCrop1">Hauptfrucht {{ curYear - 1 }}</label>
@@ -66,11 +69,17 @@ export default {
       required: true
     }
   },
+  computed: {
+    displaySize() {
+      return _.round(this.size,2).toLocaleString()
+    }
+  },
   data() {
     return {
       curYear: 2019,
       name: 'Unbenannt',
       crops: [],
+      size: 0,
       loading: false,
       prevCrop1: '',
       prevCrop2: '',
@@ -84,12 +93,19 @@ export default {
       this.crops = _.uniqBy(this.$store.crops, 'code')
     }
     if (this.$store.curYear) this.curYear = this.$store.curYear
+    // use official size values from IACS data if available
+    // fallback to calculating area in WGS84, which will distort sizes (FIX)
+    if (this.plotData.features[0].properties && this.plotData.features[0].properties.AREA_HA) {
+      this.size = this.plotData.features[0].properties.AREA_HA
+    } else {
+      this.size = this.getSize(this.plotData.features[0])
+    }
+
   },
   methods: {
     async addPlot() {
       this.loading = true
       const settings = await this.$db.get('settings')
-      const size = this.getSize(this.plotData.features[0])
       try {
         const properties = {
           name: this.name,
@@ -97,7 +113,7 @@ export default {
           prevCrop1: this.prevCrop1,
           prevCrop2: this.prevCrop2,
           prevCrop3: this.prevCrop3,
-          size: size,
+          size: this.size,
           settings: settings
         }
         const { data } = await this.$axios.post(
@@ -158,7 +174,6 @@ export default {
 .infoText {
   text-align: center;
   font-size: 18px;
-  padding-bottom: 15px;
   letter-spacing: 0.2em;
   font-weight: normal;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
