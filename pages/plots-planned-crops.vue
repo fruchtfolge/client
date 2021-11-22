@@ -1,7 +1,7 @@
 <template>
 <div>
   <loading v-if="loading" />
-  <div v-if="!loading && curPlots && curPlots.length > 0" class="plotOverview">
+  <div v-if="!loading && curPlots && curPlots.length > 0" >
     <div class="plotsPlan-wrapper">
       <div class="plotsPlan-controls">
         <input class="input search-plots" type="text" placeholder="Suche..." v-model="searchString">
@@ -275,7 +275,7 @@ export default {
 .multiselect__input,
 .multiselect__single,
 .multi-select-crops {
-  font-family: Inter;
+  font-family: Inter, Helevetica, sans-serif;
   background: none;
   font-size: 14px;
 }
