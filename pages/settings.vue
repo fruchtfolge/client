@@ -53,7 +53,7 @@
             DATEN LÖSCHEN
           </button>
         </div>
-  
+
         <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
           <span style="font-size: 20px; font-family: 'Open Sans Condensed'; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
             ODER ELAN-DATEI UPLOAD
@@ -65,7 +65,7 @@
         <span>GML-Datei</span>
         <input id="gml" type="file" accept=".gml" name="gml" @change="processFile($event, 'gml')">
       </div>
-      
+
       <div class="settings-element">
         <h1 id="address" style="font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em" class="anchor-link">
           ADRESSE
@@ -84,7 +84,7 @@
           <addressMap :coordsForward="homeCoords" :width="'100%'" :showText="false" :includeGeocoder="true" :zoom="15" />
         </div>
       </div>
-      
+
       <div class="settings-element">
         <h1 style="font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em" class="anchor-link">
           PERSÖNLICHE DATEN
@@ -92,7 +92,7 @@
         <span class="text">Persönlich angelegte Daten, z.B. Flächen, Kulturen oder Nebenbedingungen können an dieser Stelle für einzelne Jahre gelöscht werden. So können Sie beispielsweise verhindern, dass vorherige Planungsdaten als duplikate zu den Elan-Daten auftauchen.</span>
         <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px" />
         <div style="text-align: center;">
-          <select v-model="selectedDeleteYear" class="deleteYear select" name="">
+          <select v-model="selectedDeleteYear" class=" select selection deleteYear" name="">
             <option v-for="year in years" :key="`${year}_option`" :value="year">
               {{ year }}
             </option>
@@ -105,7 +105,7 @@
         </div>
       </div>
 
-      <!-- 
+      <!--
       <h1 style="padding-top: 40px; font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
         Düngeverordnung 2020
       </h1>
@@ -471,9 +471,8 @@ export default {
   margin-bottom: 15px;
   height: 40px;
   padding-right: 25px;
-  background-image: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
-  background-repeat: no-repeat;
-  background-position: 100% 50%;
+  background-color: white;
+  border: 1px solid black;
 }
 
 .anchor-link::before {
