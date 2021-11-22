@@ -1,5 +1,5 @@
 <template>
-  <div id="map" class="map" />
+<div id="map" class="map" />
 </template>
 
 <script>
@@ -11,12 +11,14 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw'
 // load Mapbox Draw configuration file
 import drawConfig from '../assets/js/draw.config.js'
 import notifications from '~/components/notifications'
+import { union } from 'polygon-clipping'
 
 export default {
   name: 'MapBox',
   data() {
     return {
-      curYear: ''
+      curYear: '',
+      addPlots: false
     }
   },
   notifications: notifications,
@@ -26,7 +28,7 @@ export default {
       settings = await this.$db.get('settings')
       this.curYear = settings.curYear
       // initialize map
-      this.createMap(settings)
+      await this.createMap(settings)
       // initially draw plots, if available
       if (this.$store.curPlots) {
         this.curPlots = this.$store.curPlots
@@ -36,7 +38,9 @@ export default {
     } catch (e) {
       if (e.status === 404) {
         this.showAddressWarn()
-        return $nuxt.$router.push({ path: 'settings' })
+        return $nuxt.$router.push({
+          path: 'settings'
+        })
       }
       console.log(e)
     }
@@ -59,7 +63,9 @@ export default {
         zoom: 15
       })
       // direct select plot in draw
-      this.Draw.changeMode('direct_select', {featureId: plot._id})
+      this.Draw.changeMode('direct_select', {
+        featureId: plot._id
+      })
     })
 
     this.$bus.$on('resize', () => {
@@ -80,61 +86,489 @@ export default {
     this.map.remove()
   },
   methods: {
-    createMap(settings) {
-      mapboxgl.accessToken =
-        'pk.eyJ1IjoidG9mZmkiLCJhIjoiY2l3cXRnNHplMDAxcTJ6cWY1YWp5djBtOSJ9.mBYmcCSgNdaRJ1qoHW5KSQ'
-
-      // init the map
-      this.map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/satellite-streets-v11?optimize=true',
-        // style: 'mapbox://styles/mapbox/light-v10?optimize=true',
-        center: settings.home || [7.685235, 51.574318],
-        zoom: settings.home ? 14 : 8,
-        dragPan: false,
-        drageRotate: false
-      })
-
-      this.Draw = new MapboxDraw(drawConfig)
-      this.map.addControl(new mapboxgl.NavigationControl(), 'bottom-left')
-      this.map.addControl(this.Draw, 'bottom-left')
-      this.map.addControl(
-        new MapboxGeocoder({
-          accessToken: mapboxgl.accessToken,
-          mapboxgl: mapboxgl
-      }))
-
-      class HelloWorldControl {
-        onAdd(map) {
-          this._map = map;
-          this._container = document.createElement('div');
-          this._container.className = 'mapboxgl-ctrl-group mapboxgl-ctrl';
-          this._container.innerHTML = '<button class="mapbox-gl-draw_ctrl-draw-btn addIcon" title="Schläge hinzufügen"></button>'
-          return this._container;
-        }
-
-        onRemove() {
-          this._container.parentNode.removeChild(this._container);
-          this._map = undefined;
-        }
+    merge (inputs) {
+      const output = {
+        id: inputs[0].id,
+        type: inputs[0].type,
+        geometry: {
+          coordinates: union(...inputs.map(i => i.geometry.coordinates)),
+          type: 'MultiPolygon'
+        },
+        properties: inputs[0].properties
       }
-      this.map.addControl(new HelloWorldControl(), 'bottom-left')
+      return output
+    },
+    createMap(settings) {
+      return new Promise(resolve => {
+        mapboxgl.accessToken =
+          'pk.eyJ1IjoidG9mZmkiLCJhIjoiY2l3cXRnNHplMDAxcTJ6cWY1YWp5djBtOSJ9.mBYmcCSgNdaRJ1qoHW5KSQ'
 
-      // add drawing event listeners
-      this.map.on('draw.create', this.create)
-      this.map.on('draw.update', this.update)
-      this.map.on('draw.delete', this.delete)
-      this.map.on('draw.combine', this.combine)
-      this.map.on('draw.selectionchange', this.select)
+        // init the map
+        this.map = new mapboxgl.Map({
+          container: 'map',
+          style: 'mapbox://styles/mapbox/satellite-streets-v11?optimize=true',
+          // style: 'mapbox://styles/mapbox/light-v10?optimize=true',
+          center: settings.home || [7.685235, 51.574318],
+          zoom: settings.home ? 14 : 8,
+          dragPan: false,
+          drageRotate: false
+        })
+
+        this.Draw = new MapboxDraw(drawConfig)
+        this.map.addControl(new mapboxgl.NavigationControl(), 'bottom-left')
+        this.map.addControl(this.Draw, 'bottom-left')
+        this.geocoder = new MapboxGeocoder({
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: mapboxgl,
+          marker: false,
+          localGeocoder: this.geocodePlots,
+        })
+        this.map.addControl(this.geocoder)
+        this.geocoder.on('result', (r) => {
+          // update sidebar to select plot accordingly
+          if (r.result.bbox) return
+          this.$bus.$emit('selectedPlot', r.result.id)
+          // direct select plot in draw
+          this.Draw.changeMode('direct_select', {
+            featureId: r.result.id
+          })
+        })
+
+        const that = this
+        class HelloWorldControl {
+          onAdd(map) {
+            this._map = map;
+            this._container = document.createElement('div');
+            this._container.className = 'mapboxgl-ctrl-group mapboxgl-ctrl';
+            this._btn = document.createElement('button');
+            this._btn.className = "mapbox-gl-draw_ctrl-draw-btn addIcon";
+            this._btn.type = "button";
+            this._btn["aria-label"] = "Schläge hinzufügen";
+            this._btn.title = "Schläge hinzufügen";
+            this._container.appendChild(this._btn)
+
+            const layers = ["plots-nrw", "plots-nds", "plots-nrw crop", "plots-nds crop" /*, "plots-nrw-outline", "plots-nds-outline" */ ]
+            this._btn.onclick = () => {
+              that.addPlots = !that.addPlots
+              if (that.addPlots) {
+                this._btn.className = "mapbox-gl-draw_ctrl-draw-btn closeIcon";
+                layers.forEach(layer => {
+                  this._map.setLayoutProperty(layer, 'visibility', 'visible');
+                })
+              } else {
+                this._btn.className = "mapbox-gl-draw_ctrl-draw-btn addIcon";
+                layers.forEach(layer => {
+                  this._map.setLayoutProperty(layer, 'visibility', 'none');
+                })
+              }
+            }
+            return this._container;
+          }
+
+          onRemove() {
+            this._container.parentNode.removeChild(this._container);
+            this._map = undefined;
+          }
+        }
+        this.map.addControl(new HelloWorldControl(), 'bottom-left')
+
+        // add drawing event listeners
+        this.map.on('draw.create', this.create)
+        this.map.on('draw.update', this.update)
+        this.map.on('draw.delete', this.delete)
+        this.map.on('draw.combine', this.combine)
+        this.map.on('draw.selectionchange', this.select)
+
+        // return promise when map is done loading
+        let hoveredStateId = null;
+        this.map.on('mousemove', 'plots-nrw', (e) => {
+          if (e.features.length > 0) {
+            if (hoveredStateId !== null) {
+              this.map.setFeatureState({
+                source: 'plot-data',
+                sourceLayer: "plots_nrw_21-blsbu2",
+                id: hoveredStateId
+              }, {
+                hover: false
+              });
+            }
+            hoveredStateId = e.features[0].id;
+
+            this.map.setFeatureState({
+              source: 'plot-data',
+              sourceLayer: "plots_nrw_21-blsbu2",
+              id: hoveredStateId
+            }, {
+              hover: true
+            });
+          }
+        });
+
+        this.map.on('mousemove', 'plots-nds', (e) => {
+          if (e.features.length > 0) {
+            if (hoveredStateId !== null) {
+              this.map.setFeatureState({
+                source: 'plot-data',
+                sourceLayer: "ud_20_ts-4e7jag",
+                id: hoveredStateId
+              }, {
+                hover: false
+              });
+            }
+            hoveredStateId = e.features[0].id;
+
+            this.map.setFeatureState({
+              source: 'plot-data',
+              sourceLayer: "ud_20_ts-4e7jag",
+              id: hoveredStateId
+            }, {
+              hover: true
+            });
+          }
+        });
+
+        this.map.on('click', (e) => {
+          if (!this.addPlots) return
+          const features = this.map.queryRenderedFeatures(e.point)
+          let feature
+          if (features[0]) {
+            const source = features[0].source
+            // make sure to return early when a Draw polygon (existing field)
+            // is clicked
+            if (source.includes('gl-draw')) return
+            try {
+              const featureData = this.map.querySourceFeatures(features[0].source, {
+                sourceLayer: features[0].sourceLayer,
+                filter: ['in', 'ID', features[0].properties.ID]
+              })
+              if (Array.isArray(featureData)) {
+                feature = this.merge(featureData)
+              } else {
+                feature = featureData
+              }
+              this.$emit('addPlot', {features: [feature]})
+            } catch (e) {
+              // clicked on a non-feature, fail silently
+              return
+            }
+          }
+        })
+        // When the mouse leaves the state-fill layer, update the feature state of the
+        // previously hovered feature.
+        this.map.on('mouseleave', 'plots-nrw', () => {
+          if (hoveredStateId !== null) {
+            this.map.setFeatureState({
+              source: 'plot-data',
+              sourceLayer: "plots_nrw_21-blsbu2",
+              id: hoveredStateId
+            }, {
+              hover: false
+            });
+          }
+          hoveredStateId = null;
+        });
+
+        this.map.on('mouseleave', 'plots-nds', () => {
+          if (hoveredStateId !== null) {
+            this.map.setFeatureState({
+              source: 'plot-data',
+              sourceLayer: "ud_20_ts-4e7jag",
+              id: hoveredStateId
+            }, {
+              hover: false
+            });
+          }
+          hoveredStateId = null;
+        });
+
+        this.map.on('load', () => {
+          // add source for
+          this.map.addSource('plot-data', {
+            "url": "mapbox://toffi.1oyc4aaj,toffi.69f7evub",
+            "type": "vector"
+          });
+
+          this.map.addLayer({
+            "id": "plots-nrw",
+            "type": "fill",
+            "source": "plot-data",
+            "source-layer": "plots_nrw_21-blsbu2",
+            "minzoom": 10,
+            "layout": {
+              'visibility': 'none'
+            },
+            "paint": {
+              "fill-color": "hsl(0, 0%, 100%)",
+              "fill-outline-color": "hsl(0, 0%, 100%)",
+              "fill-antialias": false,
+              "fill-opacity": [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                0.6,
+                0.4
+              ]
+            }
+          }, "country-label")
+
+          this.map.addLayer({
+            "id": "plots-nds",
+            "type": "fill",
+            "source": "plot-data",
+            "source-layer": "ud_20_ts-4e7jag",
+            "minzoom": 10,
+            "layout": {
+              'visibility': 'none'
+            },
+            "paint": {
+              "fill-color": "hsl(0, 0%, 100%)",
+              "fill-outline-color": "hsl(0, 0%, 100%)",
+              "fill-antialias": false,
+              "fill-opacity": [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                0.6,
+                0.4
+              ]
+            }
+          }, "country-label")
+
+          this.map.addLayer({
+            "id": "plots-nrw crop",
+            "type": "symbol",
+            "source": "plot-data",
+            "source-layer": "plots_nrw_21-blsbu2",
+            "minzoom": 10,
+            "layout": {
+              'visibility': 'none',
+              "text-field": [
+                "format",
+                [
+                  "number-format",
+                  ["get", "AREA_HA"],
+                  {
+                    "max-fraction-digits": 2
+                  }
+                ],
+                " ha",
+                "\n",
+                "Vorfrucht: ",
+                {
+                  "text-font": ["literal", ["DIN Offc Pro Italic"]],
+                  "font-scale": 0.8
+                },
+                [
+                  "case",
+                  ["has", "prevCrop"],
+                  ["get", "prevCrop"],
+                  ["get", "USE_TXT"]
+                ],
+                {
+                  "text-font": ["literal", ["DIN Offc Pro Italic"]],
+                  "font-scale": 0.8
+                }
+              ],
+              "text-font": ["DIN Pro Medium", "Arial Unicode MS Regular"],
+              "text-size": 12
+            },
+            "paint": {
+              "text-opacity": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0,
+                0,
+                13,
+                0,
+                14,
+                1
+              ]
+            }
+          }, "country-label")
+
+          this.map.addLayer({
+            "id": "plots-nds crop",
+            "type": "symbol",
+            "source": "plot-data",
+            "source-layer": "ud_20_ts-4e7jag",
+            "minzoom": 10,
+            "layout": {
+              'visibility': 'none',
+              "text-field": [
+                "format",
+                [
+                  "number-format",
+                  ["get", "AREA_HA"],
+                  {
+                    "max-fraction-digits": 2
+                  }
+                ],
+                " ha",
+                "\n",
+                "Vorfrucht: ",
+                {
+                  "text-font": ["literal", ["DIN Offc Pro Italic"]],
+                  "font-scale": 0.8
+                },
+                [
+                  "case",
+                  ["has", "KC_GEM"],
+                  ["get", "KC_GEM"],
+                  ["get", "USE_TXT"]
+                ],
+                {
+                  "text-font": ["literal", ["DIN Offc Pro Italic"]],
+                  "font-scale": 0.8
+                }
+              ],
+              "text-font": ["DIN Pro Medium", "Arial Unicode MS Regular"],
+              "text-size": 12
+            },
+            "paint": {
+              "text-opacity": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0,
+                0,
+                13,
+                0,
+                14,
+                1
+              ],
+              "text-halo-color": "hsla(0, 0%, 0%, 0)"
+            }
+          }, "country-label")
+
+          /*
+          this.map.addLayer({
+            "id": "plots-nrw-outline",
+            "type": "line",
+            "source": "plot-data",
+            "source-layer": "plots_nrw_21-blsbu2",
+            "layout": {
+              'visibility': 'none',
+            },
+            "paint": {
+              "line-color": "hsla(0, 0%, 100%, 0.3)",
+              "line-width": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0,
+                0,
+                12,
+                0,
+                14,
+                2
+              ]
+            }
+          }, "country-label")
+
+          this.map.addLayer({
+            "id": "plots-nds-outline",
+            "type": "line",
+            "source": "plot-data",
+            "source-layer": "ud_20_ts-4e7jag",
+            "layout": {},
+            "paint": {
+              "line-color": "hsla(0, 0%, 100%, 0.3)",
+              "line-width": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0,
+                0,
+                12,
+                0,
+                14,
+                2
+              ]
+            }
+          }, "country-label")
+          */
+          resolve()
+        })
+      })
+    },
+    geocodePlots(query) {
+      if (!this.curPlots) return null
+      // search for plots that include the query string
+      const filteredPlots = this.curPlots.filter(p => p.name.toLowerCase().includes(query.toLowerCase()))
+      // create CARMEN GeoJSON FC from the results
+      // https://github.com/mapbox/carmen/blob/master/carmen-geojson.md
+      const results = filteredPlots.map(p => {
+        p.geometry.text = p.name
+        p.geometry.center = p.center
+        p.geometry.place_name = p.name
+        p.geometry.place_type = ['coordinate']
+        return p.geometry
+      })
+      return results
     },
     drawPlots(year, plots) {
       try {
-        // const geometries = []
+        // add plots as DRAW geometries
         plots.forEach(plot => {
           plot.geometry.properties._id = plot._id
           plot.geometry.id = plot._id
           this.Draw.add(plot.geometry)
           // geometries.push(plot.geometry)
+        })
+        // add names and plot sizes as GL layers
+        const plotsSource = this.map.getSource('plots')
+        if (plotsSource) {
+          // this.map.removeLayer('plots-label')
+          this.map.removeLayer('plots-label-prev-crop')
+          this.map.removeSource('plots')
+        }
+        this.map.addSource('plots', {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            properties: {},
+            features: plots.map(p => {
+              p.geometry.properties.name = p.name
+              p.geometry.properties.size = p.size
+              return p.geometry
+            })
+          }
+        })
+
+        this.map.addLayer({
+          id: 'plots-label-prev-crop',
+          type: 'symbol',
+          source: 'plots',
+          minzoom: 14,
+          layout: {
+            'text-field': ['format',
+              ['number-format', ['get', 'size'], {
+                'max-fraction-digits': 2
+              }], ' ha', {}, // ['get', 'AREA_HA'], {}, // Use default formatting
+              '\n', {},
+              '', {
+                'text-font': ['literal', ['DIN Offc Pro Italic']],
+                'font-scale': 0.8
+              },
+              [
+                'case',
+                ['has', 'prevCrop'],
+                ['get', 'prevCrop'], // vorfrucht wenn vorhanden
+                ['get', 'name'] // sonst vorfrucht "gruppe"
+              ],
+              {
+                'text-font': ['literal', ['DIN Offc Pro Italic']],
+                'font-scale': 0.8
+              }
+            ],
+            'text-font': [
+              'DIN Offc Pro Medium',
+              'Arial Unicode MS Bold'
+            ],
+            'text-size': 12
+          },
+          paint: {
+            'text-color': '#ffffff',
+          }
         })
 
         // check for query params, in that case center the given plot
@@ -149,7 +583,9 @@ export default {
             // update sidebar to select plot accordingly
             this.$bus.$emit('selectedPlot', plotId)
             // direct select plot in draw
-            this.Draw.changeMode('direct_select', {featureId: plotId})
+            this.Draw.changeMode('direct_select', {
+              featureId: plotId
+            })
           }
         }
         // fit map to the bounds of the plots
@@ -214,7 +650,30 @@ export default {
   width: 100%;
   height: calc(100vh - 60px);
 }
+
+.mapboxgl-ctrl-geocoder {
+  border-radius: 0px;
+  box-shadow: none;
+  /* border: 1px solid #cccccc; */
+  font-family: 'Inter', Helvetica, sans-serif;
+}
+
+.mapboxgl-ctrl-geocoder .suggestions {
+  border-radius: 0px;
+  font-family: 'Inter', Helvetica, sans-serif;
+}
+
+.mapboxgl-ctrl-group:not(:empty) {
+  border-radius: 0px;
+  border: 1px solid black;
+  box-shadow: none;
+}
+
 .addIcon {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15' height='15' width='15'%3E%3Ctitle%3Ehospital.svg%3C/title%3E%3Crect fill='none' x='0' y='0' width='15' height='15'%3E%3C/rect%3E%3Cpath fill='%23333' transform='translate(0 0)' d='M7,1C6.4,1,6,1.4,6,2v4H2C1.4,6,1,6.4,1,7v1 c0,0.6,0.4,1,1,1h4v4c0,0.6,0.4,1,1,1h1c0.6,0,1-0.4,1-1V9h4c0.6,0,1-0.4,1-1V7c0-0.6-0.4-1-1-1H9V2c0-0.6-0.4-1-1-1H7z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.closeIcon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15' height='15' width='15'%3E%3Ctitle%3Ecross.svg%3C/title%3E%3Crect fill='none' x='0' y='0' width='15' height='15'%3E%3C/rect%3E%3Cpath fill='%23333' transform='translate(0 0)' d='M2.64,1.27L7.5,6.13l4.84-4.84C12.5114,1.1076,12.7497,1.0029,13,1c0.5523,0,1,0.4477,1,1 c0.0047,0.2478-0.093,0.4866-0.27,0.66L8.84,7.5l4.89,4.89c0.1648,0.1612,0.2615,0.3796,0.27,0.61c0,0.5523-0.4477,1-1,1 c-0.2577,0.0107-0.508-0.0873-0.69-0.27L7.5,8.87l-4.85,4.85C2.4793,13.8963,2.2453,13.9971,2,14c-0.5523,0-1-0.4477-1-1 c-0.0047-0.2478,0.093-0.4866,0.27-0.66L6.16,7.5L1.27,2.61C1.1052,2.4488,1.0085,2.2304,1,2c0-0.5523,0.4477-1,1-1 C2.2404,1.0029,2.4701,1.0998,2.64,1.27z'%3E%3C/path%3E%3C/svg%3E");
 }
 </style>
