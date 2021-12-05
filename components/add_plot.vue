@@ -95,14 +95,25 @@ export default {
     if (this.$store.curYear) this.curYear = this.$store.curYear
     // use official size values from IACS data if available
     // fallback to calculating area in WGS84, which will distort sizes (FIX)
-    if (this.plotData.features[0].properties && this.plotData.features[0].properties.AREA_HA) {
-      this.size = this.plotData.features[0].properties.AREA_HA
+    if (this.plotData.features[0].properties && this.plotData.features[0].properties.area) {
+      this.size = this.plotData.features[0].properties.area
     } else {
       this.size = this.getSize(this.plotData.features[0])
     }
 
+    // add previous crops if available
+    this.addPrevCrop(this.curYear - 1)
+    this.addPrevCrop(this.curYear - 2)
+    this.addPrevCrop(this.curYear - 3)
   },
   methods: {
+    addPrevCrop(year) {
+      if (this.plotData.features[0].properties[`code_${year}`]) {
+        const prevCropCode = this.plotData.features[0].properties[`code_${year}`]
+        const yearDiff = this.curYear - year
+        this[`prevCrop${yearDiff}`] = prevCropCode
+      }
+    },
     async addPlot() {
       this.loading = true
       const settings = await this.$db.get('settings')
@@ -116,6 +127,8 @@ export default {
           size: this.size,
           settings: settings
         }
+        console.log(properties)
+
         const { data } = await this.$axios.post(
           process.env.baseUrl + 'plots/',
           properties,
