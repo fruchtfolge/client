@@ -11,7 +11,9 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw'
 // load Mapbox Draw configuration file
 import drawConfig from '../assets/js/draw.config.js'
 import notifications from '~/components/notifications'
-import { union } from 'polygon-clipping'
+import {
+  union
+} from 'polygon-clipping'
 
 export default {
   name: 'MapBox',
@@ -86,7 +88,7 @@ export default {
     this.map.remove()
   },
   methods: {
-    merge (inputs) {
+    merge(inputs) {
       const output = {
         id: inputs[0].id,
         type: inputs[0].type,
@@ -147,7 +149,7 @@ export default {
             this._btn.title = "Schläge hinzufügen";
             this._container.appendChild(this._btn)
 
-            const layers = ["plots-nrw", "plots-nds", "plots-nrw crop", "plots-nds crop" /*, "plots-nrw-outline", "plots-nds-outline" */ ]
+            const layers = ["plots-germany", "plots-germany-crops"]
             this._btn.onclick = () => {
               that.addPlots = !that.addPlots
               if (that.addPlots) {
@@ -181,12 +183,12 @@ export default {
 
         // return promise when map is done loading
         let hoveredStateId = null;
-        this.map.on('mousemove', 'plots-nrw', (e) => {
+        this.map.on('mousemove', 'plots-germany', (e) => {
           if (e.features.length > 0) {
             if (hoveredStateId !== null) {
               this.map.setFeatureState({
-                source: 'plot-data',
-                sourceLayer: "plots_nrw_21-blsbu2",
+                source: 'plot-shapes',
+                sourceLayer: "plots_germany",
                 id: hoveredStateId
               }, {
                 hover: false
@@ -195,31 +197,8 @@ export default {
             hoveredStateId = e.features[0].id;
 
             this.map.setFeatureState({
-              source: 'plot-data',
-              sourceLayer: "plots_nrw_21-blsbu2",
-              id: hoveredStateId
-            }, {
-              hover: true
-            });
-          }
-        });
-
-        this.map.on('mousemove', 'plots-nds', (e) => {
-          if (e.features.length > 0) {
-            if (hoveredStateId !== null) {
-              this.map.setFeatureState({
-                source: 'plot-data',
-                sourceLayer: "ud_20_ts-4e7jag",
-                id: hoveredStateId
-              }, {
-                hover: false
-              });
-            }
-            hoveredStateId = e.features[0].id;
-
-            this.map.setFeatureState({
-              source: 'plot-data',
-              sourceLayer: "ud_20_ts-4e7jag",
+              source: 'plot-shapes',
+              sourceLayer: "plots_germany",
               id: hoveredStateId
             }, {
               hover: true
@@ -229,7 +208,9 @@ export default {
 
         this.map.on('click', (e) => {
           if (!this.addPlots) return
-          const features = this.map.queryRenderedFeatures(e.point)
+          let features = this.map.queryRenderedFeatures(e.point)
+          features = features.filter(f => f.source === "plot-shapes")
+
           let feature
           if (features[0]) {
             const source = features[0].source
@@ -237,17 +218,25 @@ export default {
             // is clicked
             if (source.includes('gl-draw')) return
             try {
-              const featureData = this.map.querySourceFeatures(features[0].source, {
-                sourceLayer: features[0].sourceLayer,
-                filter: ['in', 'ID', features[0].properties.ID]
+              let featureData = this.map.querySourceFeatures("plot-shapes", {
+                sourceLayer: "plots_germany",
+                filter: ['==', 'area', features[0].properties.area]
               })
+
+              // make sure the feature has the same id as the clicked one
+              featureData = featureData.filter(f => f.id === features[0].id)
+
               if (Array.isArray(featureData)) {
                 feature = this.merge(featureData)
               } else {
                 feature = featureData
               }
-              this.$emit('addPlot', {features: [feature]})
+              this.$emit('addPlot', {
+                features: [feature]
+              })
             } catch (e) {
+              console.log(e)
+
               // clicked on a non-feature, fail silently
               return
             }
@@ -255,24 +244,11 @@ export default {
         })
         // When the mouse leaves the state-fill layer, update the feature state of the
         // previously hovered feature.
-        this.map.on('mouseleave', 'plots-nrw', () => {
+        this.map.on('mouseleave', 'plots-germany', () => {
           if (hoveredStateId !== null) {
             this.map.setFeatureState({
-              source: 'plot-data',
-              sourceLayer: "plots_nrw_21-blsbu2",
-              id: hoveredStateId
-            }, {
-              hover: false
-            });
-          }
-          hoveredStateId = null;
-        });
-
-        this.map.on('mouseleave', 'plots-nds', () => {
-          if (hoveredStateId !== null) {
-            this.map.setFeatureState({
-              source: 'plot-data',
-              sourceLayer: "ud_20_ts-4e7jag",
+              source: 'plot-shapes',
+              sourceLayer: "plots_germany",
               id: hoveredStateId
             }, {
               hover: false
@@ -283,16 +259,21 @@ export default {
 
         this.map.on('load', () => {
           // add source for
+          this.map.addSource('plot-shapes', {
+            "url": "mapbox://toffi.plots-germany",
+            "type": "vector"
+          });
+
           this.map.addSource('plot-data', {
-            "url": "mapbox://toffi.1oyc4aaj,toffi.69f7evub",
+            "url": "mapbox://toffi.plots-germany-centroids",
             "type": "vector"
           });
 
           this.map.addLayer({
-            "id": "plots-nrw",
+            "id": "plots-germany",
             "type": "fill",
-            "source": "plot-data",
-            "source-layer": "plots_nrw_21-blsbu2",
+            "source": "plot-shapes",
+            "source-layer": "plots_germany",
             "minzoom": 10,
             "layout": {
               'visibility': 'none'
@@ -301,42 +282,30 @@ export default {
               "fill-color": "hsl(0, 0%, 100%)",
               "fill-outline-color": "hsl(0, 0%, 100%)",
               "fill-antialias": false,
-              "fill-opacity": [
-                'case',
-                ['boolean', ['feature-state', 'hover'], false],
-                0.6,
-                0.4
+              "fill-opacity": ["interpolate", ['linear'], ["zoom"],
+                13,
+                [
+                  'case',
+                  ['boolean', ['feature-state', 'hover'], false],
+                  0.6,
+                  0
+                ],
+                14,
+                [
+                  'case',
+                  ['boolean', ['feature-state', 'hover'], false],
+                  0.6,
+                  0.4
+                ]
               ]
             }
           }, "country-label")
 
           this.map.addLayer({
-            "id": "plots-nds",
-            "type": "fill",
-            "source": "plot-data",
-            "source-layer": "ud_20_ts-4e7jag",
-            "minzoom": 10,
-            "layout": {
-              'visibility': 'none'
-            },
-            "paint": {
-              "fill-color": "hsl(0, 0%, 100%)",
-              "fill-outline-color": "hsl(0, 0%, 100%)",
-              "fill-antialias": false,
-              "fill-opacity": [
-                'case',
-                ['boolean', ['feature-state', 'hover'], false],
-                0.6,
-                0.4
-              ]
-            }
-          }, "country-label")
-
-          this.map.addLayer({
-            "id": "plots-nrw crop",
+            "id": "plots-germany-crops",
             "type": "symbol",
             "source": "plot-data",
-            "source-layer": "plots_nrw_21-blsbu2",
+            "source-layer": "plots_germany_centroids",
             "minzoom": 10,
             "layout": {
               'visibility': 'none',
@@ -344,26 +313,38 @@ export default {
                 "format",
                 [
                   "number-format",
-                  ["get", "AREA_HA"],
+                  ["get", "area"],
                   {
                     "max-fraction-digits": 2
                   }
                 ],
                 " ha",
+                {},
                 "\n",
-                "Vorfrucht: ",
+                {},
+                "",
                 {
-                  "text-font": ["literal", ["DIN Offc Pro Italic"]],
+                  "text-font": [
+                    "literal",
+                    ["DIN Offc Pro Italic"]
+                  ],
                   "font-scale": 0.8
                 },
                 [
                   "case",
-                  ["has", "prevCrop"],
-                  ["get", "prevCrop"],
-                  ["get", "USE_TXT"]
+                  ["has", "name_2021"],
+                  [
+                    "concat",
+                    "2021: ",
+                    ["get", "name_2021"]
+                  ],
+                  ""
                 ],
                 {
-                  "text-font": ["literal", ["DIN Offc Pro Italic"]],
+                  "text-font": [
+                    "literal",
+                    ["DIN Offc Pro Italic"]
+                  ],
                   "font-scale": 0.8
                 }
               ],
@@ -385,107 +366,6 @@ export default {
             }
           }, "country-label")
 
-          this.map.addLayer({
-            "id": "plots-nds crop",
-            "type": "symbol",
-            "source": "plot-data",
-            "source-layer": "ud_20_ts-4e7jag",
-            "minzoom": 10,
-            "layout": {
-              'visibility': 'none',
-              "text-field": [
-                "format",
-                [
-                  "number-format",
-                  ["get", "AREA_HA"],
-                  {
-                    "max-fraction-digits": 2
-                  }
-                ],
-                " ha",
-                "\n",
-                "Vorfrucht: ",
-                {
-                  "text-font": ["literal", ["DIN Offc Pro Italic"]],
-                  "font-scale": 0.8
-                },
-                [
-                  "case",
-                  ["has", "KC_GEM"],
-                  ["get", "KC_GEM"],
-                  ["get", "USE_TXT"]
-                ],
-                {
-                  "text-font": ["literal", ["DIN Offc Pro Italic"]],
-                  "font-scale": 0.8
-                }
-              ],
-              "text-font": ["DIN Pro Medium", "Arial Unicode MS Regular"],
-              "text-size": 12
-            },
-            "paint": {
-              "text-opacity": [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                0,
-                0,
-                13,
-                0,
-                14,
-                1
-              ],
-              "text-halo-color": "hsla(0, 0%, 0%, 0)"
-            }
-          }, "country-label")
-
-          /*
-          this.map.addLayer({
-            "id": "plots-nrw-outline",
-            "type": "line",
-            "source": "plot-data",
-            "source-layer": "plots_nrw_21-blsbu2",
-            "layout": {
-              'visibility': 'none',
-            },
-            "paint": {
-              "line-color": "hsla(0, 0%, 100%, 0.3)",
-              "line-width": [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                0,
-                0,
-                12,
-                0,
-                14,
-                2
-              ]
-            }
-          }, "country-label")
-
-          this.map.addLayer({
-            "id": "plots-nds-outline",
-            "type": "line",
-            "source": "plot-data",
-            "source-layer": "ud_20_ts-4e7jag",
-            "layout": {},
-            "paint": {
-              "line-color": "hsla(0, 0%, 100%, 0.3)",
-              "line-width": [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                0,
-                0,
-                12,
-                0,
-                14,
-                2
-              ]
-            }
-          }, "country-label")
-          */
           resolve()
         })
       })
