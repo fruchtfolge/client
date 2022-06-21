@@ -90,7 +90,7 @@
                 <b>{{ sumManure.minUsagePercentUser || sumManure.minUsagePercent }}</b>
               </td>
               <td style="text-align: center;">
-                <b>{{ sumManure.storageLossesUser !== undefined ? sumManure.storageLossesUser : 20 }}</b>
+                <b>{{ sumManure.storageLossesUser !== undefined && !isNaN(sumManure.storageLossesUser) ? sumManure.storageLossesUser : 20 }}</b>
               </td>
             </tr>
             <tr v-if="hasSolid">
