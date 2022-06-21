@@ -24,7 +24,7 @@ export default {
   computed: {
     cleanSuggestions() {
       return this.suggestions.map(s => {
-        s.properties.clean = toAscii.fold(s.properties.label)
+        s.properties.clean = toAscii.foldReplacing(s.properties.label)
         return s
       })
     }
