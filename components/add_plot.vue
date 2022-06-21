@@ -20,7 +20,7 @@
               {{ crop.name }}
             </option>
             <option value="" />
-            <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
+            <option v-for="(culture) in cultures" :key="culture.code" :value="culture.code">
               {{ culture.variety }}
             </option>
           </select>
@@ -30,7 +30,7 @@
               {{ prevCrop.name }}
             </option>
             <option value="" />
-            <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
+            <option v-for="(culture) in cultures" :key="culture.code" :value="culture.code">
               {{ culture.variety }}
             </option>
           </select>
@@ -40,7 +40,7 @@
               {{ prevCrop.name }}
             </option>
             <option value="" />
-            <option v-for="(culture) in cultures" :key="culture.code" :value="culture.variety">
+            <option v-for="(culture) in cultures" :key="culture.code" :value="culture.code">
               {{ culture.variety }}
             </option>
           </select>
