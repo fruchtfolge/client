@@ -7,7 +7,7 @@
         <span :style="{ backgroundColor: elem.backgroundColor}" />
         {{ elem.name }}
       </div>
-      <div v-if="duev2020">
+      <div>
         <h4 style="margin-top: 10px;">
           <b>Sonstige</b>
         </h4>
@@ -43,7 +43,7 @@ export default {
     }
   },
   data: () => ({
-    duev2020: false,
+    duev2020: true,
     curLayers: [],
     iteratee: []
   }),
@@ -66,7 +66,7 @@ export default {
     this.createMap(settings)
     if (!this.resultsMap) return
     this.resultsMap.on('load', () => {
-      if (this.duev2020) this.addDuevEndangered()
+      this.addDuevEndangered()
       this.drawPlots()
     })
     this.$bus.$on('resize', () => {
@@ -282,7 +282,7 @@ export default {
             tiles: [
               `${
                 process.env.baseUrl
-              }maps/duev?BBOX={bbox-epsg-3857}&FORMAT=image/png&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&CRS=EPSG:25832&TRANSPARENT=TRUE&width=256&height=256&LAYERS=belastete_gebiete_nitrat_2020`
+              }maps/duev?BBOX={bbox-epsg-3857}&FORMAT=image/png&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&CRS=EPSG:25832&TRANSPARENT=TRUE&width=256&height=256&LAYERS=belastete_gebiete_nitrat_2022_1`
             ],
             tileSize: 256
           },
