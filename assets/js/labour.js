@@ -70,10 +70,16 @@ export const planetChartData = {
           ticks: {
             min: 0,
             max: 31
+          },
+          gridLines: {
+            display: false
           }
         }
       ]
-    }
+    },
+    chartArea: {
+      backgroundColor: 'white'
+    },
   }
 }
 

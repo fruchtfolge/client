@@ -61,7 +61,7 @@
                 </td>
                 <td class="wide-cells">
                   <select v-model="plot.selectedCrop" class="select selection" @change="saveCropChange(plot)">
-                    <option v-for="(crop) in curCrops" :key="`${crop.name}_${plot._id}`" :value="crop.name">
+                    <option v-for="(crop) in curCrops" :key="`${crop._id}_${plot._id}`" :value="crop.name">
                       {{ crop.name }}
                     </option>
                   </select>
@@ -99,7 +99,7 @@
                   {{ format(plot.curGrossMargin) }}
                 </td>
               </tr>
-              <tr v-if="plot.id === selection" :key="`detail_${plot._id}`">
+              <tr v-if="plot.id === selection" style="background-color: white;" :key="`detail_${plot._id}`">
                 <td :colspan="colspan" class="inner-table-wrapper" align="right">
                   <table class="inner-table table">
                     <thead>
@@ -346,12 +346,12 @@
                 {{ format(solidExportCostsAutumn) }}
               </td>
             </tr>
-            <tr>
+            <tr style="background-color: white;">
               <td colspan="1" style="font-weight: bold;">
                 Summe
               </td>
               <td :colspan="colspan - 2" />
-              <td class="narrow-cells-number" style="font-weight: bold; padding-right: 10px;">
+              <td class="narrow-cells-number" style="font-weight: bold; padding-right: 10px; ">
                 {{ format(grossMarginCurYear) }}
               </td>
             </tr>

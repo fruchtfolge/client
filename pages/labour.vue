@@ -27,6 +27,7 @@ import Chart from 'chart.js'
 import TimeConstraints from '~/constructors/TimeConstraints'
 import chartDefaults from '~/assets/js/labour.js'
 import 'chartjs-plugin-dragdata'
+import '~/assets/js/chartjs-plugin-background'
 import notifications from '~/components/notifications'
 
 export default {
@@ -48,6 +49,9 @@ export default {
   },
   methods: {
     createChart(chartId, chartData) {
+      Chart.defaults.global.defaultFontFamily = 'Inter'
+      Chart.defaults.global.defaultFontSize = 14
+
       const ctx = document.getElementById(chartId).getContext('2d')
 
       const gradient1 = ctx.createLinearGradient(0, 0, 0, 450)
@@ -138,6 +142,10 @@ export default {
 }
 </script>
 <style>
+.chart-wrapper {
+  margin: auto;
+  max-width: 960px;
+}
 #labour-chart {
   margin-top: 50px;
 }

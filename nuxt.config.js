@@ -133,6 +133,7 @@ module.exports = {
         fs: 'empty'
       }
 
+      /*
       if (ctx.isDev && ctx.isClient) {
         config.module.rules.push({
           enforce: 'pre',
@@ -141,19 +142,20 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
+      */
       const alias = (config.resolve.alias = config.resolve.alias || {})
       alias['@mapbox/mapbox-gl-draw'] = path.resolve(
         __dirname,
         'node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js'
       )
-
+      
       alias.xlsx = path.resolve(__dirname, 'node_modules/xlsx/xlsx.mini.js')
 
-      const vueLoader = config.module.rules.find(r => r.loader === 'vue-loader')
-      vueLoader.options.transformToRequire = {
-        video: 'poster',
-        source: 'src'
-      }
+      // const vueLoader = config.module.rules.find(r => r.loader === 'vue-loader')
+      // vueLoader.options.transformToRequire = {
+      //   video: 'poster',
+      //   source: 'src'
+      // }
     },
     plugins: [
       new webpack.ProvidePlugin({

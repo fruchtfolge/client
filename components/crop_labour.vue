@@ -22,6 +22,7 @@
 import Chart from 'chart.js'
 import cropLabourReq from '~/assets/js/cropLabourReq.js'
 import 'chartjs-plugin-dragdata'
+import '~/assets/js/chartjs-plugin-background'
 import notifications from '~/components/notifications'
 
 export default {
@@ -105,7 +106,7 @@ export default {
       }
       cropLabourReq.options.onDragEnd = this.saveChanges
 
-      Chart.defaults.global.defaultFontFamily = 'Raleway'
+      Chart.defaults.global.defaultFontFamily = 'Inter'
       Chart.defaults.global.defaultFontSize = 14
 
       this.cropLabourChart = new Chart(ctx, {

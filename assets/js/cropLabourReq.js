@@ -40,6 +40,9 @@ export const cropLabourReq = {
         if (point.length) e.target.style.cursor = 'grab'
         else e.target.style.cursor = 'default'
       }
+    },
+    chartArea: {
+      backgroundColor: 'white'
     }
   }
 }

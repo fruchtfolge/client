@@ -1,92 +1,127 @@
 <template>
   <div>
     <div v-if="plots && plots.length > 0" class="plotOverview">
-      <table class="table plotOverview-table">
-        <thead>
-          <tr>
-            <th style="width: 125px;">
-              Name
-            </th>
-            <th style="width: 50px;">
-              Größe
-            </th>
-            <th style="width: 50px;">
-              Hof-Feld-Distanz
-            </th>
-            <th style="width: 50px;">
-              Bodenqualität (SQR)
-            </th>
-            <th style="width: 150px;">
-              Bodenart
-            </th>
-            <th style="width: 80px;">
-              Humusgehalt
-            </th>
-            <th style="width: 50px;">
-              Nmin-Wert Bodenuntersuchung
-            </th>
-            <th style="width: 50px;">
-              Gehaltsklasse P<sub>2</sub>O<sub>5</sub>
-            </th>
-            <th style="width: 50px;">
-              Rotes Gebiet
-            </th>
-            <th style="width: 50px;">
-              Dauergrünland
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(plot, i) in plots" :key="i">
-            <td contenteditable class="wide-cells" @blur="save($event,plot,'name')">
-              {{ plot.name }}
-            </td>
-            <td
-              contenteditable
-              class="narrow-cells-number"
-              @blur="save(e,plot,'size')"
-            >
-              {{ plot.size }}
-            </td>
-            <td contenteditable class="narrow-cells-number" @blur="save($event,plot,'distance')">
-              {{ plot.distance }}
-            </td>
-            <td contenteditable class="narrow-cells-number" @blur="save($event,plot,'quality')">
-              {{ plot.quality }}
-            </td>
-            <td style="text-align: center;">
-              <select v-model="plot.soilType" style="width: 150px;" class="selection select wide-cells" @change="save(null,plot,'soilType')">
-                <option v-for="(soilType) in soilTypes" :key="soilType" :value="soilType">
-                  {{ soilType }}
-                </option>
-              </select>
-            </td>
-            <td style="text-align: center;">
-              <select v-model="plot.humusContent" class="selection select" @change="save(null,plot,'humusContent')">
-                <option v-for="(humusContent) in humusContents" :key="humusContent" :value="humusContent">
-                  {{ humusContent }}
-                </option>
-              </select>
-            </td>
-            <td contenteditable class="narrow-cells-number">
-              {{ plot.nmin }}
-            </td>
-            <td class="narrow-cells-number">
-              <select v-model="plot.pSupplyStage" class="selection select" @change="save(null,plot,'pSupplyStage')">
-                <option v-for="(supplyStage) in pSupplyStages" :key="supplyStage" :value="supplyStage">
-                  {{ supplyStage }}
-                </option>
-              </select>
-            </td>
-            <td class="narrow-cells-checkbox">
-              <input type="checkbox" :checked="plot.duevEndangered" @change="save($event,plot,'duevEndangered')">
-            </td>
-            <td class="narrow-cells-checkbox">
-              <input type="checkbox" :checked="plot.permPast" @change="save($event,plot,'permPast')">
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <modal v-if="isModalOpen" :head="'SCHLÄGE LÖSCHEN'" :body="`Wollen Sie die ausgewählten ${selectedPlots.length} Schläge wirklich löschen?`" :buttonOk="'LÖSCHEN'" :callback="deleteSelectedPlots" @closeModal="isModalOpen = false" />
+      <div class="plotOverview-wrapper">
+        <div class="plotOverview-controls">
+          <input class="input search-plots" type="text" placeholder="Suche..." v-model="searchString">
+          <!--
+          <button class="button delete-plots-btn" type="button" name="button" @click="selectedPlots.length ? isModalOpen = true : ''">AUSWAHL LÖSCHEN</button>
+          <label class="duplicates-label" for="Duplicates">Nur Duplikate anzeigen</label>
+          <input type="checkbox" name="Duplicates" v-model="showDuplicates">
+        -->
+        </div>
+        <table class="table plotOverview-table">
+          <thead>
+            <tr>
+              <th style="width: 40px;">
+                <input type="checkbox" name="Select all" @click="handleSelectAll">
+              </th>
+              <th style="width: 125px;">
+                Name
+              </th>
+              <th style="width: 50px;">
+                Größe
+              </th>
+              <th style="width: 50px;">
+                Hof-Feld-Distanz
+              </th>
+              <th style="width: 50px;">
+                Bodenqualität (SQR)
+              </th>
+              <th style="width: 150px;">
+                Bodenart
+              </th>
+              <th style="width: 80px;">
+                Humusgehalt
+              </th>
+              <th style="width: 50px;">
+                Nmin-Wert
+              </th>
+              <th style="width: 50px;">
+                Klasse P<sub>2</sub>O<sub>5</sub>
+              </th>
+              <th style="width: 50px;">
+                Rotes Gebiet
+              </th>
+              <th style="width: 50px;">
+                Dauergrünland
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(plot, i) in filteredPlots" :key="i">
+              <td><input type="checkbox" v-model="plot.selected" :value="plot.selected"></td>
+              <td contenteditable class="wide-cells" @blur="save($event,plot,'name')">
+                {{ plot.name }}
+              </td>
+              <td
+                contenteditable
+                class="narrow-cells-number"
+                @blur="save(e,plot,'size')"
+              >
+                {{ plot.size }}
+              </td>
+              <td contenteditable class="narrow-cells-number" @blur="save($event,plot,'distance')">
+                {{ plot.distance }}
+              </td>
+              <td contenteditable class="narrow-cells-number" @blur="save($event,plot,'quality')">
+                {{ plot.quality }}
+              </td>
+              <td style="text-align: center;">
+                <select v-model="plot.soilType" style="width: 150px;" class="selection select wide-cells" @change="save(null,plot,'soilType')">
+                  <option v-for="(soilType) in soilTypes" :key="soilType" :value="soilType">
+                    {{ soilType }}
+                  </option>
+                </select>
+              </td>
+              <td style="text-align: center;">
+                <select v-model="plot.humusContent" class="selection select" @change="save(null,plot,'humusContent')">
+                  <option v-for="(humusContent) in humusContents" :key="humusContent" :value="humusContent">
+                    {{ humusContent }}
+                  </option>
+                </select>
+              </td>
+              <td contenteditable class="narrow-cells-number" @blur="save($event,plot,'nmin')">
+                {{ plot.nmin }}
+              </td>
+              <td class="narrow-cells-number">
+                <select v-model="plot.pSupplyStage" class="selection select" @change="save(null,plot,'pSupplyStage')">
+                  <option v-for="(supplyStage) in pSupplyStages" :key="supplyStage" :value="supplyStage">
+                    {{ supplyStage }}
+                  </option>
+                </select>
+              </td>
+              <td class="narrow-cells-checkbox">
+                <input type="checkbox" :checked="plot.duevEndangered" @change="save($event,plot,'duevEndangered')">
+              </td>
+              <td class="narrow-cells-checkbox">
+                <input type="checkbox" :checked="plot.permPast" @change="save($event,plot,'permPast')">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <dropdown class="dropdown-container">
+          <a
+            class="dropdown-item"
+            @click="showDuplicates = !showDuplicates"
+          >{{ showDuplicates ? 'Nur Duplikate anzeigen ✓' : 'Nur Duplikate anzeigen'}}</a>
+          <hr>
+          <a
+            class="dropdown-item"
+            @click="selectedPlots.length ? isModalOpen = true : ''"
+          >Ausgewählte Schläge löschen</a>
+          <div v-if="selectedPlots.length">
+            <hr>
+            <a
+              class="dropdown-item fly-to-plot"
+              style="white-space: break-spaces; max-width: 200px;"
+              @click="showSelectedOnMap"
+            >{{selectedPlots[0].name}} auf der Karte anzeigen</a>
+          </div>
+        </dropdown>
+      </div>
+
     </div>
     <div v-else style="text-align: center; margin-top: 100px;">
       <h3>Noch keine Schläge für das ausgewähle Planungsjahr und Szenario vorhanden.</h3>
@@ -95,10 +130,10 @@
         <br>
         Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
       </h3>
-      <button class="button" @click="$nuxt.$router.replace({path: 'maps'})">
+      <button style="background-color: white;" class="button" @click="$nuxt.$router.push({path: 'maps'})">
         ZUR KARTE
       </button>
-      <button style="margin-left: 20px;" class="button" @click="importPrev">
+      <button style="margin-left: 20px; background-color: white;" class="button" @click="importPrev">
         IMPORTIEREN
       </button>
     </div>
@@ -109,9 +144,36 @@
 import notifications from '~/components/notifications'
 
 export default {
+  components: {
+    modal: () => import('~/components/modal.vue'),
+    dropdown: () => import('~/components/dropdown.vue')
+  },
+  computed: {
+    selectedPlots() {
+      return this.plots.filter(p => p.selected)
+    },
+    filteredPlots() {
+      let filtered = this.plots
+      if (this.showDuplicates) {
+        const reference = []
+        filtered = []
+        this.plots.forEach(plot => {
+          const match = reference.findIndex(p => plot.size === p.size && plot.name === p.name)
+          if (match > -1) filtered.push(plot)
+          else reference.push(plot)
+        })
+      }
+      filtered = filtered.filter(p => p.name.toLowerCase().includes(this.searchString.toLowerCase()))
+      return filtered
+    }
+  },
   data() {
     return {
+      isModalOpen: false,
       plots: null,
+      searchString: '',
+      selectAll: false,
+      showDuplicates: false,
       soilTypes: [
         'Reinsande (ss)',
         'Lehmsande (ls)',
@@ -153,6 +215,15 @@ export default {
     changePlot(plot) {
       this.selectedPlot = plot
     },
+    handleSelectAll() {
+      this.selectAll = !this.selectAll
+
+      this.plots = this.plots.map(p => {
+        const match = this.filteredPlots.indexOf(p)
+        if (match > -1) p.selected = this.selectAll ? true : false
+        return p
+      })
+    },
     update() {
       this.$set(this, 'plots', this.$store.curPlots)
       this.$set(this, 'curYear', this.$store.curYear)
@@ -160,6 +231,24 @@ export default {
     importPrev() {
       if (!this.waiting) this.$bus.$emit('importPrevYear')
       this.waiting = true
+    },
+    showSelectedOnMap() {
+      if (this.selectedPlots && this.selectedPlots.length) {
+        $nuxt.$router.push({ path: 'maps', query: { plot: this.selectedPlots[0]._id } })
+      }
+    },
+    async deleteSelectedPlots() {
+      const plotsToDelete = this.selectedPlots.map(p => {
+        p._deleted = true
+        return p
+      })
+      try {
+        await this.$db.bulkDocs(plotsToDelete)
+        this.saveSuccess()
+      } catch (e) {
+        this.saveError()
+        console.log(e)
+      }
     },
     async save(e, data, prop) {
       try {
@@ -180,6 +269,7 @@ export default {
         const plot = await this.$db.get(data._id)
         plot[prop] = newValue
         await this.$db.put(plot)
+
         this.saveSuccess()
       } catch (e) {
         this.saveError()
@@ -191,16 +281,49 @@ export default {
 </script>
 
 <style>
-.plotOverview-table {
+.plotOverview-wrapper {
   /* float: left; */
-  /* margin: 0; */
+  margin: auto;
   margin-top: 20px;
-  max-width: 80vw;
+  max-width: 960px;
   min-width: 768px;
-  table-layout: fixed;
 }
 
+.plotOverview-controls {
+  margin-bottom: 10px;
+}
+
+.search-plots {
+  box-sizing: border-box;
+  font-size: 16px;
+  height: 36px;
+  margin-right: 5px;
+  width: 100%;
+}
+
+.duplicates-label {
+  margin-left: 10px;
+  font-size: 13px;
+  font-weight: 300;
+}
+
+.delete-plots-btn {
+  width: 150px;
+  background-color: white;
+  border-color: #cccccc;
+}
+
+.plotOverview-table {
+  margin: unset;
+  width: unset;
+  margin-top: 10px;
+  max-width: 960px;
+  min-width: 100%;
+}
 .plotOverview table input {
   -webkit-appearance: checkbox;
+}
+.plotOverview table select {
+  padding-right: 0px;
 }
 </style>

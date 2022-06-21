@@ -1,7 +1,12 @@
 <template>
-  <div>
-    <loading v-if="loading" />
-    <div v-if="!loading && curPlots && curPlots.length > 0" class="plotOverview">
+<div>
+  <loading v-if="loading" />
+  <div v-if="!loading && curPlots && curPlots.length > 0" >
+    <div class="plotsPlan-wrapper">
+      <div class="plotsPlan-controls">
+        <input class="input search-plots" type="text" placeholder="Suche..." v-model="searchString">
+      </div>
+
       <table class="table plotPlanOverview-table">
         <thead>
           <tr>
@@ -23,7 +28,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(plot) in curPlots" :key="plot._id">
+          <tr v-for="(plot) in filteredPlots" :key="plot._id">
             <td class="wide-cells">
               {{ plot.name }}
             </td>
@@ -39,22 +44,8 @@
               </td>
             </template>
             <td class="multi-select-crops">
-              <multiselect
-                v-model="plot.allowedCrops"
-                :options="crops"
-                :multiple="true"
-                :close-on-select="false"
-                :clear-on-select="true"
-                :hide-selected="true"
-                :preserve-search="true"
-                :searchable="true"
-                selectLabel="Enter zum auswählen"
-                selectedLabel="Ausgewählt"
-                deselectLabel="Enter zum entfernen"
-                placeholder="Auswählen"
-                :preselect-first="false"
-                @input="changeAllowed(plot)"
-              >
+              <multiselect v-model="plot.allowedCrops" :options="crops" :multiple="true" :close-on-select="false" :clear-on-select="true" :hide-selected="true" :preserve-search="true" :searchable="true" selectLabel="Enter zum auswählen"
+                selectedLabel="Ausgewählt" deselectLabel="Enter zum entfernen" placeholder="Auswählen" :preselect-first="false" @input="changeAllowed(plot)">
                 <span slot="noResult">Kultur nicht gefunden 😞</span>
               </multiselect>
             </td>
@@ -62,32 +53,27 @@
         </tbody>
       </table>
       <dropdown class="dropdown-container">
-        <a
-          class="dropdown-item"
-          @click="bulkSelect('selectAll')"
-        >Alle auswählen</a>
+        <a class="dropdown-item" @click="bulkSelect('selectAll')">Alle auswählen</a>
         <hr>
-        <a
-          class="dropdown-item"
-          @click="bulkSelect('unselectAll')"
-        >Alle löschen</a>
+        <a class="dropdown-item" @click="bulkSelect('unselectAll')">Alle löschen</a>
       </dropdown>
     </div>
-    <div v-else style="text-align: center; margin-top: 100px;">
-      <h3>Noch keine Schläge für das ausgewähle Planungsjahr und Szenario vorhanden.</h3>
-      <h3>
-        Sie können neue Schläge auf der Seite 'Karte' einzeichnen.
-        <br>
-        Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
-      </h3>
-      <button class="button" @click="$nuxt.$router.replace({path: 'maps'})">
-        ZUR KARTE
-      </button>
-      <button class="button" style="margin-left: 20px;" @click="importPrev">
-        IMPORTIEREN
-      </button>
-    </div>
   </div>
+  <div v-else style="text-align: center; margin-top: 100px;">
+    <h3>Noch keine Schläge für das ausgewähle Planungsjahr und Szenario vorhanden.</h3>
+    <h3>
+      Sie können neue Schläge auf der Seite 'Karte' einzeichnen.
+      <br>
+      Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
+    </h3>
+    <button class="button" @click="$nuxt.$router.push({path: 'maps'})">
+      ZUR KARTE
+    </button>
+    <button class="button" style="margin-left: 20px;" @click="importPrev">
+      IMPORTIEREN
+    </button>
+  </div>
+</div>
 </template>
 
 <script>
@@ -98,8 +84,17 @@ import notifications from '~/components/notifications'
 export default {
   components: {
     Multiselect,
-    loading: () => import('~/components/loading.vue'),
-    dropdown: () => import('~/components/dropdown.vue')
+    loading: () =>
+      import('~/components/loading.vue'),
+    dropdown: () =>
+      import('~/components/dropdown.vue')
+  },
+  computed: {
+    filteredPlots() {
+      let filtered = this.curPlots
+      filtered = filtered.filter(p => p.name.toLowerCase().includes(this.searchString.toLowerCase()))
+      return filtered
+    }
   },
   data() {
     return {
@@ -107,6 +102,7 @@ export default {
       curPlots: null,
       curCrops: null,
       crops: [],
+      searchString: '',
       cultures: null,
       curScenario: 'Standard',
       selectedPlot: null,
@@ -225,13 +221,33 @@ export default {
 <style src="vue-multiselect/dist/vue-multiselect.min.css">
 </style>
 <style>
-.plotPlanOverview-table {
+.plotPlan-controls {
+  margin-bottom: 10px;
+}
+
+.plotsPlan-wrapper {
   /* float: left; */
-  /* margin: 0; */
+  margin: auto;
   margin-top: 20px;
-  max-width: 100vw;
+  max-width: 960px;
   min-width: 768px;
-  table-layout: fixed;
+}
+
+.search-plots {
+  box-sizing: border-box;
+  font-size: 16px;
+  height: 36px;
+  margin-right: 5px;
+  width: 100%;
+}
+
+
+.plotPlanOverview-table {
+  margin: unset;
+  width: unset;
+  margin-top: 10px;
+  max-width: 960px;
+  min-width: 100%;
 }
 
 .plotPlanOverview-table .wide-cells {
@@ -259,7 +275,7 @@ export default {
 .multiselect__input,
 .multiselect__single,
 .multi-select-crops {
-  font-family: Inter;
+  font-family: Inter, Helevetica, sans-serif;
   background: none;
   font-size: 14px;
 }

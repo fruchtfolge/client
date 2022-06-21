@@ -1,57 +1,58 @@
 <template lang="html">
   <div>
-    <div class="blur" />
-    <div class="box">
-      <div class="inputs">
-        <h2 class="infoText">
-          NEUE KULTUR HINZUFÜGEN
-        </h2>
-        <label for="add.crop.farmingType">Anbauverfahren</label>
-        <select id="add.crop.farmingType" v-model="farmingType" class="dropdown select">
-          <option disabled value="">
-            Anbauverfahren
-          </option>
-          <option v-for="(typeOption, i) in farmingTypes" :key="i" :value="typeOption">
-            {{ typeOption }}
-          </option>
-        </select>
-        <label for="add.crop.crop">Kultur</label>
-        <select id="add.crop.crop" v-model="crop" class="dropdown select">
-          <option disabled value="">
-            Kultur
-          </option>
-          <option v-for="(cropOption, i) in crops" :key="i" :value="cropOption">
-            {{ cropOption }}
-          </option>
-        </select>
-        <label for="add.crop.system">System</label>
-        <select id="add.crop.system" v-model="system" class="dropdown select">
-          <option disabled value="">
-            System
-          </option>
-          <option v-for="(systemOption, i) in systems" :key="i" :value="systemOption">
-            {{ systemOption }}
-          </option>
-        </select>
-        <label for="add.crop.variety">Sorte</label>
-        <input
-          id="add.crop.variety"
-          v-model="variety"
-          type="text"
-          placeholder="Optional"
-          class="input"
-          @keyup.enter="addCrop"
-        >
+    <div class="blur">
+      <div class="box">
+        <div class="inputs">
+          <h2 class="infoText">
+            NEUE KULTUR HINZUFÜGEN
+          </h2>
+          <label class="label" for="add.crop.farmingType">Anbauverfahren</label>
+          <select id="add.crop.farmingType" v-model="farmingType" class="dropdown select">
+            <option disabled value="">
+              Anbauverfahren
+            </option>
+            <option v-for="(typeOption, i) in farmingTypes" :key="i" :value="typeOption">
+              {{ typeOption }}
+            </option>
+          </select>
+          <label class="label" for="add.crop.crop">Kultur</label>
+          <select id="add.crop.crop" v-model="crop" class="dropdown select">
+            <option disabled value="">
+              Kultur
+            </option>
+            <option v-for="(cropOption, i) in crops" :key="i" :value="cropOption">
+              {{ cropOption }}
+            </option>
+          </select>
+          <label class="label" for="add.crop.system">System</label>
+          <select id="add.crop.system" v-model="system" class="dropdown select">
+            <option disabled value="">
+              System
+            </option>
+            <option v-for="(systemOption, i) in systems" :key="i" :value="systemOption">
+              {{ systemOption }}
+            </option>
+          </select>
+          <label class="label" for="add.crop.variety">Sorte</label>
+          <input
+            id="add.crop.variety"
+            v-model="variety"
+            type="text"
+            placeholder="Optional"
+            class="input"
+            @keyup.enter="addCrop"
+          >
+        </div>
+        <p v-if="exists" style="text-align: center; margin-top: 30px; color:red;">
+          Kultur bereits vorhanden. Bitte anderen Sortennamen wählen.
+        </p>
+        <button v-if="!exists" class="buttonOk button" @click="addCrop">
+          ÜBERNEHMEN
+        </button>
+        <button class="buttonCancel button" @click="cancel">
+          ABBRECHEN
+        </button>
       </div>
-      <p v-if="exists" style="text-align: center; margin-top: 30px; color:red;">
-        Kultur bereits vorhanden. Bitte anderen Sortennamen wählen.
-      </p>
-      <button v-if="!exists" class="buttonOk button" @click="addCrop">
-        ÜBERNEHMEN
-      </button>
-      <button class="buttonCancel button" @click="cancel">
-        ABBRECHEN
-      </button>
     </div>
   </div>
 </template>
@@ -209,6 +210,7 @@ export default {
 }
 
 .label {
+  font-size: 12px;
   position: relative;
   left: 0px;
   margin-left: 0px;
@@ -227,16 +229,18 @@ export default {
 }
 
 .dropdown {
+  font-size: 14px;
+  font-family: 'Inter', Helvetica, Arial, sans-serif;
+  letter-spacing: 0px;
   margin-bottom: 15px;
   width: 320px;
   height: 33px;
-  background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
-  background-position: 100% 50%;
-  background-repeat: no-repeat;
-  padding-right: 25px;
 }
 
 .input {
+  font-size: 14px;
+  font-family: 'Inter', Helvetica, Arial, sans-serif;
+  letter-spacing: 0px;
   margin-bottom: 15px;
   width: 312px;
   height: 33px;

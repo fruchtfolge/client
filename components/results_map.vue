@@ -3,14 +3,17 @@
     <div id="results-map" />
     <div class="legend">
       <h4><b>{{ selection }}</b></h4>
-      <div v-for="elem in iteratee" :key="`layer_${elem.name}`" class="layer">
+      <div v-for="elem in iteratee" :key="`layer_${elem.name}_${selection}`" class="layer">
         <span :style="{ backgroundColor: elem.backgroundColor}" />
         {{ elem.name }}
       </div>
-      <div v-if="duev2020">
+      <div>
         <h4 style="margin-top: 10px;">
           <b>Sonstige</b>
         </h4>
+        <div class="layer">
+          <span class="farm-location"/>Hofstelle
+        </div>
         <div class="layer">
           <span style="backgroundColor: #FEE8D7;" />
           Belastete Gebiete durch Nitrat (§ 13 DüV)
@@ -40,7 +43,7 @@ export default {
     }
   },
   data: () => ({
-    duev2020: false,
+    duev2020: true,
     curLayers: [],
     iteratee: []
   }),
@@ -63,7 +66,7 @@ export default {
     this.createMap(settings)
     if (!this.resultsMap) return
     this.resultsMap.on('load', () => {
-      if (this.duev2020) this.addDuevEndangered()
+      this.addDuevEndangered()
       this.drawPlots()
     })
     this.$bus.$on('resize', () => {
@@ -81,10 +84,20 @@ export default {
       try {
         this.resultsMap = new mapboxgl.Map({
           container: 'results-map',
-          style: 'mapbox://styles/mapbox/light-v10?optimize=true',
+          style: 'mapbox://styles/toffi/ckw6b4tws9drx14pa8nfn8dbf',
+          //style: 'mapbox://styles/toffi/ckiyfc9dw6oam1at4kxz8d3fi',
+          //style: 'mapbox://styles/mapbox/light-v10?optimize=true',
           center: settings.home || [7.685235, 51.574318],
           zoom: settings.home ? 14 : 8
         })
+
+        // add farm location as a marker
+        const el = document.createElement('div')
+        el.className = 'marker'
+
+        this.marker = new mapboxgl.Marker(el)
+          .setLngLat(settings.home || [7.685235, 51.574318])
+          .addTo(this.resultsMap)
       } catch (e) {
         // container not ready yet, will draw in the next iteration
       }
@@ -103,6 +116,7 @@ export default {
         // and the center of the plot in order to show a popup
         let fc = this.data.map(plot => {
           plot.geometry.properties.center = plot.center
+          plot.geometry.properties.size = plot.size
           if (this.selection === 'Org. Düngung') {
             plot.geometry.properties.elem = `${Number(
               plot.selectedOption.manAmount
@@ -160,6 +174,7 @@ export default {
         this.iteratee.forEach(elem => {
           this.curLayers.push(elem.name)
           this.curLayers.push(elem.name + '_line')
+          this.curLayers.push(elem.name + '_text')
 
           this.resultsMap.addLayer({
             id: elem.name,
@@ -182,6 +197,39 @@ export default {
               'line-width': 2
             },
             filter: ['==', 'elem', elem.name]
+          })
+
+          // add plot name and selected crop
+          this.resultsMap.addLayer({
+            id: elem.name + '_text',
+            type: 'symbol',
+            source: 'plots',
+            minzoom: 12,
+            layout: {
+              'text-field': ['format',
+                ['number-format', ['get', 'size'], {
+                  'max-fraction-digits': 2
+                }], ' ha', {}, // ['get', 'AREA_HA'], {}, // Use default formatting
+                '\n', {},
+                '', {
+                  'text-font': ['literal', ['DIN Offc Pro Italic']],
+                  'font-scale': 0.8
+                },
+                ['get', 'elem'],
+                {
+                  'text-font': ['literal', ['DIN Offc Pro Italic']],
+                  'font-scale': 0.8
+                }
+              ],
+              'text-font': [
+                'DIN Offc Pro Medium',
+                'Arial Unicode MS Bold'
+              ],
+              'text-size': 12
+            },
+            paint: {
+              'text-color': '#ffffff',
+            }
           })
           // add a popup on hover for each plot
           this.addPopUp(elem.name)
@@ -234,7 +282,7 @@ export default {
             tiles: [
               `${
                 process.env.baseUrl
-              }maps/duev?BBOX={bbox-epsg-3857}&FORMAT=image/png&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&CRS=EPSG:25832&TRANSPARENT=TRUE&width=256&height=256&LAYERS=belastete_gebiete_nitrat_2020`
+              }maps/duev?BBOX={bbox-epsg-3857}&FORMAT=image/png&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&CRS=EPSG:25832&TRANSPARENT=TRUE&width=256&height=256&LAYERS=belastete_gebiete_nitrat_2022_1`
             ],
             tileSize: 256
           },
@@ -271,7 +319,7 @@ export default {
 }
 
 .legend {
-  /*border-radius: 3px;*/
+  border: 1px solid black;
   /*box-shadow: 0 1px 2px rgba(0,0,0,0.10);*/
   background-color: #fff;
   top: 10px;
@@ -293,7 +341,10 @@ export default {
   margin-right: 10px;
   width: 15px;
 }
-
+.farm-location {
+  background-image: url('/icon.png');
+  background-size: cover;
+}
 .layer {
   display: flex;
   align-items: center;

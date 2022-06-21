@@ -1,6 +1,6 @@
 <template lang="html">
   <div v-on-clickaway="hide" @click="toggle">
-    <div class="dropdown-header hoverPointer">
+    <div class="dropdown-header hoverPointer" :class="clicked ? 'arrow-up' : 'arrow-down'">
       Aktionen
     </div>
     <div v-show="clicked" class="dropdown-menu">
@@ -38,7 +38,6 @@ export default {
   height: 38px;
   border: black;
   outline: 1px;
-  background-image: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
   background-repeat: no-repeat;
   background-position: 100% 50%;
   border-color: black;
@@ -50,6 +49,14 @@ export default {
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   line-height: 40px;
   padding-left: 12px;
+}
+
+.arrow-down {
+  background-image: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
+}
+
+.arrow-up {
+  background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' transform='rotate(180)' viewBox='0 0 24 24'%3E%3Cpath fill='%2523444' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'%3E%3C/path%3E%3C/svg%3E");
 }
 
 .dropdown-header:hover {

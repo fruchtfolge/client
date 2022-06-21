@@ -28,9 +28,9 @@ export default {
       type: 'fill',
       filter: ['all', ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']],
       paint: {
-        'fill-color': '#ffffff',
-        'fill-outline-color': '#ffffff',
-        'fill-opacity': 0
+        'fill-color': '#729685',
+        'fill-outline-color': '#729685',
+        'fill-opacity': 1
       }
     },
     // polygon outline stroke

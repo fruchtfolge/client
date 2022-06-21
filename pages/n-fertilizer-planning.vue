@@ -168,7 +168,7 @@
         <br><br>Klicken Sie auf den Link 'Anbauplanung' um loszulegen.
       </h3>
       <br>
-      <button class="button" @click="$nuxt.$router.replace({path: 'results'})">
+      <button class="button" @click="$nuxt.$router.push({path: 'results'})">
         NEUE PLANUNG
       </button>
     </div>
@@ -179,7 +179,7 @@
         <br>
         Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
       </h3>
-      <button class="button" @click="$nuxt.$router.replace({path: 'maps'})">
+      <button class="button" @click="$nuxt.$router.push({path: 'maps'})">
         ZUR KARTE
       </button>
       <button class="button" style="margin-left: 20px;" @click="importPrev">

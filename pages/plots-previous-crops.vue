@@ -1,62 +1,67 @@
 <template>
   <div>
     <loading v-if="loading" />
-    <div v-if="!loading && curPlots && curPlots.length > 0" class="plotOverview">
-      <table class="table plotOverview-table">
-        <thead>
-          <tr>
-            <th style="width: 125px;">
-              Name
-            </th>
-            <th style="width: 50px;">
-              Größe
-            </th>
-            <th style="width: 50px;">
-              Hof-Feld-Distanz
-            </th>
-            <template v-for="(year) in prevYears">
-              <th :key="`ZF_${year}`" style="width: 50px;">
-                ZF
+    <div v-if="!loading && curPlots && curPlots.length > 0" class="plotPrevCrop">
+      <div class="plotPrevCrop-wrapper">
+        <div class="plotPrevCrop-controls">
+          <input class="input search-plots" type="text" placeholder="Suche..." v-model="searchString">
+        </div>
+        <table class="table plotPrevCrop-table">
+          <thead>
+            <tr>
+              <th style="width: 125px;">
+                Name
               </th>
-              <th :key="year" style="width: 125px;">
-                {{ year }}
-              </th> <!--style="min-width: 200px;"-->
-            </template>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(plot) in curPlots" :key="plot._id">
-            <td class="wide-cells">
-              {{ plot.name }}
-            </td>
-            <td class="narrow-cells-number">
-              {{ plot.size }}
-            </td>
-            <td class="narrow-cells-number">
-              {{ plot.distance }}
-            </td>
-            <template v-for="(year,m) in prevYears">
-              <td :key="`ZF_${year}_${m}`" style="text-align: center; width: 50px;">
-                <input type="checkbox" :checked="plot[year + 'catchCrop']" @change="saveCatchCrop($event,plot,year)">
+              <th style="width: 50px;">
+                Größe
+              </th>
+              <th style="width: 50px;">
+                Hof-Feld-Distanz
+              </th>
+              <template v-for="(year) in prevYears">
+                <th :key="`ZF_${year}`" style="width: 50px;">
+                  ZF
+                </th>
+                <th :key="year" style="width: 125px;">
+                  {{ year }}
+                </th> <!--style="min-width: 200px;"-->
+              </template>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(plot) in filteredPlots" :key="plot._id">
+              <td class="wide-cells">
+                {{ plot.name }}
               </td>
+              <td class="narrow-cells-number">
+                {{ plot.size }}
+              </td>
+              <td class="narrow-cells-number">
+                {{ plot.distance }}
+              </td>
+              <template v-for="(year,m) in prevYears">
+                <td :key="`ZF_${year}_${m}`" style="text-align: center; width: 50px;">
+                  <input type="checkbox" :checked="plot[year + 'catchCrop']" @change="saveCatchCrop($event,plot,year)">
+                </td>
 
-              <td :key="`${year}_${m}`" style="wide-cells">
-                <select v-model="plot[year]" class="selection select" @change="saveCropChange(plot,year)">
-                  <option v-for="(crop) in crops" :key="`${crop.code}_${crop.name}`" :value="crop.name">
-                    {{ crop.name }}
-                  </option>
-                  <!--
-                  <option value="" />
-                  <option v-for="(culture) in cultures" :key="culture.variety + culture.code" :value="culture.variety">
-                    {{ culture.variety }}
-                  </option>
-                -->
-                </select>
-              </td>
-            </template>
-          </tr>
-        </tbody>
-      </table>
+                <td :key="`${year}_${m}`" style="wide-cells">
+                  <select v-model="plot[year]" class="selection select" @change="saveCropChange(plot,year)">
+                    <option v-for="(crop) in crops" :key="`${crop.code}_${crop.name}`" :value="crop.name">
+                      {{ crop.name }}
+                    </option>
+                    <!--
+                    <option value="" />
+                    <option v-for="(culture) in cultures" :key="culture.variety + culture.code" :value="culture.variety">
+                      {{ culture.variety }}
+                    </option>
+                  -->
+                  </select>
+                </td>
+              </template>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <div v-else style="text-align: center; margin-top: 100px;">
       <h3>Noch keine Schläge für das ausgewähle Planungsjahr und Szenario vorhanden.</h3>
@@ -65,7 +70,7 @@
         <br>
         Alternativ können Sie Daten aus dem vorherigen Anbaujahr importieren.
       </h3>
-      <button class="button" @click="$nuxt.$router.replace({path: 'maps'})">
+      <button class="button" @click="$nuxt.$router.push({path: 'maps'})">
         ZUR KARTE
       </button>
       <button class="button" style="margin-left: 20px;" @click="importPrev">
@@ -83,6 +88,13 @@ export default {
   components: {
     loading: () => import('~/components/loading.vue')
   },
+  computed: {
+    filteredPlots() {
+      let filtered = this.curPlots
+      filtered = filtered.filter(p => p.name.toLowerCase().includes(this.searchString.toLowerCase()))
+      return filtered
+    }
+  },
   data() {
     return {
       loading: true,
@@ -92,6 +104,7 @@ export default {
       curScenario: 'Standard',
       selectedPlot: null,
       maxRotBreak: 3,
+      searchString: '',
       prevYears: [2016, 2017, 2018],
       curYear: 2019,
       waiting: false
@@ -264,16 +277,28 @@ export default {
 </script>
 
 <style>
-.plotOverview-table {
+.plotPrevCrop-wrapper {
   /* float: left; */
-  /* margin: 0; */
+  margin: auto;
   margin-top: 20px;
-  max-width: 100vw;
+  max-width: 960px;
   min-width: 768px;
-  table-layout: fixed;
 }
 
-.plotOverview table input {
+.plotPrevCrop-controls {
+  margin-bottom: 10px;
+}
+
+
+.plotPrevCrop-table {
+  margin: unset;
+  width: unset;
+  margin-top: 10px;
+  max-width: 960px;
+  min-width: 100%;
+}
+
+.plotPrevCrop table input {
   -webkit-appearance: checkbox;
 }
 </style>

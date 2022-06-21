@@ -1,123 +1,116 @@
 <template>
   <div>
     <loading v-if="loading" :main="status" />
-    <div style="width: 50%; min-width: 500px; margin: auto; top: 120px;">
-      <h1 id="adress" style="font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
-        ADRESSE
-      </h1>
-      <span class="text">Für die Optimierung wird der Standort Ihres Betriebes benötigt. Dieser wird für die Berechnung der Hof-Feld-Distanzen der einzelnen Schläge verwendet. Anhand dieser Information werden die Deckungsbeiträge schlagspezifisch errechnet und regionalisierte Daten bezogen.</span>
-      <br>
-      <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
-        <span style="font-family: 'Open Sans Condensed'; font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
-          ADRESSE <!--Padding is optional-->
-        </span>
-      </div>
-      <div style="text-align: center;">
-        <input v-model="street" type="text" class="input" placeholder="Straße und Hausnummer">
+    <div style="margin-top: 30px; display: flex; flex-wrap: wrap; justify-content:center; ">
+      <div class="settings-element">
+        <modal v-if="isModalOpen" :head="'ELAN DATEN LÖSCHEN'" :body="`Wollen Sie die zuvor heruntergerladenen ELAN-Antragsdaten wirklich löschen?`" :buttonOk="'LÖSCHEN'" :callback="deleteElanData" @closeModal="isModalOpen = false" />
+        <h1 id="data-entry" style="font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em" class="anchor-link">
+          DATEN-IMPORT
+        </h1>
+        <span class="text">Für die Optimierung werden Daten bezüglich Ihrer bewirtschafteten Flächen benötigt. Dabei werden insbesondere die Schlagskizzen (Geodaten) sowie die Vorfrüchte der Felder für die Optimierungsrechnung verwendet. Wenn Ihr Betrieb den Flächenantrag in Nordrhein-Westfalen stellt, können die Flächendaten aus dem ELAN-Downloadportal durch eingabe der ZID-Nummer und Passwort automatisch eingefügt werden.
+          <br>
+          <strong>Datenschutzhinweis:</strong> Ihre Invekos-Daten (Betriebsnummer und Passwort) werden einmalig zur Abfrage im ELAN-Downloadportal übertragen. Ihre Betriebsnummer, jedoch nicht das Passwort wird lokal auf Ihrem Rechner gespeichert.</span>
+        <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
+          <span style="font-family: 'Open Sans Condensed'; font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
+            ZID-DATEN ABFRAGE <!--Padding is optional-->
+          </span>
+        </div>
+        <div style="text-align: center;">
+          <input
+            id="zid"
+            v-model="zidId"
+            type="text"
+            class="input"
+            name="zid"
+            autocomplete="off"
+            placeholder="ZID-Betriebsnummer (27605...)"
+          >
+          <br>
+          <input
+            id="zid-pw"
+            v-model="zidPass"
+            type="password"
+            class="input"
+            name="zid-pw"
+            autocomplete="off"
+            placeholder="Passwort"
+            @keyup.enter="getElan"
+          >
+          <br>
+        </div>
+        <div style="text-align: center;">
+          <button id="zid-btn" type="button" class="invekosBtn button" name="zid-btn" @click="getElan">
+            ABSENDEN
+          </button>
+          <button
+            id="zid-btn"
+            style="margin-left: 10px"
+            type="button"
+            class="invekosBtn button"
+            name="zid-btn"
+            @click="isModalOpen = true"
+          >
+            DATEN LÖSCHEN
+          </button>
+        </div>
+
+        <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
+          <span style="font-size: 20px; font-family: 'Open Sans Condensed'; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
+            ODER ELAN-DATEI UPLOAD
+          </span>
+        </div>
+        <span>XML-Datei</span>
+        <input id="xml" type="file" accept=".xml" name="xml" @change="processFile($event,'xml')">
         <br>
-        <input v-model="city" type="text" class="input" placeholder="Stadt">
-      </div>
-      <br>
-      <h1 id="data-entry" style="padding-top: 20px; font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
-        DATENEINGABE
-      </h1>
-      <span class="text">Für die Optimierung werden Daten bezüglich Ihrer bewirtschafteten Flächen benötigt. Dabei werden insbesondere die Schlagskizzen (Geodaten) sowie die Vorfrüchte der Felder für die Optimierungsrechnung verwendet. Wenn Ihr Betrieb den Flächenantrag in Nordrhein-Westfalen stellt, können die Flächendaten aus dem ELAN-Downloadportal durch eingabe der ZID-Nummer und Passwort automatisch eingefügt werden.
-        <br>
-        <strong>Datenschutzhinweis:</strong> Ihre Invekos-Daten (Betriebsnummer und Passwort) werden einmalig zur Abfrage im ELAN-Downloadportal übertragen. Ihre Betriebsnummer, jedoch nicht das Passwort wird lokal auf Ihrem Rechner gespeichert.</span>
-      <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
-        <span style="font-family: 'Open Sans Condensed'; font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
-          ZID-DATEN ABFRAGE <!--Padding is optional-->
-        </span>
-      </div>
-      <div style="text-align: center;">
-        <input
-          id="zid"
-          v-model="zidId"
-          type="text"
-          class="input"
-          name="zid"
-          autocomplete="off"
-          placeholder="ZID-Betriebsnummer (27605...)"
-        >
-        <br>
-        <input
-          id="zid-pw"
-          v-model="zidPass"
-          type="password"
-          class="input"
-          name="zid-pw"
-          autocomplete="off"
-          placeholder="Passwort"
-          @keyup.enter="getElan"
-        >
-        <br>
-      </div>
-      <div style="text-align: center;">
-        <button id="zid-btn" type="button" class="invekosBtn button" name="zid-btn" @click="getElan">
-          ABSENDEN
-        </button>
-        <button
-          id="zid-btn"
-          style="margin-left: 10px"
-          type="button"
-          class="invekosBtn button"
-          name="zid-btn"
-          @click="deleteElanData"
-        >
-          DATEN LÖSCHEN
-        </button>
+        <span>GML-Datei</span>
+        <input id="gml" type="file" accept=".gml" name="gml" @change="processFile($event, 'gml')">
       </div>
 
-      <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
-        <span style="font-size: 20px; font-family: 'Open Sans Condensed'; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
-          ODER ELAN-DATEI UPLOAD
+      <div class="settings-element">
+        <h1 id="address" style="font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em" class="anchor-link">
+          ADRESSE
+        </h1>
+        <span class="text">
+          Die Adresse Ihrer Hofstelle wird benötigt, um die Hof-Feld Entfernungen
+          der von Ihnen bewirtschafteten Flächen zu errechnen. Mit dieser Information
+          werden schlagspezifische Transportkosten und Arbeitszeitbedarfe für
+          Sie errechnet.
         </span>
+        <br>
+        <br>
+        <span class="text">Geben Sie im Suchfeld in der Karte die Adresse Ihres Betriebes an.<br>
+        Ziehen Sie falls nötig anschließend den Mittelpunkt der Karte (Ähre im grünen Kreis) auf Ihren Betrieb.</span>
+        <div style="margin-top: 15px;">
+          <addressMap :coordsForward="homeCoords" :width="'100%'" :showText="false" :includeGeocoder="true" :zoom="15" />
+        </div>
       </div>
-      <span>XML-Datei</span>
-      <input id="xml" type="file" accept=".xml" name="xml" @change="processFile($event,'xml')">
-      <br>
-      <span>GML-Datei</span>
-      <input id="gml" type="file" accept=".gml" name="gml" @change="processFile($event, 'gml')">
 
-      <h1 style="padding-top: 40px; font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
-        PERSÖNLICHE DATEN
-      </h1>
-      <span class="text">Persönlich angelegte Daten, z.B. Flächen, Kulturen oder Nebenbedingungen können an dieser Stelle für einzelne Jahre gelöscht werden. So können Sie beispielsweise verhindern, dass vorherige Planungsdaten als duplikate zu den Elan-Daten auftauchen.</span>
-      <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px" />
-      <div style="text-align: center;">
-        <select v-model="selectedDeleteYear" class="deleteYear select" name="">
-          <option value="2016">
-            2016
-          </option>
-          <option value="2017">
-            2017
-          </option>
-          <option value="2018">
-            2018
-          </option>
-          <option value="2019">
-            2019
-          </option>
-          <option value="2020">
-            2020
-          </option>
-          <option value="2021">
-            2021
-          </option>
-          <option value="2022">
-            2022
-          </option>
-        </select>
+      <div class="settings-element">
+        <h1 style="font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em" class="anchor-link">
+          PERSÖNLICHE DATEN
+        </h1>
+        <span class="text">Persönlich angelegte Daten, z.B. Flächen, Kulturen oder Nebenbedingungen können an dieser Stelle für einzelne Jahre gelöscht werden. So können Sie beispielsweise verhindern, dass vorherige Planungsdaten als duplikate zu den Elan-Daten auftauchen.</span>
+        <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px" />
+        <div style="text-align: center;">
+          <select v-model="selectedDeleteYear" class=" select selection deleteYear" name="">
+            <option v-for="year in years" :key="`${year}_option`" :value="year">
+              {{ year }}
+            </option>
+          </select>
+        </div>
+        <div style="text-align: center;">
+          <button id="zid-btn" type="button" class="invekosBtn button" name="zid-btn" @click="deleteYear">
+            LÖSCHEN
+          </button>
+        </div>
       </div>
-      <div style="text-align: center;">
-        <button id="zid-btn" type="button" class="invekosBtn button" name="zid-btn" @click="deleteYear">
-          LÖSCHEN
-        </button>
-      </div>
+
+      <!--
       <h1 style="padding-top: 40px; font-family: 'Open Sans Condensed'; font-weight: normal; letter-spacing: 0.2em">
         Düngeverordnung 2020
       </h1>
       <input type="checkbox" :checked="duev2020" @change="save($event)">
+    -->
     </div>
   </div>
 </template>
@@ -128,12 +121,15 @@ import notifications from '~/components/notifications'
 
 export default {
   components: {
-    loading: () => import('~/components/loading.vue')
+    loading: () => import('~/components/loading.vue'),
+    addressMap: () => import('~/components/address_map.vue'),
+    modal: () => import('~/components/modal.vue')
   },
   data() {
     return {
       loading: false,
-      duev2020: false,
+      isModalOpen: false,
+      duev2020: true,
       status:
         'Flächenanträge werden von der Landwirtschaftskammer heruntergerladen.',
       interval: '',
@@ -142,7 +138,9 @@ export default {
       curYear: 2019,
       street: '',
       city: '',
-      selectedDeleteYear: 2019
+      homeCoords: [7.685235, 51.574318],
+      selectedDeleteYear: 2019,
+      years: _.range(2016,2030)
     }
   },
   notifications: notifications,
@@ -170,6 +168,7 @@ export default {
       this.curYear = this.settings.curYear
       this.street = this.settings.street
       this.city = this.settings.city
+      this.homeCoords = this.settings.home
     } catch (e) {
       console.log(e)
     }
@@ -437,6 +436,12 @@ export default {
 </script>
 
 <style scoped>
+.settings-element {
+  margin: 0px 60px 40px 60px;
+  min-width: 500px;
+  max-width: 680px;
+  flex-basis: 100%;
+}
 .input {
   margin-bottom: 5px;
   width: 485px;
@@ -444,7 +449,7 @@ export default {
   border-style: solid;
   border-width: 1px;
   border-color: grey;
-  background-color: transparent;
+  background-color: white;
   font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
   letter-spacing: 0.1em;
   font-size: 18px;
@@ -466,8 +471,16 @@ export default {
   margin-bottom: 15px;
   height: 40px;
   padding-right: 25px;
-  background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
-  background-repeat: no-repeat;
-  background-position: 100% 50%;
+  background-color: white;
+  border: 1px solid black;
 }
+
+.anchor-link::before {
+  content: '';
+  display: block;
+  height:      75px;
+  margin-top: -75px;
+  visibility: hidden;
+}
+
 </style>

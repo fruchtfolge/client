@@ -43,6 +43,11 @@ export const timeseries = {
     },
     maintainAspectRatio: false,
     scales: {
+      xAxes: [{
+        gridLines: {
+          display: true
+        }
+      }],
       yAxes: [
         {
           id: 'A',
@@ -51,6 +56,9 @@ export const timeseries = {
           ticks: {
             min: 0,
             beginAtZero: true
+          },
+          gridLines: {
+            display: true
           }
         },
         {
@@ -60,6 +68,9 @@ export const timeseries = {
           ticks: {
             min: 0,
             beginAtZero: true
+          },
+          gridLines: {
+            display: false
           }
         },
         {
@@ -69,6 +80,9 @@ export const timeseries = {
           ticks: {
             min: 0,
             beginAtZero: true
+          },
+          gridLines: {
+            display: false
           }
         }
       ]
@@ -79,6 +93,9 @@ export const timeseries = {
         if (point.length) e.target.style.cursor = 'grab'
         else e.target.style.cursor = 'default'
       }
+    },
+    chartArea: {
+      backgroundColor: 'white'
     }
   }
 }

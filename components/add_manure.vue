@@ -1,50 +1,51 @@
 <template lang="html">
   <div>
-    <div class="blur" />
-    <div class="box">
-      <div class="inputs">
-        <h2 class="infoText">
-          NEUEN DÜNGER HINZUFÜGEN
-        </h2>
-        <label class="label" for="add.manure.category">Kategorie</label>
-        <select id="add.manure.category" v-model="category" class="dropdown select" @change="reset('category')">
-          <option disabled value="">
-            Kategorie
-          </option>
-          <option v-for="(option, i) in categories" :key="i" :value="option">
-            {{ option }}
-          </option>
-        </select>
-        <label class="label" for="add.manure.description">Bezeichnung</label>
-        <select id="add.manure.description" v-model="description" class="dropdown select" @change="reset('description')">
-          <option disabled value="">
-            Bezeichnung
-          </option>
-          <option v-for="(option, i) in descriptions" :key="i" :value="option">
-            {{ option }}
-          </option>
-        </select>
-        <label class="label" for="add.manure.type">Gülle/Festmist</label>
-        <select id="add.manure.type" v-model="manType" class="dropdown select">
-          <option disabled value="">
-            Gülle/Festmist
-          </option>
-          <option v-for="(option, i) in types" :key="i" :value="option">
-            {{ option }}
-          </option>
-        </select>
-        <label class="label" for="add.manure.amount">{{ amountLabel }}</label>
-        <input id="add.manure.amount" v-model="amount" type="number" class="input" @keyup.enter="addManure">
+    <div class="blur">
+      <div class="box">
+        <div class="inputs">
+          <h2 class="infoText">
+            NEUEN DÜNGER HINZUFÜGEN
+          </h2>
+          <label class="label" for="add.manure.category">Kategorie</label>
+          <select id="add.manure.category" v-model="category" class="dropdown select" @change="reset('category')">
+            <option disabled value="">
+              Kategorie
+            </option>
+            <option v-for="(option, i) in categories" :key="i" :value="option">
+              {{ option }}
+            </option>
+          </select>
+          <label class="label" for="add.manure.description">Bezeichnung</label>
+          <select id="add.manure.description" v-model="description" class="dropdown select" @change="reset('description')">
+            <option disabled value="">
+              Bezeichnung
+            </option>
+            <option v-for="(option, i) in descriptions" :key="i" :value="option">
+              {{ option }}
+            </option>
+          </select>
+          <label class="label" for="add.manure.type">Gülle/Festmist</label>
+          <select id="add.manure.type" v-model="manType" class="dropdown select">
+            <option disabled value="">
+              Gülle/Festmist
+            </option>
+            <option v-for="(option, i) in types" :key="i" :value="option">
+              {{ option }}
+            </option>
+          </select>
+          <label class="label" for="add.manure.amount">{{ amountLabel }}</label>
+          <input id="add.manure.amount" v-model="amount" type="number" class="input" @keyup.enter="addManure">
+        </div>
+        <p v-if="curError" style="text-align: center; margin-top: 30px; color:red;">
+          {{ curError }}
+        </p>
+        <button v-if="!curError" class="buttonOk button" @click="addManure">
+          ÜBERNEHMEN
+        </button>
+        <button class="buttonCancel button" @click="cancel">
+          ABBRECHEN
+        </button>
       </div>
-      <p v-if="curError" style="text-align: center; margin-top: 30px; color:red;">
-        {{ curError }}
-      </p>
-      <button v-if="!curError" class="buttonOk button" @click="addManure">
-        ÜBERNEHMEN
-      </button>
-      <button class="buttonCancel button" @click="cancel">
-        ABBRECHEN
-      </button>
     </div>
   </div>
 </template>
@@ -180,17 +181,18 @@ export default {
 }
 
 .dropdown {
+  font-size: 14px;
+  font-family: 'Inter', Helvetica, Arial, sans-serif;
+  letter-spacing: 0px;
   margin-bottom: 15px;
   width: 320px;
   height: 33px;
-  background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
-  background-position: 100% 50%;
-  background-repeat: no-repeat;
-  border-color: #cccccc;
-  padding-right: 25px;
 }
 
 .input {
+  font-size: 14px;
+  font-family: 'Inter', Helvetica, Arial, sans-serif;
+  letter-spacing: 0px;
   margin-bottom: 15px;
   width: 312px;
   height: 33px;
