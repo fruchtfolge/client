@@ -13,7 +13,7 @@
         <h4>I. Informationen über uns als Verantwortliche</h4>
         <div flow-cols="2" flow-cols-s="1">
           <p>Verantwortlicher Anbieter dieses Internetauftritts im datenschutzrechtlichen Sinne ist:</p>
-          <p><span>Christoph Pahmeyer<br>Nussallee 21, Haus 2<br>53115 Bonn<br>Deutschland<br>Telefon: +49 (0)228/733775<br>E-Mail: christoph.pahmeyer@ilr.uni-bonn.de</span></p>
+          <p><span>Christoph Pahmeyer<br>Nussallee 21, Haus 2<br>53115 Bonn<br>Deutschland<br>Telefon: +49 (0)228/733775<br>E-Mail: christoph.pahmeyer@icloud.com</span></p>
           <p>Datenschutzbeauftragter ist:</p>
           <p><span>Christoph Pahmeyer&nbsp;</span></p>
         </div>

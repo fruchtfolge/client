@@ -11,7 +11,7 @@
         <div class="grid" columns="2" columns-s="1" style="grid-row-gap: 33.75px;">
           <div class="c">
             <h4><strong>1. Allgemeines</strong></h4>
-            <p>Diensteanbieter im Sinne des § 5 Telemediengesetzes ist Christoph Pahmeyer, Economic Modelling of Agricultural Systems Group - ILR - Universität Bonn, Nussallee 21, Haus 2, D-53115 Bonn, Tel.: +49 (0)228/733775, E-Mail: christoph.pahmeyer@ilr.uni-bonn.de</p>
+            <p>Diensteanbieter im Sinne des § 5 Telemediengesetzes ist Christoph Pahmeyer, Economic Modelling of Agricultural Systems Group - ILR - Universität Bonn, Nussallee 21, Haus 2, D-53115 Bonn, Tel.: +49 (0)228/733775, E-Mail: christoph.pahmeyer@icloud.de</p>
             <p>Die Nutzung der kostenfreien Online-Anwendungen unter www.fruchtfolge-planer.de (nachfolgend „Angebot“) erfolgt ausschließlich im Rahmen der nachfolgenden Nutzungsbedingungen, deren Geltung der Nutzer mit der Nutzung verbindlich anerkennt.</p>
           </div>
           <div class="c">

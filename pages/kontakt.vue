@@ -12,7 +12,7 @@
               <strong>Economic Modeling of Agricultural Systems Group - ILR - Universität Bonn</strong><br>
               Nussallee 21, Haus 2, D-53115 Bonn<br>
               Tel.: +49 (0)228/733775<br>
-              E-Mail: christoph.pahmeyer@ilr.uni-bonn.de<br>
+              E-Mail: christoph.pahmeyer@icloud.com<br>
               Web: <a class="link" href="https://chrispahm.github.io/about" target="_blank">https://chrispahm.github.io</a>
             </p>
             <p>

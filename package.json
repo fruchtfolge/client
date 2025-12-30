@@ -3,7 +3,7 @@
   "version": "2.2.5",
   "sideEffects": true,
   "description": "Fruchtfolge client application",
-  "author": "Christoph Pahmeyer <christoph.pahmeyer@ilr.uni-bonn.de>",
+  "author": "Christoph Pahmeyer <christoph.pahmeyer@icloud.de>",
   "license": "GPL-3.0-or-later",
   "private": true,
   "scripts": {
