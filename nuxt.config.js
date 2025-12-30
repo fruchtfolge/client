@@ -113,7 +113,7 @@ module.exports = {
   */
   env: {
     // baseUrl: 'http://localhost:3003/',
-    baseUrl: 'https://fruchtfolge.agp.uni-bonn.de/api/',
+    baseUrl: 'https://fruchtfolge-planer.de/api/',
     appVersion: pkg.version
   },
   router: {

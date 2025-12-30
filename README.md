@@ -9,9 +9,9 @@ https://www.sciencedirect.com/science/article/pii/S0168169920331537
 
 Fruchtfolge is an open-source decision support system (DSS) for crop planning optimization. It's main focus are usability and data security.
 
-[![Fruchtfolge GIF](https://chrispahm.github.io/assets/fruchtfolge.gif)](http://fruchtfolge.agp.uni-bonn.de)
+[![Fruchtfolge GIF](https://chrispahm.github.io/assets/fruchtfolge.gif)](http://fruchtfolge-planer.de)
 
-The latest version of the DSS is hosted at [fruchtfolge.agp.uni-bonn.de](http://fruchtfolge.agp.uni-bonn.de).
+The latest version of the DSS is hosted at [fruchtfolge-planer.de](http://fruchtfolge-planer.de).
 
 This repository contains the client side code of the application.
 

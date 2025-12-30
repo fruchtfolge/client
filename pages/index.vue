@@ -163,9 +163,9 @@
               <br>
               <br>
               Ausführliche Informationen zur Benutzung gibt es auf der
-              <a class="link" href="https://fruchtfolge.agp.uni-bonn.de/documentation/#schon-dass-sie-hier-sind" target="_blank">offiziellen Supportseite</a>.
+              <a class="link" href="https://fruchtfolge-planer.de/documentation/#schon-dass-sie-hier-sind" target="_blank">offiziellen Supportseite</a>.
             </p>
-            <a href="https://fruchtfolge.agp.uni-bonn.de/documentation/#schon-dass-sie-hier-sind" target="_blank">
+            <a href="https://fruchtfolge-planer.de/documentation/#schon-dass-sie-hier-sind" target="_blank">
               <img class="image" src="https://chrispahm.github.io/assets/fruchtfolge.gif" alt="Fruchtfolge übersicht">
             </a>
           </div>
