@@ -10,23 +10,23 @@
             </caption>
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Mehr/weniger</th>
-                <th>Menge</th>
-                <th style="background-color: #f5f5f5" />
+                <th></th>
+                <th style="text-align: left">Name</th>
+                <th style="text-align: left">Mehr/weniger</th>
+                <th style="text-align: right">Menge</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="constraint in constraints" :key="constraint.id">
+                <td>
+                  <input v-model="constraint._deleted" style="-webkit-appearance: checkbox;" type="checkbox">
+                </td>
                 <td>{{ constraint.name }}</td>
-                <td style="text-align: center;">
+                <td style="text-align: left;">
                   {{ constraint.operator === '>' ? 'mehr als' : 'weniger als' }}
                 </td>
-                <td style="text-align: center;">
+                <td style="text-align: right;" class="value-cell">
                   {{ constraint.area + ' ' + constraint.sizeType }}
-                </td>
-                <td style="background-color: #f5f5f5">
-                  <input v-model="constraint._deleted" style="-webkit-appearance: checkbox;" type="checkbox">
                 </td>
               </tr>
             </tbody>
@@ -39,7 +39,7 @@
           <button class="addConstraint button" style="font-family: 'Open Sans Condensed';" @click="addConstraint = true">
             HINZUFÜGEN
           </button>
-          <button v-if="constraints" class="addConstraint button" style="font-family: 'Open Sans Condensed'; margin-left: 20px;" @click="remove">
+          <button v-if="constraints && toDelete && toDelete.length" class="addConstraint button" style="font-family: 'Open Sans Condensed'; margin-left: 20px;" @click="remove">
             ENTFERNEN
           </button>
         </div>
@@ -51,15 +51,25 @@
   </div>
 </template>
 <script>
+import notifications from '~/components/notifications'
+
 export default {
   components: {
     addConstraint: () => import('~/components/add_constraint.vue')
   },
+  notifications: notifications,
   data() {
     return {
       addConstraint: false,
       crops: null,
       constraints: null
+    }
+  },
+  computed: {
+    toDelete() {
+      return this.constraints.filter(
+        constraint => constraint._deleted
+      )
     }
   },
   created() {
@@ -76,16 +86,24 @@ export default {
     },
     async remove() {
       try {
-        const deleted = this.constraints.filter(
-          constraint => constraint._deleted
-        )
-        await this.$db.bulkDocs(deleted)
+        const toDelete = this.toDelete
+        await this.$db.bulkDocs(toDelete)
+        this.saveSuccess()
       } catch (e) {
+        this.showError()
         console.log(e)
       }
     }
   }
 }
 </script>
-<style>
+<style scoped>
+.caption {
+  margin-bottom: 10px;
+}
+
+.table th,td {
+  padding-left: 10px;
+  padding-right: 10px;
+}
 </style>

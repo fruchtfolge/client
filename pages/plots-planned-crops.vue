@@ -10,40 +10,40 @@
       <table class="table plotPlanOverview-table">
         <thead>
           <tr>
-            <th style="width: 125px;">
+            <th style="width: 125px; text-align: left;">
               Name
             </th>
-            <th style="width: 50px;">
+            <th style="width: 50px; text-align: right;">
               Größe
             </th>
-            <th style="width: 50px;">
+            <th style="width: 50px; text-align: right;">
               Hof-Feld-Distanz
             </th>
             <th v-for="(year) in prevYears" :key="year" class="wide-cells">
               {{ year }}
             </th>
-            <th style="width: 250px;">
+            <th style="width: 250px; text-align: left;">
               Planung {{ curYear }}
             </th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(plot) in filteredPlots" :key="plot._id">
-            <td class="wide-cells">
+            <td style="text-align: left;" class="wide-cells">
               {{ plot.name }}
             </td>
-            <td class="narrow-cells-number">
-              {{ plot.size }}
+            <td style="text-align: right;" class="narrow-cells-number value-cell">
+              {{ plot.size.toFixed(1) }}
             </td>
-            <td class="narrow-cells-number">
-              {{ plot.distance }}
+            <td style="text-align: right;" class="narrow-cells-number value-cell">
+              {{ plot.distance.toFixed(1) }}
             </td>
             <template v-for="(year,m) in prevYears">
               <td :key="`${year}_${m}`" class="wide-cells">
                 {{ plot[year] }}
               </td>
             </template>
-            <td class="multi-select-crops">
+            <td style="background: white;" class="multi-select-crops editable">
               <multiselect v-model="plot.allowedCrops" :options="crops" :multiple="true" :close-on-select="false" :clear-on-select="true" :hide-selected="true" :preserve-search="true" :searchable="true" selectLabel="Enter zum auswählen"
                 selectedLabel="Ausgewählt" deselectLabel="Enter zum entfernen" placeholder="Auswählen" :preselect-first="false" @input="changeAllowed(plot)">
                 <span slot="noResult">Kultur nicht gefunden 😞</span>
@@ -156,10 +156,12 @@ export default {
           this.$set(this, 'crops', this.curCrops.map(c => c.name))
         }
         // create array of previous years
+        const prevYears = [this.curYear - 1]
+        /*
         const prevYears = Array(this.curYear - (this.curYear - 2))
           .fill(0)
           .map((e, i) => i + (this.curYear - 2))
-
+        */
         this.$set(this, 'prevYears', prevYears)
         // add previous crops to each crop object
         this.plotsPrevCrops()
@@ -221,8 +223,9 @@ export default {
 <style src="vue-multiselect/dist/vue-multiselect.min.css">
 </style>
 <style>
-.plotPlan-controls {
+.plotsPlan-controls {
   margin-bottom: 10px;
+  width: 100%;
 }
 
 .plotsPlan-wrapper {
@@ -230,11 +233,12 @@ export default {
   margin: auto;
   margin-top: 20px;
   max-width: 960px;
-  min-width: 768px;
+  width: 768px;
 }
 
 .search-plots {
   box-sizing: border-box;
+  border: 1px solid #ececec;
   font-size: 16px;
   height: 36px;
   margin-right: 5px;
@@ -247,7 +251,17 @@ export default {
   width: unset;
   margin-top: 10px;
   max-width: 960px;
-  min-width: 100%;
+  min-width: 768px;
+  font-size: 13px;
+}
+
+.plotPlanOverview-table th,td {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.plotPlanOverview-table thead tr {
+  height: 60px;
 }
 
 .plotPlanOverview-table .wide-cells {
@@ -258,6 +272,7 @@ export default {
   border-radius: 0px;
   border: none;
   background: none;
+  font-size: 13px;
 }
 
 .multiselect__tag,
@@ -277,6 +292,9 @@ export default {
 .multi-select-crops {
   font-family: Inter, Helevetica, sans-serif;
   background: none;
-  font-size: 14px;
+  font-size: 13px;
+}
+.multiselect__content-wrapper {
+  background-color: #f9f9f9;
 }
 </style>

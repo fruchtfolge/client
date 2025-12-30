@@ -183,6 +183,7 @@ export default {
     async remove() {
       try {
         await this.$db.remove(this.crop)
+        this.$emit('changeCrop', null)
         this.showCropRemoveSucc()
       } catch (e) {
         this.showError()

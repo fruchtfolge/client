@@ -3,11 +3,11 @@
     <div style="display: none;" class="printCropName">
       {{ crop.name }}
     </div>
-    <table :key="`grossMargin_${crop.name}`" class="table">
+    <table :key="`grossMargin_${crop.name}`" class="gm-table">
       <thead>
         <tr>
-          <th>Leistungs-/Kostenart</th>
-          <th colspan="2">
+          <th style="text-align: left; padding-left: 10px">Leistungs-/Kostenart</th>
+          <th colspan="2" >
             Menge
           </th>
           <th colspan="2">
@@ -22,64 +22,64 @@
         <!-- Revenues-->
         <tr v-for="(source, i) in cm.revenues" :key="`revenues_${i}`">
           <td>{{ source.name }}</td>
-          <td contenteditable="true" @blur="update($event, 'revenues', i, 'amount')" @keydown.enter="$event.target.blur()">
+          <td class="editable" contenteditable="true" @blur="update($event, 'revenues', i, 'amount')" @keydown.enter="$event.target.blur()">
             {{ source.amount.value }}
           </td>
           <td>{{ source.amount.unit }}</td>
-          <td contenteditable="true" @blur="update($event, 'revenues', i, 'price')" @keydown.enter="$event.target.blur()">
+          <td class="editable" contenteditable="true" @blur="update($event, 'revenues', i, 'price')" @keydown.enter="$event.target.blur()">
             {{ source.price.value }}
           </td>
           <td>{{ source.price.unit }}</td>
-          <td>{{ source.total.value }}</td>
+          <td class="value-cell">{{ source.total.value }}</td>
           <td>{{ source.total.unit }}</td>
         </tr>
         <tr class="highlightRow">
           <td colspan="5">
             Summe Leistung
           </td>
-          <td>{{ revenues }}</td>
+          <td class="value-cell">{{ revenues }}</td>
           <td>€/ha</td>
         </tr>
         <!-- Direct Costs-->
         <tr v-for="(source, i) in cm.directCosts" :key="`directCosts_${i}`">
           <td>{{ source.name }}</td>
-          <td contenteditable="true" @blur="update($event, 'directCosts', i, 'amount')" @keydown.enter="$event.target.blur()">
+          <td class="editable" contenteditable="true" @blur="update($event, 'directCosts', i, 'amount')" @keydown.enter="$event.target.blur()">
             {{ source.amount.value }}
           </td>
           <td>{{ source.amount.unit }}</td>
-          <td contenteditable="true" @blur="update($event, 'directCosts', i, 'price')" @keydown.enter="$event.target.blur()">
+          <td class="editable" contenteditable="true" @blur="update($event, 'directCosts', i, 'price')" @keydown.enter="$event.target.blur()">
             {{ source.price.value }}
           </td>
           <td>{{ source.price.unit }}</td>
-          <td>{{ source.total.value }}</td>
+          <td class="value-cell">{{ source.total.value }}</td>
           <td>{{ source.total.unit }}</td>
         </tr>
         <tr class="highlightRow">
           <td colspan="5">
             Summe Direktkosten
           </td>
-          <td>{{ directCosts }}</td>
+          <td class="value-cell">{{ directCosts }}</td>
           <td>€/ha</td>
         </tr>
         <!-- Other Variable Costs-->
         <tr v-for="(source, i) in cm.variableCosts" :key="`variableCosts_${i}`">
           <td>{{ source.name }}</td>
-          <td contenteditable="true" @blur="update($event, 'variableCosts', i, 'amount')" @keydown.enter="$event.target.blur()">
+          <td class="editable" contenteditable="true" @blur="update($event, 'variableCosts', i, 'amount')" @keydown.enter="$event.target.blur()">
             {{ source.amount.value }}
           </td>
           <td>{{ source.amount.unit }}</td>
-          <td contenteditable="true" @blur="update($event, 'variableCosts', i, 'price')" @keydown.enter="$event.target.blur()">
+          <td class="editable" contenteditable="true" @blur="update($event, 'variableCosts', i, 'price')" @keydown.enter="$event.target.blur()">
             {{ source.price.value }}
           </td>
           <td>{{ source.price.unit }}</td>
-          <td>{{ source.total.value }}</td>
+          <td class="value-cell">{{ source.total.value }}</td>
           <td>{{ source.total.unit }}</td>
         </tr>
-        <tr class="highlightRow">
+        <tr style="border-bottom: 1px solid #f5f5f5;" class="highlightRow">
           <td colspan="5">
             Summe variable Kosten
           </td>
-          <td>{{ variableCosts }}</td>
+          <td class="value-cell">{{ variableCosts }}</td>
           <td>€/ha</td>
         </tr>
         <!-- Contribution Margin-->
@@ -87,17 +87,18 @@
           <td colspan="5">
             Deckungsbeitrag
           </td>
-          <td>{{ contributionMargin }}</td>
+          <td style="font-weight: 600;" class="value-cell">{{ contributionMargin }}</td>
           <td>€/ha</td>
         </tr>
-        <!-- Fix Costs-->
+        <!--
+
         <tr v-for="(source, i) in cm.fixCosts" :key="`fixCosts_${i}`">
           <td>{{ source.name }}</td>
-          <td contenteditable="true" @blur="update($event, 'fixCosts', i, 'amount')" @keydown.enter="$event.target.blur()">
+          <td class="editable" contenteditable="true" @blur="update($event, 'fixCosts', i, 'amount')" @keydown.enter="$event.target.blur()">
             {{ source.amount.value }}
           </td>
           <td>{{ source.amount.unit }}</td>
-          <td contenteditable="true" @blur="update($event, 'fixCosts', i, 'price')" @keydown.enter="$event.target.blur()">
+          <td class="editable" contenteditable="true" @blur="update($event, 'fixCosts', i, 'price')" @keydown.enter="$event.target.blur()">
             {{ source.price.value }}
           </td>
           <td>{{ source.price.unit }}</td>
@@ -111,7 +112,7 @@
           <td>{{ fixCosts }}</td>
           <td>€/ha</td>
         </tr>
-        <!-- Contribution Margin 2-->
+
         <tr class="highlightRow">
           <td colspan="5">
             Direkt- und arbeitserledigungskostenfreie Leistung
@@ -119,6 +120,7 @@
           <td>{{ contributionMargin2 }}</td>
           <td>€/ha</td>
         </tr>
+      -->
         <tr>
           <td colspan="7" style="color: grey;">
             Quelle der Daten: KTBL Anwendung Leistungs-Kostenrechnung Pflanzenbau
@@ -243,8 +245,9 @@ export default {
     },
     async remove() {
       try {
-        this.showCropRemoveSucc()
         await this.$db.remove(this.crop)
+        this.$emit('changeCrop', null)
+        this.showCropRemoveSucc()
       } catch (e) {
         this.showError()
         console.log(e)
@@ -254,6 +257,44 @@ export default {
 }
 </script>
 <style>
+.gm-table {
+  width: calc(100% - 275px);
+  border-left: 1px solid #ececec;
+  border-right: 1px solid #ececec;
+  font-family: Inter;
+  font-weight: 300;
+  margin: auto;
+  margin-top: 30px;
+  min-width: 520px;
+  max-width: 700px;
+  border-collapse: collapse;
+  font-size: 14px;
+  hyphens: auto;
+  word-wrap: break-word;
+}
+
+.gm-table th {
+  background-color: rgb(121, 173, 151);
+  height: 40px;
+  hyphens: auto;
+  color: white;
+}
+.gm-table tr {
+  height: 30px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #ECECEC;
+}
+
+.gm-table td:first-child {
+  padding-left: 10px;
+}
+
+.gm-table td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
 .cropsTable td:nth-child(2) {
   text-align: right;
 }
@@ -264,14 +305,11 @@ export default {
   text-align: right;
 }
 
+.gm-table tbody tr:hover {
+  background-color: #f5f5f5;
+}
 .cropsTable {
   width: calc(100% - 275px);
 }
 
-.highlightRow {
-  height: 40px;
-  background-color: white;
-  /* font-weight: 600; */
-  font-family: Inter;
-}
 </style>

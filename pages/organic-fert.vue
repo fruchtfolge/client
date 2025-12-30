@@ -9,147 +9,146 @@
           </caption>
           <thead>
             <tr>
-              <th colspan="3" />
-              <th colspan="6">
+              <th rowspan="2"><input type="checkbox" name="Select all">
+              </th>
+              <th rowspan="2" style="text-align: left;">Name</th>
+              <th rowspan="2" style="text-align: left;">Kategorie</th>
+              <th rowspan="2" style="text-align: right;">Menge [m³/a]</th>
+              <th colspan="3">
                 Nährstoffgehalte [kg/m³]
               </th>
-              <th />
-              <th style="background-color: #f5f5f5" />
+              <th rowspan="2" style="text-align: right;">Mindest-ausnutzung N nach DüV [%]</th>
+              <th rowspan="2" style="text-align: right;">Stall- und Lagerverluste nach DüV [%]</th>
+              <th rowspan="2" style="text-align: right;">Mindest-ausnutzung N tatsächlich [%]</th>
+              <th rowspan="2" style="text-align: right;">Stall- und Lagerverluste tatsächlich [%]</th>
             </tr>
             <tr>
-              <th>Name</th>
-              <th>Kategorie</th>
-              <th>Menge [m³/a]</th>
-              <th>N</th>
-              <th>P<sub>2</sub>O<sub>5</sub></th>
-              <th>K<sub>2</sub>O</th>
-              <th>Mindestausnutzung N nach DüV [%]</th>
-              <th>Stall- und Lagerverluste nach DüV [%]</th>
-              <th>Mindestausnutzung N tatsächlich [%]</th>
-              <th>Stall- und Lagerverluste tatsächlich [%]</th>
-              <th style="background-color: #f5f5f5" />
+              <th style="text-align: right;">N</th>
+              <th style="text-align: right;">P<sub>2</sub>O<sub>5</sub></th>
+              <th style="text-align: right;">K<sub>2</sub>O</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="manure in manures" :key="manure._id">
-              <td>{{ manure.description }}</td>
-              <td style="text-align: center;">
-                {{ manure.manType }}
-              </td>
-              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'sumFertAmount', manure._id)" @keydown.enter="$event.target.blur()">
-                {{ manure.sumFertAmount }}
-              </td>
-              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'n', manure._id)" @keydown.enter="$event.target.blur()">
-                {{ manure.n }}
-              </td>
-              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'p', manure._id)" @keydown.enter="$event.target.blur()">
-                {{ manure.p }}
-              </td>
-              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'k', manure._id)" @keydown.enter="$event.target.blur()">
-                {{ manure.k }}
-              </td>
-              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'minUsagePercent', manure._id)" @keydown.enter="$event.target.blur()">
-                {{ manure.minUsagePercent }}
-              </td>
-              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'storageLosses', manure._id)" @keydown.enter="$event.target.blur()">
-                {{ manure.storageLosses || 20 }}
-              </td>
-              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'minUsagePercentUser', manure._id)" @keydown.enter="$event.target.blur()">
-                {{ manure.minUsagePercentUser || manure.minUsagePercent }}
-              </td>
-              <td style="text-align: center;" contenteditable="true" @blur="save($event, 'storageLossesUser', manure._id)" @keydown.enter="$event.target.blur()">
-                {{ manure.storageLossesUser !== undefined ? manure.storageLossesUser : 20 }}
-              </td>
-              <td style="background-color: #f5f5f5">
+              <td>
                 <input v-model="manure._deleted" style="-webkit-appearance: checkbox;" type="checkbox">
               </td>
+              <td style="text-align: left;">{{ manure.description }}</td>
+              <td style="text-align: left;">
+                {{ manure.manType }}
+              </td>
+              <td style="text-align: right;" class="editable" contenteditable="true" @blur="save($event, 'sumFertAmount', manure._id)" @keydown.enter="$event.target.blur()">
+                {{ manure.sumFertAmount }}
+              </td>
+              <td style="text-align: right;" class="editable" contenteditable="true" @blur="save($event, 'n', manure._id)" @keydown.enter="$event.target.blur()">
+                {{ manure.n }}
+              </td>
+              <td style="text-align: right;" class="editable" contenteditable="true" @blur="save($event, 'p', manure._id)" @keydown.enter="$event.target.blur()">
+                {{ manure.p }}
+              </td>
+              <td style="text-align: right;" class="editable" contenteditable="true" @blur="save($event, 'k', manure._id)" @keydown.enter="$event.target.blur()">
+                {{ manure.k }}
+              </td>
+              <td style="text-align: right;" class="editable" contenteditable="true" @blur="save($event, 'minUsagePercent', manure._id)" @keydown.enter="$event.target.blur()">
+                {{ manure.minUsagePercent }}
+              </td>
+              <td style="text-align: right;" class="editable" contenteditable="true" @blur="save($event, 'storageLosses', manure._id)" @keydown.enter="$event.target.blur()">
+                {{ manure.storageLosses || 20 }}
+              </td>
+              <td style="text-align: right;" class="editable" contenteditable="true" @blur="save($event, 'minUsagePercentUser', manure._id)" @keydown.enter="$event.target.blur()">
+                {{ manure.minUsagePercentUser || manure.minUsagePercent }}
+              </td>
+              <td style="text-align: right;" class="editable" contenteditable="true" @blur="save($event, 'storageLossesUser', manure._id)" @keydown.enter="$event.target.blur()">
+                {{ manure.storageLossesUser !== undefined ? manure.storageLossesUser : 20 }}
+              </td>
             </tr>
-            <tr v-if="hasManure">
+            <tr v-if="hasManure" class="highlightRow" style="font-weight: 600;">
+              <td></td>
               <td colspan="2">
-                <b>Summe Gülle</b>
+                Summe Gülle
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumManure.amount }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumManure.amount }}
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumManure.n }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumManure.n }}
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumManure.p }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumManure.p }}
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumManure.k }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumManure.k }}
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumManure.minUsagePercent }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumManure.minUsagePercent }}
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumManure.storageLosses || 20 }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumManure.storageLosses || 20 }}
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumManure.minUsagePercentUser || sumManure.minUsagePercent }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumManure.minUsagePercentUser || sumManure.minUsagePercent }}
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumManure.storageLossesUser !== undefined && !isNaN(sumManure.storageLossesUser) ? sumManure.storageLossesUser : 20 }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumManure.storageLossesUser !== undefined && !isNaN(sumManure.storageLossesUser) ? sumManure.storageLossesUser : 20 }}
               </td>
             </tr>
-            <tr v-if="hasSolid">
+            <tr v-if="hasSolid" class="highlightRow" style="font-weight: 600;">
               <td colspan="2">
-                <b>Summe Festmist</b>
+                Summe Festmist
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumSolid.amount }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumSolid.amount }}
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumSolid.n }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumSolid.n }}
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumSolid.p }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumSolid.p }}
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumSolid.k }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumSolid.k }}
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumSolid.minUsagePercent }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumSolid.minUsagePercent }}
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumSolid.storageLosses || 20 }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumSolid.storageLosses || 20 }}
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumSolid.minUsagePercentUser || sumSolid.minUsagePercent }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumSolid.minUsagePercentUser || sumSolid.minUsagePercent }}
               </td>
-              <td style="text-align: center;">
-                <b>{{ sumSolid.storageLossesUser !== undefined ? sumSolid.storageLossesUser : 20 }}</b>
+              <td style="text-align: right; font-weight: 600;" class="value-cell">
+                {{ sumSolid.storageLossesUser !== undefined ? sumSolid.storageLossesUser : 20 }}
               </td>
             </tr>
           </tbody>
         </table>
-        <table v-if="hasManure" class="table fert-table">
+        <table v-if="hasManure" style="width: unset;" class="table fert-tables">
           <caption class="caption">
             Gülle: Exportkosten und Lagerung
           </caption>
           <thead>
             <tr>
-              <th>Bezeichnung</th>
-              <th>Wert</th>
+              <th style="text-align: left;">Bezeichnung</th>
+              <th style="text-align: right;">Wert</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>Gülle Lagerkapazität [m³]</td>
-              <td contenteditable="true" @blur="save($event, 'manStorage', 'settings')" @keydown.enter="$event.target.blur()">
+              <td class="editable" contenteditable="true" @blur="save($event, 'manStorage', 'settings')" @keydown.enter="$event.target.blur()">
                 {{ settings.manStorage || sumManure.amount / 2 }}
               </td>
             </tr>
             <tr>
               <td>Gülle Exportkosten Frühjahr (bis Mai) [€/m³]</td>
-              <td contenteditable="true" @blur="save($event, 'manPriceSpring', 'settings')" @keydown.enter="$event.target.blur()">
+              <td class="editable" contenteditable="true" @blur="save($event, 'manPriceSpring', 'settings')" @keydown.enter="$event.target.blur()">
                 {{ settings.manPriceSpring || 15 }}
               </td>
             </tr>
             <tr>
               <td>Gülle Exportkosten Herbst (ab Mai) [€/m³]</td>
-              <td contenteditable="true" @blur="save($event, 'manPriceAutumn', 'settings')" @keydown.enter="$event.target.blur()">
+              <td class="editable" contenteditable="true" @blur="save($event, 'manPriceAutumn', 'settings')" @keydown.enter="$event.target.blur()">
                 {{ settings.manPriceAutumn || 30 }}
               </td>
             </tr>
@@ -168,19 +167,19 @@
           <tbody>
             <tr>
               <td>Mist Lagerkapazität [m³]</td>
-              <td contenteditable="true" @blur="save($event, 'solidStorage', 'settings')" @keydown.enter="$event.target.blur()">
+              <td class="editable" contenteditable="true" @blur="save($event, 'solidStorage', 'settings')" @keydown.enter="$event.target.blur()">
                 {{ settings.solidStorage || sumSolid.amount / 4 }}
               </td>
             </tr>
             <tr>
               <td>Mist Exportkosten Frühjahr (bis Mai) [€/m³]</td>
-              <td contenteditable="true" @blur="save($event, 'solidPriceSpring', 'settings')" @keydown.enter="$event.target.blur()">
+              <td class="editable" contenteditable="true" @blur="save($event, 'solidPriceSpring', 'settings')" @keydown.enter="$event.target.blur()">
                 {{ settings.solidPriceSpring || 15 }}
               </td>
             </tr>
             <tr>
               <td>Mist Exportkosten Herbst (ab Mai) [€/m³]</td>
-              <td contenteditable="true" @blur="save($event, 'solidPriceAutumn', 'settings')" @keydown.enter="$event.target.blur()">
+              <td class="editable" contenteditable="true" @blur="save($event, 'solidPriceAutumn', 'settings')" @keydown.enter="$event.target.blur()">
                 {{ settings.solidPriceAutumn || 30 }}
               </td>
             </tr>
@@ -364,8 +363,19 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
+.caption {
+  margin-bottom: 10px;
+}
+.editable {
+  border-right: 1px solid #f5f5f5;
+}
 .fert-tables {
   width: 100%;
+}
+.fert-tables th,td {
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 13px;
 }
 </style>

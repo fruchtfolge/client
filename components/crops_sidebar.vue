@@ -112,7 +112,7 @@ export default {
       })
     },
     isClicked(crop) {
-      return crop.name === this.selectedCrop.name
+      return crop.name === this.selectedCrop?.name
     },
     changeCrop(crop) {
       this.$emit('changeCrop', crop)

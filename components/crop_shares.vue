@@ -9,6 +9,7 @@
 import Chart from 'chart.js'
 import 'chartjs-plugin-piechart-outlabels'
 import 'chartjs-plugin-deferred'
+//import "/Users/toffi1/UniCloud/Programmieren/chartjs-plugin-deferred"
 
 export default {
   props: {
@@ -35,6 +36,12 @@ export default {
   mounted() {
     this.prepareData()
     this.createChart('cropShares-chart', this.cropShares)
+    this.$bus.$on('resize', () => {
+      setTimeout(() => {
+        console.log("update")
+        this.cropShares?.update()
+      }, 700)
+    })
   },
   methods: {
     prepareData() {

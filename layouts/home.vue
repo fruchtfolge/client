@@ -63,7 +63,7 @@ html {
   height: 100%;
   width: 100%;
   overflow-x: hidden;
-  background-color: #f5f5f5;
+  background-color: #f9f9f9;
   font-family: Inter, sans-serif;
 }
 

@@ -11,7 +11,7 @@
           <br>
           <strong>Datenschutzhinweis:</strong> Ihre Invekos-Daten (Betriebsnummer und Passwort) werden einmalig zur Abfrage im ELAN-Downloadportal übertragen. Ihre Betriebsnummer, jedoch nicht das Passwort wird lokal auf Ihrem Rechner gespeichert.</span>
         <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
-          <span style="font-family: 'Open Sans Condensed'; font-size: 20px; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
+          <span style="font-family: 'Open Sans Condensed'; font-size: 20px; letter-spacing: 0.2em; background-color: #f9f9f9; padding: 0 20px;">
             ZID-DATEN ABFRAGE <!--Padding is optional-->
           </span>
         </div>
@@ -55,7 +55,7 @@
         </div>
 
         <div style="width: 100%; height: 12px; border-bottom: 1px solid black; text-align: center; margin-top: 40px; margin-bottom: 40px">
-          <span style="font-size: 20px; font-family: 'Open Sans Condensed'; letter-spacing: 0.2em; background-color: #F3F5F6; padding: 0 20px;">
+          <span style="font-size: 20px; font-family: 'Open Sans Condensed'; letter-spacing: 0.2em; background-color: #f9f9f9; padding: 0 20px;">
             ODER ELAN-DATEI UPLOAD
           </span>
         </div>

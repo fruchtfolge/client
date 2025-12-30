@@ -5,6 +5,9 @@
     display: none;
   }
 
+  .noprint {
+    display: none !important;
+  }
   * {
     overflow: visible !important;
   }
@@ -113,6 +116,8 @@
     width: 100%;
     table-layout: auto;
     font-family: Georgia, serif;
+    border-left: none;
+    border-right: none;
   }
 
   .table tr:nth-child(odd) {

@@ -60,6 +60,8 @@
     </div>
     <!-- this is where the main application lives -->
     <nuxt class="nuxt" :style="mainStyle" />
+    <div v-show="showTooltip" class="help_widget-tooltip">{{ curPageData.helpText }}</div>
+    <a class="help_widget" @mouseover="showTooltip = true" @mouseleave="showTooltip = false" target="_blank" :href="curPageData.help"><div>?</div></a>
   </div>
   <div v-else>
     <!-- loading component -->
@@ -77,7 +79,9 @@ export default {
         curYear: 2019,
         curScenario: 'Standard'
       },
+      showTooltip: false,
       curPage: '',
+      curPageData: {},
       years: [],
       scenarios: [
         {
@@ -100,12 +104,13 @@ export default {
   watch: {
     '$route': function (route) {
       this.curPage = route.path
+      this.curPageData = this.routes.find(r => r.path === this.curPage)
     }
   },
   computed: {
     curPageName() {
       const clicked = this.routes.find(route => route.path === this.curPage)
-      if (clicked) return _.capitalize(clicked.name)
+      if (clicked) return clicked.name.replace(/\-/g, _.capitalize)
       return ''
     }
   },
@@ -113,6 +118,7 @@ export default {
     try {
       // set active route
       this.curPage = this.$nuxt.$route.path
+      this.curPageData = this.routes.find(route => route.path === this.curPage)
       // construct planning periods for future/past
       this.constructYears()
       // get settings from db (if available)
@@ -231,7 +237,7 @@ html {
   height: 100%;
   width: 100%;
   overflow-x: hidden;
-  background-color: #f5f5f5;
+  background-color: #f9f9f9;
   font-family: 'Open Sans Condensed', sans-serif;
 }
 
@@ -274,6 +280,8 @@ html {
   margin-bottom: 15px;
   height: 40px;
   padding-right: 25px;
+  font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
+  letter-spacing: 0.1em;
   background: url('data:image/svg+xml,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20fill%3D%27%2523444%27%20d%3D%27M7.406%207.828l4.594%204.594%204.594-4.594%201.406%201.406-6%206-6-6z%27%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
   background-repeat: no-repeat;
   background-position: 100% 50%;
@@ -384,5 +392,50 @@ html {
   text-decoration: none;
   margin-right: 5px;
   font-size: 11px;
+}
+.help_widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 36px;
+  height: 36px;
+  border-radius: 36px;
+  background: #2c2c2c;
+  fill: white;
+  color: white;
+  font-weight: 100;
+  display: flex;
+  justify-content: center;;
+  align-items: center;
+  transition: all .2s ease-out;
+  z-index: 100;
+  text-decoration: none;
+}
+
+.help_widget-tooltip {
+  display: block;
+  font-size: 11px;
+  font-weight: 100;
+  color: white;
+  background: #2c2c2c;
+  padding: 6px 12px;
+  border-radius: 2px;
+  z-index: 101;
+  position: fixed;
+  bottom: 72px;
+  right: 24px;
+}
+
+.help_widget-tooltip:after{
+  content: "";
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: calc(100% - 1px);
+  right: 13px;
+  border-color: transparent;
+  border-top-color: #2c2c2c;
+  border-width: 6px;
+  border-style: solid;
 }
 </style>

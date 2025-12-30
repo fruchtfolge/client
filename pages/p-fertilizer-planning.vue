@@ -14,8 +14,10 @@
             <th>Faktorempfehlung [/]</th>
             <th>P<sub>2</sub>O<sub>5</sub> Entzug kg / ha</th>
             <th>P<sub>2</sub>O<sub>5</sub> Empfehlung kg / ha</th>
+            <!--
             <th>Planung Org. Düngung [kg P/ha]</th>
             <th>Planung Min. Düngung [kg P/ha]</th>
+            -->
           </tr>
         </thead>
         <tbody>
@@ -47,15 +49,22 @@
             <td class="cell-number">
               {{ plot.selectedOption.pReq }}
             </td>
-            <td class="cell-number" style="font-weight: bold;">
+            <td class="cell-number" style="font-weight: bold; padding-right: 10px;">
               {{ plot.selectedOption.pSum }}
             </td>
+            <!--
             <td class="cell-number">
               {{ orgP(plot) }}
             </td>
             <td class="cell-number" style="padding-right: 10px;">
               {{ minP(plot) }}
             </td>
+            -->
+          </tr>
+          <tr>
+            <td colspan="2"><b>Summe (kg P<sub>2</sub>O<sub>5</sub>/ha)</b></td>
+            <td colspan="7"></td>
+            <td class="value-cell cell-number" style="padding-right: 10px;"><b>{{ totalPSum }}</b></td>
           </tr>
         </tbody>
       </table>
@@ -115,6 +124,9 @@ export default {
       }
       return bool
     },
+    totalPSum() {
+      return _.round(_.sum(this.plots.map(p => p.selectedOption.pSum)), 2)
+    },
     filteredPlots() {
       const filtered = this.plots.filter(p => p.selectedOption.nReq)
       return filtered
@@ -137,6 +149,7 @@ export default {
       if (!this.waiting) this.$bus.$emit('importPrevYear')
       this.waiting = true
     },
+    
     orgP(plot) {
       if (plot.selectedOption) {
         return _.round(plot.selectedOption.orgPAmount)

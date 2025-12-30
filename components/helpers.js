@@ -7,7 +7,7 @@ function sanitizeInput(input) {
   }
   // now parse the resulting string
   input = Number(input)
-  if (isNaN(input)) throw new Error('Input not parsable')
+  if (isNaN(input) || !isFinite(input)) throw new Error('Input not parsable')
   return input
 }
 

@@ -107,6 +107,7 @@ export default {
   background-color: #fff;
   border-radius: 0px;
   box-shadow: 0 0.5em 1em -0.125em rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.02);
+  border: 1px solid #ececec;
   padding-bottom: .5rem;
   padding-top: .5rem;
 }

@@ -73,6 +73,18 @@ export default {
     }
   },
   notifications: notifications,
+  watch: {
+    farmingType() {
+      // when the value changes, pre-select the first entries in the crop/
+      // system array
+      this.crop = this.crops[0]
+      this.system = this.systems[0]
+    },
+    crop() {
+      // when the value changes, pre-select the first entry in the system array
+      this.system = this.systems[0]
+    }
+  },
   computed: {
     crops() {
       const data = _.filter(ktblCrops, { farmingType: this.farmingType })

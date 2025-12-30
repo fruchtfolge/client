@@ -14,26 +14,26 @@
         <table class="table plotOverview-table">
           <thead>
             <tr>
-              <th style="width: 40px;">
+              <th style="width: 40px; ">
                 <input type="checkbox" name="Select all" @click="handleSelectAll">
               </th>
               <th style="width: 125px;">
                 Name
               </th>
-              <th style="width: 50px;">
-                Größe
+              <th style="width: 50px; text-align: right;">
+                Größe (ha)
               </th>
               <th style="width: 50px;">
                 Hof-Feld-Distanz
               </th>
               <th style="width: 50px;">
-                Bodenqualität (SQR)
+                Boden-qualität (SQR)
               </th>
-              <th style="width: 150px;">
+              <th style="width: 120px;">
                 Bodenart
               </th>
               <th style="width: 80px;">
-                Humusgehalt
+                Humus-gehalt
               </th>
               <th style="width: 50px;">
                 Nmin-Wert
@@ -45,57 +45,55 @@
                 Rotes Gebiet
               </th>
               <th style="width: 50px;">
-                Dauergrünland
+                Dauer-grünland
               </th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(plot, i) in filteredPlots" :key="i">
-              <td><input type="checkbox" v-model="plot.selected" :value="plot.selected"></td>
-              <td contenteditable class="wide-cells" @blur="save($event,plot,'name')">
+              <td style="text-align: left;" class="editable"><input type="checkbox" v-model="plot.selected" :value="plot.selected"></td>
+              <td style="font-family: 'Inter', sans-serif; font-weight: 300;" contenteditable class="editable wide-cells" @blur="save($event,plot,'name')">
                 {{ plot.name }}
               </td>
               <td
-                contenteditable
-                class="narrow-cells-number"
-                @blur="save(e,plot,'size')"
+                class="value-cell narrow-cells-number"
               >
                 {{ plot.size }}
               </td>
-              <td contenteditable class="narrow-cells-number" @blur="save($event,plot,'distance')">
+              <td contenteditable class="editable narrow-cells-number" @blur="save($event,plot,'distance')">
                 {{ plot.distance }}
               </td>
-              <td contenteditable class="narrow-cells-number" @blur="save($event,plot,'quality')">
+              <td contenteditable class="editable narrow-cells-number" @blur="save($event,plot,'quality')">
                 {{ plot.quality }}
               </td>
-              <td style="text-align: center;">
+              <td style="text-align: left;" class="editable">
                 <select v-model="plot.soilType" style="width: 150px;" class="selection select wide-cells" @change="save(null,plot,'soilType')">
                   <option v-for="(soilType) in soilTypes" :key="soilType" :value="soilType">
                     {{ soilType }}
                   </option>
                 </select>
               </td>
-              <td style="text-align: center;">
-                <select v-model="plot.humusContent" class="selection select" @change="save(null,plot,'humusContent')">
+              <td style="text-align: left;" class="editable">
+                <select style="font-family: 'IBM Plex Mono', monospace; font-weight: 400;" v-model="plot.humusContent" class="selection select" @change="save(null,plot,'humusContent')">
                   <option v-for="(humusContent) in humusContents" :key="humusContent" :value="humusContent">
                     {{ humusContent }}
                   </option>
                 </select>
               </td>
-              <td contenteditable class="narrow-cells-number" @blur="save($event,plot,'nmin')">
+              <td contenteditable class="editable narrow-cells-number" @blur="save($event,plot,'nmin')">
                 {{ plot.nmin }}
               </td>
-              <td class="narrow-cells-number">
+              <td class="editable narrow-cells-number">
                 <select v-model="plot.pSupplyStage" class="selection select" @change="save(null,plot,'pSupplyStage')">
                   <option v-for="(supplyStage) in pSupplyStages" :key="supplyStage" :value="supplyStage">
                     {{ supplyStage }}
                   </option>
                 </select>
               </td>
-              <td class="narrow-cells-checkbox">
+              <td class="editable narrow-cells-checkbox">
                 <input type="checkbox" :checked="plot.duevEndangered" @change="save($event,plot,'duevEndangered')">
               </td>
-              <td class="narrow-cells-checkbox">
+              <td class="editable narrow-cells-checkbox">
                 <input type="checkbox" :checked="plot.permPast" @change="save($event,plot,'permPast')">
               </td>
             </tr>
@@ -142,6 +140,7 @@
 
 <script>
 import notifications from '~/components/notifications'
+import { sanitizeInput } from '~/components/helpers'
 
 export default {
   components: {
@@ -261,7 +260,7 @@ export default {
         ) {
           newValue = e.target.checked
         } else if (e) {
-          newValue = Number(e.target.innerText)
+          newValue = sanitizeInput(e.target.innerText)
         } else {
           newValue = data[prop]
         }
@@ -280,7 +279,10 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.plotOverview {
+  overflow-x: scroll;
+}
 .plotOverview-wrapper {
   /* float: left; */
   margin: auto;
@@ -295,6 +297,7 @@ export default {
 
 .search-plots {
   box-sizing: border-box;
+  border: 1px solid #ececec;
   font-size: 16px;
   height: 36px;
   margin-right: 5px;
@@ -320,10 +323,35 @@ export default {
   max-width: 960px;
   min-width: 100%;
 }
+
+.plotOverview-table thead th {
+  text-align: left;
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 60px;
+}
+
+.plotOverview-table tbody tr:not(:last-child) {
+  border-bottom: 1px solid #cccccc;
+}
+
+.plotOverview-table tbody tr:last-child .editable {
+  border-bottom: none;
+}
+
+.plotOverview-table tbody td {
+  border-right: 1px solid #f5f5f5;
+  padding: 10px;
+}
+
+.editable {
+  border-bottom: 1px solid #cccccc;
+}
+
 .plotOverview table input {
   -webkit-appearance: checkbox;
 }
 .plotOverview table select {
-  padding-right: 0px;
+  /* padding-right: 0px; */
 }
 </style>

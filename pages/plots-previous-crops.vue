@@ -9,13 +9,13 @@
         <table class="table plotPrevCrop-table">
           <thead>
             <tr>
-              <th style="width: 125px;">
+              <th style="width: 125px; text-align: left;">
                 Name
               </th>
-              <th style="width: 50px;">
-                Größe
+              <th style="width: 50px; text-align: right;">
+                Größe (ha)
               </th>
-              <th style="width: 50px;">
+              <th style="width: 50px; text-align: right;">
                 Hof-Feld-Distanz
               </th>
               <template v-for="(year) in prevYears">
@@ -33,19 +33,20 @@
               <td class="wide-cells">
                 {{ plot.name }}
               </td>
-              <td class="narrow-cells-number">
-                {{ plot.size }}
+              <td class="value-cell narrow-cells-number">
+                {{ plot.size.toFixed(2) }}
               </td>
-              <td class="narrow-cells-number">
-                {{ plot.distance }}
+              <td class="value-cell narrow-cells-number">
+                {{ plot.distance.toFixed(2) }}
               </td>
               <template v-for="(year,m) in prevYears">
-                <td :key="`ZF_${year}_${m}`" style="text-align: center; width: 50px;">
+                <td :key="`ZF_${year}_${m}`" style="text-align: center; width: 50px; border-right: 1px solid #f5f5f5;" class="editable">
                   <input type="checkbox" :checked="plot[year + 'catchCrop']" @change="saveCatchCrop($event,plot,year)">
                 </td>
 
-                <td :key="`${year}_${m}`" style="wide-cells">
+                <td :key="`${year}_${m}`" style="border-right: 1px solid #f5f5f5;" class="editable wide-cells">
                   <select v-model="plot[year]" class="selection select" @change="saveCropChange(plot,year)">
+                    <option value="" />
                     <option v-for="(crop) in crops" :key="`${crop.code}_${crop.name}`" :value="crop.name">
                       {{ crop.name }}
                     </option>
@@ -276,7 +277,10 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.plotPrevCrop {
+  overflow-x: scroll;
+}
 .plotPrevCrop-wrapper {
   /* float: left; */
   margin: auto;
@@ -289,6 +293,14 @@ export default {
   margin-bottom: 10px;
 }
 
+.search-plots {
+  box-sizing: border-box;
+  border: 1px solid #ececec;
+  font-size: 16px;
+  height: 36px;
+  margin-right: 5px;
+  width: 100%;
+}
 
 .plotPrevCrop-table {
   margin: unset;
@@ -296,6 +308,28 @@ export default {
   margin-top: 10px;
   max-width: 960px;
   min-width: 100%;
+}
+
+.plotPrevCrop-table tbody td {
+  padding-right: 10px;
+}
+
+.plotPrevCrop-table tbody tr:not(:last-child) {
+  border-bottom: 1px solid #cccccc;
+}
+
+.plotPrevCrop-table tbody tr:last-child .editable {
+  border-bottom: none;
+}
+
+.editable {
+  border-bottom: 1px solid #cccccc;
+}
+
+.plotPrevCrop-table thead th {
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 60px;
 }
 
 .plotPrevCrop table input {

@@ -3,7 +3,7 @@
     <div class="page-container printFixOverflow">
       <addCrop v-if="addCrop" @closeAddCrop="addCrop = false" />
       <cropsSidebar :crops="crops" :selected-crop="selectedCrop" @showAddCrop="addCrop = true" @changeCrop="changeCrop" />
-      <timeSeries v-if="selectedCrop" :crop="selectedCrop" />
+      <timeSeries v-if="selectedCrop" :crop="selectedCrop" @changeCrop="changeCrop" />
       <div v-else style="text-align: center; margin-top: 100px; width: calc(100% - 275px);">
         <h3>Noch keine Kulturen für das ausgewähle Planungsjahr und Szenario vorhanden.</h3>
         <h3>

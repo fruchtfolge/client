@@ -2,42 +2,42 @@
   <div class="">
     <loading v-if="loading" />
     <div v-else-if="resultsAvailable">
-      <div class="result-wrapper">
+      <div id="result-wrapper" class="result-wrapper">
         <table class="table result-table">
           <thead>
             <tr>
-              <th style="min-width: 80px;" @click="sortPlots('name')">
-                Name
+              <th style="min-width: 80px; text-align: left;" @click="sortPlots('name')">
+                {{ sortKey === "name" ? sortIndicator : "" }}Name
               </th>
-              <th style="width: 50px;" @click="sortPlots('size')">
-                Größe [ha]
+              <th style="width: 50px; text-align: right;" @click="sortPlots('size')">
+                {{ sortKey === "size" ? sortIndicator : "" }}Größe [ha]
               </th>
-              <th style="width: 50px;" @click="sortPlots('distance')">
-                Distanz [km]
+              <th style="width: 55px; text-align: right;" @click="sortPlots('distance')">
+                {{ sortKey === "distance" ? sortIndicator : "" }}Distanz [km]
               </th>
-              <th style="min-width: 50px;" @click="sortPlots('prevCrop1')">
-                {{ curYear - 1 }}
+              <th style="min-width: 50px; text-align: left;" @click="sortPlots('prevCrop1')">
+                {{ sortKey === "prevCrop1" ? sortIndicator : "" }}{{ curYear - 1 }}
               </th>
-              <th style="width: 40px;" @click="sortPlots('prevCrop1')">
-                Planung ZF
+              <th style="width: 40px;" @click="sortPlots('selectedOption.catchCrop')">
+                {{ sortKey === "selectedOption.catchCrop" ? sortIndicator : "" }}Planung ZF
               </th>
-              <th class="plot-selection" @click="sortPlots('selectedCrop')">
-                Planung {{ curYear }}
+              <th style="text-align: left;" class="plot-selection" @click="sortPlots('selectedCrop')">
+                {{ sortKey === "selectedCrop" ? sortIndicator : "" }}Planung {{ curYear }}
               </th>
-              <th v-if="hasManure" style="width: 80px;" @click="sortPlots('orgFert')">
-                Gülle
+              <th v-if="hasManure" style="width: 50px; text-align: left;" @click="sortPlots('orgFert')">
+                {{ sortKey === "orgFert" ? sortIndicator : "" }}Gülle
               </th>
-              <th v-if="hasSolid" style="width: 80px;" @click="sortPlots('orgFert')">
-                Festmist
+              <th v-if="hasSolid" style="width: 50px; text-align: left;" @click="sortPlots('orgFert')">
+                {{ sortKey === "orgFert" ? sortIndicator : "" }}Festmist
               </th>
-              <th v-if="curManure && hasPlotsRedArea" style="width: 80px;" @click="sortPlots('orgFert')">
-                N-Reduzierung
+              <th v-if="curManure && hasPlotsRedArea" style="width: 80px; text-align: right;" @click="sortPlots('nReduction')">
+                {{ sortKey === "nReduction" ? sortIndicator : "" }}N-Reduzierung
               </th>
-              <th v-if="curManure" style="width: 60px;" @click="sortPlots('prevCrop1')">
-                Herbstdüngung
+              <th v-if="curManure" style="width: 50px;" @click="sortPlots('selectedOption.autumnFert')">
+                {{ sortKey === "selectedOption.autumnFert" ? sortIndicator : "" }}Herbst-düng-ung
               </th>
-              <th style="width: 80px;" @click="sortPlots('curGrossMargin')">
-                Deckungsbeitrag
+              <th style="width: 80px; text-align: right;" @click="sortPlots('curGrossMargin')">
+                {{ sortKey === "curGrossMargin" ? sortIndicator : "" }}Deckungs-beitrag
               </th>
             </tr>
           </thead>
@@ -47,41 +47,41 @@
                 <td class="wide-cells">
                   {{ plot.name }}
                 </td>
-                <td class="narrow-cells-number">
-                  {{ plot.size }}
+                <td class="value-cell narrow-cells-number">
+                  {{ plot.size.toFixed(1) }}
                 </td>
-                <td class="narrow-cells-number">
-                  {{ plot.distance }}
+                <td class="value-cell narrow-cells-number">
+                  {{ plot.distance.toFixed(1) }}
                 </td>
                 <td class="wide-cells" style="padding-left: 10px;">
                   {{ plot.prevCrop1 }}
                 </td>
-                <td class="narrow-cells-text">
+                <td style="border-right: 1px solid #f5f5f5;" class="editable narrow-cells-text">
                   <input v-model="plot.selectedOption.catchCrop" type="checkbox" style="-webkit-appearance: checkbox;" @change="saveCropChange(plot)">
                 </td>
-                <td class="wide-cells">
+                <td style="border-right: 1px solid #f5f5f5;" class="editable wide-cells">
                   <select v-model="plot.selectedCrop" class="select selection" @change="saveCropChange(plot)">
                     <option v-for="(crop) in curCrops" :key="`${crop._id}_${plot._id}`" :value="crop.name">
                       {{ crop.name }}
                     </option>
                   </select>
                 </td>
-                <td v-if="hasManure" class="narrow-cells">
-                  <select v-model="plot.selectedOption.manAmount" style="text-align-last: center;" class="select selection" @change="saveManureChange()">
+                <td v-if="hasManure" style="border-right: 1px solid #f5f5f5;" class="editable narrow-cells">
+                  <select v-model="plot.selectedOption.manAmount" style="text-align-last: center; font-family: 'IBM Plex Mono', monospace; font-weight: 400;" class="select selection" @change="saveManureChange()">
                     <option v-for="(amount) in manAmounts" :key="`${plot._id}_${amount}`" :value="amount">
                       {{ amount }}m³
                     </option>
                   </select>
                 </td>
-                <td v-if="hasSolid" class="narrow-cells">
-                  <select v-model="plot.selectedOption.solidAmount" style="text-align-last: center;" class="select selection" @change="saveManureChange()">
+                <td v-if="hasSolid" style="border-right: 1px solid #f5f5f5;" class="editable narrow-cells">
+                  <select v-model="plot.selectedOption.solidAmount" style="text-align-last: center; font-family: 'IBM Plex Mono', monospace; font-weight: 400;" class="select selection" @change="saveManureChange()">
                     <option v-for="(amount) in solidAmounts" :key="`${plot._id}_solid_${amount}`" :value="amount">
                       {{ amount }}m³
                     </option>
                   </select>
                 </td>
-                <td v-if="curManure && hasPlotsRedArea" class="narrow-cells">
-                  <select v-if="plot.duevEndangered" v-model="plot.selectedOption.nReduction" style="text-align-last: center;" class="select selection" @change="saveManureChange()">
+                <td v-if="curManure && hasPlotsRedArea" style="border-right: 1px solid #f5f5f5;" class="editable narrow-cells">
+                  <select v-if="plot.duevEndangered" v-model="plot.selectedOption.nReduction" style="text-align-last: center; font-family: 'IBM Plex Mono', monospace; font-weight: 400;" class="select selection" @change="saveManureChange()">
                     <option v-for="(reduction) in nReductions" :key="`${plot._id}_${reduction}`" :value="reduction">
                       {{ reduction * 100 }}%
                     </option>
@@ -92,24 +92,23 @@
                     </option>
                   </select>
                 </td>
-                <td v-if="curManure" class="narrow-cells-text">
+                <td v-if="curManure" style="border-right: 1px solid #f5f5f5;" class="editable narrow-cells-text">
                   <input v-model="plot.selectedOption.autumnFert" type="checkbox" style="-webkit-appearance: checkbox;" @change="saveManureChange()">
                 </td>
-                <td class="narrow-cells-number" style="padding-right: 10px;" @click="showPlotInfo(plot)">
-                  {{ format(plot.curGrossMargin) }}
+                <td class="narrow-cells-number menu-indicator" :class="{'menu-indicator-hover': plot.id !== selection}" style="padding-right: 10px;" @click="showPlotInfo(plot)">
+                  {{ plot.id === selection ? "↑ " : "" }}{{ format(plot.curGrossMargin) }}
                 </td>
               </tr>
               <tr v-if="plot.id === selection" style="background-color: white;" :key="`detail_${plot._id}`">
                 <td :colspan="colspan" class="inner-table-wrapper" align="right">
                   <table class="inner-table table">
                     <thead>
-                      <th />
-                      <th>Ertragskorrektur [t/ha]</th>
+                      <th colspan="2" style="text-align: right; padding-right: 5px;">Ertragskorrektur [t/ha]</th>
                     </thead>
                     <tbody>
                       <tr>
                         <td>Durchschnittsertrag</td>
-                        <td style="text-align: center;">
+                        <td style="text-align: right;" class="value-cell">
                           {{
                             plot.selectedOption.amount
                           }}
@@ -117,7 +116,7 @@
                       </tr>
                       <tr>
                         <td>Korrektur Bodenqualität</td>
-                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'yieldCap', plot)">
+                        <td style="text-align:right;" class="editable" contenteditable="true" @blur="save($event,i,'yieldCap', plot)">
                           {{
                             ((plot.selectedOption.yieldCap
                               * plot.selectedOption.amount)
@@ -127,7 +126,7 @@
                       </tr>
                       <tr>
                         <td>Korrektur Fruchtfolge</td>
-                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'croppingFactor', plot)">
+                        <td style="text-align:right;" contenteditable="true" class="editable" @blur="save($event,i,'croppingFactor', plot)">
                           {{
                             ((plot.selectedOption.croppingFactor
                               * plot.selectedOption.amount)
@@ -137,7 +136,7 @@
                       </tr>
                       <tr>
                         <td>Korrektur Düngereduzierung (nach DüV)</td>
-                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'nYieldRed', plot)">
+                        <td style="text-align:right;" class="editable" contenteditable="true" @blur="save($event,i,'nYieldRed', plot)">
                           {{
                             ((plot.selectedOption.nYieldRed
                               * plot.selectedOption.amount)
@@ -145,11 +144,11 @@
                           }}
                         </td>
                       </tr>
-                      <tr>
-                        <td style="font-weight: bold;">
+                      <tr style="font-weight: 600;" class="highlightRow">
+                        <td>
                           Korrigierter Ertrag
                         </td>
-                        <td style="text-align:center;font-weight: bold;">
+                        <td style="text-align:right;font-weight: bold;" class="value-cell">
                           {{
                             plot.selectedOption.correctedAmount ? (plot.selectedOption.correctedAmount).toFixed(2) : 0
                           }}
@@ -157,36 +156,36 @@
                       </tr>
                     </tbody>
                   </table>
-                  <table class="table">
+                  <table class="table inner-table-gm" style="background: #f9f9f9;">
                     <thead>
                       <th />
-                      <th>Preis [1/ha]</th>
-                      <th>Menge [1/ha]</th>
-                      <th>Summe [1/ha]</th>
-                      <th>Summe</th>
+                      <th style="text-align: right; padding-right: 5px;">Preis [€/ha]</th>
+                      <th style="text-align: right; padding-right: 5px;">Menge [t/ha]</th>
+                      <th style="text-align: right; padding-right: 5px;">Summe [€/ha]</th>
+                      <th style="text-align: right; padding-right: 5px;">Summe</th>
                     </thead>
                     <tbody>
                       <tr>
                         <td>Leistungen</td>
-                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'price', plot)">
+                        <td style="text-align:right;" class="editable" contenteditable="true" @blur="save($event,i,'price', plot)">
                           {{
-                            format(plot.selectedOption.price)
+                            plot.selectedOption.price.toFixed(1)
                           }}
                         </td>
-                        <td style="text-align:center;">
+                        <td style="text-align:right;" class="value-cell">
                           {{
-                            plot.selectedOption.correctedAmount
+                            plot.selectedOption.correctedAmount.toFixed(1)
                           }}
                         </td>
-                        <td style="text-align:center;">
+                        <td style="text-align:right;" class="value-cell">
                           {{
-                            format(plot.selectedOption.revenue)
+                            plot.selectedOption.revenue.toFixed(1)
                           }}
                         </td>
-                        <td style="text-align:center;">
+                        <td style="text-align:right;" class="value-cell">
                           {{
-                            format(plot.selectedOption.revenue
-                              * plot.selectedOption.size)
+                            (plot.selectedOption.revenue
+                              * plot.selectedOption.size).toFixed(1)
                           }}
                         </td>
                       </tr>
@@ -194,15 +193,15 @@
                         <td colspan="3">
                           Direktkosten
                         </td>
-                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'directCosts', plot)">
+                        <td style="text-align:right;" class="editable" contenteditable="true" @blur="save($event,i,'directCosts', plot)">
                           {{
-                            format(plot.selectedOption.directCosts)
+                            plot.selectedOption.directCosts.toFixed(1)
                           }}
                         </td>
-                        <td style="text-align:center;">
+                        <td style="text-align:right;" class="value-cell">
                           {{
-                            format(plot.selectedOption.directCosts
-                              * plot.selectedOption.size)
+                            (plot.selectedOption.directCosts
+                              * plot.selectedOption.size).toFixed(1)
                           }}
                         </td>
                       </tr>
@@ -210,15 +209,15 @@
                         <td colspan="3">
                           Davon Kosten Mineraldünger
                         </td>
-                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'directCosts', plot)">
+                        <td style="text-align:right;" class="editable" contenteditable="true" @blur="save($event,i,'directCosts', plot)">
                           {{
-                            format(plot.selectedOption.fertCosts)
+                            plot.selectedOption.fertCosts.toFixed(1)
                           }}
                         </td>
-                        <td style="text-align:center;">
+                        <td style="text-align:right;" class="value-cell">
                           {{
-                            format(plot.selectedOption.fertCosts
-                              * plot.selectedOption.size)
+                            (plot.selectedOption.fertCosts
+                              * plot.selectedOption.size).toFixed(1)
                           }}
                         </td>
                       </tr>
@@ -226,15 +225,15 @@
                         <td colspan="3">
                           Maschinenkosten
                         </td>
-                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'machineCosts', plot)">
+                        <td style="text-align:right;" class="editable" contenteditable="true" @blur="save($event,i,'machineCosts', plot)">
                           {{
-                            format(plot.selectedOption.variableCostsMech)
+                            plot.selectedOption.variableCostsMech.toFixed(1)
                           }}
                         </td>
-                        <td style="text-align:center;">
+                        <td style="text-align:right;" class="value-cell">
                           {{
-                            format(plot.selectedOption.variableCostsMech
-                              * plot.selectedOption.size)
+                            (plot.selectedOption.variableCostsMech
+                              * plot.selectedOption.size).toFixed(1)
                           }}
                         </td>
                       </tr>
@@ -242,15 +241,15 @@
                         <td colspan="3">
                           Davon Kosten Düngeausbringung
                         </td>
-                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'machineCosts', plot)">
+                        <td style="text-align:right;" class="editable"  contenteditable="true" @blur="save($event,i,'machineCosts', plot)">
                           {{
-                            format(plot.selectedOption.fertMachCosts)
+                            plot.selectedOption.fertMachCosts.toFixed(1)
                           }}
                         </td>
-                        <td style="text-align:center;">
+                        <td style="text-align:right;" class="value-cell">
                           {{
-                            format(plot.selectedOption.fertMachCosts
-                              * plot.selectedOption.size)
+                            (plot.selectedOption.fertMachCosts
+                              * plot.selectedOption.size).toFixed(1)
                           }}
                         </td>
                       </tr>
@@ -258,30 +257,30 @@
                         <td colspan="3">
                           Zwischenfruchtanbau
                         </td>
-                        <td style="text-align:center;" contenteditable="true" @blur="save($event,i,'catchCropCosts', plot)">
+                        <td style="text-align:right;" class="editable" contenteditable="true" @blur="save($event,i,'catchCropCosts', plot)">
                           {{
-                            format(plot.selectedOption.catchCropCosts)
+                            plot.selectedOption.catchCropCosts.toFixed(1)
                           }}
                         </td>
-                        <td style="text-align:center;">
+                        <td style="text-align:right;" class="value-cell">
                           {{
-                            format(plot.selectedOption.catchCropCosts * plot.size)
+                            (plot.selectedOption.catchCropCosts * plot.size).toFixed(1)
                           }}
                         </td>
                       </tr>
-                      <tr>
+                      <tr style="font-weight: 600;" class="highlightRow">
                         <td colspan="3">
                           Deckungsbeitrag
                         </td>
-                        <td style="text-align:center;">
+                        <td style="text-align:right;" class="value-cell">
                           {{
-                            format(plot.selectedOption.grossMarginHa)
+                            plot.selectedOption.grossMarginHa.toFixed(1)
                           }}
                         </td>
-                        <td style="text-align:center;">
+                        <td style="text-align:right;" class="value-cell">
                           {{
-                            format(plot.selectedOption.grossMarginHa
-                              * plot.selectedOption.size)
+                            (plot.selectedOption.grossMarginHa
+                              * plot.selectedOption.size).toFixed(1)
                           }}
                         </td>
                       </tr>
@@ -290,15 +289,15 @@
                 </td>
               </tr>
             </template>
-            <tr>
-              <td colspan="1" style="font-weight: bold;">
+            <tr class="highlightRow">
+              <td colspan="1">
                 Summe Ackerbau
               </td>
-              <td class="narrow-cells-number">
+              <td class="value-cell narrow-cells-number">
                 {{ curTotLand }}
               </td>
               <td :colspan="colspan - 3" />
-              <td class="narrow-cells-number" style="font-weight: bold; padding-right: 10px;">
+              <td class="value-cell narrow-cells-number" style="padding-right: 10px;">
                 {{ format(grossMarginArab) }}
               </td>
             </tr>
@@ -306,10 +305,10 @@
               <td :colspan="colspan - 5">
                 Gülleexport Frühjahr
               </td>
-              <td class="narrow-cells-number" colspan="4">
+              <td class="value-cell narrow-cells-number" colspan="4">
                 {{ manExportVolSpring }}m³
               </td>
-              <td class="narrow-cells-number" style="padding-right: 10px;">
+              <td class="value-cell narrow-cells-number" style="padding-right: 10px;">
                 {{ format(manExportCostsSpring) }}
               </td>
             </tr>
@@ -317,10 +316,10 @@
               <td :colspan="colspan - 5">
                 Gülleexport Herbst
               </td>
-              <td class="narrow-cells-number" colspan="4">
+              <td class="value-cell narrow-cells-number" colspan="4">
                 {{ manExportVolAutumn }}m³
               </td>
-              <td class="narrow-cells-number" style="padding-right: 10px;">
+              <td class="value-cell narrow-cells-number" style="padding-right: 10px;">
                 {{ format(manExportCostsAutumn) }}
               </td>
             </tr>
@@ -328,10 +327,10 @@
               <td :colspan="colspan - 5">
                 Festmistexport Frühjahr
               </td>
-              <td class="narrow-cells-number" colspan="4">
+              <td class="value-cell narrow-cells-number" colspan="4">
                 {{ solidExportVolSpring }}m³
               </td>
-              <td class="narrow-cells-number" style="padding-right: 10px;">
+              <td class="value-cell narrow-cells-number" style="padding-right: 10px;">
                 {{ format(solidExportCostsSpring) }}
               </td>
             </tr>
@@ -339,19 +338,19 @@
               <td :colspan="colspan - 5">
                 Festmistexport Herbst
               </td>
-              <td class="narrow-cells-number" colspan="4">
+              <td class="value-cell narrow-cells-number" colspan="4">
                 {{ solidExportVolAutumn }}m³
               </td>
-              <td class="narrow-cells-number" style="padding-right: 10px;">
+              <td class="value-cell narrow-cells-number" style="padding-right: 10px;">
                 {{ format(solidExportCostsAutumn) }}
               </td>
             </tr>
-            <tr style="background-color: white;">
+            <tr class="highlightRow" style="font-weight: 600;">
               <td colspan="1" style="font-weight: bold;">
                 Summe
               </td>
               <td :colspan="colspan - 2" />
-              <td class="narrow-cells-number" style="font-weight: bold; padding-right: 10px; ">
+              <td class="value-cell narrow-cells-number" style="font-weight: bold; padding-right: 10px; ">
                 {{ format(grossMarginCurYear) }}
               </td>
             </tr>
@@ -432,6 +431,7 @@
 import { Carousel, Slide } from 'vue-carousel'
 import cultures from '~/assets/js/cultures'
 import notifications from '~/components/notifications'
+import { sanitizeInput } from '~/components/helpers'
 
 export default {
   components: {
@@ -474,6 +474,9 @@ export default {
     }
   },
   computed: {
+    sortIndicator() {
+      return this.sortOrder === 'desc' ? "↓" : "↑"
+    },
     curTotLand() {
       return _.round(this.totLand, 2)
     },
@@ -662,7 +665,7 @@ export default {
     },
     resultsAvailable() {
       let flag = false
-      if (this.$store && this.curPlots && this.curPlots.length) {
+      if (this.$store && this.curPlots && this.curPlots.length && this.curCrops && this.curCrops.length) {
         flag = this.curPlots.every(plot => plot.selectedOption)
       }
       return flag
@@ -830,10 +833,10 @@ export default {
     },
     async save(e, i, type, plot) {
       try {
-        const newValue = Number(e.target.innerText)
+        const newValue = sanitizeInput(e.target.innerText)
         const data = plot.selectedOption
         const amount = data.amount
-
+        console.log(newValue,data,amount)
         if (type === 'yieldCap' || type === 'croppingFactor') {
           data[type] = (newValue + amount) / amount
         } else {
@@ -843,7 +846,7 @@ export default {
         const price = data.price
         const directCosts = data.directCosts
         const variableCosts = data.variableCosts
-        const distanceCosts = data.distanceCosts
+        const distanceCosts = data.distanceCosts || 0
         const croppingFactor = data.croppingFactor
         const yieldCap = data.yieldCap
 
@@ -864,6 +867,7 @@ export default {
         data.grossMargin = _.round(
           (revenue - directCosts - variableCosts - distanceCosts) * plot.size
         )
+        console.log(data.grossMargin, revenue, directCosts, variableCosts, distanceCosts)
         // update plot
         plot.selectedOption = data
         await this.$db.put(plot)
@@ -972,6 +976,7 @@ export default {
           this.curPlots &&
           this.curPlots.length &&
           store.curCrops &&
+          store.curCrops.length &&
           !this.resultsAvailable &&
           !this.infeasible
         ) {
@@ -997,11 +1002,24 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .loading {
   top: 480px;
 }
 
+.menu-indicator {
+  background-color: white;
+  cursor: pointer;
+}
+
+.menu-indicator-hover:hover:before {
+  content: "↓";
+}
+
+
+.selection {
+  font-size: 12px;
+}
 .result-wrapper {
   /* width: calc(100vw - 200px); */
   /* min-width: 1024px; */
@@ -1023,9 +1041,24 @@ export default {
   margin-top: 20px;
   /* margin-left: 20px; */
   max-width: 60vw;
-  min-width: 786px;
+  min-width: 580px;
   table-layout: fixed;
+  font-size: 12px;
 }
+
+.result-table th {
+  height: 60px;
+  hyphens: auto;
+  color: white;
+  font-size: 13px;
+}
+
+.result-table thead th {
+  padding-left: 10px;
+  padding-right: 5px;
+  cursor: ns-resize;
+}
+
 
 .expand-enter-active,
 .expand-leave-active {
@@ -1055,17 +1088,19 @@ export default {
 .inner-table {
   min-width: 300px;
   max-width: 0px;
+  background: #f9f9f9;
+}
+
+.inner-table td {
+  padding-right: 5px;
 }
 
 .inner-table th {
   height: 25px;
 }
-.inner-table tr:nth-child(odd) {
-  background-color: #f5f5f5;
-}
 
-.inner-table tr:nth-child(even) {
-  background-color: #ececec;
+.inner-table-gm td {
+  padding-right: 5px;
 }
 
 .excel-download {
@@ -1116,7 +1151,7 @@ export default {
     width: 125px;
   }
 }
-@media (min-width: 1251px) {
+@media (min-width: 1451px) {
   .plot-selection {
     width: 175px;
   }

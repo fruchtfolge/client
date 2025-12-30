@@ -11,14 +11,14 @@
             </caption>
             <thead>
               <tr>
-                <th>Nachfrucht</th>
-                <th>Wirkungsfaktor (0 - 10)</th>
+                <th style="text-align: left; padding-left: 10px;">Nachfrucht</th>
+                <th style="text-align: right; padding-right: 10px;">Wirkungsfaktor (0 - 10)</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(subseq) in crops" :key="subseq._id">
                 <td>{{ subseq.name }}</td>
-                <td contenteditable="true" @blur="save($event, 'subseqCrops', subseq.cropGroup)" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event, 'subseqCrops', subseq.cropGroup)" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.subseqCrops[subseq.cropGroup] }}
                 </td>
               </tr>
@@ -32,44 +32,44 @@
             </caption>
             <thead>
               <tr>
-                <th>Eigenschaft</th>
-                <th>Wert</th>
+                <th style="text-align: left; padding-left: 10px;">Fruchtfolge Eigenschaften</th>
+                <th style="text-align: right; padding-right: 10px;">Wert</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>Anbaupause in Jahren</td>
-                <td contenteditable="true" @blur="save($event, 'rotBreak')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event, 'rotBreak')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.rotBreak }}
                 </td>
               </tr>
               <tr>
                 <td>Max. Anteil Anbaufläche [%]</td>
-                <td contenteditable="true" @blur="save($event, 'maxShare')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event, 'maxShare')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.maxShare }}
                 </td>
               </tr>
               <tr>
-                <td>Mindestanforderung Bodenqualität</td>
-                <td contenteditable="true" @blur="save($event, 'minSoilQuality')" @keydown.enter="$event.target.blur()">
+                <td>Mindestanforderung Bodenqualität [SQR-Wert]</td>
+                <td contenteditable="true" class="editable" @blur="save($event, 'minSoilQuality')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.minSoilQuality }}
                 </td>
               </tr>
               <tr>
                 <td>Hackfrucht</td>
-                <td><input type="checkbox" :checked="selectedCrop.rootCrop" @change="saveCheckbox($event,'rootCrop')"></td>
+                <td class="editable"><input type="checkbox" :checked="selectedCrop.rootCrop" @change="saveCheckbox($event,'rootCrop')"></td>
               </tr>
               <tr>
                 <td>Sommerung</td>
-                <td><input type="checkbox" :checked="selectedCrop.season === 'Sommer'" @change="saveCheckbox($event,'season')"></td>
+                <td class="editable"><input type="checkbox" :checked="selectedCrop.season === 'Sommer'" @change="saveCheckbox($event,'season')"></td>
               </tr>
               <tr>
                 <td>Zwischenfrucht anschließend möglich</td>
-                <td><input type="checkbox" :checked="selectedCrop.catchCropAfter" @change="saveCheckbox($event,'catchCropAfter')"></td>
+                <td class="editable"><input type="checkbox" :checked="selectedCrop.catchCropAfter" @change="saveCheckbox($event,'catchCropAfter')"></td>
               </tr>
               <tr>
                 <td>Faktor für Öko. Vorrangfläche (Greening)</td>
-                <td contenteditable="true" @blur="save($event,'efaFactor')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'efaFactor')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.efaFactor }}
                 </td>
               </tr>
@@ -83,74 +83,74 @@
             </caption>
             <thead>
               <tr>
-                <th>Eigenschaft</th>
-                <th>Wert</th>
+                <th style="text-align: left; padding-left: 10px;">Eigenschaft</th>
+                <th style="text-align: right; padding-right: 10px;">Wert</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>Ertragsniveau nach Tab. 2 bzw. 4 [dt/ha]</td>
-                <td contenteditable="true" @blur="save($event,'duevYieldLvl')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'duevYieldLvl')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.duevYieldLvl }}
                 </td>
               </tr>
               <tr>
                 <td>N-Düngebedarf nach Tab. 2 bzw. 4 [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nRequirement')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'nRequirement')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nRequirement }}
                 </td>
               </tr>
               <tr>
                 <td>N-Sollwert [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nTargetValue')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'nTargetValue')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nTargetValue || selectedCrop.nRequirement }}
                 </td>
               </tr>
               <tr>
                 <td>Max. Güllemenge [m³/ha]</td>
-                <td contenteditable="true" @blur="save($event,'maxOrganicN')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'maxOrganicN')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.maxOrganicN || 60 }}
                 </td>
               </tr>
               <tr>
                 <td>Maximaler N-Bedarfszuschlag bei Mehrertrag je dt (Tab. 3) [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nMaxAddition')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'nMaxAddition')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nMaxAddition }}
                 </td>
               </tr>
               <tr>
                 <td>Minimaler N-Bedarfsabzug bei Minderertrag je dt (Tab. 3) [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nMinSubtraction')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'nMinSubtraction')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nMinSubtraction }}
                 </td>
               </tr>
               <tr>
                 <td>Durchschnittliche Menge N aus organischer Düngung der Vorjahre [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nFertPrevYear')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'nFertPrevYear')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nFertPrevYear || 0 }}
                 </td>
               </tr>
               <tr>
                 <td>N-Bedarfsabzug wenn Vorfrucht (Tab. 7 bzw. 4) [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'prevCropEff')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'prevCropEff')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.prevCropEff }}
                 </td>
               </tr>
               <tr>
                 <td>P-Entzug (nach §4(3)) [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'pWithdraw')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'pWithdraw')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.pWithdraw }}
                 </td>
               </tr>
               <tr>
                 <td>P-Rückstände Erntereste [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'pHarvestLeft')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'pHarvestLeft')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.pHarvestLeft }}
                 </td>
               </tr>
               <tr>
                 <td>Erntereste werden abgefahren</td>
-                <td><input type="checkbox" :checked="selectedCrop.harvestLeft" @change="saveCheckbox($event,'harvestLeft')"></td>
+                <td class="editable"><input type="checkbox" :checked="selectedCrop.harvestLeft" @change="saveCheckbox($event,'harvestLeft')"></td>
               </tr>
             </tbody>
           </table>
@@ -162,80 +162,80 @@
             </caption>
             <thead>
               <tr>
-                <th>Eigenschaft</th>
-                <th>Wert</th>
+                <th style="text-align: left; padding-left: 10px;">Eigenschaft</th>
+                <th style="text-align: right; padding-right: 10px;">Wert</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>Ertragsniveau nach Tab. 9 [dt TM/ha]</td>
-                <td contenteditable="true" @blur="save($event,'duevYieldLvl')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'duevYieldLvl')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.duevYieldLvl }}
                 </td>
               </tr>
               <tr>
                 <td>Ertragsniveau 5 Jahr Ø Betrieb [dt TM/ha]</td>
-                <td contenteditable="true" @blur="save($event,'avgYieldLvl')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'avgYieldLvl')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.avgYieldLvl }}
                 </td>
               </tr>
               <tr>
                 <td>Rohproteingehalt nach Tab. 9 [dt TM/ha]</td>
-                <td contenteditable="true" @blur="save($event,'duevRPlvl')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'duevRPlvl')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.duevRPlvl }}
                 </td>
               </tr>
               <tr>
                 <td>Ertragsniveau RP 5 Jahr Ø Betrieb [% RP i.d. TM]</td>
-                <td contenteditable="true" @blur="save($event,'avgRPperc')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'avgRPperc')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.avgRPperc }}
                 </td>
               </tr>
               <tr>
                 <td>N-Düngebedarf nach Tab. 9 [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nRequirement')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'nRequirement')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nRequirement }}
                 </td>
               </tr>
               <tr>
                 <td>N-Sollwert [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nTargetValue')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'nTargetValue')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nTargetValue || selectedCrop.nRequirement }}
                 </td>
               </tr>
               <tr>
                 <td>Max. Güllemenge [m³/ha]</td>
-                <td contenteditable="true" @blur="save($event,'maxOrganicN')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'maxOrganicN')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.maxOrganicN || 60 }}
                 </td>
               </tr>
               <tr>
                 <td>Zu- oder Abschlag bei Ertragsdifferenz je 10 dt (Tab. 10) [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nChangeYieldDiff')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'nChangeYieldDiff')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nChangeYieldDiff }}
                 </td>
               </tr>
               <tr>
                 <td>Zu- oder Abschlag je 1 % Rohprotein in der TM Rohproteindifferenz je 10 dt (Tab. 10) [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nChangeRPDiff')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'nChangeRPDiff')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nChangeRPDiff }}
                 </td>
               </tr>
               <tr>
                 <td>Durchschnittliche Menge N aus organischer Düngung der Vorjahre [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nFertPrevYear')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'nFertPrevYear')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nFertPrevYear || 0 }}
                 </td>
               </tr>
               <tr>
                 <td>Abschläge für Stickstoffnachlieferung aus der Stickstoffbindung von Leguminosen (Tab. 12) [kg/ha]</td>
-                <td contenteditable="true" @blur="save($event,'nLegumeRed')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'nLegumeRed')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.nLegumeRed }}
                 </td>
               </tr>
               <tr>
                 <td>P-Entzug (nach §4(3)) [kg/dt TM]</td>
-                <td contenteditable="true" @blur="save($event,'pWithdraw')" @keydown.enter="$event.target.blur()">
+                <td contenteditable="true" class="editable" @blur="save($event,'pWithdraw')" @keydown.enter="$event.target.blur()">
                   {{ selectedCrop.pWithdraw }}
                 </td>
               </tr>
@@ -401,7 +401,9 @@ export default {
   width: 480px;
 }
 .cropSettings table td:nth-child(2) {
-  text-align: center;
+  /* text-align: center; */
+  padding-right: 10px;
+  min-width: 50px;
 }
 .cropSettings table input {
   -webkit-appearance: checkbox;
