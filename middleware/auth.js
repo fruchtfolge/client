@@ -1,4 +1,4 @@
-export default async function(context) {
+export default async function (context) {
   const allowedRoutes = [
     '/',
     '/forgot-password',
@@ -29,12 +29,16 @@ export default async function(context) {
   try {
     // check if user auth tokens are available
     if (settings && settings.auth) {
+      // check if session is valid
+      await context.$axios.get(settings.auth.userDBs.userdb, {
+        headers: {
+          Authorization: 'Basic ' + btoa(settings.auth.token + ':' + settings.auth.password)
+        }
+      })
       context.$axios.setHeader(
         'Authorization',
         'Bearer ' + settings.auth.token + ':' + settings.auth.password
       )
-      // get session
-      await context.$axios.get(process.env.baseUrl + 'auth/session')
       // only sync on page reload
       // ugly hack, as I didn't find a way to check if middleware is called after page reload
       // the 'sync' property is injected into the store, if it is present and not cancelled yet,
