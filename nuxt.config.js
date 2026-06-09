@@ -2,15 +2,6 @@ const path = require('path')
 const webpack = require('webpack')
 const pkg = require('./package')
 
-const features = [
-  'fetch',
-  'Object.entries',
-  'IntersectionObserver',
-  'Array.prototype.find',
-  'EventSource',
-  'Object.assign',
-  'Array.prototype.fill'
-].join('%2C')
 
 module.exports = {
   ssr: false,
@@ -36,12 +27,7 @@ module.exports = {
           'Mit wenigen Klicks die Anbauplanung optimieren. Düngeverordnung 2020 mit inbegriffen!'
       }
     ],
-    script: [
-      {
-        src: `https://polyfill.io/v3/polyfill.min.js?features=${features}`,
-        body: true
-      }
-    ],
+    script: [],
     link: [
       {
         rel: 'icon',
